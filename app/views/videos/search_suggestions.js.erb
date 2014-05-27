@@ -1,0 +1,12 @@
+<% if @empty == false %>
+	<% if @movies.any? %>
+		$('#search_list').html('')
+		<% @movies.each do |movie| %>
+			$('#search_list').append('<p><%= movie.name %></p>')
+		<% end %>
+	<% else %>
+		$('#search_list').html('<p><strong>No Search Suggestions</strong></p>')
+	<% end %>
+<% elsif @empty == true %>
+	$('#search_list').html('<p><strong>Enter Search Term</strong></p>')
+<% end %>
