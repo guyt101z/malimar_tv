@@ -1,70 +1,101 @@
-<div class="navbar-fixed-top">
-	<div class="navbar-top">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-3">Order Now +1-877-400-7733</div>
-                <div class="col-sm-9 text-right hidden-xs">Get Malimar on: 
-                    <a href="#">Roku</a> | 
-                    <a href="#">Playstation</a> | 
-                    <a href="#">Google TV</a> | 
-                    <a href="#">Iphone & Ipad</a> ... and more
-                </div>
-            </div>
+<div class="navbar yamm navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <%= link_to image_tag('logo.png'), root_url, class: 'navbar-brand' %>
         </div>
-    </div>
-    <div class="navbar navbar-inverse">
-        <div class="container">
-        	<div class="navbar-header">
-              	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-              	</button>
-              	<%= link_to image_tag("logo.png"), root_url, class: 'navbar-brand' %>
-            </div>
-            <div class="sep hidden-xs"></div>
-            <div class="collapse navbar-collapse">
-					<ul class="nav navbar-nav">
-                	<li class="active"><a href="#">Watch <span class="caret"></span></a></li>
-                </ul>
-            	<div class="sep hidden-xs hidden-sm"></div>
-                <form class="navbar-form navbar-left hidden-sm" role="search">
-                    <div class="form-group">
-                    	<span class="glyphicon glyphicon-search"></span>
-                      	<input type="text" class="form-control" placeholder="What are you looking to watch?">
+        <div class="sep hidden-xs"></div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="dropdown yamm-fw">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">START <span class="caret"></span></a>
+                    <div class="dropdown-menu keep-open ptb0">
+                        <div class="yamm-content">
+                            <div class="row row0">
+                                <div class="col-sm-3">
+                                    <div class="bg-f8f8f8">
+                                        <ul class="nav">
+                                            <li class="active"><a href="#watch-submenu" data-toggle="menu-d">Watch <span class="caret-right"></span></a></li>
+                                            <li><a href="#activateroku-submenu" data-toggle="menu-d">ActivateRoku <span class="caret-right"></span></a></li>
+                                            <li><a href="#subscription-submenu" data-toggle="menu-d">Subscription <span class="caret-right"></span></a></li>
+                                            <li><a href="#contactus-submenu" data-toggle="menu-d">Contact Us <span class="caret-right"></span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-sm-9 relative">
+                                    <div class="p1520">
+                                        <div id="watch-submenu" class="menu-dsubmenu" style="display:block;">
+                                            <h3 class="fz18 text-light mt0 mb0">Watch on Malimar.tv</h3>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <ul class="nav nav-nobg">
+                                                        <li><a href="#">Free Live TV Channels</a></li>
+                                                        <li><a href="#">Premium TV Channels</a></li>
+                                                        <li><a href="#">TV Shows</a></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <ul class="nav nav-nobg">
+                                                        <li><a href="#">Movies</a></li>
+                                                        <li><a href="#">Karaoke</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="activateroku-submenu" class="menu-dsubmenu" style="display:none;">
+                                            <h3 class="fz18 text-light mt0 mb0">Activate Roku</h3>
+                                        </div>
+                                        <div id="subscription-submenu" class="menu-dsubmenu" style="display:none;">
+                                            <h3 class="fz18 text-light mt0 mb0">Subscription</h3>
+                                        </div>
+                                        <div id="contactus-submenu" class="menu-dsubmenu" style="display:none;">
+                                            <h3 class="fz18 text-light mt0 mb0">Contact Us</h3>
+                                        </div>
+                                    </div>
+                                    <div class="figure-right0 hidden-xs"><img src="/assets/imh-02.jpg"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </form>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><div class="sep hidden-xs"></div></li>
-                	<li><a href="#">Subscription</a></li>
-                    <li><div class="sep hidden-xs"></div></li>
-                	<li><a href="#">Support <span class="caret"></span></a></li>
-                    <li><div class="sep hidden-xs"></div></li>
-                    <li class="navbar-ava"><a href="#"><img src="/assets/avatar.jpg"></a></li>
-                </ul>
-                <ul class="nav nav-sub visible-xs">
-                    <li class="active"><a href="#">Add Device</a></li>
-                    <li><a href="#">My Devices</a></li>
-                    <li><a href="#">Subscription</a></li>
-                    <li><a href="#">Billing</a></li>
-                    <li><a href="#">Settings</a></li>
-                    <li><a href="#">Upgrade Plan</a></li>
-                    <li><%= link_to 'Log Out', destroy_user_session_path, method: :delete %></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="navbar navbar-default hidden-xs">
-    	<div class="container">
-        	<ul class="nav nav-justified">
-            	<li class="active"><a href="#">Add Device</a></li>
-            	<li><a href="#">My Devices</a></li>
-            	<li><a href="#">Subscription</a></li>
-            	<li><a href="#">Billing</a></li>
-            	<li><a href="#">Settings</a></li>
-            	<li><a href="#">Upgrade Plan</a></li>
-            	<li><%= link_to 'Log Out', destroy_user_session_path, method: :delete %></li>
+                </li>
+            </ul>
+            <div class="sep hidden-xs hidden-sm"></div>
+            <form class="navbar-form navbar-left hidden-sm" role="search">
+                <div class="form-group">
+                    <span class="glyphicon glyphicon-search"></span>
+                    <input type="text" class="form-control" placeholder="What are you looking to watch?">
+                </div>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li><div class="sep hidden-xs"></div></li>
+                <li><a href="#"><span class="icon-signal"></span></a></li>
+                <li><div class="sep hidden-xs"></div></li>
+                <li><a href="#"><span class="icon-user"></span></a></li>
+                <li><div class="sep hidden-xs"></div></li>
+                <li><%= link_to 'LOG OUT', destroy_user_session_path, method: :delete %></li>
+                
+                <!--<li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">SIGN UP</a>
+                    <div class="dropdown-menu keep-open">
+                        <div class="dropdown-body">
+                            <form>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Your Name">
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" class="form-control" placeholder="Your Email Address">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-bold btn-w180">Register</button>
+                            </form>
+                        </div>
+                    </div>
+                </li>-->
+                <li><div class="sep hidden-xs"></div></li>
             </ul>
         </div>
     </div>
