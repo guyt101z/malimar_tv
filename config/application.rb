@@ -11,6 +11,9 @@ module MalimarTv
     config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
     config.assets.precompile += %w( .svg .eot .woff .ttf)
     
+    config.assets.compile = true
+    config.assets.precompile =  ['*.js', '*.css', '*.css.erb'] 
+    
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
