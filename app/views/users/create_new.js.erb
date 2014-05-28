@@ -35,7 +35,8 @@ $('#password_confirmation-error_icon').remove()
 $('#password_confirmation-error').remove()
 $('#password_confirmation').parent().removeClass('has-error')
 <% if @success == true %>
-	alert('Success!')
+	alert('User created')
+	window.location '/'
 <% else %>
 	<% if @user.errors[:first_name].present? %>
 		$('#first_name').parent().addClass('has-error has-feedback').append('<span id="first_name-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="first_name-error" class="fz15">First name <%= @user.errors[:first_name].join(", ") %></div>')
