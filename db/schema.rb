@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140513041749) do
+ActiveRecord::Schema.define(version: 20140528000316) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -51,6 +51,8 @@ ActiveRecord::Schema.define(version: 20140513041749) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "first_name"
+    t.string   "last_name"
   end
 
   add_index "admins", ["email"], name: "index_admins_on_email", unique: true, using: :btree
@@ -132,6 +134,16 @@ ActiveRecord::Schema.define(version: 20140513041749) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "address_1"
+    t.string   "address_2"
+    t.string   "city"
+    t.string   "state"
+    t.string   "country"
+    t.string   "zip"
+    t.string   "phone"
+    t.string   "photo"
   end
 
   add_index "sales_representatives", ["email"], name: "index_sales_representatives_on_email", unique: true, using: :btree
@@ -198,6 +210,16 @@ ActiveRecord::Schema.define(version: 20140513041749) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "address_1"
+    t.string   "address_2"
+    t.string   "city"
+    t.string   "state"
+    t.string   "country"
+    t.string   "zip"
+    t.string   "phone"
+    t.string   "photo"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

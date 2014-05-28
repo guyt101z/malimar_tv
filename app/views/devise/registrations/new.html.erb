@@ -1,0 +1,146 @@
+<div class="splash">
+	<div class="container">
+    	<h3 class="name">Register New Account</h3>
+    </div>
+</div><!--splash-->
+<%= form_tag create_new_user_path, id: 'new_user_form', remote: true do %>
+<div class="content">
+	<div class="container">
+        <div class="mlr90">
+            <div class="box-white">
+            	
+            	<h4 class="title4">User Information</h4>
+                <p class="fz12"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod.</p>
+                <form>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                        	<%= text_field_tag :first_name, '', class: 'form-control', placeholder: 'First Name' %>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                        	<%= text_field_tag :last_name, '', class: 'form-control', placeholder: 'Last Name' %>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                        	<%= text_field_tag :email, '', class: 'form-control', placeholder: 'Email Address' %>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                        	<%= text_field_tag :phone, '', class: 'form-control', placeholder: 'Phone' %>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                        	<%= text_field_tag :address_1, '', class: 'form-control', placeholder: 'Street Address' %>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                        	<%= text_field_tag :address_2, '', class: 'form-control', placeholder: 'Street Address 2 (Optional)' %>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                	<%= select_tag :country, options_for_select([['Select One', nil], 'Canada', 'United States', ['This will be configurable', nil]]), class: 'form-control' %>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                	<%= text_field_tag :state, '', class: 'form-control', placeholder: 'State' %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                	<%= text_field_tag :city, '', class: 'form-control', placeholder: 'City' %>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                	<%= text_field_tag :zip, '', class: 'form-control', placeholder: 'Zip Code' %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h4 class="title4">Account Information</h4>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                        	<%= password_field_tag :password, '', class: 'form-control', placeholder: 'Password' %>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                        	<%= password_field_tag :password_confirmation, '', class: 'form-control', placeholder: 'Confirm Password' %>
+                        </div>
+                    </div>
+                </div>
+                
+                <!--<hr>
+                <h4 class="title4">Profile Picture</h4>
+                <div class="row">
+                	<div class="col-sm-3">
+                    	<div class="pp mb20"><%= image_tag "avatar-default.jpg", class: "img-responsive", id: 'image-preview' %></div>
+                    	<%= file_field_tag :photo, style: 'display:none', onchange: 'PreviewImage()' %>
+                    </div>
+                    <div class="col-sm-9">
+                    	<div class="fz13 text-sans-semi">Upload a Photo</div>
+						<p class="fz12-5">You can upload a JPG, GIF or PNG (File size limit is 4MB).</p>
+                        <p><a class="btn btn-primary btn-w180" onclick='$("#photo").click()'>Choose file</a> <span id='photo-name' class="fz12-5">No file selected.</span></p>
+                        <p><a class="btn btn-default btn-w180" onclick='ResetImage()'>Remove Photo</a></p>
+                        <p class="fz10">By clicking ‘Upload Photo’, you certify that you have the rigth to <br>distribute this photo and that it does not violate the User Agreement.</p>
+                    </div>
+                </div>-->
+                <hr>
+                <h4 class="title4">Notification</h4>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" value="">
+                Stay informed for all the latest news from Malimar.tv to take your career to where you want it to go. This newsletter includes search tips, cool companies, highlights of new services and much more.
+                	</label>
+                </div>
+                <hr>
+                <div class="text-right">
+                	<a href="#" class="btn btn-default btn-w180">Cancel</a>
+                	<%= submit_tag 'Save Changes', class: 'btn btn-primary btn-w180' %>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div><!--content-->
+<% end %>
+<script type="text/javascript">
+function PreviewImage() {
+	var oFReader = new FileReader();
+    oFReader.readAsDataURL(document.getElementById("photo").files[0]);
+
+    oFReader.onload = function (oFREvent) {
+    	$('#image-preview').attr('src', oFREvent.target.result);
+        $('#photo-name').html($('#photo').val())
+    };
+};
+function ResetImage(){
+	$('#photo').val('')
+	$('#image-preview').attr('src', '/assets/avatar-default.jpg')
+	$('#photo-name').html('No file selected.')
+}
+
+</script>

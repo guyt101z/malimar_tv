@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   
   get 'search_suggestions' => 'videos#search_suggestions'
   
+  post 'create_new_user' => 'users#create_new'
+  
   root :to => 'videos#landing'
   
 end
