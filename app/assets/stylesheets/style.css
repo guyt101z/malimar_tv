@@ -351,3 +351,10 @@ border-color:#0fade1;}
 	.chat{position:relative;bottom:-13px;}
 	.splash, .channel-meta{text-align: center;}
 }
+
+
+.brltlb{border-radius:5px 0 0 5px;-moz-border-radius:5px 0 0 5px;-webkit-border-radius:5px 0 0 5px;overflow:hidden;}
+.brrtrb{border-radius:0 5px 5px 0;-moz-border-radius:0 5px 5px 0;-webkit-border-radius:0 5px 5px 0;overflow:hidden;}
+
+
+

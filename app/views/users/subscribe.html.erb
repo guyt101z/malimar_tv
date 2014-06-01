@@ -1,0 +1,123 @@
+<div class="splash">
+	<div class="container">
+    	<div class="figure hidden-xs hidden-sm"><img src="img/figure-04.png"></div>
+    	<h3 class="name">Subscription</h3>
+    </div>
+</div><!--splash-->
+
+<div class="content">
+	<div class="container">
+    	<div class="mlr90">
+        	<div class="box-white">
+            	<div class="row mb20">
+                	<div class="col-sm-7">
+                        <h3 class="text-sans-light mt0">We have the perfect plan for you</h4>
+                        <p>With Malimar TV Premium</p>
+                        <div class="mw300"><hr class="mtb10"></div>
+                        <p class="fz12">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
+                    </div>
+                    <div class="col-sm-5 text-right">
+                        <%= image_tag "img-02.jpg", class: 'img-responsive' %>
+                    </div>
+                </div>
+                <div class="row row0 mb20">
+                	<div class="col-md-3 col-sm-6">
+                    	<div class="box-pricing pricing1 brltlb">
+                        	<div class="pricing-header"><%= @one_month.name %></div>
+                            <div class="pricing-body">
+                                <div class="bg-price">
+                                    <sup>$</sup> <%= @one_month.price %>
+                                    <div class="month">/ <%= pluralize(@one_month.months, 'month') %></div>
+                                </div>
+                                <hr>
+                                <div class="text-semi">15 Premium Channels</div>
+                                <% features = YAML.load(@one_month.features) %>
+                                <% features.each do |feature| %>
+                                <p class="text-light"><%= feature %></p>
+                                <% end %>
+                                <% daily = @one_month.price.to_f/(30*@one_month.months) %>
+                                <p class="fz12">$<%= number_with_precision(daily, precision: 2) %> /day!</p>
+                                <div><a class="btn btn-default btn-block" onclick='$("#plan_id").val(1); $("#myModal").modal("show")'>Add a Device</a></div>
+                            </div>
+                        </div>
+                    </div>
+                	<div class="col-md-3 col-sm-6">
+                    	<div class="box-pricing pricing2">
+                        	<div class="pricing-header"><%= @six_month.name %></div>
+                            <div class="pricing-body">
+                                <div class="bg-price">
+                                    <sup>$</sup> <%= @six_month.price %>
+                                    <div class="month">/ <%= pluralize(@six_month.months, 'month') %></div>
+                                </div>
+                                <hr>
+                                <div class="text-semi">45 Premium Channels</div>
+                                <% features = YAML.load(@six_month.features) %>
+                                <% features.each do |feature| %>
+                                <p class="text-light"><%= feature %></p>
+                                <% end %>
+                                <% daily = @six_month.price.to_f/(30*@six_month.months) %>
+                                <p class="fz12">$<%= number_with_precision(daily, precision: 2) %> /day!</p>
+                                <div><a class="btn btn-default btn-block" onclick='$("#plan_id").val(3); $("#myModal").modal("show")'>Add a Device</a></div>
+                            </div>
+                        </div>
+                    </div>
+                	<div class="col-md-3 col-sm-6">
+                    	<div class="box-pricing pricing3">
+                        	<div class="pricing-header"><%= @twelve_month.name %></div>
+                            <div class="pricing-body">
+                                <div class="bg-price">
+                                    <sup>$</sup> <%= @twelve_month.price %>
+                                    <div class="month">/ <%= pluralize(@twelve_month.months, 'month') %></div>
+                                </div>
+                                <hr>
+                                <div class="text-semi">All Premium Channels</div>
+                                <% features = YAML.load(@twelve_month.features) %>
+                                <% features.each do |feature| %>
+                                <p class="text-light"><%= feature %></p>
+                                <% end %>
+                                <% daily = @twelve_month.price.to_f/(30*@twelve_month.months) %>
+                                <p class="fz12">$<%= number_with_precision(daily, precision: 2) %> /day!</p>
+                                <div><a class="btn btn-primary btn-block" onclick='$("#plan_id").val(4); $("#myModal").modal("show")'>Add a Device</a></div>
+                            </div>
+                        </div>
+                    </div>
+                	<div class="col-md-3 col-sm-6">
+                    	<div class="box-pricing pricing1 brrtrb">
+                        	<div class="pricing-header"><%= @three_month.name %></div>
+                            <div class="pricing-body">
+                                <div class="bg-price">
+                                    <sup>$</sup> <%= @three_month.price %>
+                                    <div class="month">/ <%= pluralize(@three_month.months, 'month') %></div>
+                                </div>
+                                <hr>
+                                <div class="text-semi">45 Premium Channels</div>
+                                <% features = YAML.load(@three_month.features) %>
+                                <% features.each do |feature| %>
+                                <p class="text-light"><%= feature %></p>
+                                <% end %>
+                                <% daily = @three_month.price.to_f/(30*@three_month.months) %>
+                                <p class="fz12">$<%= number_with_precision(daily, precision: 2) %> /day!</p>
+                                <div><a class="btn btn-default btn-block" onclick='$("#plan_id").val(2); $("#myModal").modal("show")'>Add a Device</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                	<div class="col-sm-6">
+                    	<div class="bg-blue-light text-center p30">
+                        	<div class="fz18">30 days free plan! <a href="#" class="text-sans-semi">Create Now</a></div>
+                        </div>
+                    </div>
+                	<div class="col-sm-6">
+                    	<div class="bg-blue-light text-center p30">
+                        	<div class="fz18"><a href="#" class="text-sans-semi">See All Features</a> or <a href="#" class="text-sans-semi">Compare Plans</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!--content-->
+
+
+<%= render 'users/partials/subscribe_modal' %>

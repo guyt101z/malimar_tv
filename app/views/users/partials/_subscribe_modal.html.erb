@@ -1,0 +1,101 @@
+<%= form_tag add_subscription_path, remote: true do %>
+<%= hidden_field_tag :plan_id %>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      	<div class="modal-content">
+    		<div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        		<h4 class="modal-title" id="myModalLabel">Subscribe Your Device</h4>
+    		</div>
+    		<div class="modal-body">
+        		<h4 style='margin-top:0;'>Device Details</h4>
+        		<div class='row'>
+        			<div class='col-sm-6'>
+        				<div class='form-group'>
+        					<%= select_tag :type, options_for_select([['Select A Device', nil], 
+        															  ['Roku', 'Roku'], 
+        															  ['Xbox 360', 'Xbox360'], 
+        															  ['Playstation 3', 'Playstation3'], 
+        															  ['Wii', 'Wii'], 
+        															  ['iOS (iPad)', 'Ios'], 
+        															  ['Android', 'Android']]), class: 'form-control' %>
+        				</div>
+        			</div>
+        			<div class='col-sm-6'>
+        				<div class='form-group'>
+        					<%= text_field_tag :serial, '', class: 'form-control', placeholder: 'Serial Number' %>
+        				</div>
+        			</div>
+        		</div>
+    		<hr>
+        		<h4 style='margin-top:0;'>Payment Details</h4>
+        		<div class='row'>
+        			<div class='col-sm-6'>
+        				<div class='form-group'>
+        					<%= select_tag :payment_type, options_for_select([['Payment Method', nil], 
+        															  'Credit Card',
+        															  'Cheque',
+        															  'Money Order',
+        															  'Bank Transfer']), class: 'form-control' %>
+        				</div>
+        			</div>
+        		</div>
+        		<div class='row' id='credit_info' style='display:none'>
+        			<div class='col-sm-6'>
+        				<div class='form-group'>
+        					<%= text_field_tag :card, '', class: 'form-control', placeholder: 'Credit Card Number' %>
+        				</div>
+        			</div>
+        			<div class='col-sm-3'>
+        				<div class='form-group'>
+        					<%= select_tag :card_month, options_for_select([['Expiry Month', nil],
+                                                                            ['Jan (01)',1],
+                                                                            ['Feb (02)',2],
+                                                                            ['Mar (03)',3],
+                                                                            ['Apr (04)',4],
+                                                                            ['May (05)',5],
+                                                                            ['Jun (06)',6],
+                                                                            ['Jul (07)',7],
+                                                                            ['Aug (08)',8],
+                                                                            ['Sep (09)',9],
+                                                                            ['Oct (10)',10],
+                                                                            ['Nov (11)',11],
+                                                                            ['Dec (12)',12]]), class: 'form-control' %>
+        				</div>
+        			</div>
+        			<div class='col-sm-3'>
+        				<div class='form-group'>
+        					<% years = [['Expiry Year', nil]] %>
+                            <% this_year = (Date.today.strftime('%Y')).to_i %>
+                            <% end_year = ((Date.today+15.years).strftime('%Y')).to_i %>
+                            <% for i in this_year..end_year %>
+                               <% years.push(i) %>
+                            <% end %>
+        					<%= select_tag :card_year, options_for_select(years), class: 'form-control' %>
+        				</div>
+        			</div>
+        			<div class='col-sm-3'>
+        				<div class='form-group'>
+        					<%= text_field_tag :ccv, '', class: 'form-control', placeholder: 'CCV' %>
+        				</div>
+        			</div>
+        		</div>
+    		</div>
+    		<div class="modal-footer">
+        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        		<%= submit_tag 'Subscribe', class: 'btn btn-primary' %>
+    		</div>
+      	</div>
+    </div>
+</div>
+<% end %>
+<script type="text/javascript">
+	$('#payment_type').change(function(){
+		if ($(this).val() == 'Credit Card') {
+			$('#credit_info').show()
+		}
+		else {
+			$('#credit_info').hide()
+		}
+	})
+</script>

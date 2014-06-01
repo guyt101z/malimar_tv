@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140528000316) do
+ActiveRecord::Schema.define(version: 20140530183526) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -58,6 +58,14 @@ ActiveRecord::Schema.define(version: 20140528000316) do
   add_index "admins", ["email"], name: "index_admins_on_email", unique: true, using: :btree
   add_index "admins", ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true, using: :btree
 
+  create_table "devices", force: true do |t|
+    t.integer  "user_id"
+    t.string   "serial"
+    t.string   "type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "episodes", force: true do |t|
     t.string   "name"
     t.integer  "episode_number"
@@ -90,6 +98,15 @@ ActiveRecord::Schema.define(version: 20140528000316) do
     t.datetime "updated_at"
   end
 
+  create_table "plans", force: true do |t|
+    t.string   "name"
+    t.text     "features"
+    t.integer  "price"
+    t.integer  "months"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "products", force: true do |t|
     t.float    "price"
     t.integer  "days"
@@ -100,13 +117,6 @@ ActiveRecord::Schema.define(version: 20140528000316) do
 
   create_table "ratings", force: true do |t|
     t.string   "rating"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "rokus", force: true do |t|
-    t.integer  "user_id"
-    t.string   "serial"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -185,6 +195,7 @@ ActiveRecord::Schema.define(version: 20140528000316) do
     t.text     "product_details"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "status"
   end
 
   create_table "user_notifications", force: true do |t|

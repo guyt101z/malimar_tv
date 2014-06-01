@@ -14,20 +14,3 @@
  *= require bootstrap
  *= require_tree .
  */
- 
-#search_list {
-	position: fixed;
-	top: 50px;
-	left: 148px;
-	background-color: #fff;
-	border-left: 1px solid #000;
-	border-right: 1px solid #000;
-	width: 172px;
-	top:0;
-}
-#search_list p {
-	width: 100%;
-	border-bottom: 1px solid #000;
-	margin: 0;
-	padding: 3px;
-}

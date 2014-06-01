@@ -1,0 +1,15 @@
+alert('<%= @message %>')
+$('#type-error_icon').remove()
+$('#type').parent().removeClass('has-error')
+$('#payment_type-error_icon').remove()
+$('#payment_type-error').remove()
+$('#payment_type').parent().removeClass('has-error')
+<% if @success %>
+	window.location = '/account'
+<% else %>
+	<% if @device_valid == false %>
+		$('#type').parent().addClass('has-error has-feedback').append('<span id="type-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span>')
+	<% elsif @payment == false %>
+		$('#payment_type').parent().addClass('has-error has-feedback').append('<span id="payment_type-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span>')
+	<% end %>
+<% end %>
