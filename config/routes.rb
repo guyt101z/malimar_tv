@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   
   
   	# Admin Methods
-  	get 'admins' => 'admins#index'
+  	get '/admins' => 'admins#index', as: 'admins'
   
   		# Manage Users
   		get '/admins/users' => 'admins#users', as: 'search_users'

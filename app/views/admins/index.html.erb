@@ -1,0 +1,65 @@
+<div class='container'>
+	<div class='col-md-6 col-sm-8 col-xs-10 col-centered'>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				<h3 class='panel-title'>Admin Section</h3>
+			</div>
+			<div class='panel-body'>
+				<div class='row'>
+					<div class='col-xs-12'>
+						<p>This is the administration section. From here, you will be able to:
+							<ul>
+								<li>
+									Manage Users
+									<ul>
+										<li>Create New</li>
+										<li>Register Devices</li>
+										<li>Subscribe</li>
+										<li>View General Information</li>
+									</ul>
+								</li>
+								<li>
+									Manage Plans
+									<ul>
+										<li>Add/Remove Feature sets</li>
+										<li>Change Prices</li>
+									</ul>
+								</li>
+								<li>
+									Manage Sales Representatives/Resellers
+									<ul>
+										<li>Create/Destroy</li>
+										<li>View Performance</li>
+										<li>Adjust Commission</li>
+									</ul>
+								</li>
+								<li>
+									View CRON Jobs (Background Tasks) Status/Updates
+								</li>
+								<li>
+									View Overall Statistics
+								</li>
+								<li>
+									And more as outlined in the project proposal
+								</li>
+							</ul>
+						</p>
+						<p>Right now you can test some of the existing features: Create(Register) New User, and Search/Manage Users. You will be able to create a new user and be redirected to view the user's profile. Search is possible through email, name, and account number.</p>
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col-xs-6'>
+						<div style='height:100px; line-height: 100px; text-align: center; font-size: 150%'>
+							<%= link_to 'Create User', new_user_path %>
+						</div>
+					</div>
+					<div class='col-xs-6'>
+						<div style='height:100px; line-height: 100px; text-align: center; font-size: 150%'>
+							<%= link_to 'Search Users', search_users_path %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
