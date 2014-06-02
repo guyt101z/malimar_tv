@@ -1,0 +1,142 @@
+<h2 class='page-header user-name'>
+	<%= @user.name %>
+	<div class='profile-picture-view'>
+		<div class='wrapper-view'>
+			<% if @user.photo.blank? %>
+				<i class='fa fa-user'></i>
+			<% else %>
+				<%= image_tag @user.photo_url.to_s, style: 'height: 66px; width: 66px;' %>
+			<% end %>
+		</div>
+	</div>
+</h2>
+<div class='row'>
+	<div class='col-lg-3 col-md-4 col-sm-5'>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				<h3 class='panel-title'>User Details</h3>
+			</div>
+			<div class='panel-body'>
+				<p><strong>Email Address</strong><br>
+					<%= @user.email %></p>
+				<p><strong>Member Since</strong><br>
+					<%= @user.created_at.strftime('%B %-d, %Y') %></p>
+				<p>
+					<strong>Current Login</strong><br>
+					<% unless @user.current_sign_in_at.blank? %>
+						<% if @user.current_sign_in_at.to_date == Date.today %>
+							Today at <%= @user.current_sign_in_at.strftime('%-I:%M:%S %p') %>
+						<% elsif @user.current_sign_in_at.to_date == Date.yesterday %>
+							Yesterday at <%= @user.current_sign_in_at.strftime('%-I:%M:%S %p') %>
+						<% else %>
+							<%= @user.current_sign_in_at.strftime('%B %-d, %Y') %> at <%= @user.current_sign_in_at.strftime('%-I:%M:%S %p') %>
+						<% end %>
+						<br>
+						<% if @user.last_seen > 5.minutes.ago %>
+							<span class='text-success'>Currently Online</span>
+						<% end %>
+					<% else %>
+						N/A
+					<% end %>
+				</p>
+				<p>
+					<strong>Previous Login</strong><br>
+					<% unless @user.current_sign_in_at.blank? %>
+						<% if @user.last_sign_in_at.to_date == Date.today %>
+							Today at <%= @user.last_sign_in_at.strftime('%-I:%M:%S %p') %>
+						<% elsif @user.last_sign_in_at.to_date == Date.yesterday %>
+							Yesterday at <%= @user.last_sign_in_at.strftime('%-I:%M:%S %p') %>
+						<% else %>
+							<%= @user.last_sign_in_at.strftime('%B %-d, %Y') %> at <%= @user.last_sign_in_at.strftime('%-I:%M:%S %p') %>
+						<% end %>
+					<% else %>
+						N/A
+					<% end %>
+				</p>
+			</div>
+		</div>
+	</div>
+	<%= form_tag add_note_to_user_path, remote: true do %>
+	<%= hidden_field_tag :user_id, @user.id %>
+	<div class='col-lg-6 col-md-6 col-sm-7'>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				<h3 class='panel-title'>User Notes</h3>
+			</div>
+			<div class='panel-body'>
+				<%= text_area_tag :note, @user.note, class: 'form-control', rows: 8 %>
+			</div>
+			<div class='panel-footer'>
+				<%= submit_tag 'Update Notes', class: 'btn btn-primary pull-right' %>
+				<div class='clearfix'></div>
+			</div>
+		</div>
+	</div>
+	<% end %>
+</div>
+
+<div class='row'>
+	<div class='col-md-6 col-sm-12'>
+		<%= form_tag admin_register_device_path, remote: true do %>
+		<div class='panel panel-default'>	
+			<%= hidden_field_tag :user_id, @user.id %>
+			<div class='panel-heading'>
+				<h3 class='panel-title'>Register New Device</h3>
+			</div>
+			<div class='panel-body'>
+				<div class='row'>
+					<div class='col-md-6'>
+						<div class='form-group'>
+							<%= select_tag :type, options_for_select([['Select A Device', nil], 
+        															  ['Roku', 'Roku'], 
+        															  ['Xbox 360', 'Xbox360'], 
+        															  ['Playstation 3', 'Playstation3'], 
+        															  ['Wii', 'Wii'], 
+        															  ['iOS (iPad)', 'Ios'], 
+        															  ['Android', 'Android']]), class: 'form-control' %>
+						</div>
+					</div>
+					<div class='col-md-6'>
+						<div class='form-group'>
+							<%= text_field_tag :serial, '', class: 'form-control', placeholder: 'Serial Number' %>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='panel-footer'>
+				<%= submit_tag 'Register Device', class: 'btn btn-primary pull-right' %>
+				<div class='clearfix'></div>
+			</div>
+		</div>
+		<% end %>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				<h3 class='panel-title'>User Devices</h3>
+			</div>
+			<div class='panel-body' style='max-height:200px; overflow-y: scroll; padding:0;' id='device-list'>
+				<% @devices.each do |device| %>
+					<div style='width:100%; border-bottom: 1px solid #ccc; padding: 5px;'>
+						<p><strong>Device</strong> <%= device.type %></p>
+						<p><strong>Serial</strong> <%= device.serial %></p>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+	<div class='col-md-6 col-sm-12'>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				<h3 class='panel-title'>User Transactions</h3>
+			</div>
+			<div class='panel-body' style='max-height:200px; overflow-y: scroll; padding:0;'>
+				<% @transactions.each do |transaction| %>
+					<% details = YAML.load(transaction.product_details) %>
+					<div style='width:100%; border-bottom: 1px solid #ccc; padding: 5px;'>
+						<p><strong>Amount</strong> $<%= details[:price] %></p>
+						<p><strong>Status</strong> <%= transaction.status %></p>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>

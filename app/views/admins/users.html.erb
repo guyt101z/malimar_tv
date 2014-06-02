@@ -1,0 +1,80 @@
+<div class='users-wrapper'>
+	<div class='users-area'>
+		<div class='users-search'>
+			<%= text_field_tag :search, '', autocomplete: 'off' %>
+			<div class='placeholder' id='placeholder'><i class='fa fa-search'></i> Search</div>
+		</div>
+		<div class='users-list' id='full-list'>
+			<% @users.each do |user| %>
+				<div class='user' id='user_<%= user.id %>' onclick="viewUser(<%= user.id %>)">
+					<div class='profile-picture'>
+						<div class='wrapper'>
+							<% if user.photo.blank? %>
+								<i class='fa fa-user'></i>
+							<% else %>
+								<%= image_tag user.photo_url.to_s, style: 'height: 50px; width: 50px;' %>
+							<% end %>
+						</div>
+					</div>
+					<p class='name'><%= user.name %></p>
+					<p class='email'><%= user.email %></p>
+					<p class='email'>Member Since: <%= user.created_at.strftime('%B %-d, %Y') %></p>
+				</div>
+			<% end %>
+		</div>
+		<div class='results-count' id='count' style='display:none'></div>
+		<div class='search-users-list' id='search-list' style='display:none'>
+			
+		</div>
+	</div>
+	<div class='user-info' id='user-info'>
+		
+	</div>
+</div>
+<script type="text/javascript">
+	$('#search').focus(function(){
+		$('#placeholder').animate({
+			'left':17
+		}, 100)
+	})
+	$('#search').blur(function(){
+		$('#placeholder').animate({
+			'left':120
+		}, 100)
+	})
+	
+	$('#placeholder').click(function(){
+		$('#search').focus();
+	})
+	
+	$('#search').keydown(function(){
+		$('#placeholder').hide()
+	})
+	$('#search').keyup(function(){
+		if ($('#search').val() != '') {
+			$('#placeholder').hide()
+			$('#full-list').hide()
+			$.ajax({
+				url: '/search_users?search='+$('#search').val()
+			})
+		}
+		else {
+			$('#placeholder').show()
+			$('#full-list').show()
+			$('#search-list').hide()
+			$('#count').hide()
+		}
+	})
+	
+	function viewUser(id){
+		$('.user').removeClass('active')
+		$('#user_'+id).addClass('active')
+		$('#search_'+id).addClass('active')
+		$.ajax({
+			url: '/view_user?id='+id
+		})
+	}
+	<% if params[:id].present? %>
+		$('#user_<%= params[:id] %>').click()
+	<% end %>
+</script>

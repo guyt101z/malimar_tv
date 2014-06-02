@@ -31,6 +31,7 @@ class UsersController < ApplicationController
 			elsif params[:payment_type].present?
 				@transaction = Transaction.new
 				@transaction.user_id = current_user.id
+				@transaction.status = 'Pending'
 				@transaction.product_details = YAML.dump({name: @plan.name, price: @plan.price, duration: @plan.months, features: YAML.load(@plan.features)})
 				@transaction.save
 				@success = true
@@ -46,5 +47,11 @@ class UsersController < ApplicationController
 			@message = 'You need to verify your device info'
 			@device_valid = false
 		end
+	end
+	
+	def add_note
+		user = User.find(params[:user_id])
+		user.note = params[:note]
+		user.save
 	end
 end

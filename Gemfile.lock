@@ -98,6 +98,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     raindrops (0.13.0)
     rake (10.3.2)
+    random_data (1.6.0)
     rdoc (4.1.1)
       json (~> 1.4)
     sass (3.2.19)
@@ -155,6 +156,7 @@ DEPENDENCIES
   mysql2
   protected_attributes
   rails (= 4.1.0)
+  random_data
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   spring

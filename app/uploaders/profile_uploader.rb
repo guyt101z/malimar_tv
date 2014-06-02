@@ -19,6 +19,14 @@ class ProfileUploader < CarrierWave::Uploader::Base
   version :navbar do
     process :resize_to_limit => [46, 46]
   end
+  
+  version :admin_small do
+    process :resize_to_fit => [50, 50]
+  end
+  version :admin do
+    process :resize_to_fit => [66, 66]
+  end
+  
   def extension_white_list
     %w(jpg jpeg png)
   end

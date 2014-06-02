@@ -1,12 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Malimar TV</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans:600,400,300,700' rel='stylesheet' type='text/css'>
-  <%= csrf_meta_tags %>
+  	<title>Malimar TV</title>
+  	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+  	<% if params[:controller] == 'admins' %>
+  		<%= stylesheet_link_tag    'admin', media: 'all', 'data-turbolinks-track' => true %>
+  	<% else %>
+  		<%= stylesheet_link_tag    'main', media: 'all', 'data-turbolinks-track' => true %>
+  	<% end %>
+  	<%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  	<link href='http://fonts.googleapis.com/css?family=Open+Sans:600,400,300,700' rel='stylesheet' type='text/css'>
+  	<%= csrf_meta_tags %>
 </head>
+<% if params[:controller] == 'admins' %>
+<body>
+	<%= render 'admins/nav/navbar' %>
+	<%= yield %>
+	<% flash.each do |name, msg| -%>
+	    <script>alert('<%= msg %>')</script>
+	<% end %> 
+</body>
+<% else %>
 <body>
 	<% unless user_signed_in? %>
 		<%= render 'layouts/nav/navbar' %>
@@ -15,8 +29,10 @@
 	<% end %>
 	<%= yield %>
 	<%= render 'layouts/nav/footer' %>
-<% flash.each do |name, msg| -%>
-    <script>alert('<%= msg %>')</script>
-<% end %>  
+	<% flash.each do |name, msg| -%>
+	    <script>alert('<%= msg %>')</script>
+	<% end %>  
 </body>
+<% end %>
+
 </html>

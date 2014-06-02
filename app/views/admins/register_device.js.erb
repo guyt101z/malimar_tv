@@ -1,0 +1,16 @@
+$('#type-error').remove()
+$('#type').removeClass('has-error')
+$('#serial-error').remove()
+$('#serial').removeClass('has-error')
+<% if @device.errors.any? %>
+	<% if @device.errors[:serial].present? %>
+		$('#serial').addClass('has-error').after('<span class="text-danger" id="serial-error">Serial <%= @device.errors[:serial].join(", ") %>')
+	<% end %>
+	<% if @device.errors[:type].present? %>
+		$('#type').addClass('has-error').after('<span class="text-danger" id="type-error">Device <%= @device.errors[:type].join(", ") %>')
+	<% end %>
+<% else %>
+	$('#device-list').prepend("<div style='width:100%; border-bottom: 1px solid #ccc; padding: 5px;'><p><strong>Device</strong> <%= @device.type %></p><p><strong>Serial</strong> <%= @device.serial %></p></div>")
+	$('#serial').val('')
+	$('#type').val('')
+<% end %>

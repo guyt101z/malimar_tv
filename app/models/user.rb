@@ -15,4 +15,20 @@ class User < ActiveRecord::Base
   	validates_presence_of :address_1
   	
   	mount_uploader :photo, ProfileUploader
+    
+    def name
+      return "#{first_name} #{last_name}"
+    end
+    
+    def matches?(search_string)
+      if name.downcase.include?(search_string.downcase)
+        return true
+      elsif email.downcase.include?(search_string.downcase)
+        return true
+      elsif id.to_s.downcase.include?(search_string.downcase)
+        return true
+      else
+        return false
+      end
+    end
 end

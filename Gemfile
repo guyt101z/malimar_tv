@@ -44,3 +44,7 @@ gem 'bootstrap-sass'
 gem 'jquery-fileupload-rails'
 gem 'carrierwave'
 gem 'mini_magick'
+
+
+
+gem 'random_data'

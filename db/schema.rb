@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140530183526) do
+ActiveRecord::Schema.define(version: 20140602211233) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -231,6 +231,8 @@ ActiveRecord::Schema.define(version: 20140530183526) do
     t.string   "zip"
     t.string   "phone"
     t.string   "photo"
+    t.datetime "last_seen"
+    t.text     "note"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
