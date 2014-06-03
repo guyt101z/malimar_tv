@@ -203,3 +203,64 @@ input.has-error {
 	float: none;
 	margin: 0 auto;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+.video {
+	width: 150px;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	float: left;
+	margin: 5px;
+	position: relative;
+	height: 300px;
+}
+
+.video > .image-wrapper {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	width: 130px;
+	height: 200px;
+	line-height: 200px;
+	font-size: 60px;
+	text-align: center;
+}
+.video > .image-wrapper > img {
+	max-width: 100px;
+	max-height: 200px;
+}
+
+.video .upload {
+	position: absolute;
+	top: 225px;
+	left:0;
+	width: 100%;
+	text-align: center;
+}
+
+.video .name {
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow:ellipsis; 
+	o-text-overflow:ellipsis;
+	position: absolute;
+	top: 250px;
+	left:0;
+	text-align: center;
+	padding: 0 5px;
+}
+
+

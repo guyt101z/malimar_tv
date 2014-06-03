@@ -21,7 +21,11 @@ Rails.application.routes.draw do
   		
   		get '/admins/new_user' => 'admins#new_user', as: 'new_user'
   		post 'admin_create_user' => 'admins#create_user'
-  
+  	
+  		# Video CMS
+  		get '/admins/videos' => 'admins#videos', as: 'videos'
+  		post 'add_video' => 'admins#add_video'
+  		post 'add_image_to_video' => 'admins#add_image_to_video'
   
   get 'search_suggestions' => 'videos#search_suggestions'
   get 'subscribe' => 'users#subscribe'

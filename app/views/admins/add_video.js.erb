@@ -1,0 +1,29 @@
+$('#name-error').remove()
+$('#name').removeClass('has-error')
+$('#genre_id-error').remove()
+$('#genre_id').removeClass('has-error')
+$('#image-error').remove()
+$('#image').removeClass('has-error')
+$('#url-error').remove()
+$('#url').removeClass('has-error')
+
+<% if @movie.errors.any? %>
+	<% if @movie.errors[:name].present? %>
+		$('#name').addClass('has-error').after('<span class="text-danger" id="name-error">Name <%= @movie.errors[:name].join(", ") %>')
+	<% end %>
+	<% if @movie.errors[:genre_id].present? %>
+		$('#genre_id').addClass('has-error').after('<span class="text-danger" id="genre_id-error">Genre <%= @movie.errors[:genre_id].join(", ") %>')
+	<% end %>
+	<% if @movie.errors[:image].present? %>
+		$('#image').addClass('has-error').after('<span class="text-danger" id="image-error">Image <%= @movie.errors[:image].join(", ") %>')
+	<% end %>
+	<% if @movie.errors[:url].present? %>
+		$('#url').addClass('has-error').after('<span class="text-danger" id="url-error">CDN Link <%= @movie.errors[:url].join(", ") %>')
+	<% end %>
+<% else %>
+	<% unless @movie.image.blank? %>
+		$('movie-list').prepend('<div class="video" id="video_<%= @movie.id %>"><div class="image-wrapper"><%= image_tag @movie.image_url(:preview).to_s %><%= form_tag add_image_to_video_path, remote: true do %><%= hidden_field_tag :movie_id, @movie.id %><%= file_field_tag :image, style: "display:none" %><% end %></div><div class="upload"><a href="#" onclick="$(this).parent().parent().children(\".image-wrapper\").children(\"form\").children(\"input:file\").click()">Upload File</a></div><p class="name"><%= @movie.name %></p></div>')
+	<% else %>
+		$('movie-list').prepend('<div class="video" id="video_<%= @movie.id %>"><div class="image-wrapper"><i class="fa fa-camera"></i><%= form_tag add_image_to_video_path, remote: true do %><%= hidden_field_tag :movie_id, @movie.id %><%= file_field_tag :image, style: "display:none" %><% end %></div><div class="upload"><a href="#" onclick="$(this).parent().parent().children(\".image-wrapper\").children(\"form\").children(\"input:file\").click()">Upload File</a></div><p class="name"><%= @movie.name %></p></div>')
+	<% end %>
+<% end %>

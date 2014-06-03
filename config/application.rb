@@ -12,7 +12,14 @@ module MalimarTv
     config.assets.precompile << /\.(?:svg|eot|woff|ttf)$/
     
     
-    
+    ActionMailer::Base.smtp_settings = {
+        :address   => "smtp.mandrillapp.com",
+        :port      => 587,
+        :user_name => 'jtate@variationmedia.com',
+        :password  => 'eoJXAS4dpN86YIuS6LL48w',
+        :domain    => 'print-pages.com'
+    }
+    ActionMailer::Base.delivery_method = :smtp
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

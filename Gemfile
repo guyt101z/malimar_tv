@@ -44,6 +44,9 @@ gem 'bootstrap-sass'
 gem 'jquery-fileupload-rails'
 gem 'carrierwave'
 gem 'mini_magick'
+gem 'jquery-fileupload-rails'
+gem "rmagick"
+gem 'mandrill_mailer'
 
 
 

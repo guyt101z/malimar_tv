@@ -69,7 +69,7 @@ ActiveRecord::Schema.define(version: 20140602211233) do
   create_table "episodes", force: true do |t|
     t.string   "name"
     t.integer  "episode_number"
-    t.integer  "video_id"
+    t.string   "url"
     t.integer  "season_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -91,7 +91,7 @@ ActiveRecord::Schema.define(version: 20140602211233) do
 
   create_table "movies", force: true do |t|
     t.string   "name"
-    t.integer  "video_id"
+    t.string   "url"
     t.integer  "genre_id"
     t.string   "image"
     t.datetime "created_at"
@@ -237,14 +237,5 @@ ActiveRecord::Schema.define(version: 20140602211233) do
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-
-  create_table "videos", force: true do |t|
-    t.integer  "vid_file_id"
-    t.boolean  "premium"
-    t.integer  "rating_id"
-    t.datetime "release_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
 end
