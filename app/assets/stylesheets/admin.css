@@ -248,6 +248,7 @@ input.has-error {
 	left:0;
 	width: 100%;
 	text-align: center;
+	cursor: pointer;
 }
 
 .video .name {
