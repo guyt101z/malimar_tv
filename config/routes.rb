@@ -43,9 +43,6 @@ Rails.application.routes.draw do
 
     authenticate :sales_representative do
     	get 'sales_reps' => 'sales_reps#index'
-    	get 'rep_commission' => 'sales_reps#rep_commission'
-    	get 'rep_commission_owed' => 'sales_reps#rep_commission_owed'
-    	get 'rep_commission_paid' => 'sales_reps#rep_commission_paid'
 
     	get '/sales_reps/register' => 'sales_reps#register'
     	post 'register_step_one' => 'sales_reps#register_step_one'
@@ -62,6 +59,9 @@ Rails.application.routes.draw do
   post 'add_subscription' => "users#add_subscription"
   
   post 'create_new_user' => 'users#create_new'
+    	get 'rep_commission' => 'sales_reps#rep_commission'
+    	get 'rep_commission_owed' => 'sales_reps#rep_commission_owed'
+    	get 'rep_commission_paid' => 'sales_reps#rep_commission_paid'
   
   root :to => 'videos#landing'
   
