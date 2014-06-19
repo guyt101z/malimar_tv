@@ -12,4 +12,14 @@ class ApplicationController < ActionController::Base
   			@user.save
 		end
   	end
+
+    def after_sign_in_path_for(resource)
+      if resource.is_a? Admin
+        admins_path
+      elsif resource.is_a? SalesRepresentative
+        sales_reps_path
+      else
+        root_path
+      end
+    end
 end
