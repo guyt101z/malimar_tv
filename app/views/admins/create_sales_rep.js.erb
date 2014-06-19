@@ -57,7 +57,7 @@ $('#commission_rate').removeClass('has-error')
 		$('#company').addClass('has-error').after('<span class="text-danger" id="company-error">Company <%= @sales_rep.errors[:company].join(", ") %>')
 	<% end %>
 	<% if @sales_rep.errors[:commission_rate].present? %>
-		$('#commission_rate').addClass('has-error').after('<span class="text-danger" id="commission_rate-error">Commission <%= @sales_rep.errors[:Company].join(", ") %>')
+		$('#commission_rate').addClass('has-error').after('<span class="text-danger" id="commission_rate-error">Commission <%= @sales_rep.errors[:commission_rate].join(", ") %>')
 	<% end %>
 <% else %>
 	window.location = '/admins/sales_reps?id=<%= @sales_rep.id %>'
