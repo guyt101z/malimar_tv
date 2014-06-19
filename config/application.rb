@@ -19,7 +19,9 @@ module MalimarTv
         :password  => 'eoJXAS4dpN86YIuS6LL48w',
         :domain    => 'print-pages.com'
     }
-    ActionMailer::Base.delivery_method = :smtp
+    MandrillMailer.configure do |config|
+        config.api_key = 'eoJXAS4dpN86YIuS6LL48w'
+    end
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

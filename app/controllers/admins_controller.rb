@@ -4,9 +4,9 @@ class AdminsController < ApplicationController
 		password = SecureRandom.hex(7)
 		@user.password = password
 		
-		 if @user.save
-		 	UserMailer.new_account(@user, password).deliver
-		 end
+		if @user.save
+		 	TransactionalMailer.new_user(@user, password).deliver
+		end
 	end
 	
 	def users
@@ -62,5 +62,40 @@ class AdminsController < ApplicationController
 		@movie = Movie.find(params[:movie_id])
 		@movie.image = params[:image]
 		@movie.save
+	end
+
+
+
+	def create_sales_rep
+		@sales_rep = SalesRepresentative.new(params)
+		password = SecureRandom.hex(7)
+		@sales_rep.password = password
+		
+		if @sales_rep.save
+			TransactionalMailer.new_rep(@sales_rep, password).deliver
+		end
+	end
+	def sales_reps
+		@reps = SalesRepresentative.all.order(first_name: :desc)
+	end
+	def view_rep
+		@rep = SalesRepresentative.find(params[:id])
+		@transactions = Transaction.where(sales_rep_id: @rep.id)
+	end
+	def search_reps
+		all_reps = SalesRepresentative.all.order(first_name: :desc)
+		@matched_reps = Array.new
+		
+		all_reps.each do |rep|
+			if rep.matches?(params[:search])
+				@matched_reps.push(rep)
+			end
+		end
+		
+		@results = @matched_reps.count
+	end
+
+	def plans
+		@plans = Plan.all.order(price: :asc)
 	end
 end

@@ -1,0 +1,14 @@
+$('#search-list').html('')
+<% if @results > 0 %>
+	<% @matched_reps.each do |rep| %>
+		<% if rep.photo.blank? %>
+			$('#search-list').append('<div class="user" id="search_<%= rep.id %>" onclick="viewRep(<%= rep.id %>)"><div class="profile-picture"><div class="wrapper"><i class="fa fa-user"></i></div></div><p class="name"><%= rep.name %></p><p class="email"><%= rep.email %></p><p class="email">Representative Since: <%= rep.created_at.strftime("%B %-d, %Y") %></p></div>')
+		<% else %>
+			$('#search-list').append('<div class="user" id="search_<%= rep.id %>" onclick="viewRep(<%= rep.id %>)"><div class="profile-picture"><div class="wrapper"><%= image_tag rep.photo_url.to_s, style: "height: 50px; width: 50px;" %></div></div><p class="name"><%= rep.name %></p><p class="email"><%= rep.email %></p><p class="email">Representative Since: <%= rep.created_at.strftime("%B %-d, %Y") %></p></div>')
+		<% end %>
+	<% end %>
+	$('#count').html('<%= pluralize(@results, "record") %> found').show()
+	$('#search-list').show()
+<% else %>
+	$('#count').html('<%= @results %> records found').show()
+<% end %>

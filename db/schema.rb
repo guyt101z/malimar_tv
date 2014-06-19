@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140602211233) do
+ActiveRecord::Schema.define(version: 20140618202242) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -154,6 +154,9 @@ ActiveRecord::Schema.define(version: 20140602211233) do
     t.string   "zip"
     t.string   "phone"
     t.string   "photo"
+    t.string   "company"
+    t.float    "account_balance"
+    t.float    "commission_rate"
   end
 
   add_index "sales_representatives", ["email"], name: "index_sales_representatives_on_email", unique: true, using: :btree
@@ -196,6 +199,8 @@ ActiveRecord::Schema.define(version: 20140602211233) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "status"
+    t.string   "payment_type"
+    t.string   "payment_status"
   end
 
   create_table "user_notifications", force: true do |t|

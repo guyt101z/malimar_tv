@@ -1,0 +1,80 @@
+<div class='container'>
+	<div class='row'>
+		<div class='col-md-8 col-sm-12'>
+			<div class='panel panel-default'>
+				<div class='panel-heading'>
+					<h3 class='panel-title'>Transaction Stats</h3>
+				</div>
+				<div class='panel-body' id='transactions' style='height: 300px; position: relative;'>
+
+				</div>
+			</div>
+		</div>
+		<div class='col-md-4 col-sm-12'>
+			<div class='panel panel-default'>
+				<div class='panel-heading'>
+					<h3 class='panel-title'>My Commission</h3>
+				</div>
+				<div class='panel-body'>
+					<p><strong>Total Commission:</strong><br/>
+						<span class='commission_detail' id='commission'><i class='fa fa-refresh fa-spin'></i></span></p>
+					<p><strong>Commission Paid:</strong><br/>
+						<span class='commission_detail text-success' id='commission_paid'><i class='fa fa-refresh fa-spin'></i></span></p>
+					<p><strong>Commission Owed:</strong><br/>
+						<span class='commission_detail text-danger' id='commission_owed'><i class='fa fa-refresh fa-spin'></i></span></p>
+					<p><strong>Current Commission Rate:</strong><br/>
+						<span class='commission_detail'><%= number_with_precision(current_sales_representative.commission_rate, precision: 2) %>%</span></p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<% dates = Hash.new %>
+<% for j in 0..29 %>
+	<% dates[(Date.today-(j.days)).strftime('%Y-%m-%d')] = {total: 0, paid: 0, cancelled: 0, pending: 0} %>
+<% end %>
+<% @transactions.each do |transaction| %>
+	<% dates[transaction.created_at.strftime('%Y-%m-%d')][:total] += 1 %>
+	<% if transaction.payment_status == 'Pending' %>
+		<% dates[transaction.created_at.strftime('%Y-%m-%d')][:pending] += 1 %>
+	<% elsif transaction.payment_status == 'Cancelled' %>
+		<% dates[transaction.created_at.strftime('%Y-%m-%d')][:cancelled] += 1 %>
+	<% elsif transaction.payment_status == 'Paid' %>
+		<% dates[transaction.created_at.strftime('%Y-%m-%d')][:paid] += 1 %>
+	<% end %>
+<% end %>
+<% dates.keys.sort.reverse %>
+<script type="text/javascript">
+	$('#home_link').addClass('active')
+	$.ajax({
+		url: '/rep_commission'
+	})
+	$.ajax({
+		url: '/rep_commission_paid'
+	})
+	$.ajax({
+		url: '/rep_commission_owed'
+	})
+	Morris.Line({
+    element: 'transactions',
+    data: [
+    	<% i = 1 %>
+    	<% dates.each do |date, amounts| %>
+		    {
+		        y: '<%= date %>',
+		        a: <%= amounts[:total].to_s %>,
+		        b: <%= amounts[:pending].to_s %>,
+		        c: <%= amounts[:paid].to_s %>,
+		        d: <%= amounts[:cancelled].to_s %>
+		    }
+		    <% unless i == dates.count %>
+		    ,
+		    <% end %>
+		<% end %>
+    ],
+    xkey: 'y',
+    ykeys: ['a','b','c','d'],
+    labels: ['Total Transactions', 'Pending', 'Paid', 'Cancelled'],
+    lineColors: ['#428bca', '#f0ad4e', '#3c763d', '#a94442']
+  });
+</script>

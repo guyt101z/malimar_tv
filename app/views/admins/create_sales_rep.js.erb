@@ -1,0 +1,59 @@
+$('#first_name-error').remove()
+$('#first_name').removeClass('has-error')
+$('#last_name-error').remove()
+$('#last_name').removeClass('has-error')
+$('#email-error').remove()
+$('#email').removeClass('has-error')
+$('#phone-error').remove()
+$('#phone').removeClass('has-error')
+$('#address_1-error').remove()
+$('#address_1').removeClass('has-error')
+$('#address_2-error').remove()
+$('#address_2').removeClass('has-error')
+$('#country-error').remove()
+$('#country').removeClass('has-error')
+$('#state-error').remove()
+$('#state').removeClass('has-error')
+$('#city-error').remove()
+$('#city').removeClass('has-error')
+$('#zip-error').remove()
+$('#zip').removeClass('has-error')
+$('#company-error').remove()
+$('#company').removeClass('has-error')
+<% if @sales_rep.errors.any? %>
+	<% if @sales_rep.errors[:first_name].present? %>
+		$('#first_name').addClass('has-error').after('<span class="text-danger" id="first_name-error">First name <%= @sales_rep.errors[:first_name].join(", ") %>')
+	<% end %>
+	<% if @sales_rep.errors[:last_name].present? %>
+		$('#last_name').addClass('has-error').after('<span class="text-danger" id="last_name-error">Last name <%= @sales_rep.errors[:last_name].join(", ") %>')
+	<% end %>
+	<% if @sales_rep.errors[:email].present? %>
+		$('#email').addClass('has-error').after('<span class="text-danger" id="email-error">Email address <%= @sales_rep.errors[:email].join(", ") %>')
+	<% end %>
+	<% if @sales_rep.errors[:phone].present? %>
+		$('#phone').addClass('has-error').after('<span class="text-danger" id="phone-error">Phone number <%= @sales_rep.errors[:phone].join(", ") %>')
+	<% end %>
+	<% if @sales_rep.errors[:address_1].present? %>
+		$('#address_1').addClass('has-error').after('<span class="text-danger" id="address_1-error">Street address <%= @sales_rep.errors[:address_1].join(", ") %>')
+	<% end %>
+	<% if @sales_rep.errors[:address_2].present? %>
+		$('#address_2').addClass('has-error').after('<span class="text-danger" id="address_2-error">Street address 2 <%= @sales_rep.errors[:address_2].join(", ") %>')
+	<% end %>
+	<% if @sales_rep.errors[:country].present? %>
+		$('#country').addClass('has-error').after('<span class="text-danger" id="country-error">Country <%= @sales_rep.errors[:country].join(", ") %>')
+	<% end %>
+	<% if @sales_rep.errors[:state].present? %>
+		$('#state').addClass('has-error').after('<span class="text-danger" id="state-error">State <%= @sales_rep.errors[:state].join(", ") %>')
+	<% end %>
+	<% if @sales_rep.errors[:city].present? %>
+		$('#city').addClass('has-error').after('<span class="text-danger" id="city-error">City <%= @sales_rep.errors[:city].join(", ") %>')
+	<% end %>
+	<% if @sales_rep.errors[:zip].present? %>
+		$('#zip').addClass('has-error').after('<span class="text-danger" id="zip-error">Zip code <%= @sales_rep.errors[:zip].join(", ") %>')
+	<% end %>
+	<% if @sales_rep.errors[:Company].present? %>
+		$('#Company').addClass('has-error').after('<span class="text-danger" id="Company-error">Company <%= @sales_rep.errors[:Company].join(", ") %>')
+	<% end %>
+<% else %>
+	window.location = '/admins/sales_reps?id=<%= @sales_rep.id %>'
+<% end %>

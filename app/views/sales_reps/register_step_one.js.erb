@@ -1,0 +1,54 @@
+$('#first_name-error').remove()
+$('#first_name').removeClass('has-error')
+$('#last_name-error').remove()
+$('#last_name').removeClass('has-error')
+$('#email-error').remove()
+$('#email').removeClass('has-error')
+$('#phone-error').remove()
+$('#phone').removeClass('has-error')
+$('#address_1-error').remove()
+$('#address_1').removeClass('has-error')
+$('#address_2-error').remove()
+$('#address_2').removeClass('has-error')
+$('#country-error').remove()
+$('#country').removeClass('has-error')
+$('#state-error').remove()
+$('#state').removeClass('has-error')
+$('#city-error').remove()
+$('#city').removeClass('has-error')
+$('#zip-error').remove()
+$('#zip').removeClass('has-error')
+<% if @user.errors.any? %>
+	<% if @user.errors[:first_name].present? %>
+		$('#first_name').addClass('has-error').after('<span class="text-danger" id="first_name-error">First name <%= @user.errors[:first_name].join(", ") %>')
+	<% end %>
+	<% if @user.errors[:last_name].present? %>
+		$('#last_name').addClass('has-error').after('<span class="text-danger" id="last_name-error">Last name <%= @user.errors[:last_name].join(", ") %>')
+	<% end %>
+	<% if @user.errors[:email].present? %>
+		$('#email').addClass('has-error').after('<span class="text-danger" id="email-error">Email address <%= @user.errors[:email].join(", ") %>')
+	<% end %>
+	<% if @user.errors[:phone].present? %>
+		$('#phone').addClass('has-error').after('<span class="text-danger" id="phone-error">Phone number <%= @user.errors[:phone].join(", ") %>')
+	<% end %>
+	<% if @user.errors[:address_1].present? %>
+		$('#address_1').addClass('has-error').after('<span class="text-danger" id="address_1-error">Street address <%= @user.errors[:address_1].join(", ") %>')
+	<% end %>
+	<% if @user.errors[:address_2].present? %>
+		$('#address_2').addClass('has-error').after('<span class="text-danger" id="address_2-error">Street address 2 <%= @user.errors[:address_2].join(", ") %>')
+	<% end %>
+	<% if @user.errors[:country].present? %>
+		$('#country').addClass('has-error').after('<span class="text-danger" id="country-error">Country <%= @user.errors[:country].join(", ") %>')
+	<% end %>
+	<% if @user.errors[:state].present? %>
+		$('#state').addClass('has-error').after('<span class="text-danger" id="state-error">State <%= @user.errors[:state].join(", ") %>')
+	<% end %>
+	<% if @user.errors[:city].present? %>
+		$('#city').addClass('has-error').after('<span class="text-danger" id="city-error">City <%= @user.errors[:city].join(", ") %>')
+	<% end %>
+	<% if @user.errors[:zip].present? %>
+		$('#zip').addClass('has-error').after('<span class="text-danger" id="zip-error">Zip code <%= @user.errors[:zip].join(", ") %>')
+	<% end %>
+<% else %>
+	$('#register-panel').html('<%= escape_javascript(render("sales_reps/partials/register_step_two")).html_safe %>')
+<% end %>

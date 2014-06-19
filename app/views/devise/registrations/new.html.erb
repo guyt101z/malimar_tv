@@ -1,8 +1,12 @@
+<% if resource.is_a? Admin %>
+    <script type="text/javascript">window.location = '/'</script>
+<% end %>
 <div class="splash">
 	<div class="container">
     	<h3 class="name">Register New Account</h3>
     </div>
 </div><!--splash-->
+<script type="text/javascript">alert('<%= resource_name %>')</script>
 <%= form_tag create_new_user_path, id: 'new_user_form', remote: true do %>
 <div class="content">
 	<div class="container">

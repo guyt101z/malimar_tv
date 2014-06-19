@@ -1,0 +1,98 @@
+<h2 class='page-header user-name'>
+	<%= @rep.name %>
+	<div class='profile-picture-view'>
+		<div class='wrapper-view'>
+			<% if @rep.photo.blank? %>
+				<i class='fa fa-user'></i>
+			<% else %>
+				<%= image_tag @rep.photo_url.to_s, style: 'height: 66px; width: 66px;' %>
+			<% end %>
+		</div>
+	</div>
+</h2>
+<div class='row'>
+	<div class='col-sm-12'>
+		<div class='row'>
+			<div class='col-md-8 col-sm-12'>
+
+			</div>
+			<div class='col-md-4 col-sm-12'>
+				<div class='panel panel-default'>
+					<div class='panel-heading'>
+						<h3 class='panel-title'>Rep Commission</h3>
+					</div>
+					<div class='panel-body'>
+						<p><strong>Total Commission:</strong><br/>
+							<span class='commission_detail' id='commission'><i class='fa fa-refresh fa-spin'></i></span></p>
+						<p><strong>Commission Paid:</strong><br/>
+							<span class='commission_detail text-success' id='commission_paid'><i class='fa fa-refresh fa-spin'></i></span></p>
+						<p><strong>Commission Owed:</strong><br/>
+							<span class='commission_detail text-danger' id='commission_owed'><i class='fa fa-refresh fa-spin'></i></span></p>
+						<p><strong>Current Commission Rate:</strong><br/>
+							<span class='commission_detail'><%= number_with_precision(current_sales_representative.commission_rate, precision: 2) %>%</span></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class='col-sm-12'>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				<h3 class='panel-title'>Transactions Associated with this Rep</h3>
+			</div>
+			<div class='panel-body'>
+				<table class='table table-bordered table-hover'>
+					<thead><tr>
+						<th>ID#</th>
+						<th>Date</th>
+						<th>Type</th>
+						<th>Plan</th>
+						<th>Amount</th>
+						<th>Commission</th>
+						<th>Cust. Status</th>
+						<th>Rep. Status</th>
+					</tr></thead>
+					<% @transactions.each do |transaction| %>
+					<% details = YAML.load(transaction.product_details) %>
+					<tr id='transaction_<%= transaction.id %>'>
+						<th><%= transaction.id %></th>
+						<td><%= transaction.created_at.strftime('%B %-d, %Y') %></td>
+						<td><%= transaction.payment_type %></td>
+						<td><%= details[:plan] %> (<%= pluralize(details[:duration], 'months') %>)</td>
+						<td>$<%= number_with_precision(details[:price], precision: 2) %></td>
+						<td>$<%= number_with_precision((details[:commission_rate]/100)*details[:price], precision: 2) %> <strong>(<%= details[:commission_rate]%>%)</strong></td>
+						<% if transaction.status == 'Pending' %>
+							<td class='warning'>Pending | <a>Accept</a> | <a>Cancel</a></td>
+						<% elsif transaction.status == 'Paid' %>
+							<td class='success'>Paid</td>
+						<% elsif transaction.status == 'Cancelled' %>
+							<td class='danger'>Cancelled</td>
+						<% elsif transaction.status == 'Refunded' %>
+							<td class='info'>Refunded</td>
+						<% end %>
+						<% if transaction.payment_status == 'Pending' %>
+							<td class='warning'>Pending</td>
+						<% elsif transaction.payment_status == 'Paid' %>
+							<td class='success'>Paid</td>
+						<% elsif transaction.payment_status == 'Cancelled' %>
+							<td class='danger'>Cancelled</td>
+						<% end %>
+					</tr>
+					<% end %>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$('#home_link').addClass('active')
+	$.ajax({
+		url: '/rep_commission?id=<%= @rep.id %>'
+	})
+	$.ajax({
+		url: '/rep_commission_paid?id=<%= @rep.id %>'
+	})
+	$.ajax({
+		url: '/rep_commission_owed?id=<%= @rep.id %>'
+	})
+</script>

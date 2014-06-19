@@ -1,0 +1,77 @@
+<div class='container'>
+	<div class='row'>
+		<div class='col-xs-12 col-centered' id='register-panel'>
+			<%= form_tag register_step_one_path, remote: true do %>
+			<div class='panel panel-default'>
+				<div class='panel-heading'>
+					<h3 class='panel-title' id='register_title'>Register New Customer</h3>
+				</div>
+				<div class='panel-body' id='register_body'>
+					<div class='row'>
+						<div class='col-sm-6'>
+							<div class='form-group'>
+								<%= text_field_tag :first_name, '', class: 'form-control', placeholder: 'First Name' %>
+							</div>
+						</div>
+						<div class='col-sm-6'>
+							<div class='form-group'>
+								<%= text_field_tag :last_name, '', class: 'form-control', placeholder: 'Last Name' %>
+							</div>
+						</div>
+					</div>
+					<div class='row'>
+						<div class='col-sm-6'>
+							<div class='form-group'>
+								<%= email_field_tag :email, '', class: 'form-control', placeholder: 'Email Address' %>
+							</div>
+						</div>
+						<div class='col-sm-6'>
+							<div class='form-group'>
+								<%= text_field_tag :phone, '', class: 'form-control', placeholder: 'Phone Number' %>
+							</div>
+						</div>
+					</div>
+					<div class='row'>
+						<div class='col-sm-6'>
+							<div class='form-group'>
+								<%= text_field_tag :address_1, '', class: 'form-control', placeholder: 'Street Address' %>
+							</div>
+						</div>
+						<div class='col-sm-6'>
+							<div class='form-group'>
+								<%= text_field_tag :address_2, '', class: 'form-control', placeholder: 'Street Address 2 (Optional)' %>
+							</div>
+						</div>
+					</div>
+					<div class='row'>
+						<div class='col-md-3 col-sm-6'>
+							<%= select_tag :country, options_for_select([['Country', nil], 'Canada', 'United States', ['This will be configurable', nil]]), class: 'form-control' %>
+						</div>
+						<div class='col-md-3 col-sm-6'>
+							<div class='form-group'>
+								<%= text_field_tag :state, '', class: 'form-control', placeholder: 'State' %>
+							</div>
+						</div>
+						<div class='col-md-3 col-sm-6'>
+							<div class='form-group'>
+								<%= text_field_tag :city, '', class: 'form-control', placeholder: 'City' %>
+							</div>
+						</div>
+						<div class='col-md-3 col-sm-6'>
+							<div class='form-group'>
+								<%= text_field_tag :zip, '', class: 'form-control', placeholder: 'Zip Code' %>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class='panel-footer text-right' id=''>
+					<%= submit_tag 'Register', class: 'btn btn-primary', data: {disable_with: 'Registering...'} %>
+				</div>
+			</div>
+			<% end %>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$('#register_link').addClass('active')
+</script>

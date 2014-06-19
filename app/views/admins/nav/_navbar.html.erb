@@ -15,13 +15,26 @@
     	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       		<ul class="nav navbar-nav navbar-right">
         		<li><a href="/admins">Home</a></li>
-        		<li class="dropdown">
-          			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Users <b class="caret"></b></a>
-          			<ul class="dropdown-menu">
-            			<li><a href="/admins/new_user">Create User</a></li>
-            			<li><a href="/admins/users">Search/Manage Users</a></li>
-          			</ul>
-        		</li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-users'></i> Users <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/admins/new_user"><i class='fa fa-asterisk fa-fw'></i> Create User</a></li>
+                  <li><a href="/admins/users"><i class='fa fa-search fa-fw'></i> Search Users</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-users'></i> Sales Reps <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/admins/new_sales_rep"><i class='fa fa-asterisk fa-fw'></i> Create Sales Rep</a></li>
+                  <li><a href="/admins/sales_reps"><i class='fa fa-search fa-fw'></i> Search Sales Reps</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-dollar'></i> Financial <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/admins/plans"><i class='fa fa-asterisk fa-fw'></i> Plans</a></li>
+                </ul>
+            </li>
       		</ul>
     	</div><!-- /.navbar-collapse -->
   	</div><!-- /.container-fluid -->

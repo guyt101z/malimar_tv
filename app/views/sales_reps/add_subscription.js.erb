@@ -1,0 +1,20 @@
+$('#type-error').remove()
+$('#payment-error').remove()
+<% if @device_success == false %>
+	<% if @message.nil? %>
+		$('#serial').after('<span class="text-danger" id="type-error"><%= @device.errors.full_messages.join(". ") %>.</span>')
+	<% else %>
+		alert('<%= @message %>')
+	<% end %>
+<% elsif @payment_success == false %>
+	<% if @message.nil? %>
+		$('#payment_type').after('<span class="text-danger" id="payment-error"><%= @transaction.errors.full_messages.join(". ") %>.</span>')
+	<% else %>
+		alert('<%= @message %>')
+	<% end %>
+<% else %>
+	$('#submit_payment_modal').modal('hide')
+	setTimeout(function(){
+		$('#register-panel').html('<%= escape_javascript(render("sales_reps/partials/registration_success")).html_safe %>')
+	}, 200)
+<% end %>
