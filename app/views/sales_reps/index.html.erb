@@ -29,52 +29,66 @@
 		</div>
 	</div>
 </div>
-<% dates = Hash.new %>
-<% for j in 0..29 %>
-	<% dates[(Date.today-(j.days)).strftime('%Y-%m-%d')] = {total: 0, paid: 0, cancelled: 0, pending: 0} %>
-<% end %>
-<% @transactions.each do |transaction| %>
-	<% dates[transaction.created_at.strftime('%Y-%m-%d')][:total] += 1 %>
-	<% if transaction.payment_status == 'Pending' %>
-		<% dates[transaction.created_at.strftime('%Y-%m-%d')][:pending] += 1 %>
-	<% elsif transaction.payment_status == 'Cancelled' %>
-		<% dates[transaction.created_at.strftime('%Y-%m-%d')][:cancelled] += 1 %>
-	<% elsif transaction.payment_status == 'Paid' %>
-		<% dates[transaction.created_at.strftime('%Y-%m-%d')][:paid] += 1 %>
+<% if @transactions.any? %>
+	<% dates = Hash.new %>
+	<% for j in 0..29 %>
+		<% dates[(Date.today-(j.days)).strftime('%Y-%m-%d')] = {total: 0, paid: 0, cancelled: 0, pending: 0} %>
 	<% end %>
+	<% @transactions.each do |transaction| %>
+		<% dates[transaction.created_at.strftime('%Y-%m-%d')][:total] += 1 %>
+		<% if transaction.payment_status == 'Pending' %>
+			<% dates[transaction.created_at.strftime('%Y-%m-%d')][:pending] += 1 %>
+		<% elsif transaction.payment_status == 'Cancelled' %>
+			<% dates[transaction.created_at.strftime('%Y-%m-%d')][:cancelled] += 1 %>
+		<% elsif transaction.payment_status == 'Paid' %>
+			<% dates[transaction.created_at.strftime('%Y-%m-%d')][:paid] += 1 %>
+		<% end %>
+	<% end %>
+	<% dates.keys.sort.reverse %>
+	<script type="text/javascript">
+		$('#home_link').addClass('active')
+		$.ajax({
+			url: '/rep_commission'
+		})
+		$.ajax({
+			url: '/rep_commission_paid'
+		})
+		$.ajax({
+			url: '/rep_commission_owed'
+		})
+		Morris.Line({
+	    element: 'transactions',
+	    data: [
+	    	<% i = 1 %>
+	    	<% dates.each do |date, amounts| %>
+			    {
+			        y: '<%= date %>',
+			        a: <%= amounts[:total].to_s %>,
+			        b: <%= amounts[:pending].to_s %>,
+			        c: <%= amounts[:paid].to_s %>,
+			        d: <%= amounts[:cancelled].to_s %>
+			    }
+			    <% unless i == dates.count %>
+			    ,
+			    <% end %>
+			<% end %>
+	    ],
+	    xkey: 'y',
+	    ykeys: ['a','b','c','d'],
+	    labels: ['Total Transactions', 'Pending', 'Paid', 'Cancelled'],
+	    lineColors: ['#428bca', '#f0ad4e', '#3c763d', '#a94442']
+	  });
+	</script>
 <% end %>
-<% dates.keys.sort.reverse %>
 <script type="text/javascript">
 	$('#home_link').addClass('active')
-	$.ajax({
-		url: '/rep_commission'
-	})
-	$.ajax({
-		url: '/rep_commission_paid'
-	})
-	$.ajax({
-		url: '/rep_commission_owed'
-	})
-	Morris.Line({
-    element: 'transactions',
-    data: [
-    	<% i = 1 %>
-    	<% dates.each do |date, amounts| %>
-		    {
-		        y: '<%= date %>',
-		        a: <%= amounts[:total].to_s %>,
-		        b: <%= amounts[:pending].to_s %>,
-		        c: <%= amounts[:paid].to_s %>,
-		        d: <%= amounts[:cancelled].to_s %>
-		    }
-		    <% unless i == dates.count %>
-		    ,
-		    <% end %>
-		<% end %>
-    ],
-    xkey: 'y',
-    ykeys: ['a','b','c','d'],
-    labels: ['Total Transactions', 'Pending', 'Paid', 'Cancelled'],
-    lineColors: ['#428bca', '#f0ad4e', '#3c763d', '#a94442']
-  });
+		$.ajax({
+			url: '/rep_commission'
+		})
+		$.ajax({
+			url: '/rep_commission_paid'
+		})
+		$.ajax({
+			url: '/rep_commission_owed'
+		})
 </script>
