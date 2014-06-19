@@ -20,6 +20,8 @@ $('#zip-error').remove()
 $('#zip').removeClass('has-error')
 $('#company-error').remove()
 $('#company').removeClass('has-error')
+$('#commission_rate-error').remove()
+$('#commission_rate').removeClass('has-error')
 <% if @sales_rep.errors.any? %>
 	<% if @sales_rep.errors[:first_name].present? %>
 		$('#first_name').addClass('has-error').after('<span class="text-danger" id="first_name-error">First name <%= @sales_rep.errors[:first_name].join(", ") %>')
@@ -51,8 +53,11 @@ $('#company').removeClass('has-error')
 	<% if @sales_rep.errors[:zip].present? %>
 		$('#zip').addClass('has-error').after('<span class="text-danger" id="zip-error">Zip code <%= @sales_rep.errors[:zip].join(", ") %>')
 	<% end %>
-	<% if @sales_rep.errors[:Company].present? %>
-		$('#Company').addClass('has-error').after('<span class="text-danger" id="Company-error">Company <%= @sales_rep.errors[:Company].join(", ") %>')
+	<% if @sales_rep.errors[:company].present? %>
+		$('#company').addClass('has-error').after('<span class="text-danger" id="company-error">Company <%= @sales_rep.errors[:company].join(", ") %>')
+	<% end %>
+	<% if @sales_rep.errors[:commission_rate].present? %>
+		$('#commission_rate').addClass('has-error').after('<span class="text-danger" id="commission_rate-error">Commission <%= @sales_rep.errors[:Company].join(", ") %>')
 	<% end %>
 <% else %>
 	window.location = '/admins/sales_reps?id=<%= @sales_rep.id %>'
