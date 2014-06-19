@@ -12,7 +12,9 @@ class SalesRepresentative < ActiveRecord::Base
   	validates_presence_of :country
   	validates_presence_of :zip
   	validates_presence_of :phone
-  	validates_presence_of :address_1
+    validates_presence_of :address_1
+    validates_presence_of :company
+    validates_presence_of :commission_rate
   	
   	mount_uploader :photo, ProfileUploader
     
