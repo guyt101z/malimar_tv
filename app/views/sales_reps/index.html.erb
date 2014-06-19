@@ -29,9 +29,9 @@
 		</div>
 	</div>
 </div>
-<% if @transactions.any? %>
+
 	<% dates = Hash.new %>
-	<% for j in 0..29 %>
+	<% for j in -1..29 %>
 		<% dates[(Date.today-(j.days)).strftime('%Y-%m-%d')] = {total: 0, paid: 0, cancelled: 0, pending: 0} %>
 	<% end %>
 	<% @transactions.each do |transaction| %>
@@ -79,7 +79,7 @@
 	    lineColors: ['#428bca', '#f0ad4e', '#3c763d', '#a94442']
 	  });
 	</script>
-<% end %>
+
 <script type="text/javascript">
 	$('#home_link').addClass('active')
 		$.ajax({
