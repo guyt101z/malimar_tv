@@ -11,3 +11,5 @@ plans = [Plan.create(price: 12, months: 1, name: '1 Month', features: YAML.dump(
 		 Plan.create(price: 33, months: 3, name: '3 Month', features: YAML.dump(['Feature 1', 'Feature 2'])),
 		 Plan.create(price: 60, months: 6, name: '6 Month', features: YAML.dump(['Feature 1', 'Feature 2'])),
 		 Plan.create(price: 99, months: 12, name: '12 Month', features: YAML.dump(['Feature 1', 'Feature 2']))]
+
+

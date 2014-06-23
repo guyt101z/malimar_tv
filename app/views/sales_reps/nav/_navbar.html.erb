@@ -24,12 +24,20 @@
         			<a href="/sales_reps/transactions"><i class='fa fa-dollar'></i> My Transactions</a>
         		</li>
 	            <li class="dropdown" id='settings_link'>
-	                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-gears'></i> Settings <b class="caret"></b></a>
+	                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-exclamation'></i> Support <b class="caret"></b></a>
 	                <ul class="dropdown-menu">
-	                  <li><a href="/admins/new_sales_rep"><i class='fa fa-list fa-fw'></i> Manage Account</a></li>
-	                  <li><%= link_to raw("<i class='fa fa-sign-out fa-fw'></i> Sign Out"), destroy_sales_representative_session_path, method: :delete %></li>
+                        <li><a href="/sales_reps/support"><i class='fa fa-exclamation fa-fw'></i> Open Tickets</a></li>
+                        <li><a href="/sales_reps/archived_tickets"><i class='fa fa-archive fa-fw'></i> Archived Tickets</a></li>
+                        <li><a href="/sales_reps/new_ticket"><i class='fa fa-asterisk fa-fw'></i> Create Ticket</a></li>
 	                </ul>
 	            </li>
+                <li class="dropdown" id='settings_link'>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-gears'></i> Settings <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="/admins/new_sales_rep"><i class='fa fa-list fa-fw'></i> Manage Account</a></li>
+                      <li><%= link_to raw("<i class='fa fa-sign-out fa-fw'></i> Sign Out"), destroy_sales_representative_session_path, method: :delete %></li>
+                    </ul>
+                </li>
       		</ul>
     	</div><!-- /.navbar-collapse -->
   	</div><!-- /.container-fluid -->

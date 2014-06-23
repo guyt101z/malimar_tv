@@ -96,4 +96,16 @@ class SalesRepsController < ApplicationController
 			@commission = current_sales_representative.commission_paid
 		end
 	end
+
+	def support
+		@cases = SupportCase.where(sales_representative_id: current_sales_representative.id, status: ['Pending', 'Open'])
+	end
+
+	def create_ticket
+
+	end
+
+	def archived_tickets
+		@cases = SupportCase.where(sales_representative_id: current_sales_representative.id, status: 'Closed')
+	end
 end

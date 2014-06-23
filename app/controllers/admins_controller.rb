@@ -1,4 +1,6 @@
 class AdminsController < ApplicationController
+
+
 	def create_user
 		@user = User.new(params)
 		password = SecureRandom.hex(7)
@@ -6,6 +8,7 @@ class AdminsController < ApplicationController
 		
 		if @user.save
 		 	TransactionalMailer.new_user(@user, password).deliver
+		 	update = AdminActivity.create(admin_id: current_admin.id, data: YAML.dump({type: 'User Registration', message: "#{current_admin.name} registered a new user.", user_id: @user.id}))
 		end
 	end
 	
@@ -40,7 +43,11 @@ class AdminsController < ApplicationController
 	def register_device
 		@user = User.find(params[:user_id])
 		@device = Device.new(user_id: @user.id, serial: params[:serial], type: params[:type])
-		@device.save
+		if @device.save
+			update = AdminActivity.create(admin_id: current_admin.id, data: YAML.dump({type: 'Device Registration', message: "#{current_admin.name} registered a device.", user_id: @user.id, device_id: @device.id}))
+		else
+
+		end
 	end
 	
 	
@@ -73,6 +80,7 @@ class AdminsController < ApplicationController
 		
 		if @sales_rep.save
 			TransactionalMailer.new_rep(@sales_rep, password).deliver
+			update = AdminActivity.create(admin_id: current_admin.id, data: YAML.dump({type: 'Sales Rep Registration', message: "#{current_admin.name} registered a sales representative.", rep_id: @sales_rep.id}))
 		end
 	end
 	def sales_reps
@@ -97,5 +105,14 @@ class AdminsController < ApplicationController
 
 	def plans
 		@plans = Plan.all.order(price: :asc)
+	end
+
+	def support
+		@open_cases = SupportCase.where(status: 'Open', admin_id: current_admin.id)
+		@closed_cases = SupportCase.where(status: 'Closed', admin_id: current_admin.id)
+	end
+
+	def new_tickets
+		@cases = SupportCase.where(status: 'Pending')
 	end
 end

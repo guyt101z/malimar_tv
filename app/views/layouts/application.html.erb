@@ -3,7 +3,7 @@
 <head>
   	<title>Malimar TV</title>
   	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-  	<% if params[:controller] == 'admins' || params[:controller] == 'sales_reps' %>
+  	<% if params[:controller] == 'admins' || params[:controller] == 'sales_reps' || params[:controller] == 'feed' %>
   		<%= stylesheet_link_tag    'admin', media: 'all', 'data-turbolinks-track' => true %>
   	<% else %>
   		<%= stylesheet_link_tag    'main', media: 'all', 'data-turbolinks-track' => true %>
@@ -15,7 +15,7 @@
   	<link href='http://fonts.googleapis.com/css?family=Open+Sans:600,400,300,700' rel='stylesheet' type='text/css'>
   	<%= csrf_meta_tags %>
 </head>
-<% if params[:controller] == 'admins' %>
+<% if params[:controller] == 'admins' || params[:controller] == 'feed' %>
 <body>
 	<%= render 'admins/nav/navbar' %>
 	<%= yield %>

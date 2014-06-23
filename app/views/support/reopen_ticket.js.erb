@@ -1,0 +1,4 @@
+var ticket = $('#ticket_<%= @case.id %>').html()
+$('#ticket_<%= @case.id %>').remove()
+$('#open_tickets').prepend("<div id='ticket_<%= @case.id %>' class='ticket' onclick='viewTicket(<%= @case.id %>)'>"+ticket+"</div>")
+$('#footer').html('<%= link_to "Close Ticket", close_ticket_path(id: @case.id), class: "btn btn-primary", remote: true %>')

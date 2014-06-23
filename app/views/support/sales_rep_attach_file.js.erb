@@ -1,0 +1,7 @@
+<% if @attachment.errors.any? %>
+	alert('Error uploading file')
+<% else %>
+	$('#ticket_attachments').prepend('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><%= image_tag @attachment.file_url %></div>')
+	$('#ticket_messages').prepend("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em><%= distance_of_time_in_words_to_now(@message.created_at) %></em></p><p><%= @message.message %></p></div></div>")
+	$('#message').val('')
+<% end %>

@@ -5,13 +5,19 @@ class ApplicationController < ActionController::Base
   	
   	before_filter :update_last_seen
   
+    before_filter :timezone
+
   	def update_last_seen
   		if user_signed_in?
   			@user = current_user
   			@user.last_seen = DateTime.now
   			@user.save
-		end
+		  end
   	end
+
+    def timezone
+      Time.zone = 'UTC'
+    end
 
     def after_sign_in_path_for(resource)
       if resource.is_a? Admin
@@ -21,5 +27,15 @@ class ApplicationController < ActionController::Base
       else
         root_path
       end
+    end
+
+
+    helper_method :custom_time_ago
+    def custom_time_ago(time_str)
+
+      time = time_str.to_time + (-Time.zone_offset(Time.now.zone))
+
+      "#{view_context.distance_of_time_in_words_to_now(time)} ago"
+
     end
 end

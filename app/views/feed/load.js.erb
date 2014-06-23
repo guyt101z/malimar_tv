@@ -1,0 +1,14 @@
+<% if @updates.any? %>
+	$('#feed').append('<%= escape_javascript(render("admins/partials/activity_feed")).html_safe %>')
+	<% unless @updates.last.id == AdminActivity.all.order(id: :desc).last.id %>
+		$('#loading').html('<a style="cursor:pointer" onclick="load_updates(\'<%= @timestamp %>\')">Click to load more</a>')
+	<% else %>
+		$('#loading').html('No More Activity')
+	<% end %>
+<% else %>
+	<% if params[:before].present? %>
+		$('#loading').html('No More Activity')
+	<% else %>
+		$('#loading').html('No Activity')
+	<% end %>
+<% end %>

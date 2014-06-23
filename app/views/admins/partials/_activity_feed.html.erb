@@ -1,0 +1,23 @@
+
+<% @updates.each do |update| %>
+	<% data = YAML.load(update.data) %>
+	<div class='update' id='update_<%= update.id %>'>
+		<div class='feed_profile_image'>
+			<div class='feed_image_wrapper'>
+				<i class='fa fa-user'></i>
+			</div>
+		</div>
+		<div class='details'>
+			<p class='activity_type'><%= data[:type] %></p>
+			<p class='message'><%= data[:message] %></p>
+			<p class='view_details'><%= link_to 'View Details', view_update_path(id: update.id) %></p>
+			<p class='timestamp'>
+				<% if update.created_at.to_date > Date.today - 7.days %>
+					<%= distance_of_time_in_words(DateTime.now, update.created_at) %> ago
+				<% else %>
+					<%= updated.created_at.strftime('%d-%m-%Y at %l:%M %p') %>
+				<% end %>
+			</p>
+		</div>
+	</div>
+<% end %>

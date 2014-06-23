@@ -134,6 +134,7 @@
 					<div style='width:100%; border-bottom: 1px solid #ccc; padding: 5px;'>
 						<p><strong>Amount</strong> $<%= details[:price] %></p>
 						<p><strong>Status</strong> <%= transaction.status %></p>
+						<p><%= link_to 'View Invoice', view_invoice_path(id: transaction.id)+'.pdf', format: :pdf, target: 'new' %></p>
 					</div>
 				<% end %>
 			</div>

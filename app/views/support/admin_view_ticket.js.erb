@@ -1,0 +1,80 @@
+$('#case_id').val(<%= @case.id %>)
+$('#file_case_id').val(<%= @case.id %>)
+<% if @case.user_id.nil? %>
+	<% rep = SalesRepresentative.find(@case.sales_representative_id) %>
+	$('#ticket_name').html('<strong>Representative Name:</strong><br><%= rep.name %>')
+	$('#ticket_email').html('<strong>Representative Email:</strong><br><%= rep.email %>')
+<% else %>
+	<% user = User.find(@case.user_id) %>
+	$('#ticket_name').html('<strong>Customer Name:</strong><br><%= user.name %>')
+	$('#ticket_email').html('<strong>Customer Email:</strong><br><%= user.email %>')
+<% end %>
+
+<% priorities = ['Low', 'Medium', 'High'] %>
+$('#ticket_priority').html('<strong>Priority:</strong><br><%= priorities[@case.priority] %>')
+$('#support_modal').modal('show')
+
+$('#ticket_category').html('<strong>Category:</strong><br><%= @case.category %>')
+
+$('#ticket_issue').html('<%= simple_format(@case.issue_description) %>')
+
+$('#ticket_messages').html('')
+<% if @case.admin_id.nil? %>
+	<% admin = nil %>
+<% else %>
+	<% @admin = Admin.find(@case.admin_id) %>
+<% end %>
+<% @messages.each do |message| %>
+	<% if user.nil? %>
+		<% if message.admin_id.nil? %>
+			$('#ticket_messages').append("<div class='message animated fadeIn'><div class='recv_message'><p class='title'><%= rep.name %> said:</p><p class='timestamp'><em><%= custom_time_ago(@case.created_at) %></em></p><p><%= message.message.squish! %></p></div></div>")
+		<% else %>
+			<% admin = Admin.find(message.admin_id) %>
+			<% if admin.id == current_admin.id %>
+				$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em><%= custom_time_ago(@case.created_at) %></em></p><p><%= message.message.squish! %></p></div></div>")
+			<% else %>
+				$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'><%= admin.name %> said:</p><p class='timestamp'><em><%= custom_time_ago(@case.created_at) %></em></p><p><%= message.message.squish! %></p></div></div>")
+			<% end %>
+		<% end %>
+	<% else %>
+		<% if message.admin_id.nil? %>
+			$('#ticket_messages').append("<div class='message animated fadeIn'><div class='recv_message'><p class='title'>You said:</p><p class='timestamp'><em><%= custom_time_ago(@case.created_at) %></em></p><p><%= message.message.squish! %></p></div></div>")
+		<% else %>
+			<% admin = Admin.find(message.admin_id) %>
+			<% if admin.id == current_admin.id %>
+			$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'><%= admin.name %> said:</p><p class='timestamp'><em><%= custom_time_ago(@case.created_at) %></em></p><p><%= message.message.squish! %></p></div></div>")
+			<% else %>
+
+			<% end %>
+		<% end %>
+	<% end %>
+<% end %>
+
+$('#ticket_attachments').html('')
+<% @attachments.each do |attachment| %>
+	<% if attachment.file.file.filename.ends_with? %>
+		$('#ticket_attachments').append('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><i class="fa fa-file-zip-o"></i></div>')
+	<% else %>
+		$('#ticket_attachments').append('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><%= image_tag attachment.file_url %></div>')
+	<% end %>
+<% end %>
+
+<% if current_admin.id == @case.admin_id %>
+	$('#message').val('').attr('placeholder', 'Enter your message here')
+<% else %>
+	$('#message').val('').attr('placeholder', 'You are not the manager of this ticket').attr('disabled','disabled')
+<% end %>
+
+<% if @case.admin_id.nil? %>
+	$('#footer').html('<%= link_to "Accept Ticket", accept_ticket_path(id: @case.id), class: "btn btn-primary", remote: true %>')
+<% else %>
+	<% if current_admin.id == @case.admin_id %>
+		<% if @case.status == 'Open' %>
+			$('#footer').html('<%= link_to "Close Ticket", close_ticket_path(id: @case.id), class: "btn btn-primary", remote: true %>')
+		<% elsif @case.status == 'Closed' %>
+			$('#footer').html('<%= link_to "Reopen Ticket", reopen_ticket_path(id: @case.id), class: "btn btn-primary", remote: true %>')
+		<% end %>
+	<% else %>
+
+	<% end %>
+<% end %>

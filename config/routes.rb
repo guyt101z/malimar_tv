@@ -39,6 +39,25 @@ Rails.application.routes.draw do
       	# Manage Plans
       	get '/admins/plans' => 'admins#plans'
       	post 'update_plan' => 'plans#update'
+
+        # Activity Feed
+        get 'load_activity_feed' => 'feed#load'
+        get 'load_admin_activity_feed' => 'feed#load_admin'
+        get 'refresh_feed' => 'feed#refresh'
+        get '/admins/view_update' => 'feed#view_update', as: 'view_update'
+
+        # Support
+        get '/admins/support' => 'admins#support', as: 'admin_support'
+        get '/admins/support/new' => 'admins#new_tickets', as: 'admin_new_tickets'
+        get '/admins/support/archived' => 'admins#archived_tickets', as: 'admin_archived_tickets'
+
+        get 'admin_view_ticket' => 'support#admin_view_ticket'
+        get 'accept_ticket' => 'support#accept_ticket'
+        get 'close_ticket' => 'support#close_ticket'
+        get 'reopen_ticket' => 'support#reopen_ticket'
+
+        post 'admin_send_message_on_ticket' => 'support#admin_send_message'
+        post 'admin_attach_file_to_ticket' => 'support#admin_attach_file'
     end
 
     authenticate :sales_representative do
@@ -52,8 +71,20 @@ Rails.application.routes.draw do
     	get '/sales_reps/transactions' => 'sales_reps#transactions'
 
     	get '/sales_reps/settings' => 'sales_reps#settings'
+
+      get '/sales_reps/support' => 'sales_reps#support', as: 'sales_rep_support'
+      get '/sales_reps/archived_tickets' => 'sales_reps#archived_tickets', as: 'sales_rep_archived_tickets'
+      get '/sales_reps/new_ticket' => 'sales_reps#new_ticket', as: 'sales_rep_new_ticket'
+      post 'sales_rep_create_ticket' => 'support#sales_rep_create_ticket'
+      get 'sales_rep_view_ticket' => 'support#sales_rep_view_ticket'
+
+      post 'sales_rep_send_message_on_ticket' => 'support#sales_rep_send_message'
+      post 'sales_rep_attach_file_to_ticket' => 'support#sales_rep_attach_file'
     end
   
+  get 'view_invoice/:id' => 'transactions#view_invoice', as: 'view_invoice'
+  get 'view_user_invoice/:id' => 'transactions#view_all', as: 'view_user_invoice'
+
   get 'search_suggestions' => 'videos#search_suggestions'
   get 'subscribe' => 'users#subscribe'
   post 'add_subscription' => "users#add_subscription"

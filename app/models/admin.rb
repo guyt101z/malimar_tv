@@ -5,4 +5,8 @@ class Admin < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   	attr_accessible :email, :password, :password_confirmation, :first_name, :last_name
+
+  	def name
+  		return "#{first_name} #{last_name}"
+  	end
 end

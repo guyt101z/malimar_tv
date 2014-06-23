@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140618202242) do
+ActiveRecord::Schema.define(version: 20140623174100) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -191,6 +191,31 @@ ActiveRecord::Schema.define(version: 20140618202242) do
     t.datetime "updated_at"
   end
 
+  create_table "support_attachments", force: true do |t|
+    t.integer  "support_case_id"
+    t.string   "file"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "support_cases", force: true do |t|
+    t.integer  "admin_id"
+    t.integer  "user_id"
+    t.integer  "sales_representative_id"
+    t.text     "issue_description"
+    t.integer  "priority"
+    t.string   "category"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "status"
+    t.string   "title"
+  end
+
+  create_table "support_messages", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "transactions", force: true do |t|
     t.integer  "user_id"
     t.integer  "roku_id"
@@ -201,6 +226,8 @@ ActiveRecord::Schema.define(version: 20140618202242) do
     t.string   "status"
     t.string   "payment_type"
     t.string   "payment_status"
+    t.datetime "customer_paid"
+    t.datetime "sales_rep_paid"
   end
 
   create_table "user_notifications", force: true do |t|

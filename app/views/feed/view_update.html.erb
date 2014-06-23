@@ -1,0 +1,57 @@
+<% type = @update_data[:type].downcase.gsub(' ', '_') %>
+
+<div class='container'>
+	<div class='row'>
+		<div class='col-md-7 col-sm-6'>
+			<%= render "feed/details_types/#{type}" %>
+		</div>
+		<div class='col-md-5 col-sm-6'>
+			<div class='panel panel-default'>
+				<div class='panel-heading'>
+					<h3 class='panel-title'>User Activity Feed</h3>
+				</div>
+				<div class='panel-body' style='padding:0' id='feed_wrapper'>
+					<div id='user_feed'>
+
+					</div>
+					<div class='text-center feed_message' style='' id='user_loading'>
+						<i class='fa fa-refresh fa-spin'></i>
+					</div>
+				</div>
+			</div>
+			<div class='panel panel-default'>
+				<div class='panel-heading'>
+					<h3 class='panel-title'>All Activity Feed</h3>
+				</div>
+				<div class='panel-body' style='padding:0' id='feed_wrapper'>
+					<div id='feed'>
+
+					</div>
+					<div class='text-center feed_message' style='' id='loading'>
+						<i class='fa fa-refresh fa-spin'></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$.ajax({
+		url: '/load_activity_feed'
+	})
+	$.ajax({
+		url: '/load_admin_activity_feed?id=<%= @update.admin_id %>'
+	})
+	function load_updates(timestamp){
+		$('#loading').html()
+		$.ajax({
+			url: '/load_activity_feed?before='+timestamp
+		})
+	}
+	function load_admin_updates(timestamp){
+		$('#loading').html()
+		$.ajax({
+			url: '/load_admin_activity_feed?before='+timestamp+'&id=<%= @update.admin_id %>'
+		})
+	}
+</script>

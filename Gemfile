@@ -48,6 +48,7 @@ gem 'jquery-fileupload-rails'
 gem "rmagick"
 gem 'mandrill_mailer'
 
-
+gem 'will_paginate'
 
 gem 'random_data'
+gem 'payday'
