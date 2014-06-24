@@ -141,7 +141,7 @@
 								<% if transaction.status == 'Paid' || transaction.status == 'Accepted' %>
 									<br/><%= link_to 'Refund', refund_payment_path(id: transaction.id), remote: true %>
 								<% elsif transaction.status == 'Pending' %>
-									<br/><%= link_to 'Accept', accept_payment_path(id: transaction.id), remote: true %> | <%= link_to "Cancel", cancel_payment_path(id: @transaction.id), remote: true %>
+									<br/><%= link_to 'Accept', accept_payment_path(id: transaction.id), remote: true %> | <%= link_to "Cancel", cancel_payment_path(id: transaction.id), remote: true %>
 								<% end %>
 							</p>
 							<p class='invoice'><%= link_to 'View Invoice', view_invoice_path(id: transaction.id)+'.pdf', format: :pdf, target: 'new' %></p>
