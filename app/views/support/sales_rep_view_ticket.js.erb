@@ -24,10 +24,12 @@ $('#ticket_messages').html('')
 <% end %>
 <% @messages.each do |message| %>
 	<% if message.admin_id.nil? %>
-		$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em><%= custom_time_ago(@case.created_at) %></em></p><p><%= message.message.squish! %></p></div></div>")
+		var message = Autolinker.link('<%= message.message.squish %>')
+		$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em><%= custom_time_ago(message.created_at) %></em></p><p>"+message+"</p></div></div>")
 	<% else %>
 		<% admin = Admin.find(message.admin_id) %>
-		$('#ticket_messages').append("<div class='message animated fadeIn'><div class='recv_message'><p class='title'><%= admin.name %> said:</p><p class='timestamp'><em><%= custom_time_ago(@case.created_at) %></em></p><p><%= message.message.squish! %></p></div></div>")
+		var message = Autolinker.link('<%= message.message.squish %>')
+		$('#ticket_messages').append("<div class='message animated fadeIn'><div class='recv_message'><p class='title'><%= admin.name %> said:</p><p class='timestamp'><em><%= custom_time_ago(message.created_at) %></em><p>"+message+"</p></div></div>")
 	<% end %>
 <% end %>
 

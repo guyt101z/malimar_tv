@@ -13,6 +13,7 @@
  *= require bootstrap
  *= require_self
  *= require support_styles
+ *= require transaction_styles
  *= require animate
  */
  html, body
@@ -345,6 +346,35 @@ input.has-error {
 }
 .feature .delete:hover {
 	background-color: #a94442;
+	color: #fff;
+	cursor: pointer;
+}
+
+.password {
+	position: relative;
+}
+.password input {
+	padding-right: 40px;
+}
+.password .show_password {
+	position: absolute;
+	bottom: 1px;
+	right:1px;
+	height: 32px;
+	border-top-right-radius: 2px;
+	border-bottom-right-radius: 2px;
+	background-color: #fff;
+	width: 35px;
+	border-left: 1px solid #ccc;
+	line-height: 32px;
+	text-align: center;
+	font-size: 20px;
+}
+.password .show_password {
+	color: #428bca;
+}
+.password .show_password:hover {
+	background-color: #428bca;
 	color: #fff;
 	cursor: pointer;
 }

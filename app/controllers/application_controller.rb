@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   	
   	before_filter :update_last_seen
   
-    before_filter :timezone
 
   	def update_last_seen
   		if user_signed_in?
@@ -33,7 +32,7 @@ class ApplicationController < ActionController::Base
     helper_method :custom_time_ago
     def custom_time_ago(time_str)
 
-      time = time_str.to_time + (-Time.zone_offset(Time.now.zone))
+      time = time_str.to_time
 
       "#{view_context.distance_of_time_in_words_to_now(time)} ago"
 

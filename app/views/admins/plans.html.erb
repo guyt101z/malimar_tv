@@ -1,5 +1,35 @@
 <div class='container'>
 	<div class='row'>
+		<div class='col-md-6 col-sm-9 col-xs-12 col-centered'>
+			<%= form_tag update_paypal_path, remote: true do %>
+			<div class='panel panel-default'>
+				<div class='panel-heading'>
+					<h3 class='panel-title'>Paypal Credentials</h3>
+				</div>
+				<div class='panel-body'>
+					<div class='form-group'>
+						<label>Paypal Login</label>
+						<%= text_field_tag :login, @credentials[:login], class: 'form-control' %>
+					</div>
+					<div class='form-group password'>
+						<label>Password</label>
+						<%= password_field_tag :password, @credentials[:password], class: 'form-control' %>
+						<span class='show_password'><i class='fa fa-search'></i></span>
+					</div>
+					<div class='form-group password'>
+						<label>Signature</label>
+						<%= password_field_tag :signature, @credentials[:signature], class: 'form-control' %>
+						<span class='show_password' onclick="$(this).parent().remove()"><i class='fa fa-search'></i></span>
+					</div>
+				</div>
+				<div class='panel-footer text-right'>
+					<%= submit_tag 'Update Credentials', class: 'btn btn-primary' %>
+				</div>
+			</div>
+			<% end %>
+		</div>
+	</div>
+	<div class='row'>
 		<% @plans.each do |plan| %>
 		<%= form_tag update_plan_path, remote: true do %>
 		<div class='col-md-3 col-sm-6' id='plan_<%= plan.id %>'>
@@ -47,4 +77,9 @@
 	function addFeature(list) {
 		$('#'+list).append('<div class="form-group feature"><%= text_field_tag "features[]", "", class: "form-control" %><span class="delete" onclick="$(this).parent().remove()"><i class="fa fa-times"></i></span></div>')
 	}
+	$('.show_password').hover(function(){
+		$(this).parent().children('input').attr('type','text')
+	}, function(){
+		$(this).parent().children('input').attr('type','password')
+	})
 </script>

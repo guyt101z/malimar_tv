@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140623174100) do
+ActiveRecord::Schema.define(version: 20140624031158) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -214,6 +214,11 @@ ActiveRecord::Schema.define(version: 20140623174100) do
   create_table "support_messages", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
+    t.integer  "admin_id"
+    t.integer  "sales_representative_id"
+    t.integer  "support_case_id"
+    t.text     "message",                 null: false
   end
 
   create_table "transactions", force: true do |t|
@@ -228,6 +233,7 @@ ActiveRecord::Schema.define(version: 20140623174100) do
     t.string   "payment_status"
     t.datetime "customer_paid"
     t.datetime "sales_rep_paid"
+    t.datetime "customer_refunded"
   end
 
   create_table "user_notifications", force: true do |t|
@@ -265,6 +271,7 @@ ActiveRecord::Schema.define(version: 20140623174100) do
     t.string   "photo"
     t.datetime "last_seen"
     t.text     "note"
+    t.date     "expiry"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

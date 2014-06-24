@@ -10,7 +10,7 @@
 						<% @cases.each do |ticket| %>
 						<div id='ticket_<%= ticket.id %>' class='ticket' onclick='viewTicket(<%= ticket.id %>)'>
 							<p class='title'><%= ticket.title %></p>
-							<p class='timestamp'><%= distance_of_time_in_words(ticket.created_at, DateTime.now) %></p>
+							<p class='timestamp'><%= distance_of_time_in_words(ticket.created_at, DateTime.now) %> ago</p>
 							<p><%= ticket.issue_description.truncate(80) %></p>
 							<div class='row' style='margin:0'>
 								<div class='col-sm-6' style='padding-left:0'>

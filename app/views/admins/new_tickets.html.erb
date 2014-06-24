@@ -15,7 +15,7 @@
 						<% @cases.each do |ticket| %>
 						<div class='ticket' onclick='viewTicket(<%= ticket.id %>)'>
 							<p class='title'><%= ticket.title %></p>
-							<p class='timestamp'><%= distance_of_time_in_words_to_now(ticket.created_at+7.hours) %></p>
+							<p class='timestamp'><%= custom_time_ago(ticket.created_at) %></p>
 							<p><%= ticket.issue_description.truncate(80) %></p>
 							<div class='row' style='margin:0'>
 								<div class='col-sm-6' style='padding-left:0'>
@@ -44,9 +44,6 @@
 <%= render('support/partials/support_modal_admin') %>
 
 <script type="text/javascript">
-function testAddMessage(){
-	$('#messages').prepend("<div class='message animated bounceIn'><div class='admin_message'><p class='title'>Josh Tate said:</p><p class='timestamp'><em>Just now</em></p><p>"+ $('#message').val() +"</p></div></div>")
-}
 function viewTicket(id) {
 	$.ajax({
 		url: '<%= admin_view_ticket_path %>?id='+id

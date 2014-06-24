@@ -129,14 +129,25 @@
 				<h3 class='panel-title'>User Transactions</h3>
 			</div>
 			<div class='panel-body' style='max-height:200px; overflow-y: scroll; padding:0;'>
-				<% @transactions.each do |transaction| %>
-					<% details = YAML.load(transaction.product_details) %>
-					<div style='width:100%; border-bottom: 1px solid #ccc; padding: 5px;'>
-						<p><strong>Amount</strong> $<%= details[:price] %></p>
-						<p><strong>Status</strong> <%= transaction.status %></p>
-						<p><%= link_to 'View Invoice', view_invoice_path(id: transaction.id)+'.pdf', format: :pdf, target: 'new' %></p>
-					</div>
-				<% end %>
+				<div class='transactions'>
+					<% @transactions.each do |transaction| %>
+						<% details = YAML.load(transaction.product_details) %>
+						<div class='transaction' id='trans_<%= transaction.id %>'>
+							<p class='number'>#<%= transaction.id %></p>
+							<p class='timestamp'><%= transaction.created_at.strftime('%d/%m/%Y') %></p>
+							<p class='amount'>$<%= number_with_precision(details[:price], precision: 2) %></p>
+							<p class='plan'><%= details[:plan] %>: <%= pluralize(details[:duration], 'month') %></p>
+							<p class='status <%= transaction.status.downcase %>'><%= transaction.status %>
+								<% if transaction.status == 'Paid' || transaction.status == 'Accepted' %>
+									<br/><%= link_to 'Refund', refund_payment_path(id: transaction.id), remote: true %>
+								<% elsif transaction.status == 'Pending' %>
+									<br/><%= link_to 'Accept', accept_payment_path(id: transaction.id), remote: true %> | <%= link_to "Cancel", cancel_payment_path(id: @transaction.id), remote: true %>
+								<% end %>
+							</p>
+							<p class='invoice'><%= link_to 'View Invoice', view_invoice_path(id: transaction.id)+'.pdf', format: :pdf, target: 'new' %></p>
+						</div>
+					<% end %>
+				</div>
 			</div>
 		</div>
 	</div>

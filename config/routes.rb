@@ -23,6 +23,10 @@ Rails.application.routes.draw do
   		
   		get '/admins/new_user' => 'admins#new_user', as: 'new_user'
   		post 'admin_create_user' => 'admins#create_user'
+
+      get 'accept_payment' => 'transactions#accept'
+      get 'cancel_payment' => 'transactions#cancel'
+      get 'refund_payment' => 'transactions#refund'
   	
   		# Video CMS
   		get '/admins/videos' => 'admins#videos', as: 'videos'
@@ -37,8 +41,9 @@ Rails.application.routes.draw do
       	post 'admin_create_sales_rep' => 'admins#create_sales_rep'
 
       	# Manage Plans
-      	get '/admins/plans' => 'admins#plans'
+      	get '/admins/financial' => 'admins#plans'
       	post 'update_plan' => 'plans#update'
+        post 'update_paypal' => 'admins#update_paypal'
 
         # Activity Feed
         get 'load_activity_feed' => 'feed#load'

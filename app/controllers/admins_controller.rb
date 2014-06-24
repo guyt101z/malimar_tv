@@ -105,6 +105,23 @@ class AdminsController < ApplicationController
 
 	def plans
 		@plans = Plan.all.order(price: :asc)
+		@credentials = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
+	end
+
+	def update_paypal
+		if params[:login].present? && params[:password].present? && params[:signature].present?
+			@credentials = Setting.where(name: 'Paypal Credentials').first
+			data = YAML.load(@credentials.data)
+			data.each do |k,v|
+				data[k] = params[k]
+			end
+			@credentials.data = YAML.dump(data)
+			@credentials.save
+			@message = 'Your credentials have been updated.'
+			update = AdminActivity.create(admin_id: current_admin.id, data: YAML.dump({type: 'Paypal Credential Update', message: "#{current_admin.name} changed the Paypal Credentials."}))
+		else
+			@message = 'Please ensure all fields are filled out.'
+		end
 	end
 
 	def support

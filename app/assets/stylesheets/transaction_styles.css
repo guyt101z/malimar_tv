@@ -1,0 +1,72 @@
+.transactions {
+	max-height: 300px;
+	overflow-y: scroll;
+}
+.transactions .transaction {
+	max-height: 50px;
+	min-height: 50px;
+	position: relative;
+	width: 100%;
+	padding: 5px;
+}
+.transactions .transaction .number {
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	font-weight: bolder;
+}
+.transactions .transaction .amount {
+	position: absolute;
+	top: 5px;
+	left: 90px;
+	font-weight: bolder;
+}
+.transactions .transaction .plan {
+	position: absolute;
+	bottom: 5px;
+	left: 90px;
+	margin: 0;
+}
+.transactions .transaction .status {
+	position: absolute;
+	top: 0;
+	right: 110px;
+	min-width: 130px;
+	height: 50px;
+	text-align: center;
+	font-weight: bolder;
+}
+.transactions .transaction .status.pending { color: #8a6d3b; line-height: 25px; }
+.transactions .transaction .status.paid, .transactions .transaction .status.accepted  { color: #3c763d; line-height: 25px; }
+.transactions .transaction .status.cancelled { color: #a94442; line-height: 50px; }
+.transactions .transaction .status.refunded { color: #31708f; line-height: 50px; }
+.transactions .transaction .invoice {
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 50px;
+	width: 110px;
+	text-align: center;
+	line-height: 50px;
+	border-left: 1px solid #ccc;
+	border-radius-bottom-right: 3px;
+	overflow: hidden;
+}
+.transactions .transaction .invoice a {
+	font-weight: bolder;
+	display: inline-block;
+	height: 100%;
+	width: 100%;
+	text-decoration: none;
+}
+.transactions .transaction .invoice a:hover {
+	background-color: #428bca;
+	color: #fff;
+}
+.transactions .transaction .timestamp {
+	position: absolute;
+	bottom: 5px;
+	left: 5px;
+	margin: 0;
+	font-weight: lighter;
+}
