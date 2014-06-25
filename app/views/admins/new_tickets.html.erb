@@ -46,7 +46,7 @@
 <script type="text/javascript">
 function viewTicket(id) {
 	$.ajax({
-		url: '<%= sales_rep_view_ticket_path %>?id='+id
+		url: '<%= admin_view_ticket_path %>?id='+id
 	})
 	.success(function(){
 		if (chatListener != ''){
