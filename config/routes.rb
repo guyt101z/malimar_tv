@@ -10,8 +10,12 @@ Rails.application.routes.draw do
   	  	get 'account' => 'users#account'
     end
   
+    get 'events/admin/:id' => 'support#admin_events'
+    get 'events/sales_rep/:id' => 'support#sales_rep_events'
+
   	# Admin Methods
     authenticate :admin do
+
   	  	get '/admins' => 'admins#index', as: 'admins'
   
   		# Manage Users

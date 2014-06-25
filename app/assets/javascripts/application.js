@@ -17,4 +17,5 @@
 //= require jquery-fileupload/basic
 //= require jquery-fileupload/vendor/tmpl
 //= require Autolinker
+//= require timeago
 //= require_tree .

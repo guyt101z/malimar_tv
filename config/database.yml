@@ -8,6 +8,7 @@ development:
   password: root
   host: localhost
   socket: /Applications/MAMP/tmp/mysql/mysql.sock
+  pool: 50
 
 test:
   adapter: mysql2
@@ -19,6 +20,7 @@ test:
   password: root
   host: localhost
   socket: /Applications/MAMP/tmp/mysql/mysql.sock
+  pool: 50
 
 production:
   adapter: mysql2
@@ -30,3 +32,4 @@ production:
   password: rails123
   host: localhost
   socket: /var/run/mysqld/mysqld.sock
+  pool: 50

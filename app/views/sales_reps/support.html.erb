@@ -38,9 +38,28 @@
 <%= render('support/partials/support_modal_sales_rep') %>
 
 <script type="text/javascript">
+var chatListener = ''
 function viewTicket(id) {
 	$.ajax({
 		url: '<%= sales_rep_view_ticket_path %>?id='+id
+	})
+	.success(function(){
+		if (chatListener != ''){
+			chatListener.close()
+		}
+		chatListener = new EventSource('/events/sales_rep/'+id)
+		chatListener.addEventListener ('message', function(e) {
+			var message = $.parseJSON(e.data)
+			if (message.kind == 'message') {
+				$('#ticket_messages').prepend("<div class='message animated fadeIn'><div class='recv_message'><p class='title'>"+message.name+" said:</p><p class='timestamp'><em class='timeago' title='"+message.timestamp+"'></em></p><p>"+Autolinker.link(message.message)+"</p></div></div>")
+				$('.timeago').timeago()
+			}
+			else if (message.kind == 'file') {
+				$('#ticket_messages').prepend("<div class='message animated fadeIn'><div class='recv_message'><p class='title'>"+message.name+" said:</p><p class='timestamp'><em class='timeago' title='"+message.timestamp+"'></em></p><p>"+Autolinker.link(message.message)+"</p></div></div>")
+				$('.timeago').timeago()
+				$('#ticket_attachments').prepend('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><a href="'+message.file_url+'" target="new"><img src="'+message.file_url+'" /></a></div>')
+			}
+		})
 	})
 }
 <% if params[:id].present? %>

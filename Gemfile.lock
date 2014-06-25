@@ -99,6 +99,8 @@ GEM
       prawn (>= 0.8.4)
     protected_attributes (1.0.7)
       activemodel (>= 4.0.1, < 5.0)
+    puma (2.8.2)
+      rack (>= 1.1, < 2.0)
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -122,6 +124,7 @@ GEM
     random_data (1.6.0)
     rdoc (4.1.1)
       json (~> 1.4)
+    redis (3.0.7)
     rmagick (2.13.2)
     sass (3.2.19)
     sass-rails (4.0.3)
@@ -181,8 +184,10 @@ DEPENDENCIES
   mysql2
   payday
   protected_attributes
+  puma
   rails (= 4.1.0)
   random_data
+  redis
   rmagick
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)

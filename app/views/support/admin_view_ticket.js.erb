@@ -28,25 +28,25 @@ $('#ticket_messages').html('')
 	var message = Autolinker.link('<%= message.message.squish %>')
 	<% if user.nil? %>
 		<% if message.admin_id.nil? %>
-			$('#ticket_messages').append("<div class='message animated fadeIn'><div class='recv_message'><p class='title'><%= rep.name %> said:</p><p class='timestamp'><em><%= custom_time_ago(message.created_at) %></em></p>"+message+"</p></div></div>")
+			$('#ticket_messages').append("<div class='message animated fadeIn'><div class='recv_message'><p class='title'><%= rep.name %> said:</p><p class='timestamp'><em title='<%= (message.created_at) %>' class='timeago'></em></p>"+message+"</p></div></div>")
 		<% else %>
 			<% admin = Admin.find(message.admin_id) %>
 			<% if admin.id == current_admin.id %>
-				$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em><%= custom_time_ago(message.created_at) %></em></p><p>"+message+"</p></div></div>")
+				$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em title='<%= (message.created_at) %>' class='timeago'></em></p><p>"+message+"</p></div></div>")
 			<% else %>
-				$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'><%= admin.name %> said:</p><p class='timestamp'><em><%= custom_time_ago(message.created_at) %></em></p><p>"+message+"</p></div></div>")
+				$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'><%= admin.name %> said:</p><p class='timestamp'><em title='<%= (message.created_at) %>' class='timeago'></em></p><p>"+message+"</p></div></div>")
 			<% end %>
 		<% end %>
 	<% else %>
 		<% if message.admin_id.nil? %>
-			$('#ticket_messages').append("<div class='message animated fadeIn'><div class='recv_message'><p class='title'>You said:</p><p class='timestamp'><em><%= custom_time_ago(message.created_at) %></em></p><p>"+message+"</p></div></div>")
+			$('#ticket_messages').append("<div class='message animated fadeIn'><div class='recv_message'><p class='title'>You said:</p><p class='timestamp'><em title='<%= (message.created_at) %>' class='timeago'></em></p><p>"+message+"</p></div></div>")
 		<% else %>
 			<% admin = Admin.find(message.admin_id) %>
 			<% if admin.id == current_admin.id %>
-				$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em><%= custom_time_ago(message.created_at) %></em></p><p>"+message+"</p></div></div>")
+				$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em title='<%= (message.created_at) %>' class='timeago'></em></p><p>"+message+"</p></div></div>")
 			<% else %>
 				<% msg_admin = Admin.find(message.admin_id) %>
-				$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'><%= msg_admin.name %> said:</p><p class='timestamp'><em><%= custom_time_ago(message.created_at) %></em></p><p>"+message+"</p></div></div>")
+				$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'><%= msg_admin.name %> said:</p><p class='timestamp'><em title='<%= (message.created_at) %>' class='timeago'></em></p><p>"+message+"</p></div></div>")
 			<% end %>
 		<% end %>
 	<% end %>
@@ -57,7 +57,7 @@ $('#ticket_attachments').html('')
 	<% if attachment.file.file.filename.ends_with? %>
 		$('#ticket_attachments').append('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><i class="fa fa-file-zip-o"></i></div>')
 	<% else %>
-		$('#ticket_attachments').append('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><%= image_tag attachment.file_url %></div>')
+		$('#ticket_attachments').append('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><%= link_to image_tag(attachment.file_url), attachment.file_url, target: "new" %>/div>')
 	<% end %>
 <% end %>
 
@@ -80,3 +80,4 @@ $('#ticket_attachments').html('')
 
 	<% end %>
 <% end %>
+$('.timeago').timeago()
