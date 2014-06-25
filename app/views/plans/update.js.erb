@@ -1,5 +1,5 @@
 <% if @plan.errors.any? %>
-	$('#plan_<%=@plan.id %>').children('.panel-body').prepend('<div class="alert alert-danger" id="plan-error-<%= @plan.id %>"><%= @plan.errors.full_name.join(". ") %>.</div>')
+	$('#plan_<%=@plan.id %>').children('.panel-body').prepend('<div class="alert alert-danger" id="plan-error-<%= @plan.id %>"><%= @plan.errors.full_messages.join(". ") %>.</div>')
 <% else %>
 	alert('<%= @plan.name %> updated')
 <% end %>
