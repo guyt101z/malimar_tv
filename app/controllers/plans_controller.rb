@@ -1,7 +1,11 @@
 class PlansController < ApplicationController
 	def update
 		@plan = Plan.find(params[:plan_id])
-		old_plan_details = {name: @plan.name, months: @plan.months, price: @plan.price, features: YAML.load(@plan.features)}
+		unless @plan.features.nil?
+			old_plan_details = {name: @plan.name, months: @plan.months, price: @plan.price, features: YAML.load(@plan.features)}
+		else
+			old_plan_details = {name: @plan.name, months: @plan.months, price: @plan.price, features: nil}
+		end
 		@plan.name = params[:name]
 		@plan.months = params[:months]
 		@plan.price = params[:price]

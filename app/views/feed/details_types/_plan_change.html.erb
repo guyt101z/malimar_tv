@@ -34,8 +34,10 @@
 						<p><strong>Duration:</strong><br/><%= pluralize(old_plan_details[:months], 'month') %></p>
 						<p><strong>Price:</strong><br/>$<%= number_with_precision(old_plan_details[:price], precision: 2) %></p>
 						<p><strong>Features:</strong><br/><ul>
-							<% old_plan_details[:features].each do |feature| %>
-								<li><%= feature %></li>
+							<% unless old_plan_details[:features].nil? %>
+								<% old_plan_details[:features].each do |feature| %>
+									<li><%= feature %></li>
+								<% end %>
 							<% end %>
 						</ul></p>
 					</div>
@@ -51,8 +53,10 @@
 						<p><strong>Duration:</strong><br/><%= pluralize(new_plan_details[:months], 'month') %></p>
 						<p><strong>Price:</strong><br/>$<%= number_with_precision(new_plan_details[:price], precision: 2) %></p>
 						<p><strong>Features:</strong><br/><ul>
-							<% new_plan_details[:features].each do |feature| %>
-								<li><%= feature %></li>
+							<% unless new_plan_details[:features].nil? %>
+								<% new_plan_details[:features].each do |feature| %>
+									<li><%= feature %></li>
+								<% end %>
 							<% end %>
 						</ul></p>
 					</div>
