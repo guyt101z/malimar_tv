@@ -54,7 +54,7 @@
 					<hr/>
 					<div id='features_<%= plan.id %>'>
 						<label>Features | <a style='cursor: pointer' onclick='addFeature("features_<%= plan.id %>")'>Add New</a></label>
-						<% unless features.nil? %>
+						<% unless plan.features.nil? %>
 							<% features = YAML.load(plan.features) %>
 
 							<% features.each do |feature| %>
