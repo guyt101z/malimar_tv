@@ -57,7 +57,7 @@ $('#ticket_attachments').html('')
 	<% if attachment.file.file.filename.ends_with? %>
 		$('#ticket_attachments').append('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><i class="fa fa-file-zip-o"></i></div>')
 	<% else %>
-		$('#ticket_attachments').append('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><%= link_to image_tag(attachment.file_url), attachment.file_url, target: "new" %>/div>')
+		$('#ticket_attachments').append('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><%= link_to image_tag(attachment.file_url), attachment.file_url, target: "new" %></div>')
 	<% end %>
 <% end %>
 
