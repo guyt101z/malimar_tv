@@ -15,6 +15,30 @@ class SupportController < ApplicationController
 		@case.save
 	end
 
+	def user_view_ticket
+		@case = SupportCase.find(params[:id])
+		@messages = SupportMessage.where(support_case_id: @case.id).order(created_at: :desc)
+		@attachments = SupportAttachment.where(support_case_id: @case.id).order(created_at: :desc)
+	end
+
+	def user_send_message
+		@case = SupportCase.find(params[:case_id])
+		@message = SupportMessage.new(user_id: current_user.id, message: params[:message].squish, support_case_id: @case.id)
+		if @message.save
+			$redis.publish("user_message.create.#{@case.id}", {kind: 'message', message: @message.message, timestamp: @message.created_at, name: current_user.name}.to_json)
+		end
+	end
+
+	def user_attach_file
+		@case = SupportCase.find(params[:file_case_id])
+		@attachment = SupportAttachment.new(support_case_id: params[:file_case_id], file: params[:file])
+		if @attachment.save
+			@message = SupportMessage.new(user_id: current_user.id, message: 'Attached a file', support_case_id: @case.id)
+			@message.save
+			$redis.publish("user_message.create.#{@case.id}", {kind: 'file', message: @message.message, timestamp: @message.created_at, name: current_user.name, file_url: @attachment.file_url}.to_json)
+		end
+	end
+
 	def sales_rep_view_ticket
 		@case = SupportCase.find(params[:id])
 		@messages = SupportMessage.where(support_case_id: @case.id).order(created_at: :desc)
@@ -87,5 +111,12 @@ class SupportController < ApplicationController
 			@message.save
 			$redis.publish("sales_rep_message.create.#{@case.id}", {kind: 'file', message: @message.message, timestamp: @message.created_at, name: current_sales_representative.name, file_url: @attachment.file_url}.to_json)
 		end
+	end
+
+	def issue_refund
+		@case = SupportCase.find(params[:id])
+		transaction = Transaction.find(@case.transaction_id)
+		transaction.status = 'Refunded'
+		transaction.save
 	end
 end

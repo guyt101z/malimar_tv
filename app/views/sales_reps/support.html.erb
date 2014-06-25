@@ -67,4 +67,9 @@ function viewTicket(id) {
 <% if params[:id].present? %>
 $('#ticket_<%= params[:id] %>').click()
 <% end %>
+$('#support_modal').on('hidden.bs.modal', function () {
+	if (chatListener != ''){
+		chatListener.close()
+	}
+})
 </script>

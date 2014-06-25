@@ -1,0 +1,117 @@
+
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ *= require_self
+ *= require bootstrap
+ *= require style
+ *= require style1
+ *= require user_support_styles
+ */
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+h4.name {
+	color: rgb(25, 182, 234);
+	display: block;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 20px;
+	font-weight: 200;
+}
+ .account-box {
+ 	height: 300px;
+ }
+ .panel-scroll {
+ 	height: 216px;
+ 	overflow-y: scroll;
+ 	position: relative;
+ }
+.device {
+	height: 55px;
+	padding: 5px 0;
+	position: relative;
+}
+.device .type {
+	position: absolute;
+	top: 5px;
+	left: 95px;
+	width: calc(100% - 95px);
+	font-weight: bold;
+	font-size: 115%;
+}
+.device .serial {
+	position: absolute;
+	bottom: 10px;
+	left: 95px;
+	width: calc(100% - 95px);
+	margin: 0;
+}
+.device .image_wrapper {
+	position: absolute;
+	top: 5px;
+	left: 0;
+	height: 45px;
+	width: 80px;
+	line-height: 45px;
+	text-align: center;
+	font-size: 25px;
+}
+.device .image_wrapper img {
+	max-width: 80px;
+	max-height: 45px;
+}
+
+.subscriptions {
+	height: 175px;
+}
+h5.member-level {
+	font-size: 120%;
+	font-weight: bolder;
+	margin: 0;
+}
+.expiry {
+	font-style: italic;
+	margin: 0 0 3px;
+}
+.transactions .transaction {
+	height: 50px;
+	position: relative;
+	padding: 5px 0;
+	margin-bottom: 5px;
+}
+.transactions .transaction .plan {
+	position: absolute;
+	top: 5px;
+	left: 0;
+	font-weight: bold;
+}
+.transactions .transaction .amount {
+	position: absolute;
+	margin:0;
+	bottom: 0;
+	font-size: 130%;
+}
+.transactions .transaction .status {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	font-size: 130%;
+	margin: 0;
+}
+.transactions .transaction .timestamp {
+	position: absolute;
+	top: 5px;
+	right: 0;
+	margin: 0;
+}

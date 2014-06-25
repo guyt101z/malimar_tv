@@ -14,7 +14,11 @@ $('#file_case_id').val(<%= @case.id %>)
 $('#ticket_priority').html('<strong>Priority:</strong><br><%= priorities[@case.priority] %>')
 $('#support_modal').modal('show')
 
-$('#ticket_category').html('<strong>Category:</strong><br><%= @case.category %>')
+<% if @case.transaction_id.present? %>
+	$('#ticket_category').html('<strong>Category:</strong><br><%= @case.category %> - <%= link_to @case.transaction_id.to_s, view_invoice_path(id: @case.transaction_id), target: "new", format: "pdf" %>')
+<% else %>
+	$('#ticket_category').html('<strong>Category:</strong><br><%= @case.category %>')
+<% end %>
 
 $('#ticket_issue').html('<%= simple_format(@case.issue_description) %>')
 
@@ -73,6 +77,14 @@ $('#ticket_attachments').html('')
 	<% if current_admin.id == @case.admin_id %>
 		<% if @case.status == 'Open' %>
 			$('#footer').html('<%= link_to "Close Ticket", close_ticket_path(id: @case.id), class: "btn btn-primary", remote: true %>')
+			<% if @case.transaction_id.present? %>
+				<% transaction = Transaction.find(@case.transaction_id) %>
+				<% if transaction.status == 'Paid' %>
+					$('#footer').prepend('<%= link_to "Issue Refund", issue_refund_path(id: @case.id), class: "btn btn-success", remote: true %>')
+				<% elsif transaction.status == 'Refunded' %>
+					$('#footer').prepend('<%= link_to "Refund Issued", "#", class: "btn btn-success", remote: true, disabled: "disabled" %>')
+				<% end %>
+			<% end %>
 		<% elsif @case.status == 'Closed' %>
 			$('#footer').html('<%= link_to "Reopen Ticket", reopen_ticket_path(id: @case.id), class: "btn btn-primary", remote: true %>')
 		<% end %>

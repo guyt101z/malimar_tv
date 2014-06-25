@@ -41,4 +41,19 @@ class EventsController < ApplicationController
 		ensure
 			response.stream.close
 	end
+
+	def user_events
+		response.headers["Content-Type"] = "text/event-stream"
+		redis = Redis.new
+		redis.subscribe("admin_message.create.#{params[:id]}") do |on|
+			on.message do |event, data|
+				response.stream.write "data: #{data}\n\n"
+			end
+		end
+		sleep 2
+		rescue IOError
+			logger.info "Stream closed"
+		ensure
+			response.stream.close
+	end
 end

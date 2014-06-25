@@ -46,6 +46,7 @@
 <%= render('support/partials/support_modal_admin') %>
 
 <script type="text/javascript">
+var chatListener = ''
 function viewTicket(id) {
 	$.ajax({
 		url: '<%= admin_view_ticket_path %>?id='+id
@@ -69,4 +70,9 @@ function viewTicket(id) {
 		})
 	})
 }
+$('#support_modal').on('hidden.bs.modal', function () {
+	if (chatListener != ''){
+		chatListener.close()
+	}
+})
 </script>

@@ -107,6 +107,11 @@ function viewTicket(id) {
 		})
 	})
 }
+$('#support_modal').on('hidden.bs.modal', function () {
+	if (chatListener != ''){
+		chatListener.close()
+	}
+})
 <% if params[:id].present? %>
 $('#ticket_<%= params[:id] %>').click()
 <% end %>

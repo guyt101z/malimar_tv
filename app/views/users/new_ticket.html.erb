@@ -1,0 +1,70 @@
+<% @transactions.each do |transaction|
+	details = YAML.load(transaction.product_details)
+	@transactions_array.push(["##{transaction.id}: #{details[:name]} – $#{number_with_precision(details[:price], precision: 2)}", transaction.id])
+end %>
+<div class="splash">
+	<div class="container">
+    	<div class="figure hidden-xs hidden-sm"><%= image_tag "figure-04.png" %></div>
+    	<h3 class="name">New Support Ticket</h3>
+    </div>
+</div><!--splash-->
+
+<div class="content">
+	<div class="container">
+    	<div class="mlr90">
+            <div class='row'>
+            	<div class='col-md-3 col-sm-2 hidden-xs'></div>
+            	<div class='col-md-6 col-sm-8 col-xs-12'>
+            		<div class='box-white'>
+            			<%= form_tag user_create_ticket_path, remote: true do %>
+            			<div class='row'>
+            				<div class='col-xs-12'>
+		            			<div class='form-group'>
+		            				<%= text_field_tag :title, '', class: 'form-control', placeholder: 'Title' %>
+		            			</div>
+		            		</div>
+		            	</div>
+            			<div class='row'>
+            				<div class='col-xs-6'>
+		            			<div class='form-group'>
+		            				<%= select_tag :priority, options_for_select([['Priority', nil],['Low', 0],['Medium', 1],['High', 2]]), class: 'form-control' %>
+		            			</div>
+		            		</div>
+            				<div class='col-sm-6'>
+		            			<div class='form-group'>
+		            				<%= select_tag :category, options_for_select([['Category', nil],'Billing','Technical Support']), class: 'form-control' %>
+		            			</div>
+		            		</div>
+            				<div class='col-sm-12' id='transactions' style='display: none'>
+		            			<div class='form-group'>
+		            				<%= select_tag :transaction_id, options_for_select(@transactions_array), class: 'form-control' %>
+		            			</div>
+		            		</div>
+            				<div class='col-sm-12' id='transactions'>
+		            			<div class='form-group'>
+		            				<%= text_area_tag :issue_description, '', class: 'form-control', placeholder: 'Issue/Description', rows: 7, style: 'resize:vertical' %>
+		            			</div>
+		            		</div>
+		            		<div class='col-xs-12' style='width: calc(100% - 30px); margin:0 15px 10px; height: 1px; background-color: #ccc; '></div>
+		            		<div class='col-xs-12 text-right'>
+		            			<%= submit_tag 'Send Ticket', class: 'btn btn-primary' %>
+		            		</div>
+		            	</div>
+		            	<% end %>
+            		</div>
+            	</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$('#category').change(function(){
+	if ($(this).val() == 'Billing'){
+		$('#transactions').show()
+	}
+	else {
+		$('#transactions').hide()
+		$('#transaction').val('')
+	}
+})
+</script>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140624031158) do
+ActiveRecord::Schema.define(version: 20140625221437) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -57,6 +57,14 @@ ActiveRecord::Schema.define(version: 20140624031158) do
 
   add_index "admins", ["email"], name: "index_admins_on_email", unique: true, using: :btree
   add_index "admins", ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true, using: :btree
+
+  create_table "api_keys", force: true do |t|
+    t.string   "access_token"
+    t.integer  "user_id"
+    t.datetime "expiry"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "devices", force: true do |t|
     t.integer  "user_id"
@@ -209,6 +217,7 @@ ActiveRecord::Schema.define(version: 20140624031158) do
     t.datetime "updated_at"
     t.string   "status"
     t.string   "title"
+    t.integer  "transaction"
   end
 
   create_table "support_messages", force: true do |t|

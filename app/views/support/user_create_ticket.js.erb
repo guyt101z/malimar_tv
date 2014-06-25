@@ -1,0 +1,21 @@
+$('#title-error').remove()
+$('#priority-error').remove()
+$('#category-error').remove()
+$('#issue_description-error').remove()
+<% if @case.errors.any? %>
+	<% if @case.errors[:title].present? %>
+		$('#title').after('<span class="text-danger" id="title-error">Title <%= @case.errors[:title].join(", ") %></span>')
+	<% end %>
+	<% if @case.errors[:priority].present? %>
+		$('#priority').after('<span class="text-danger" id="priority-error">Priority <%= @case.errors[:priority].join(", ") %></span>')
+	<% end %>
+	<% if @case.errors[:category].present? %>
+		$('#category').after('<span class="text-danger" id="category-error">Category <%= @case.errors[:category].join(", ") %></span>')
+	<% end %>
+	<% if @case.errors[:issue_description].present? %>
+		$('#issue_description').after('<span class="text-danger" id="issue_description-error">Issue <%= @case.errors[:issue_description].join(", ") %></span>')
+	<% end %>
+<% else %>
+	alert('Your ticket has been submitted. We will be in touch with you soon.')
+	window.location = '/account?id=<%= @case.id %>'
+<% end %>

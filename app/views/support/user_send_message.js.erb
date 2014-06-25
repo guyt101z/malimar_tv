@@ -1,0 +1,8 @@
+<% if @message.errors.any? %>
+	alert('You must enter text to send a message')
+<% else %>
+	var message = Autolinker.link('<%= @message.message.squish %>')
+	$('#ticket_messages').prepend("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em class='timeago' title='<%= @message.created_at %>'></em></p><p>"+message+"</p></div></div>")
+	$('#message').val('')
+<% end %>
+$('.timeago').timeago()

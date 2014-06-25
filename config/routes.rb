@@ -4,14 +4,23 @@ Rails.application.routes.draw do
   devise_for :users
   
   
-  
+    # Roku API
+    get '/api/authenticate' => 'api#authenticate' 
+
   	# User Methods
     authenticate :user do
   	  	get 'account' => 'users#account'
+
+        get '/account/new_ticket' => 'users#new_ticket', as: 'user_new_ticket'
+        post 'user_create_ticket' => 'support#user_create_ticket'
+        get 'user_view_ticket' => 'support#user_view_ticket'
+        post 'user_send_message_on_ticket' => 'support#user_send_message'
+        post 'user_attach_file_to_ticket' => 'support#user_attach_file'
     end
   
     get 'events/admin/:id' => 'events#admin_events'
     get 'events/sales_rep/:id' => 'events#sales_rep_events'
+    get 'events/user/:id' => 'events#user_events'
 
   	# Admin Methods
     authenticate :admin do
@@ -67,6 +76,8 @@ Rails.application.routes.draw do
 
         post 'admin_send_message_on_ticket' => 'support#admin_send_message'
         post 'admin_attach_file_to_ticket' => 'support#admin_attach_file'
+
+        get 'issue_refund' => 'support#issue_refund'
     end
 
     authenticate :sales_representative do

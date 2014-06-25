@@ -32,11 +32,20 @@ class UsersController < ApplicationController
 				@transaction = Transaction.new
 				@transaction.user_id = current_user.id
 				@transaction.status = 'Pending'
-				@transaction.product_details = YAML.dump({name: @plan.name, price: @plan.price, duration: @plan.months, features: YAML.load(@plan.features)})
-				@transaction.save
-				@success = true
-				@message = 'Subscription saved. It will start when we receive your payment through ' + params[:payment_type]
-				@device.save
+				@transaction.payment_type = params[:payment_type]
+				if @plan.features.nil?
+					@transaction.product_details = YAML.dump({name: @plan.name, price: @plan.price, duration: @plan.months, features: nil})
+				else
+					@transaction.product_details = YAML.dump({name: @plan.name, price: @plan.price, duration: @plan.months, features: YAML.load(@plan.features)})
+				end
+				if @transaction.save
+					@success = true
+					@message = 'Subscription saved. It will start when we receive your payment through ' + params[:payment_type]
+					@device.save
+				else
+					@success = false
+					@message = 'Error saving transaction'
+				end
 			else
 				@success = false
 				@message = 'Please choose a payment method'
@@ -53,5 +62,17 @@ class UsersController < ApplicationController
 		user = User.find(params[:user_id])
 		user.note = params[:note]
 		user.save
+	end
+
+	def account
+		@devices = Device.where(user_id: current_user.id)
+		@transactions = Transaction.where(user_id: current_user.id).order(created_at: :desc)
+		@tickets = SupportCase.where(user_id: current_user.id, status: ['Pending','Open']).order(updated_at: :desc)
+	end
+
+	def new_ticket
+		@transactions = Transaction.where(user_id: current_user)
+		@transactions_array = [['Choose a transaction', nil]]
+		
 	end
 end

@@ -1,0 +1,40 @@
+$('#case_id').val(<%= @case.id %>)
+$('#file_case_id').val(<%= @case.id %>)
+<% if @case.admin_id.nil? %>
+	$('#ticket_name').html('<strong>Administrator Name:</strong><br>N/A')
+<% else %>
+	<% admin = Admin.find(@case.admin_id) %>
+	$('#ticket_name').html('<strong>Administrator Name:</strong><br><%= admin.name %>')
+<% end %>
+
+$('#ticket_email').html('')
+<% priorities = ['Low', 'Medium', 'High'] %>
+$('#ticket_priority').html('<strong>Priority:</strong><br><%= priorities[@case.priority] %>')
+$('#support_modal').modal('show')
+
+$('#ticket_category').html('<strong>Category:</strong><br><%= @case.category %>')
+
+$('#ticket_issue').html('<%= simple_format(@case.issue_description) %>')
+
+$('#ticket_messages').html('')
+<% if @case.admin_id.nil? %>
+	<% admin = nil %>
+<% else %>
+	<% @admin = Admin.find(@case.admin_id) %>
+<% end %>
+<% @messages.each do |message| %>
+	<% if message.admin_id.nil? %>
+		var message = Autolinker.link('<%= message.message.squish %>')
+		$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em><%= custom_time_ago(message.created_at) %></em></p><p>"+message+"</p></div></div>")
+	<% else %>
+		<% admin = Admin.find(message.admin_id) %>
+		var message = Autolinker.link('<%= message.message.squish %>')
+		$('#ticket_messages').append("<div class='message animated fadeIn'><div class='recv_message'><p class='title'><%= admin.name %> said:</p><p class='timestamp'><em><%= custom_time_ago(message.created_at) %></em><p>"+message+"</p></div></div>")
+	<% end %>
+<% end %>
+
+$('#ticket_attachments').html('')
+<% @attachments.each do |attachment| %>
+	$('#ticket_attachments').append('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><%= image_tag attachment.file_url %></div>')
+<% end %>
+
