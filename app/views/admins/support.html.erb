@@ -84,7 +84,7 @@ function viewTicket(id) {
 		url: '<%= admin_view_ticket_path %>?id='+id
 
 	})
-	.success(function(){
+	.done(function(){
 		if (chatListener != ''){
 			chatListener.close()
 		}
