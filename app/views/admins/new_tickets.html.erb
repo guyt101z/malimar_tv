@@ -52,7 +52,7 @@ function viewTicket(id) {
 		if (chatListener != ''){
 			chatListener.close()
 		}
-		chatListener = new EventSource('/events/sales_rep/'+id)
+		chatListener = new EventSource('/events/admin/'+id)
 		chatListener.addEventListener ('message', function(e) {
 			var message = $.parseJSON(e.data)
 			if (message.kind == 'message') {
