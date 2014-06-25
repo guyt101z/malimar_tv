@@ -43,6 +43,7 @@ class SupportController < ApplicationController
 	end
 
 	def sales_rep_create_ticket
+		response.headers["Content-Type"] = "text/javascript"
 		@case = SupportCase.new(params)
 		@case.sales_representative_id = current_sales_representative.id
 		@case.status = 'Pending'
@@ -50,6 +51,7 @@ class SupportController < ApplicationController
 	end
 
 	def user_create_ticket
+		response.headers["Content-Type"] = "text/javascript"
 		@case = SupportCase.new(params)
 		@case.user_id = current_user.id
 		@case.status = 'Pending'
@@ -57,18 +59,21 @@ class SupportController < ApplicationController
 	end
 
 	def sales_rep_view_ticket
+		response.headers["Content-Type"] = "text/javascript"
 		@case = SupportCase.find(params[:id])
 		@messages = SupportMessage.where(support_case_id: @case.id).order(created_at: :desc)
 		@attachments = SupportAttachment.where(support_case_id: @case.id).order(created_at: :desc)
 	end
 
 	def admin_view_ticket
+		response.headers["Content-Type"] = "text/javascript"
 		@case = SupportCase.find(params[:id])
 		@messages = SupportMessage.where(support_case_id: @case.id).order(created_at: :desc)
 		@attachments = SupportAttachment.where(support_case_id: @case.id).order(created_at: :desc)
 	end
 
 	def accept_ticket
+		response.headers["Content-Type"] = "text/javascript"
 		@case = SupportCase.find(params[:id])
 		@case.admin_id = current_admin.id
 		@case.status = 'Open'
@@ -76,18 +81,21 @@ class SupportController < ApplicationController
 	end
 
 	def close_ticket
+		response.headers["Content-Type"] = "text/javascript"
 		@case = SupportCase.find(params[:id])
 		@case.status = 'Closed'
 		@case.save
 	end
 
 	def reopen_ticket
+		response.headers["Content-Type"] = "text/javascript"
 		@case = SupportCase.find(params[:id])
 		@case.status = 'Open'
 		@case.save
 	end
 
 	def admin_send_message
+		response.headers["Content-Type"] = "text/javascript"
 		@case = SupportCase.find(params[:case_id])
 		@message = SupportMessage.new(admin_id: current_admin.id, message: params[:message].squish, support_case_id: @case.id)
 		if @message.save
@@ -96,6 +104,7 @@ class SupportController < ApplicationController
 	end
 
 	def admin_attach_file
+		response.headers["Content-Type"] = "text/javascript"
 		@case = SupportCase.find(params[:file_case_id])
 		@attachment = SupportAttachment.new(support_case_id: params[:file_case_id], file: params[:file])
 		if @attachment.save
@@ -106,6 +115,7 @@ class SupportController < ApplicationController
 	end
 
 	def sales_rep_create_ticket
+		response.headers["Content-Type"] = "text/javascript"
 		@case = SupportCase.new(params)
 		@case.sales_representative_id = current_sales_representative.id
 		@case.status = 'Pending'
@@ -113,6 +123,7 @@ class SupportController < ApplicationController
 	end
 
 	def sales_rep_send_message
+		response.headers["Content-Type"] = "text/javascript"
 		@case = SupportCase.find(params[:case_id])
 		@message = SupportMessage.new(sales_representative_id: current_sales_representative.id, message: params[:message].squish, support_case_id: @case.id)
 		if @message.save
@@ -121,6 +132,7 @@ class SupportController < ApplicationController
 	end
 
 	def sales_rep_attach_file
+		response.headers["Content-Type"] = "text/javascript"
 		@case = SupportCase.find(params[:file_case_id])
 		@attachment = SupportAttachment.new(support_case_id: params[:file_case_id], file: params[:file])
 		if @attachment.save
