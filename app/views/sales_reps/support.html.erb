@@ -15,14 +15,16 @@
 							<div class='row' style='margin:0'>
 								<div class='col-sm-6' style='padding-left:0'>
 									<p class='detail'>
+										<% priorities = ['Low',     'Medium',  'High'] %>
+	                                	<% classes =    ['success', 'warning', 'danger'] %>
 										<strong>Priority:</strong><br>
-										High
+										<span class='text-<%= classes[ticket.priority] %>'><%= priorities[ticket.priority] %></span>
 									</p>
 								</div>
 								<div class='col-sm-6' style='padding-right:0'>
 									<p class='detail'>
 										<strong>Category:</strong><br>
-										Billing
+										<%= ticket.category %>
 									</p>
 								</div>
 							</div>
