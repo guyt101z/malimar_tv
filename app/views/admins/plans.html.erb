@@ -54,12 +54,15 @@
 					<hr/>
 					<div id='features_<%= plan.id %>'>
 						<label>Features | <a style='cursor: pointer' onclick='addFeature("features_<%= plan.id %>")'>Add New</a></label>
-						<% features = YAML.load(plan.features) %>
-						<% features.each do |feature| %>
-						<div class='form-group feature'>
-							<%= text_field_tag 'features[]', feature, class: 'form-control' %>
-							<span class='delete' onclick="$(this).parent().remove()"><i class='fa fa-times'></i></span>
-						</div>
+						<% unless features.nil? %>
+							<% features = YAML.load(plan.features) %>
+
+							<% features.each do |feature| %>
+							<div class='form-group feature'>
+								<%= text_field_tag 'features[]', feature, class: 'form-control' %>
+								<span class='delete' onclick="$(this).parent().remove()"><i class='fa fa-times'></i></span>
+							</div>
+							<% end %>
 						<% end %>
 					</div>
 				</div>
