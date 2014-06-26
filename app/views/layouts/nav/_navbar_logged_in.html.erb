@@ -21,7 +21,7 @@
                                     <div class="bg-f8f8f8">
                                         <ul class="nav">
                                             <li class="active"><a href="#watch-submenu" data-toggle="menu-d">Watch <span class="caret-right"></span></a></li>
-                                            <li><a href="#activateroku-submenu" data-toggle="menu-d">ActivateRoku <span class="caret-right"></span></a></li>
+                                            <li><a href="#activateroku-submenu" data-toggle="menu-d">Activate Roku <span class="caret-right"></span></a></li>
                                             <li><a href="#subscription-submenu" data-toggle="menu-d">Subscription <span class="caret-right"></span></a></li>
                                             <li><a href="#contactus-submenu" data-toggle="menu-d">Contact Us <span class="caret-right"></span></a></li>
                                         </ul>
@@ -73,7 +73,7 @@
             </form>
             <ul class="nav navbar-nav navbar-right">
                 <li><div class="sep hidden-xs"></div></li>
-                <li><a href="#">ACCOUNT</a></li>
+                <li><%= link_to 'ACCOUNT', account_path %></li>
                 <li><div class="sep hidden-xs"></div></li>
                 <li><%= link_to 'LOG OUT', destroy_user_session_path, method: :delete %></li>
                 
