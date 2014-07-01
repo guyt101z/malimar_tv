@@ -1,0 +1,84 @@
+<div class="modal fade" id="edit_profile_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit Profile</h4>
+            </div>
+            <div class="modal-body">
+                <%= form_tag update_profile_path, remote: true, id: 'update_profile_form' do %>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <%= text_field_tag :first_name, current_user.first_name, class: 'form-control', placeholder: 'First Name' %>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <%= text_field_tag :last_name, current_user.last_name, class: 'form-control', placeholder: 'Last Name' %>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <%= text_field_tag :email, current_user.email, class: 'form-control', placeholder: 'Email Address' %>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <%= text_field_tag :phone, current_user.phone, class: 'form-control', placeholder: 'Phone' %>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <%= text_field_tag :address_1, current_user.address_1, class: 'form-control', placeholder: 'Street Address' %>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <%= text_field_tag :address_2, current_user.address_2, class: 'form-control', placeholder: 'Street Address 2 (Optional)' %>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <%= select_tag :country, options_for_select([['Select One', nil], 'Canada', 'United States', ['This will be configurable', nil]], current_user.country), class: 'form-control' %>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <%= text_field_tag :state, current_user.state, class: 'form-control', placeholder: 'State' %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <%= text_field_tag :city, current_user.city, class: 'form-control', placeholder: 'City' %>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <%= text_field_tag :zip, current_user.zip, class: 'form-control', placeholder: 'Zip Code' %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% end %>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick='$("#update_profile_form").trigger("submit.rails")'>Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,7 @@
+$('#serial_message').remove()
+<% if @device.errors.any? %>
+    $('#device_serial').after('<span class="text-danger" id="serial_message">Serial <%= @device.errors[:serial].join(", ") %></span>')
+<% else %>
+    $('#device_serial').after('<span class="text-success" id="serial_message">Serial updated!</span>')
+    $('#device_<%= @device.id %>').children('.serial').html('<%= @device.serial %>')
+<% end %>

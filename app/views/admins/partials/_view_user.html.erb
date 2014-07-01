@@ -78,7 +78,7 @@
 <div class='row'>
 	<div class='col-md-6 col-sm-12'>
 		<%= form_tag admin_register_device_path, remote: true do %>
-		<div class='panel panel-default'>	
+		<div class='panel panel-default'>
 			<%= hidden_field_tag :user_id, @user.id %>
 			<div class='panel-heading'>
 				<h3 class='panel-title'>Register New Device</h3>
@@ -87,13 +87,8 @@
 				<div class='row'>
 					<div class='col-md-6'>
 						<div class='form-group'>
-							<%= select_tag :type, options_for_select([['Select A Device', nil], 
-        															  ['Roku', 'Roku'], 
-        															  ['Xbox 360', 'Xbox360'], 
-        															  ['Playstation 3', 'Playstation3'], 
-        															  ['Wii', 'Wii'], 
-        															  ['iOS (iPad)', 'Ios'], 
-        															  ['Android', 'Android']]), class: 'form-control' %>
+							<%= select_tag :type, options_for_select([['Select A Device', nil],
+        															  ['Roku', 'Roku']]), class: 'form-control' %>
 						</div>
 					</div>
 					<div class='col-md-6'>
@@ -113,11 +108,14 @@
 			<div class='panel-heading'>
 				<h3 class='panel-title'>User Devices</h3>
 			</div>
-			<div class='panel-body' style='max-height:200px; overflow-y: scroll; padding:0;' id='device-list'>
+			<div class='panel-body devices' id='device-list'>
 				<% @devices.each do |device| %>
-					<div style='width:100%; border-bottom: 1px solid #ccc; padding: 5px;'>
-						<p><strong>Device</strong> <%= device.type %></p>
-						<p><strong>Serial</strong> <%= device.serial %></p>
+					<div class='device' onclick='viewDevice(<%= device.id %>)' id='device_<%= device.id %>'>
+						<div class='image_wrapper'>
+							<%= image_tag 'roku.png' %>
+						</div>
+						<p class='type'>Roku</p>
+						<p class='serial'><%= device.serial %></p>
 					</div>
 				<% end %>
 			</div>
@@ -152,3 +150,12 @@
 		</div>
 	</div>
 </div>
+<%= render 'admins/partials/view_device_modal' %>
+<script>
+
+function viewDevice(id) {
+	$.ajax({
+		url: '/admin_view_device/'+id
+	})
+}
+</script>

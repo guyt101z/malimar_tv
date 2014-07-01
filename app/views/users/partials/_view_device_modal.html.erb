@@ -1,0 +1,30 @@
+<div class="modal fade" id="device_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">My Device</h4>
+            </div>
+            <div class="modal-body">
+                <%= form_tag update_device_serial_path, remote: true, id: 'update_serial_form' do %>
+                <div class='row'>
+                    <div class='col-sm-6 hidden-xs'>
+                        <%= image_tag 'roku_large.png', style: 'width:100%;' %>
+                    </div>
+                    <div class='col-sm-6 hidden-xs'>
+                        <div class='form-group'>
+                            <label>Device Serial</label>
+                            <%= text_field_tag :serial, '', id: 'device_serial', class: 'form-control' %>
+                            <%= hidden_field_tag :id, '', id: 'device_id' %>
+                        </div>
+                    </div>
+                </div>
+                <% end %>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick='$("#update_serial_form").trigger("submit.rails")'>Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

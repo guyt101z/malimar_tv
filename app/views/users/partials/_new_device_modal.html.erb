@@ -1,0 +1,34 @@
+<div class="modal fade" id="new_device_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">New Device</h4>
+            </div>
+            <div class="modal-body">
+                <%= form_tag register_new_device_path, remote: true, id: 'new_device_form' do %>
+                <div class='row'>
+                    <div class='col-sm-6 hidden-xs'>
+                        <%= image_tag 'roku_large.png', style: 'width:100%;' %>
+                    </div>
+                    <div class='col-sm-6 hidden-xs'>
+                        <div class='form-group'>
+                            <label>Device Serial</label>
+                            <%= text_field_tag :serial, '', id: 'new_device_serial', class: 'form-control' %>
+                            <%= hidden_field_tag :id, '', id: 'new_device_id' %>
+                        </div>
+                    </div>
+                </div>
+                <% end %>
+                <div class='new_device_success' id='new_device_success'>
+                    <p class='icon'><i class='fa fa-check-circle'></i></p>
+                    <p class='message'>You've successfully registered your Roku!</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick='$("#new_device_form").trigger("submit.rails")' id='new_submit'>Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

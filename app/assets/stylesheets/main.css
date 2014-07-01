@@ -21,7 +21,24 @@
     float: none;
     margin: 0 auto;
 }
-
+.new_device_success {
+    height: 300px;
+    display: none;
+}
+.new_device_success .icon {
+    text-align:center;
+    height: 250px;
+    line-height:250px;
+    font-size: 200px;
+    color: #3c763d;
+}
+.new_device_success .message {
+    color: #3c763d;
+    font-size: 24px;
+    text-align:center;
+    height: 50px;
+    line-height: 50px;
+}
 h4.name {
 	color: rgb(25, 182, 234);
 	display: block;
@@ -41,6 +58,10 @@ h4.name {
 	height: 55px;
 	padding: 5px 0;
 	position: relative;
+    cursor:pointer;
+}
+.device:hover {
+    background-color: rgba(25, 182, 234,0.1);
 }
 .device .type {
 	position: absolute;

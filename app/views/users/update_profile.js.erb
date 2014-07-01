@@ -1,0 +1,65 @@
+$('#first_name-error_icon').remove()
+$('#first_name-error').remove()
+$('#first_name').parent().removeClass('has-error')
+$('#last_name-error_icon').remove()
+$('#last_name-error').remove()
+$('#last_name').parent().removeClass('has-error')
+$('#email-error_icon').remove()
+$('#email-error').remove()
+$('#email').parent().removeClass('has-error')
+$('#address_1-error_icon').remove()
+$('#address_1-error').remove()
+$('#address_1').parent().removeClass('has-error')
+$('#address_2-error_icon').remove()
+$('#address_2-error').remove()
+$('#address_2').parent().removeClass('has-error')
+$('#phone-error_icon').remove()
+$('#phone-error').remove()
+$('#phone').parent().removeClass('has-error')
+$('#country-error_icon').remove()
+$('#country-error').remove()
+$('#country').parent().removeClass('has-error')
+$('#state-error_icon').remove()
+$('#state-error').remove()
+$('#state').parent().removeClass('has-error')
+$('#city-error_icon').remove()
+$('#city-error').remove()
+$('#city').parent().removeClass('has-error')
+$('#zip-error_icon').remove()
+$('#zip-error').remove()
+$('#zip').parent().removeClass('has-error')
+<% unless @user.errors.any? %>
+    $('#user_profile').html('<%= escape_javascript(render("users/partials/user_profile")) %>')
+    $('#edit_profile_modal').modal('hide')
+<% else %>
+    <% if @user.errors[:first_name].present? %>
+        $('#first_name').parent().addClass('has-error has-feedback').append('<span id="first_name-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="first_name-error" class="fz15">First name <%= @user.errors[:first_name].join(", ") %></div>')
+    <% end %>
+    <% if @user.errors[:last_name].present? %>
+        $('#last_name').parent().addClass('has-error has-feedback').append('<span id="last_name-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="last_name-error" class="fz15">Last name <%= @user.errors[:last_name].join(", ") %></div>')
+    <% end %>
+    <% if @user.errors[:email].present? %>
+        $('#email').parent().addClass('has-error has-feedback').append('<span id="email-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="email-error" class="fz15">Email address <%= @user.errors[:email].join(", ") %></div>')
+    <% end %>
+    <% if @user.errors[:phone].present? %>
+        $('#phone').parent().addClass('has-error has-feedback').append('<span id="phone-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="phone-error" class="fz15">Phone number <%= @user.errors[:phone].join(", ") %></div>')
+    <% end %>
+    <% if @user.errors[:address_1].present? %>
+        $('#address_1').parent().addClass('has-error has-feedback').append('<span id="address_1-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="address_1-error" class="fz15">Address <%= @user.errors[:address_1].join(", ") %></div>')
+    <% end %>
+    <% if @user.errors[:address_2].present? %>
+        $('#address_2').parent().addClass('has-error has-feedback').append('<span id="address_2-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="address_2-error" class="fz15">Address <%= @user.errors[:address_2].join(", ") %></div>')
+    <% end %>
+    <% if @user.errors[:country].present? %>
+        $('#country').parent().addClass('has-error has-feedback').append('<span id="country-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0" style="margin-right:18px"></span><div id="country-error" class="fz15">Country <%= @user.errors[:country].join(", ") %></div>')
+    <% end %>
+    <% if @user.errors[:state].present? %>
+        $('#state').parent().addClass('has-error has-feedback').append('<span id="state-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="state-error" class="fz15">State <%= @user.errors[:state].join(", ") %></div>')
+    <% end %>
+    <% if @user.errors[:city].present? %>
+        $('#city').parent().addClass('has-error has-feedback').append('<span id="city-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="city-error" class="fz15">City <%= @user.errors[:city].join(", ") %></div>')
+    <% end %>
+    <% if @user.errors[:zip].present? %>
+        $('#zip').parent().addClass('has-error has-feedback').append('<span id="zip-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="zip-error" class="fz15">Zip Code <%= @user.errors[:zip].join(", ") %></div>')
+    <% end %>
+<% end %>

@@ -8,14 +8,14 @@ class UsersController < ApplicationController
 			@success = false
 		end
 	end
-	
+
 	def subscribe
 		@one_month = Plan.find(1)
 		@three_month = Plan.find(2)
 		@six_month = Plan.find(3)
 		@twelve_month = Plan.find(4)
 	end
-	
+
 	def add_subscription
 		@plan = Plan.find(params[:plan_id])
 		@device = Device.new
@@ -57,7 +57,7 @@ class UsersController < ApplicationController
 			@device_valid = false
 		end
 	end
-	
+
 	def add_note
 		user = User.find(params[:user_id])
 		user.note = params[:note]
@@ -73,6 +73,30 @@ class UsersController < ApplicationController
 	def new_ticket
 		@transactions = Transaction.where(user_id: current_user)
 		@transactions_array = [['Choose a transaction', nil]]
-		
+
+	end
+
+	def view_device
+		@device = Device.find(params[:id])
+	end
+
+	def update_device_serial
+		@device = Device.find(params[:id])
+		@device.serial = params[:serial]
+		@device.save
+	end
+
+	def register_new_device
+		@device = Device.new
+		@device.serial = params[:serial]
+		@device.user_id = current_user.id
+		@device.type = 'Roku'
+		@device.save
+	end
+
+	def update_profile
+		@user = current_user
+		@user.update_attributes(params)
+		@user.save
 	end
 end

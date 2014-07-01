@@ -11,37 +11,12 @@
             <div class='row'>
                 <div class='col-md-6'>
                     <div class="box-white account-box">
-                        <h4 class="name">My Devices</h4>
-                        <div class='panel-scroll devices'>
-                            <% @devices.each do |device| %>
-                                <% case device.type %>
-                                <% when 'Roku' %>
-                                    <div class='device'>
-                                        <div class='image_wrapper'>
-                                            <%= image_tag 'roku.png' %>
-                                        </div>
-                                        <p class='type'>Roku</p>
-                                        <p class='serial'><%= device.serial %></p>
-                                    </div>
-                                <% when 'Playstation3' %>
-                                    <div class='device'>
-                                        <div class='image_wrapper'>
-                                            <%= image_tag 'ps3.png' %>
-                                        </div>
-                                        <p class='type'>Playstation 3</p>
-                                        <p class='serial'><%= device.serial %></p>
-                                    </div>
-                                <% else %>
-                                    <div class='device'>
-                                        <div class='image_wrapper'>
-                                            <i class='fa fa-question-circle'></i>
-                                        </div>
-                                        <p class='type'>Unrecognized (<%= device.type %>)</p>
-                                        <p class='serial'><%= device.serial %></p>
-                                    </div>
-                                <% end %>
-                            <% end %>
-                        </div>
+                        <h4 class="name">My Profile - <a onclick='$("#edit_profile_modal").modal("show")' style='cursor:pointer'>Edit</a></h4>
+						<div class='panel-scroll tickets'>
+							<div class='row' style='margin:0' id='user_profile'>
+								<%= render 'users/partials/user_profile' %>
+							</div>
+						</div>
                     </div>
                 </div>
                 <div class='col-md-6'>
@@ -69,28 +44,69 @@
                 </div>
             </div>
             <div class='row'>
-                <div class='col-md-6'>
-                    <div class="box-white account-box">
-                        <h4 class="name">My Support – <%= link_to 'Create Ticket', user_new_ticket_path %></h4>
-                        <div class='panel-scroll tickets'>
-                            <% priorities = ['Low',     'Medium',  'High'] %>
-                            <% classes =    ['success', 'warning', 'danger'] %>
-                            <% @tickets.each do |ticket| %>
-                            <div class='ticket' id='ticket_<%= ticket.id %>'>
-                                <p class='title'><a style='cursor:pointer' onclick='viewTicket(<%= ticket.id %>)'><%= ticket.title %></a></p>
-                                <p class='updated_at'><%= distance_of_time_in_words_to_now(ticket.updated_at) %> ago</p>
-                                <p class='description'><%= ticket.issue_description %></p>
-                                <p class='priority'><span class='text-<%= classes[ticket.priority] %>'><%= priorities[ticket.priority] %></span></p>
-                            </div>
-                            <% end %>
-                        </div>
-                    </div>
-                </div>
+				<div class='col-md-6'>
+					<div class="box-white account-box">
+						<h4 class="name">My Support – <%= link_to 'Create Ticket', user_new_ticket_path %></h4>
+						<div class='panel-scroll tickets'>
+							<% priorities = ['Low',     'Medium',  'High'] %>
+							<% classes =    ['success', 'warning', 'danger'] %>
+							<% @tickets.each do |ticket| %>
+							<div class='ticket' id='ticket_<%= ticket.id %>'>
+								<p class='title'><a style='cursor:pointer' onclick='viewTicket(<%= ticket.id %>)'><%= ticket.title %></a></p>
+								<p class='updated_at'><%= distance_of_time_in_words_to_now(ticket.updated_at) %> ago</p>
+								<p class='description'><%= ticket.issue_description %></p>
+								<p class='priority'><span class='text-<%= classes[ticket.priority] %>'><%= priorities[ticket.priority] %></span></p>
+							</div>
+							<% end %>
+						</div>
+					</div>
+				</div>
+				<div class='col-md-6'>
+					<div class="box-white account-box">
+						<h4 class="name">My Devices - <a onclick='newDevice()' style='cursor:pointer'>Register New Device</a></h4>
+						<div class='panel-scroll devices' id='devices'>
+							<% @devices.each do |device| %>
+								<% case device.type %>
+								<% when 'Roku' %>
+									<div class='device' onclick='viewDevice(<%= device.id %>)' id='device_<%= device.id %>'>
+										<div class='image_wrapper'>
+											<%= image_tag 'roku.png' %>
+										</div>
+										<p class='type'>Roku</p>
+										<p class='serial'><%= device.serial %></p>
+									</div>
+								<% when 'Playstation3' %>
+									<div class='device' onclick='viewDevice(<%= device.id %>)' id='device_<%= device.id %>'>
+										<div class='image_wrapper'>
+											<%= image_tag 'ps3.png' %>
+										</div>
+										<p class='type'>Playstation 3</p>
+										<p class='serial'><%= device.serial %></p>
+									</div>
+								<% else %>
+									<div class='device' onclick='viewDevice(<%= device.id %>)' id='device_<%= device.id %>'>
+										<div class='image_wrapper'>
+											<i class='fa fa-question-circle'></i>
+										</div>
+										<p class='type'>Unrecognized (<%= device.type %>)</p>
+										<p class='serial'><%= device.serial %></p>
+									</div>
+								<% end %>
+							<% end %>
+						</div>
+					</div>
+				</div>
             </div>
         </div>
     </div>
 </div><!--content-->
+
 <%= render('support/partials/support_modal_user') %>
+
+<%= render('users/partials/view_device_modal') %>
+<%= render('users/partials/new_device_modal') %>
+<%= render('users/partials/edit_profile_modal') %>
+
 <script type="text/javascript">
 var chatListener = ''
 function testAddMessage(){
@@ -119,6 +135,19 @@ function viewTicket(id) {
             }
         })
     })
+}
+function viewDevice(id) {
+	$.ajax({
+		url: '/view_device/'+id
+	})
+}
+function newDevice() {
+	$('#new_device_serial').val('')
+	$('#new_device_success').hide()
+	$('#new_submit').show()
+	$('#new_device_form').show()
+	$('#new_serial_error').remove()
+	$('#new_device_modal').modal('show')
 }
 $('#support_modal').on('hidden.bs.modal', function () {
     if (chatListener != ''){

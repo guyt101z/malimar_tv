@@ -1,0 +1,9 @@
+$('#new_serial_error').remove()
+<% if @device.errors.any? %>
+    $('#new_device_serial').after('<span class="text-danger" id="new_serial_error">Serial <%= @device.errors[:serial].join(", ") %></span>')
+<% else %>
+    $('#new_device_success').show()
+    $('#new_submit').hide()
+    $('#new_device_form').hide()
+    $('#devices').prepend('<div class="device" onclick="viewDevice(<%= @device.id %>)" id="device_<%= @device.id %>"><div class="image_wrapper"><%= image_tag "roku.png" %></div><p class="type">Roku</p><p class="serial"><%= @device.serial %></p</div>')
+<% end %>

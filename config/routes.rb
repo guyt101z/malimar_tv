@@ -2,10 +2,10 @@ Rails.application.routes.draw do
   devise_for :admins
   devise_for :sales_representatives
   devise_for :users
-  
-  
+
+
     # Roku API
-    get '/api/authenticate' => 'api#authenticate' 
+    get '/api/authenticate' => 'api#authenticate'
 
   	# User Methods
     authenticate :user do
@@ -16,8 +16,14 @@ Rails.application.routes.draw do
         get 'user_view_ticket' => 'support#user_view_ticket'
         post 'user_send_message_on_ticket' => 'support#user_send_message'
         post 'user_attach_file_to_ticket' => 'support#user_attach_file'
+
+        get 'view_device/:id' => 'users#view_device', as: 'view_device'
+        post 'update_device_serial' => 'users#update_device_serial'
+        post 'register_new_device' => 'users#register_new_device'
+
+        post 'update_profile' => 'users#update_profile'
     end
-  
+
     get 'events/admin/:id' => 'events#admin_events'
     get 'events/sales_rep/:id' => 'events#sales_rep_events'
     get 'events/user/:id' => 'events#user_events'
@@ -26,21 +32,21 @@ Rails.application.routes.draw do
     authenticate :admin do
 
   	  	get '/admins' => 'admins#index', as: 'admins'
-  
+
   		# Manage Users
   		get '/admins/users' => 'admins#users', as: 'search_users'
   		get 'search_users' => 'admins#search_users'
   		get 'view_user' => 'admins#view_user'
   		post 'add_note_to_user' => 'users#add_note'
   		post 'admin_register_device' => 'admins#register_device'
-  		
+
   		get '/admins/new_user' => 'admins#new_user', as: 'new_user'
   		post 'admin_create_user' => 'admins#create_user'
 
       get 'accept_payment' => 'transactions#accept'
       get 'cancel_payment' => 'transactions#cancel'
       get 'refund_payment' => 'transactions#refund'
-  	
+
   		# Video CMS
   		get '/admins/videos' => 'admins#videos', as: 'videos'
   		post 'add_video' => 'admins#add_video'
@@ -78,6 +84,9 @@ Rails.application.routes.draw do
         post 'admin_attach_file_to_ticket' => 'support#admin_attach_file'
 
         get 'issue_refund' => 'support#issue_refund'
+
+        get 'admin_view_device/:id' => 'admins#view_device', as: 'admin_view_device'
+        post 'admin_update_device_serial' => 'admins#update_device_serial'
     end
 
     authenticate :sales_representative do
@@ -101,19 +110,19 @@ Rails.application.routes.draw do
       post 'sales_rep_send_message_on_ticket' => 'support#sales_rep_send_message'
       post 'sales_rep_attach_file_to_ticket' => 'support#sales_rep_attach_file'
     end
-  
+
   get 'view_invoice/:id' => 'transactions#view_invoice', as: 'view_invoice'
   get 'view_user_invoice/:id' => 'transactions#view_all', as: 'view_user_invoice'
 
   get 'search_suggestions' => 'videos#search_suggestions'
   get 'subscribe' => 'users#subscribe'
   post 'add_subscription' => "users#add_subscription"
-  
+
   post 'create_new_user' => 'users#create_new'
     	get 'rep_commission' => 'sales_reps#rep_commission'
     	get 'rep_commission_owed' => 'sales_reps#rep_commission_owed'
     	get 'rep_commission_paid' => 'sales_reps#rep_commission_paid'
-  
+
   root :to => 'videos#landing'
-  
+
 end

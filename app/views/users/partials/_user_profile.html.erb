@@ -1,0 +1,18 @@
+<div class='col-sm-6'>
+    <p><strong>Name</strong><br>
+        <%= current_user.name %></p>
+    <p><strong>Address</strong><br>
+        <%= current_user.address_1 %></p>
+    <% if current_user.address_2.present? %><p><strong>Address 2</strong><br>
+        <%= current_user.address_2 %></p><% end %>
+    <p><strong>Phone Number</strong><br>
+        <%= current_user.phone %>&nbsp;</p>
+</div>
+<div class='col-sm-6'>
+    <p><strong>City/State</strong><br>
+        <%= current_user.city %><% if current_user.state.present? %>, <%= current_user.state %><% end %></p>
+    <p><strong>Country</strong><br>
+        <%= current_user.country %></p>
+    <p><strong>Zip/Postal</strong><br>
+        <%= current_user.zip %></p>
+</div>
