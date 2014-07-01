@@ -18,11 +18,16 @@ class UsersController < ApplicationController
 
 	def add_subscription
 		@plan = Plan.find(params[:plan_id])
-		@device = Device.new
-		@device.type = params[:type]
-		@device.serial = params[:serial]
-		@device.user_id = current_user.id
-		if @device.valid?
+		if params[:type].present?
+			@device = Device.new
+			@device.type = params[:type]
+			@device.serial = params[:serial]
+			@device.user_id = current_user.id
+		else
+			@device = nil
+		end
+
+		if @device.nil? || @device.valid?
 			if params[:payment_type] == 'Credit Card'
 				# Put in credit transaction here
 				@success = false
@@ -41,7 +46,9 @@ class UsersController < ApplicationController
 				if @transaction.save
 					@success = true
 					@message = 'Subscription saved. It will start when we receive your payment through ' + params[:payment_type]
-					@device.save
+					unless @device.nil?
+						@device.save
+					end
 				else
 					@success = false
 					@message = 'Error saving transaction'
