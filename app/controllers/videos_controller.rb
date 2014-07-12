@@ -126,14 +126,7 @@ class VideosController < ApplicationController
 	end
 
 	def navbar_search
-		channels = Channel.search do
-			fulltext params[:search] do
-      			query_phrase_slop 1
-  			end
-			paginate page: 1, per_page: 3
-			with(:web, true)
-		end
-		@channels = channels.results
+		@channels = Channel.search params[:search], limit: 3, operator: "or", where: {web: true}
 	end
 
 	def channel

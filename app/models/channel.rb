@@ -9,10 +9,7 @@ class Channel < ActiveRecord::Base
 
     has_many :episodes
 
-    searchable do
-        text :name
-        boolean :web
-    end
+    searchkick
 
     def matches?(search_term)
         searchable_string = name.downcase

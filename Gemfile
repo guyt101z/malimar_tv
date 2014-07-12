@@ -55,5 +55,4 @@ gem 'payday'
 gem 'redis'
 
 gem 'nokogiri'
-gem 'sunspot_solr'
-gem 'sunspot_rails'
+gem 'searchkick'
