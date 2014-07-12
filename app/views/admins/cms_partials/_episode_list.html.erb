@@ -1,0 +1,57 @@
+<div class='episode_search_wrapper'>
+    <%= text_field_tag :episode_search, '' %>
+    <div class='add_episode' data-toggle="tooltip" data-placement="left" title="Add an episode" onclick='$("#new_episode_modal").modal("show")'>
+        <i class='fa fa-plus'></i>
+    </div>
+    <div class='placeholder' id='episode_placeholder'><i class='fa fa-search'></i> Search Episodes</div>
+</div>
+<div class='episode_list' id='episode_search_list' style='display: none;'></div>
+<div class='episode_list' id='episode_list'>
+    <% @episodes.each do |episode| %>
+        <div class='episode_list_item' onclick='viewEpisode(<%= episode.id %>)'>
+            <div class='number'># <%= episode.episode_number %> - <%= episode.title %></div>
+            <div class='release'>Released: <%= episode.release_date.strftime('%B %-d, %Y') %></div>
+        </div>
+    <% end %>
+</div>
+<script type="text/javascript">
+    $('#episode_search').focus(function(){
+        $('#episode_placeholder').animate({
+            'left':22
+        }, 100).html('Search Episodes')
+    })
+    $('#episode_search').blur(function(){
+        $('#episode_placeholder').animate({
+            'left':63
+        }, 100).html('<i class="fa fa-search"></i> Search Episodes')
+    })
+
+    $('#episode_placeholder').click(function(){
+        $('#episode_search').focus();
+    })
+
+    $('#episode_search').keydown(function(){
+        $('#episode_placeholder').hide()
+    })
+    $('#episode_search').keyup(function(){
+        if ($('#episode_search').val() != '') {
+            $('#episode_placeholder').hide()
+            $('#episode_list').hide()
+            $.ajax({
+                url: '/search_episodes?search='+$('#episode_search').val()+'&id='+<%= @channel.id %>
+            })
+        }
+        else {
+            $('#episode_placeholder').show()
+            $('#episode_list').show()
+            $('#episode_search_list').hide()
+            $('#count').hide()
+        }
+    })
+    $('.add_episode').tooltip()
+    function viewEpisode(id) {
+        $.ajax({
+            url: '/view_episode?id='+id
+        })
+    }
+</script>

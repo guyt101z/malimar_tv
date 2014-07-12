@@ -1,0 +1,93 @@
+
+<div class="modal fade" id="new_episode_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <%= form_tag add_episode_path, remote: true do %>
+            <%= hidden_field_tag :channel_id, @channel.id %>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">New Episode</h4>
+            </div>
+            <div class="modal-body">
+                <div class='row'>
+                    <div class='col-sm-6 form-group'>
+                        <label>Title</label>
+                        <%= text_field_tag :new_ep_title, '', class: 'form-control' %>
+                    </div>
+                    <div class='col-sm-6 form-group'>
+                        <label>Episode Number</label>
+                        <%= number_field_tag :new_ep_episode_number, '', class: 'form-control' %>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-12 form-group'>
+                        <label>Streaming URL</label>
+                        <%= text_field_tag :new_ep_stream_url, '', class: 'form-control' %>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-6 form-group'>
+                        <label>Release Date</label>
+                        <%= text_field_tag :new_ep_release_date, '', class: 'form-control', placeholder: 'Ex: '+Date.today.strftime("%Y-%m-%d") %>
+                    </div>
+                    <div class='col-sm-6 form-group'>
+                        <label>Content Type</label>
+                        <%= select_tag :new_ep_content_type, options_for_select([['',nil], 'Video', 'Audio']), class: 'form-control' %>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-6 form-group'>
+                        <label>Quality</label>
+                        <%= select_tag :new_ep_content_quality, options_for_select([['',nil], ['High Definition', 'HD'], ['Standard Definition','SD']]), class: 'form-control' %>
+                    </div>
+                    <div class='col-sm-3 form-group'>
+                        <label>Bitrate</label>
+                        <%= text_field_tag :new_ep_bitrate, '', class: 'form-control' %>
+                    </div>
+                    <div class='col-sm-3 form-group'>
+                        <label>Length</label>
+                        <%= text_field_tag :new_ep_length, '', class: 'form-control' %>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-6 form-group'>
+                        <label>Genres</label>
+                        <%= text_area_tag :new_ep_genres, '', class: 'form-control', style: 'resize: none', rows: 4 %>
+                    </div>
+                    <div class='col-sm-6 form-group'>
+                        <label>Actors</label>
+                        <%= text_area_tag :new_ep_actors, '', class: 'form-control', style: 'resize: none', rows: 4 %>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-12 form-group'>
+                        <label>Synopsis</label>
+                        <%= text_area_tag :new_ep_synopsis, '', class: 'form-control', style: 'resize: none', rows: 5 %>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <%= submit_tag 'Create Episode', class: 'btn btn-primary' %>
+            </div>
+            <% end %>
+        </div>
+    </div>
+</div>
+<script>
+$("#new_ep_episode_number").keydown(function (e) {
+    // Allow: backspace, delete, tab, escape, enter and .
+    if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+         // Allow: Ctrl+A
+        (e.keyCode == 65 && e.ctrlKey === true) ||
+         // Allow: home, end, left, right
+        (e.keyCode >= 35 && e.keyCode <= 39)) {
+             // let it happen, don't do anything
+             return;
+    }
+    // Ensure that it is a number and stop the keypress
+    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+        e.preventDefault();
+    }
+});
+</script>

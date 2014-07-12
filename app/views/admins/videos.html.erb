@@ -1,95 +1,89 @@
-<div class='col-lg-9 col-md-8 col-sm-7 col-xs-12' id='movie-list'>
-	<% @movies.each do |movie| %>
-		<div class='video' id='video_<%= movie.id %>'>
-			<div class='image-wrapper'>
-				<% unless movie.image.blank? %>
-					<%= image_tag movie.image_url(:preview).to_s %>
-				<% else %>
-					<i class='fa fa-camera'></i>
-				<% end %>
-				<%= form_tag add_image_to_video_path, remote: true do %>
-					<%= hidden_field_tag :movie_id, movie.id %>
-					<%= file_field_tag :image, style: 'display:none' %>
-				<% end %>
+<div class='cms_wrapper hidden-sm hidden-xs'>
+	<div class='channel_list_wrapper'>
+		<div class='channel_search_wrapper'>
+			<%= text_field_tag :channel_search, '' %>
+			<div class='add_channel' data-toggle="tooltip" data-placement="right" title="Add a channel" onclick='$("#new_channel_modal").modal("show")'>
+				<i class='fa fa-plus'></i>
 			</div>
-			<div class='upload'>
-				<a onclick='$(this).parent().parent().children(".image-wrapper").children("form").children("input:file").click()'>Upload File</a>
-			</div>
-			<p class='name'>
-				<%= movie.name %>
-			</p>
+			<div class='placeholder' id='channel_placeholder'><i class='fa fa-search'></i> Search Channels</div>
 		</div>
-	<% end %>
-</div>
+		<div class='channel_list' id='channel_search_list' style='display:none'>
 
-<div class='col-lg-3 col-md-4 col-sm-5 col-xs-12'>
-	<%= form_tag add_video_path, remote: true do %>
-	<div class='panel panel-info'>
-		<div class='panel-heading'>
-			<h3 class='panel-title'>Note</h3>
 		</div>
-		<div class='panel-body'>
-			<p>This page is to demo uploading *stand alone* videos (not series/episodes) into the system. Use the form below to upload an entry with link, genre, name, and preview image to begin.</p>
-		</div>
-	</div>
-	<div class='panel panel-default'>
-		<div class='panel-heading'>
-			<h3 class='panel-title'>Upload Video</h3>
-		</div>
-		<div class='panel-body'>
-			<div class='form-group'>
-				<%= text_field_tag :name, '', class: 'form-control', placeholder: 'Movie Name' %>
-			</div>
-			<div class='form-group'>
-				<% genres = Array.new %>
-				<% genres.push(['Select Genre', nil]) %>
-				<% @genres.each do |genre| %>
-					<% genres.push([genre.name, genre.id]) %>
-				<% end %>
-				<%= select_tag :genre_id, options_for_select(genres), class: 'form-control' %>
-			</div>
-			<div class='form-group'>
-				<%= text_field_tag :url, '', class: 'form-control', placeholder: 'CDN Link' %>
-			</div>
-		</div>
-		<div class='panel-footer'>
-			<%= submit_tag 'Add Video', class: 'btn btn-primary pull-right' %>
-			<div class='clearfix'></div>
+		<div class='channel_list' id='channel_list'>
+			<% @channels.each do |channel| %>
+				<% episode_count = Episode.where(channel_id: channel.id).count %>
+				<div id='channel_<%= channel.id %>' class='channel_list_item' onclick='viewChannel(<%= channel.id %>)'>
+					<div class='image_wrapper'>
+					<%= image_tag channel.image_url(:preview) %>
+					</div>
+					<div class='channel_name'><%= channel.name %></div>
+					<div class='episode_count'><%= pluralize(episode_count, 'Episode') %></div>
+					<% if channel.live? %>
+						<div class='live_banner'><span class="label label-danger">LIVE</span></div>
+					<% end %>
+					<% if channel.free? %>
+						<div class='premium_banner'><span class="label label-success">FREE</span></div>
+					<% else %>
+						<div class='premium_banner'><span class="label label-primary">PREMIUM</span></div>
+					<% end %>
+				</div>
+			<% end %>
 		</div>
 	</div>
-	<% end %>
-	<div class='panel panel-default'>
-		<div class='panel-body' id='file-upload'>
-			
-		</div>
+	<div class='details_wrapper' id='details_wrapper'>
+
 	</div>
 </div>
-<script>
-	$('input:file').fileupload({
-		dataType: "script",
-        add: function(e, data) {
-            data.context = $(tmpl("template-upload", data.files[0]));
-            $('#progress').remove()
-            $('#file-upload').append(data.context);
-            return data.submit();
-        },
-        progress: function(e, data) {
-            var progress;
-            if (data.context) {
-                progress = parseInt(data.loaded / data.total * 100, 10);
-                return data.context.find('.progress-bar').attr('aria-valuenow', progress).css('width', progress+'%');
-            }
-        },
-        fail: function(e,data) {
-            if (data.context) {
-                $
-                return data.context.find('.progress-bar').css('width','100%').removeClass('progress-bar-info').addClass('progress-bar-danger')
-            }
-        },
-        done: function(e,data) {
-            if (data.context) {
-                return data.context.find('.progress-bar').css('width','100%').removeClass('progress-bar-info').addClass('progress-bar-success')
-            }
-        }
-    }); 
+<div class='visible-sm visible-xs'>
+	View the CMS from a larger screened device
+</div>
+<%= render 'admins/cms_partials/new_channel' %>
+<script type="text/javascript">
+	$('#channel_search').focus(function(){
+		$('#channel_placeholder').animate({
+			'left':22
+		}, 100).html('Search Channels')
+	})
+	$('#channel_search').blur(function(){
+		$('#channel_placeholder').animate({
+			'left':63
+		}, 100).html('<i class="fa fa-search"></i> Search Channels')
+	})
+
+	$('#channel_placeholder').click(function(){
+		$('#channel_search').focus();
+	})
+
+	$('#channel_search').keydown(function(){
+		$('#channel_placeholder').hide()
+	})
+	$('#channel_search').keyup(function(){
+		if ($('#channel_search').val() != '') {
+			$('#channel_placeholder').hide()
+			$('#channel_list').hide()
+			$.ajax({
+				url: '/search_channels?search='+$('#channel_search').val()
+			})
+		}
+		else {
+			$('#channel_placeholder').show()
+			$('#channel_list').show()
+			$('#channel_search_list').hide()
+			$('#count').hide()
+		}
+	})
+
+	function viewChannel(id){
+		$('.channel_list_item').removeClass('active')
+		$('#channel_'+id).addClass('active')
+		$('#channel_search_'+id).addClass('active')
+		$.ajax({
+			url: '/view_channel?id='+id
+		})
+	}
+	<% if params[:id].present? %>
+		$('#user_<%= params[:id] %>').click()
+	<% end %>
+	$('.add_channel').tooltip()
 </script>

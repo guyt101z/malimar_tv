@@ -43,14 +43,24 @@ Rails.application.routes.draw do
   		get '/admins/new_user' => 'admins#new_user', as: 'new_user'
   		post 'admin_create_user' => 'admins#create_user'
 
-      get 'accept_payment' => 'transactions#accept'
-      get 'cancel_payment' => 'transactions#cancel'
-      get 'refund_payment' => 'transactions#refund'
+        get 'accept_payment' => 'transactions#accept'
+        get 'cancel_payment' => 'transactions#cancel'
+        get 'refund_payment' => 'transactions#refund'
 
   		# Video CMS
   		get '/admins/videos' => 'admins#videos', as: 'videos'
-  		post 'add_video' => 'admins#add_video'
-  		post 'add_image_to_video' => 'admins#add_image_to_video'
+  		get 'view_channel' => 'videos#view_channel'
+
+        post 'add_channel' => 'videos#add_channel'
+        post 'update_channel' => 'videos#update_channel'
+        post 'update_channel_image' => 'videos#update_channel_image'
+
+        post 'add_episode' => 'videos#add_episode'
+        post 'update_episode' => 'videos#update_episode'
+        get 'view_episode' => 'videos#view_episode'
+
+        get 'search_channels' => 'videos#search_channels'
+        get 'search_episodes' => 'videos#search_episodes'
 
       	# Manage Sales Reps
       	get '/admins/sales_reps' => 'admins#sales_reps'
@@ -110,6 +120,17 @@ Rails.application.routes.draw do
       post 'sales_rep_send_message_on_ticket' => 'support#sales_rep_send_message'
       post 'sales_rep_attach_file_to_ticket' => 'support#sales_rep_attach_file'
     end
+
+    # Roku API
+    get '/api/:device' => 'api#home', as: 'api_home' # Home Grid Feed
+    get '/api/:device/:channel_id' => 'api#channel', as: 'api_channel' # Channel Feed
+    get '/api/:device/:channel_id/:epsiode_id' => 'api#episode', as: 'api_episode' # Web Only (for video page)
+    get '/api/authorize/:serial' => 'api#authorize_roku', as: 'api_authorize_roku' # Roku authentication
+
+    get 'video_search' => 'videos#navbar_search'
+
+    get '/watch/:channel_id' => 'videos#channel', as: 'channel'
+    get '/watch/:channel_id/:episode_id' => 'videos#watch_video', as: 'watch_video'
 
   get 'view_invoice/:id' => 'transactions#view_invoice', as: 'view_invoice'
   get 'view_user_invoice/:id' => 'transactions#view_all', as: 'view_user_invoice'

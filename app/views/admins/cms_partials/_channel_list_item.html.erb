@@ -1,0 +1,14 @@
+<% episode_count = Episode.where(channel_id: @channel.id).count %>
+<div class='image_wrapper'>
+<%= image_tag @channel.image_url(:preview) %>
+</div>
+<div class='channel_name'><%= @channel.name %></div>
+<div class='episode_count'><%= pluralize(episode_count, 'Episode') %></div>
+<% if @channel.live? %>
+    <div class='live_banner'><span class="label label-danger">LIVE</span></div>
+<% end %>
+<% if @channel.free? %>
+    <div class='premium_banner'><span class="label label-success">FREE</span></div>
+<% else %>
+    <div class='premium_banner'><span class="label label-primary">PREMIUM</span></div>
+<% end %>

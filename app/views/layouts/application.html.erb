@@ -13,6 +13,7 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 	<script src="http://cdn.oesmith.co.uk/morris-0.4.3.min.js"></script>
 	<script src='//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js'></script>
+    <script type='text/javascript'>jwplayer.key = 'b+TCzjTVF/94++/axSSQ4HJ04FLcy8TGkvR7lg=='</script>
   	<link href='http://fonts.googleapis.com/css?family=Open+Sans:600,400,300,700' rel='stylesheet' type='text/css'>
   	<%= csrf_meta_tags %>
 </head>
@@ -22,7 +23,7 @@
 	<%= yield %>
 	<% flash.each do |name, msg| -%>
 	    <script>alert('<%= msg %>')</script>
-	<% end %> 
+	<% end %>
 </body>
 <% elsif params[:controller] == 'sales_reps' %>
 <body>
@@ -30,7 +31,7 @@
 	<%= yield %>
 	<% flash.each do |name, msg| -%>
 	    <script>alert('<%= msg %>')</script>
-	<% end %> 
+	<% end %>
 </body>
 <% else %>
 <body>
@@ -43,12 +44,13 @@
 	<%= render 'layouts/nav/footer' %>
 	<% flash.each do |name, msg| -%>
 	    <script>alert('<%= msg %>')</script>
-	<% end %>  
+	<% end %>
 </body>
 <% end %>
+
 <script id='template-upload'>
-    <div class="progress" id='progress'>
-      	<div class="progress-bar progress-bar-info" style="width: 0%" id='photo-progress-bar'></div>
+    <div class="progress" id='upload-progress'>
+      	<div class="progress-bar progress-bar-info" style="width: 0%" id='upload-progress-bar'></div>
     </div>
 </script>
 </html>

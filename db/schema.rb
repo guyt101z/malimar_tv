@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140625221437) do
+ActiveRecord::Schema.define(version: 20140710172625) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -66,6 +66,25 @@ ActiveRecord::Schema.define(version: 20140625221437) do
     t.datetime "updated_at"
   end
 
+  create_table "categories", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "channels", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "live"
+    t.boolean  "free"
+    t.boolean  "roku"
+    t.boolean  "ios"
+    t.boolean  "android"
+    t.boolean  "web"
+    t.string   "image"
+  end
+
   create_table "devices", force: true do |t|
     t.integer  "user_id"
     t.string   "serial"
@@ -75,12 +94,24 @@ ActiveRecord::Schema.define(version: 20140625221437) do
   end
 
   create_table "episodes", force: true do |t|
-    t.string   "name"
+    t.string   "video_id"
+    t.string   "title"
     t.integer  "episode_number"
-    t.string   "url"
-    t.integer  "season_id"
+    t.date     "release_date"
+    t.string   "content_type"
+    t.string   "content_quality"
+    t.string   "stream_format"
+    t.string   "bitrate"
+    t.string   "stream_quality"
+    t.string   "stream_url"
+    t.boolean  "hd"
+    t.text     "actors"
+    t.text     "genres"
+    t.string   "synopsis"
+    t.integer  "channel_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "length"
   end
 
   create_table "genres", force: true do |t|
@@ -97,34 +128,11 @@ ActiveRecord::Schema.define(version: 20140625221437) do
     t.datetime "updated_at"
   end
 
-  create_table "movies", force: true do |t|
-    t.string   "name"
-    t.string   "url"
-    t.integer  "genre_id"
-    t.string   "image"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "plans", force: true do |t|
     t.string   "name"
     t.text     "features"
     t.integer  "price"
     t.integer  "months"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "products", force: true do |t|
-    t.float    "price"
-    t.integer  "days"
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "ratings", force: true do |t|
-    t.string   "rating"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -170,28 +178,6 @@ ActiveRecord::Schema.define(version: 20140625221437) do
   add_index "sales_representatives", ["email"], name: "index_sales_representatives_on_email", unique: true, using: :btree
   add_index "sales_representatives", ["reset_password_token"], name: "index_sales_representatives_on_reset_password_token", unique: true, using: :btree
 
-  create_table "seasons", force: true do |t|
-    t.integer  "series_id"
-    t.integer  "season_number"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "serials", force: true do |t|
-    t.integer  "roku_id"
-    t.string   "file"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "series", force: true do |t|
-    t.string   "name"
-    t.integer  "genre_id"
-    t.string   "image"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "settings", force: true do |t|
     t.string   "name"
     t.text     "data"
@@ -217,17 +203,17 @@ ActiveRecord::Schema.define(version: 20140625221437) do
     t.datetime "updated_at"
     t.string   "status"
     t.string   "title"
-    t.integer  "transaction"
+    t.integer  "transaction_id"
   end
 
   create_table "support_messages", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.integer  "user_id"
     t.integer  "admin_id"
     t.integer  "sales_representative_id"
     t.integer  "support_case_id"
-    t.text     "message",                 null: false
+    t.text     "message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "transactions", force: true do |t|

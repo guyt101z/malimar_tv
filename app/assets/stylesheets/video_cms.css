@@ -1,0 +1,283 @@
+.cms_wrapper {
+    position: absolute;
+    height: calc(100% - 50px);
+    width: 100%;
+    top: 50px;
+    left: 0;
+}
+.channel_list_wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 300px;
+    background-color: #fff;
+    border-right: 1px solid #ddd;
+}
+.channel_search_wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: #eee;
+    border-bottom: 1px solid #ddd;
+}
+.channel_search_wrapper input {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 280px;
+    height: 30px;
+    border: 0;
+    padding-right: 40px;
+    padding-left: 10px;
+    font-family: FontAwesome;
+}
+.channel_search_wrapper .add_channel {
+    position: absolute;
+    top: 10px;
+    right: 9px;
+    height: 30px;
+    width: 40px;
+    text-align: center;
+    line-height: 30px;
+    color: #333;
+    background-color: #ddd;
+    font-size: 24px;
+    cursor: pointer;
+}
+.channel_search_wrapper .placeholder {
+    position: absolute;
+    height: 30px;
+    top: 10px;
+    left: 63px;
+    line-height: 30px;
+    color: #bbb;
+    z-index: 2;
+    background-color: transparent;
+}
+.channel_list {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    overflow-y: scroll;
+    height: calc(100% - 50px);
+    background-color: #eee;
+}
+.channel_list.search {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    overflow-y: scroll;
+    height: calc(100% - 50px);
+    background-color: #eee;
+}
+.channel_list_item {
+    width: 100%;
+    height: 51px;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+    cursor: pointer;
+}
+.channel_list_item.active {
+    background-color: #333;
+    color: #fff;
+}
+.channel_list_item.active:hover {
+    background-color: #000;
+    color: #fff;
+}
+.channel_list_item:hover {
+    background-color: #ddd;
+}
+.channel_list_item .channel_name {
+    position: absolute;
+    top: 3px;
+    left: 54px;
+    font-weight: bolder;
+    font-size: 110%;
+    max-width: 175px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    o-text-overflow:ellipsis;
+}
+.channel_list_item .episode_count {
+    position: absolute;
+    font-size: 90%;
+    bottom: 3px;
+    left: 54px;
+}
+.channel_list_item .live_banner {
+    position: absolute;
+    bottom:3px;
+    right: 3px;
+}
+.channel_list_item .premium_banner {
+    position: absolute;
+    top:3px;
+    right: 3px;
+}
+.channel_list_item .image_wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 51px;
+    border-right: 1px solid #ddd;
+    text-align: center;
+    background-color: #fff;
+}
+.channel_list_item .image_wrapper img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.details_wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: calc(100% - 300px);
+    background-color: #fff;
+}
+.channel_title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: #fff;
+    line-height: 50px;
+    font-size: 30px;
+    padding: 0 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.channel_details {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: calc(100% - 300px);
+    height: calc(100% - 50px);
+    background-color: #fff;
+    padding: 5px 15px;
+    overflow-y: scroll;
+}
+
+.episode_wrapper {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    height: calc(100% - 50px);
+    width: 300px;
+    background-color: #fff;
+}
+.episode_search_wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: #eee;
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+.episode_search_wrapper input {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 280px;
+    height: 30px;
+    border: 0;
+    padding-right: 40px;
+    padding-left: 10px;
+    font-family: FontAwesome;
+}
+.episode_search_wrapper .add_episode {
+    position: absolute;
+    top: 10px;
+    right: 9px;
+    height: 30px;
+    width: 40px;
+    text-align: center;
+    line-height: 30px;
+    color: #333;
+    background-color: #ddd;
+    font-size: 24px;
+    cursor: pointer;
+}
+.episode_search_wrapper .placeholder {
+    position: absolute;
+    height: 30px;
+    top: 10px;
+    left: 63px;
+    line-height: 30px;
+    color: #bbb;
+    z-index: 2;
+    background-color: transparent;
+}
+.episode_list {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    overflow-y: scroll;
+    height: calc(100% - 50px);
+    background-color: #eee;
+    border-left: 1px solid #ddd;
+}
+.episode_list_item {
+    width: 100%;
+    height: 50px;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+    background-color: #fff;
+}
+.episode_list_item:hover {
+    cursor: pointer;
+    background-color: #ddd;
+}
+.episode_list_item .number {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    font-weight: bolder;
+    font-size: 110%;
+    max-width: calc(100% - 6px);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    o-text-overflow:ellipsis;
+}
+.episode_list_item .release {
+    position: absolute;
+    font-size: 90%;
+    bottom: 3px;
+    left: 3px;
+}
+.tooltip-inner {
+    white-space: nowrap;
+}
+.image_preview {
+    padding: 10px 15px;
+    text-align: center;
+}
+.image_preview img {
+    max-width: 100%;
+}
+.edited-tag {
+    color: #ccc;
+}
+.upload_image_heading {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+}
+.progress {
+    margin: 20px -15px -10px;
+    border-radius: 0;
+}

@@ -1,0 +1,23 @@
+$('#name-error').remove()
+$('#live-error').remove()
+$('#free-error').remove()
+<% if @channel.errors.any? %>
+    <% if @channel.errors[:name].present? %>
+        $('#name').after('<div class="text-danger" id="name-error">Name <%= @channel.errors[:name].join(", ") %>.</div>')
+    <% end %>
+    <% if @channel.errors[:live].present? %>
+        $('#live').after('<div class="text-danger" id="live-error">Live status <%= @channel.errors[:live].join(", ") %>.</div>')
+    <% end %>
+    <% if @channel.errors[:free].present? %>
+        $('#free').after('<div class="text-danger" id="free-error">Membership <%= @channel.errors[:free].join(", ") %>.</div>')
+    <% end %>
+    $('#details-title').html('Channel Details - <span class="text-danger">Not Updated</span>')
+<% else %>
+    var labels = jQuery.makeArray($('label.edited'))
+    $.each(labels, function(index,element){
+        $(element).html($(element).html().replace(' - <span class="edited-tag">Edited</span>',''))
+        $(element).addClass('unedited')
+    })
+    $('#details-title').html('Channel Details - <span class="text-success">Updated</span>')
+    $('#channel_<%= @channel.id %>').html('<%= escape_javascript(render("admins/cms_partials/channel_list_item")) %>')
+<% end %>

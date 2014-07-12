@@ -1,0 +1,25 @@
+$('#new_name-error').remove()
+$('#new_live-error').remove()
+$('#new_free-error').remove()
+<% if @channel.errors.any? %>
+    <% if @channel.errors[:name].present? %>
+        $('#new_name').after('<div class="text-danger" id="new_name-error">Name <%= @channel.errors[:name].join(", ") %>.</div>')
+    <% end %>
+    <% if @channel.errors[:live].present? %>
+        $('#new_live').after('<div class="text-danger" id="new_live-error">Live status <%= @channel.errors[:live].join(", ") %>.</div>')
+    <% end %>
+    <% if @channel.errors[:free].present? %>
+        $('#new_free').after('<div class="text-danger" id="new_free-error">Membership <%= @channel.errors[:free].join(", ") %>.</div>')
+    <% end %>
+<% else %>
+    $('#new_channel_modal').modal('hide')
+    $('#channel_list').prepend('<div class="channel_list_item" id="channel_<%= @channel.id %>" onclick="viewChannel(<%= @channel.id %>)"><%= escape_javascript(render("admins/cms_partials/channel_list_item")) %></div>')
+    $('#new_name').val('')
+    $('#new_live').val('')
+    $('#new_free').val('')
+    $('#new_roku').removeAttr('checked')
+    $('#new_web').removeAttr('checked')
+    $('#new_ios').removeAttr('checked')
+    $('#new_android').removeAttr('checked')
+    $('#channel_<%= @channel.id %>').click()
+<% end %>

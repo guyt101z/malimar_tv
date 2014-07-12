@@ -1,0 +1,11 @@
+<% if @channels.count > 0 %>
+    $('#search_placeholder').html('<%= @channels.count %> found')
+    $('#search_result_list').html('')
+    <% @channels.each do |channel| %>
+        $('#search_result_list').append('<div class="result"><%= link_to channel.name, channel_path(channel_id: channel.id) %></div>')
+    <% end %>
+    $('#search_result_list').show()
+<% else %>
+    $('#search_placeholder').html(':( No results found')
+    $('#search_result_list').html('')
+<% end %>

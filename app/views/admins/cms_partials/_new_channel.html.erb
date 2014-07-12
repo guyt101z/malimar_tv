@@ -1,0 +1,53 @@
+
+<div class="modal fade" id="new_channel_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <%= form_tag add_channel_path, remote: true do %>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">New Channel</h4>
+            </div>
+            <div class="modal-body">
+                <div class='row'>
+                    <div class='col-sm-12 form-group'>
+                        <label>Channel Name</label>
+                        <%= text_field_tag :new_name, '', class: 'form-control' %>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-md-3 col-xs-6 form-group'>
+                        <label>Available on:</label><br/>
+                        <%= check_box_tag :new_roku, true %> Roku
+                    </div>
+                    <div class='col-md-3 col-xs-6 form-group'>
+                        <label>&nbsp;</label><br/>
+                        <%= check_box_tag :new_ios, true %> iOS
+                    </div>
+                    <div class='col-md-3 col-xs-6 form-group'>
+                        <label>&nbsp;</label><br/>
+                        <%= check_box_tag :new_android, true %> Android
+                    </div>
+                    <div class='col-md-3 col-xs-6 form-group'>
+                        <label>&nbsp;</label><br/>
+                        <%= check_box_tag :new_web, true %> Web
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-6 form-group'>
+                        <label>Membership Level</label>
+                        <%= select_tag :new_free, options_for_select([['',nil],['Free', 1],['Premium', 0]]), class: 'form-control' %>
+                    </div>
+                    <div class='col-sm-6 form-group'>
+                        <label>Live Channel</label>
+                        <%= select_tag :new_live, options_for_select([['',nil],['Live', 1],['Not Live', 0]]), class: 'form-control' %>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <%= submit_tag 'Create Channel', class: 'btn btn-primary' %>
+            </div>
+            <% end %>
+        </div>
+    </div>
+</div>

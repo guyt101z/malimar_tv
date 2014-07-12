@@ -213,9 +213,22 @@ img.grayscale.disabled, .channel:hover .channel-img > img {
 .box-white{background:#fff;border:1px solid #ddd;padding:20px;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;margin-bottom:30px;
 box-shadow:1px 1px 4px rgba(0,0,0,.07);-moz-box-shadow:1px 1px 4px rgba(0,0,0,.07);-webkit-box-shadow:1px 1px 4px rgba(0,0,0,.07);color:#6C7885;font-family: 'proxima_nova_light';}
 .data-bb{border-bottom:1px solid #ddd;margin-bottom:10px;padding-bottom:10px;}
-.box-episode{background-color:#eeeeee;padding:10px;margin-bottom:10px;}
-.box-episode a{color:#6C7885;display:block;}
+.box-episode{background-color:#eeeeee;margin-bottom:10px;line-height:26px;position: relative;}
+.box-episode a{color:#6C7885;display:block; padding: 10px;}
 .box-episode .icon-play-sm{float:right;}
+.box-episode:hover {
+	background-color: #13b8f0;
+}
+.box-episode:hover a, .box-episode:hover a:hover {
+	color: #fff;
+	text-decoration: none;
+}
+.play-icon {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	font-size: 26px;
+}
 .icon-play-sm{background:url(/assets/icon-play-sm.png) no-repeat;width:26px;height:26px;display:inline-block;vertical-align:middle;background-position:0 -60px;}
 .box-episode a:hover .icon-play-sm{background-position:0 0;}
 .container-channel{padding:20px 70px}
@@ -355,6 +368,3 @@ border-color:#0fade1;}
 
 .brltlb{border-radius:5px 0 0 5px;-moz-border-radius:5px 0 0 5px;-webkit-border-radius:5px 0 0 5px;overflow:hidden;}
 .brrtrb{border-radius:0 5px 5px 0;-moz-border-radius:0 5px 5px 0;-webkit-border-radius:0 5px 5px 0;overflow:hidden;}
-
-
-

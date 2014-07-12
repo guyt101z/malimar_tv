@@ -56,8 +56,7 @@ class AdminsController < ApplicationController
 
 
 	def videos
-		@movies = Movie.all.order(name: :desc)
-		@genres = Genre.all
+		@channels = Channel.all.order(name: :asc)
 	end
 
 	def add_video

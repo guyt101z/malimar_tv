@@ -1,0 +1,46 @@
+$('#new_ep_title-error').remove()
+$('#new_ep_episode_number-error').remove()
+$('#new_ep_stream_url-error').remove()
+$('#new_ep_release_date-error').remove()
+$('#new_ep_content_type-error').remove()
+$('#new_ep_content_quality-error').remove()
+$('#new_ep_bitrate-error').remove()
+
+<% if @episode.errors.any? %>
+    <% if @episode.errors[:title].present? %>
+        $('#new_ep_title').after('<div class="text-danger" id="new_ep_title-error">Title <%= @episode.errors[:title].join(", ") %>.</div>')
+    <% end %>
+    <% if @episode.errors[:episode_number].present? %>
+        $('#new_ep_episode_number').after('<div class="text-danger" id="new_ep_episode_number-error">Episode number <%= @episode.errors[:episode_number].join(", ") %>.</div>')
+    <% end %>
+    <% if @episode.errors[:stream_url].present? %>
+        $('#new_ep_stream_url').after('<div class="text-danger" id="new_ep_stream_url-error">Streaming URL <%= @episode.errors[:stream_url].join(", ") %>.</div>')
+    <% end %>
+    <% if @episode.errors[:release_date].present? %>
+        $('#new_ep_release_date').after('<div class="text-danger" id="new_ep_release_date-error">Release date <%= @episode.errors[:release_date].join(", ") %>.</div>')
+    <% end %>
+    <% if @episode.errors[:content_type].present? %>
+        $('#new_ep_content_type').after('<div class="text-danger" id="new_ep_content_type-error">Content type <%= @episode.errors[:content_type].join(", ") %>.</div>')
+    <% end %>
+    <% if @episode.errors[:content_quality].present? %>
+        $('#new_ep_content_quality').after('<div class="text-danger" id="new_ep_content_quality-error">Content quality <%= @episode.errors[:content_quality].join(", ") %>.</div>')
+    <% end %>
+    <% if @episode.errors[:bitrate].present? %>
+        $('#new_ep_bitrate').after('<div class="text-danger" id="new_ep_bitrate-error">Bitrate <%= @episode.errors[:bitrate].join(", ") %>.</div>')
+    <% end %>
+<% else %>
+    $('#channel_<%= @channel.id %>').html('<%= escape_javascript(render("admins/cms_partials/channel_list_item")).html_safe %>')
+    $('#search_channel_<%= @channel.id %>').html('<%= escape_javascript(render("admins/cms_partials/channel_list_item")).html_safe %>')
+    $('#episode_wrapper').html('<%= escape_javascript(render("admins/cms_partials/episode_list")).html_safe %>')
+    $('#new_episode_modal').modal('hide')
+    $('#new_ep_title').val('')
+    $('#new_ep_stream_url').val('')
+    $('#new_ep_release_date').val('')
+    $('#new_ep_content_type').val('')
+    $('#new_ep_content_quality').val('')
+    $('#new_ep_bitrate').val('')
+    $('#new_ep_episode_number').val('')
+    $('#new_ep_genres').val('')
+    $('#new_ep_actors').val('')
+    $('#new_ep_synopsis').val('')
+<% end %>

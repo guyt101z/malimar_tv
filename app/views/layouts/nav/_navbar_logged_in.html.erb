@@ -65,12 +65,20 @@
                 </li>
             </ul>
             <div class="sep hidden-xs hidden-sm"></div>
-            <form class="navbar-form navbar-left hidden-sm" role="search">
+            <div class="navbar-form navbar-left hidden-sm" role="search" style='position:relative'>
                 <div class="form-group">
                     <span class="glyphicon glyphicon-search"></span>
-                    <input type="text" class="form-control" placeholder="What are you looking to watch?">
+                    <%= text_field_tag :video_search, '', class: 'form-control', placeholder: 'What are you looking to watch?', autocomplete: 'off' %>
                 </div>
-            </form>
+                <div class='navbar_search_results hidden-sm hidden-xs' id='search_results'>
+                    <div class='search_placeholder' id='search_placeholder'>
+                        Enter your search
+                    </div>
+                    <div class='search_result_list'>
+
+                    </div>
+                </div>
+            </div>
             <ul class="nav navbar-nav navbar-right">
                 <li><div class="sep hidden-xs"></div></li>
                 <li><%= link_to 'ACCOUNT', account_path %></li>
@@ -81,3 +89,21 @@
         </div>
     </div>
 </div><!--navbar-->
+
+<script>
+$('#video_search').focus(function(){
+    $('#search_results').show()
+})
+$('#video_search').blur(function(){
+    $('#search_results').hide()
+})
+$('#video_search').keyup(function(){
+    if ($(this).val() == '') {
+        $('#search_placeholder').html('Enter your search')
+    }
+    else {
+        $('#search_placeholder').html('<i class="fa fa-spinner fa-spin"></i> Loading results...')
+
+    }
+})
+</script>

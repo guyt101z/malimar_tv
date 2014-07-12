@@ -16,6 +16,8 @@
  *= require style
  *= require style1
  *= require user_support_styles
+ *= require animate
+ *= require minimalist
  */
 .col-centered{
     float: none;
@@ -45,6 +47,13 @@ h4.name {
 	font-family: 'Open Sans', sans-serif;
 	font-size: 20px;
 	font-weight: 200;
+}
+.page-title {
+    color: rgb(25, 182, 234);
+    display: block;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 200;
 }
  .account-box {
  	height: 300px;
@@ -138,4 +147,66 @@ h5.member-level {
 	top: 5px;
 	right: 0;
 	margin: 0;
+}
+
+
+.navbar_search_results {
+    position: absolute;
+    top: 31px;
+    left: 48px;
+    background-color: #fff;
+    width: calc(100% - 78px);
+    display: none;
+}
+.navbar_search_results .search_placeholder {
+    width: 100%;
+    padding: 5px 15px;
+}
+.navbar_search_results .search_result_list {
+    display: none;
+    width: 100%;
+}
+.navbar_search_results .search_result_list .result {
+    width: 100%;
+    border-top: 1px solid #000;
+    padding: 3px 15px;
+}
+
+
+.episode_list_title {
+    text-align: left;
+    padding: 8px;
+    margin: -8px -8px 0 -8px;
+    border-bottom: 1px solid #ddd;
+    font-weight: bolder;
+}
+
+.episode_list {
+    height: 150px;
+    overflow-y: scroll;
+    margin: 0 -8px 8px -8px;
+    border-bottom: 1px solid #ddd;
+}
+.episode_list .episode {
+    height: 50px;
+    width: 100%;
+    position: relative;
+    border-bottom: 1px solid #ddd;
+}
+.episode_list .episode:last-child {
+    border: 0;
+}
+.episode_list .episode:hover, .episode_list .episode.active {
+    background-color: #13b8f0;
+    color: #fff;
+    cursor: pointer;
+}
+.episode_list .episode .title {
+    position: absolute;
+    top: 3px;
+    left: 8px;
+}
+.video_wrapper {
+    width: 100%;
+    height: 400px;
 }

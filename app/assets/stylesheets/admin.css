@@ -14,6 +14,7 @@
  *= require_self
  *= require support_styles
  *= require transaction_styles
+ *= require video_cms
  *= require animate
  */
  html, body
