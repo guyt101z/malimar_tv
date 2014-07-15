@@ -5,6 +5,7 @@ $('#new_free-error').remove()
 $('#new_content_quality-error').remove()
 $('#new_bitrate-error').remove()
 $('#new_synopsis-error').remove()
+$('#new_stream_name-error').remove()
 <% if @channel.errors.any? %>
     <% if @channel.errors[:name].present? %>
         $('#new_name').after('<div class="text-danger" id="new_name-error">Name <%= @channel.errors[:name].join(", ") %>.</div>')
@@ -26,6 +27,9 @@ $('#new_synopsis-error').remove()
     <% end %>
     <% if @channel.errors[:synopsis].present? %>
         $('#new_synopsis').after('<div class="text-danger" id="new_synopsis-error">Synopsis <%= @channel.errors[:synopsis].join(", ") %>.</div>')
+    <% end %>
+    <% if @channel.errors[:stream_name].present? %>
+        $('#new_stream_name').after('<div class="text-danger" id="new_stream_name-error">Stream name <%= @channel.errors[:stream_name].join(", ") %>.</div>')
     <% end %>
 <% else %>
     $('#new_channel_modal').modal('hide')
