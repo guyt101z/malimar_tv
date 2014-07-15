@@ -16,7 +16,7 @@
                     </div>
                     <div class='episode_list'>
                         <% @episodes.each do |episode| %>
-                            <div class='episode' id='episode_<%= episode.id %>' onclick='window.location="/watch/shows/<%= @show.id %>/<%= episode.id %>"'>
+                            <div class='episode' id='episode_<%= episode.id %>' onclick='window.location="/watch/shows/<%= @show.id %>/<%= episode.episode_number %>"'>
                                 <div class='title'>
                                     <%= episode.title %>
                                 </div>
