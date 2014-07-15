@@ -22,6 +22,17 @@ Rails.application.routes.draw do
         post 'register_new_device' => 'users#register_new_device'
 
         post 'update_profile' => 'users#update_profile'
+
+        get 'video_search' => 'videos#navbar_search'
+
+        get 'watch/grid/:category_id' => 'videos#full_grid', as: 'full_grid'
+
+        get '/watch/live/:channel_id' => 'videos#watch_channel', as: 'watch_channel'
+
+        get '/watch/movies/:movie_id' => 'videos#watch_movie', as: 'watch_movie'
+
+        get '/watch/shows/:show_id' => 'videos#browse_episodes', as: 'browse_episodes'
+        get '/watch/shows/:show_id/:episode_number' => 'videos#watch_episode', as: 'watch_episode'
     end
 
     get 'events/admin/:id' => 'events#admin_events'
@@ -56,13 +67,16 @@ Rails.application.routes.draw do
 
   		get '/admins/videos/live_channels' => 'admins#live_channels', as: 'live_channels'
   		get 'view_channel' => 'videos#view_channel'
+        get 'delete_channel' => 'videos#delete_channel'
 
         post 'add_show' => 'videos#add_show'
         post 'update_show' => 'videos#update_show'
         post 'update_show_image' => 'videos#update_show_image'
+        get 'delete_show' => 'videos#delete_show'
 
         get 'search_shows' => 'videos#search_shows'
         get 'search_episodes' => 'videos#search_episodes'
+        get 'delete_episode' => 'videos#delete_episode'
 
         post 'add_episode' => 'videos#add_episode'
         post 'update_episode' => 'videos#update_episode'
@@ -77,6 +91,7 @@ Rails.application.routes.draw do
         post 'add_movie' => 'videos#add_movie'
         post 'update_movie' => 'videos#update_movie'
         post 'update_movie_image' => 'videos#update_movie_image'
+        get 'delete_movie' => 'videos#delete_movie'
 
         get 'search_movies' => 'videos#search_movies'
 
@@ -153,14 +168,7 @@ Rails.application.routes.draw do
     get '/api/:device/:channel_id/:epsiode_id' => 'api#episode', as: 'api_episode' # Web Only (for video page)
     get '/api/authorize/:serial' => 'api#authorize_roku', as: 'api_authorize_roku' # Roku authentication
 
-    get 'video_search' => 'videos#navbar_search'
 
-    get '/watch/live/:channel_id' => 'videos#watch_channel', as: 'watch_channel'
-
-    get '/watch/movies/:movie_id' => 'videos#watch_movie', as: 'watch_movie'
-
-    get '/watch/shows/:show_id' => 'videos#browse_episodes', as: 'browse_episodes'
-    get '/watch/shows/:show_id/:episode_number' => 'videos#watch_episode', as: 'watch_episode'
 
     get 'view_invoice/:id' => 'transactions#view_invoice', as: 'view_invoice'
     get 'view_user_invoice/:id' => 'transactions#view_all', as: 'view_user_invoice'

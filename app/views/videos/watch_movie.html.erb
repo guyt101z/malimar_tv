@@ -38,7 +38,7 @@
 
                     </div>
                     <div class="data-bb">
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+                        <%= simple_format(@movie.synopsis) %>
                     </div>
                 </div>
             </div>
@@ -48,7 +48,7 @@
 <script>
 $('#episode_<%= @movie.id %>').addClass('active')
 jwplayer("video_wrapper").setup({
-    file: "<%= @movie.stream_url %>",
+    file: "<%= @movie.stream_url %>?token=<%= @token %>",
     image: "<%= @movie.image_url %>",
     title:"<%= @movie.name %>",
     width: '100%',

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140714205632) do
+ActiveRecord::Schema.define(version: 20140715200410) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 20140714205632) do
     t.string   "item_type"
     t.integer  "rank"
     t.boolean  "free"
+    t.boolean  "front_page"
   end
 
   create_table "channels", force: true do |t|
@@ -95,6 +96,7 @@ ActiveRecord::Schema.define(version: 20140714205632) do
     t.string   "content_quality"
     t.string   "bitrate"
     t.text     "synopsis"
+    t.string   "stream_name"
   end
 
   create_table "devices", force: true do |t|
@@ -148,6 +150,7 @@ ActiveRecord::Schema.define(version: 20140714205632) do
     t.string   "content_quality"
     t.string   "bitrate"
     t.text     "synopsis"
+    t.string   "stream_name"
   end
 
   create_table "plans", force: true do |t|

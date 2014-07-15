@@ -1,5 +1,5 @@
 <% @filtered_episodes.each do |episode| %>
-    <div class='episode_list_item' onclick='viewEpisode(<%= episode.id %>)'>
+    <div class='episode_list_item' onclick='viewEpisode(<%= episode.id %>)' id='episode_search_<%= episode.id %>'>
         <div class='number'># <%= episode.episode_number %> - <%= episode.title %></div>
         <div class='release'>Released: <%= episode.release_date.strftime('%B %-d, %Y') %></div>
     </div>

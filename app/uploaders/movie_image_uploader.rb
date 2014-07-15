@@ -28,6 +28,10 @@ class MovieImageUploader < CarrierWave::Uploader::Base
         process :resize_to_fill => [50,50]
     end
 
+    version :front_page do
+        process :resize_to_fill => [199,150]
+    end
+
     def extension_white_list
         %w(jpg jpeg png)
     end

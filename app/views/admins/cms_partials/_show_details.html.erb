@@ -5,7 +5,10 @@
             <div class='panel panel-default'>
                 <div class='panel-heading' style='position: relative'>
                     <h3 class='panel-title' id='details-title'>Show Details</h3>
-                    <a class='upload_image_heading btn btn-primary btn-sm' onclick='$("#update_channel_form").trigger("submit.rails"); $("#details-title").html("Updating...")'>Save Changes</a>
+                    <div class='upload_image_heading'>
+                        <%= link_to 'Delete This Show', delete_show_path(id: @show.id), class: 'btn btn-danger btn-sm', data: {confirm: "Are you sure you want to delete this show?\nIt can't be undone.", disable_with: 'Deleting...'}, remote: true %>
+                        <a class='btn btn-primary btn-sm' onclick='$("#update_channel_form").trigger("submit.rails"); $("#details-title").html("Updating...")'>Save Changes</a>
+                    </div>
                 </div>
                 <div class='panel-body'>
                     <%= form_tag update_show_path, remote: true, id: 'update_channel_form' do %>

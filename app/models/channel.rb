@@ -1,7 +1,7 @@
 class Channel < ActiveRecord::Base
     attr_accessible :name, :live, :free, :image, :roku, :ios, :android, :web, :stream_url, :content_type
 
-    validates_presence_of :name, :stream_url, :bitrate
+    validates_presence_of :name, :stream_url, :bitrate, :stream_name
     validates_inclusion_of :free, in: [true,false], message: 'must be selected'
     validates_inclusion_of :content_type, in: ['Audio','Video'], message: 'must be selected'
     validates_inclusion_of :content_quality, in: ['HD','SD'], message: 'must be selected'
@@ -11,7 +11,7 @@ class Channel < ActiveRecord::Base
 
     has_many :episodes
 
-    searchkick word_start: [:name]
+    searchkick
 
     def matches?(search_term)
         searchable_string = name.downcase
@@ -80,5 +80,9 @@ class Channel < ActiveRecord::Base
             end
         end
         return matches
+    end
+
+    def watch_url
+        return "/watch/live/#{id}"
     end
 end

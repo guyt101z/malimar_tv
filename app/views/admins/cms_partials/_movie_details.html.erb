@@ -5,7 +5,10 @@
             <div class='panel panel-default'>
                 <div class='panel-heading' style='position: relative'>
                     <h3 class='panel-title' id='details-title'>Movie Details</h3>
-                    <a class='upload_image_heading btn btn-primary btn-sm' onclick='$("#update_channel_form").trigger("submit.rails"); $("#details-title").html("Updating...")'>Save Changes</a>
+                    <div class='upload_image_heading'>
+                        <%= link_to 'Delete This Movie', delete_movie_path(id: @movie.id), class: 'btn btn-danger btn-sm', data: {confirm: "Are you sure you want to delete this movie?\nIt can't be undone.", disable_with: 'Deleting...'}, remote: true %>
+                        <a class='btn btn-primary btn-sm' onclick='$("#update_channel_form").trigger("submit.rails"); $("#details-title").html("Updating...")'>Save Changes</a>
+                    </div>
                 </div>
                 <div class='panel-body'>
                     <%= form_tag update_movie_path, remote: true, id: 'update_channel_form' do %>
@@ -17,9 +20,13 @@
                         </div>
                     </div>
                     <div class='row'>
-                        <div class='col-md-12 form-group'>
+                        <div class='col-md-8 form-group'>
                             <label class='unedited'>Stream URL</label>
                             <%= text_field_tag :stream_url, @movie.stream_url, class: 'form-control edit_channel' %>
+                        </div>
+                        <div class='col-md-4 form-group'>
+                            <label class='unedited'>Stream URL</label>
+                            <%= text_field_tag :stream_name, @movie.stream_name, class: 'form-control edit_channel' %>
                         </div>
                     </div>
                     <label class='unedited' id='checkbox_label'>Available on:</label>

@@ -22,7 +22,10 @@ class VideosController < ApplicationController
 		@channel.synopsis = params[:new_synopsis]
 		@channel.genres = params[:new_genres]
 		@channel.actors = params[:new_actors]
-		@channel.save
+		@channel.stream_name = params[:new_stream_name]
+		if @channel.save
+			Channel.reindex
+		end
 	end
 
 	def update_channel
@@ -40,7 +43,10 @@ class VideosController < ApplicationController
 		@channel.synopsis = params[:synopsis]
 		@channel.genres = params[:genres]
 		@channel.actors = params[:actors]
-		@channel.save
+		@channel.stream_name = params[:stream_name]
+		if @channel.save
+			Channel.reindex
+		end
 	end
 
 	def update_channel_image
@@ -64,6 +70,13 @@ class VideosController < ApplicationController
 		end
 	end
 
+	def delete_channel
+		channel = Channel.find(params[:id])
+		@id = channel.id
+		channel.destroy
+		Channel.reindex
+	end
+
 	# Movie Methods
 	#######################################################################################
 
@@ -85,7 +98,10 @@ class VideosController < ApplicationController
 		@movie.synopsis = params[:new_synopsis]
 		@movie.genres = params[:new_genres]
 		@movie.actors = params[:new_actors]
-		@movie.save
+		@movie.stream_name = params[:new_stream_name]
+		if @movie.save
+			Movie.reindex
+		end
 	end
 
 	def update_movie
@@ -102,7 +118,10 @@ class VideosController < ApplicationController
 		@movie.synopsis = params[:synopsis]
 		@movie.genres = params[:genres]
 		@movie.actors = params[:actors]
-		@movie.save
+		@movie.stream_name = params[:stream_name]
+		if @movie.save
+			Movie.reindex
+		end
 	end
 
 	def update_movie_image
@@ -113,6 +132,13 @@ class VideosController < ApplicationController
 		else
 			render status: 500
 		end
+	end
+
+	def delete_movie
+		movie = Movie.find(params[:id])
+		@id = movie.id
+		movie.destroy
+		Movie.reindex
 	end
 
 	def search_movies
@@ -148,7 +174,9 @@ class VideosController < ApplicationController
 		@show.synopsis = params[:new_synopsis]
 		@show.genres = params[:new_genres]
 		@show.actors = params[:new_actors]
-		@show.save
+		if @show.save
+			Show.reindex
+		end
 	end
 
 	def update_show
@@ -165,7 +193,9 @@ class VideosController < ApplicationController
 		@show.synopsis = params[:synopsis]
 		@show.genres = params[:genres]
 		@show.actors = params[:actors]
-		@show.save
+		if @show.save
+			Show.reindex
+		end
 	end
 
 	def update_show_image
@@ -176,6 +206,18 @@ class VideosController < ApplicationController
 		else
 			render status: 500
 		end
+	end
+
+	def delete_show
+		show = Show.find(params[:id])
+		episodes = Episode.where(show_id: show.id)
+		@id = show.id
+
+		show.destroy
+		episodes.each do |episode|
+			episode.destroy
+		end
+		Show.reindex
 	end
 
 	def search_shows
@@ -226,6 +268,13 @@ class VideosController < ApplicationController
 		end
 	end
 
+	def delete_episode
+		episode = Episode.find(params[:id])
+		@id = episode.id
+		@show = Show.find(episode.show_id)
+		episode.destroy
+	end
+
 	def search_episodes
 		episodes = Episode.where(show_id: params[:id]).order(episode_number: :desc)
 		@filtered_episodes = Array.new
@@ -250,6 +299,7 @@ class VideosController < ApplicationController
 		@category.rank = params[:new_rank]
 		@category.free = params[:new_free]
 		@category.genre = params[:new_genre]
+		@category.front_page = params[:new_front_page]
 		@category.save
 	end
 	def update_grid
@@ -261,6 +311,7 @@ class VideosController < ApplicationController
 		@category.rank = params[:rank]
 		@category.free = params[:free]
 		@category.genre = params[:genre]
+		@category.front_page = params[:front_page]
 		@category.save
 	end
 	def view_grid
@@ -274,45 +325,93 @@ class VideosController < ApplicationController
 	#######################################################################################
 	def watch_channel
 		@channel = Channel.find(params[:channel_id])
+		@token = generate_token(@channel.stream_name)
+
+		unless @channel.free?
+			premium_wall
+		end
 	end
 
 	def browse_episodes
 		@show = Show.find(params[:show_id])
 		@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
+
+		unless @show.free?
+			premium_wall
+		end
 	end
 	def watch_episode
 		@show = Show.find(params[:show_id])
 		@episode = Episode.where(show_id: @show.id, episode_number: params[:episode_number]).first
 		@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
+
+		unless @show.free?
+			premium_wall
+		end
 	end
 
 	def watch_movie
 		@movie = Movie.find(params[:movie_id])
+		@token = generate_token(@movie.stream_name)
+
+		unless @movie.free?
+			premium_wall
+		end
 	end
 
 	def navbar_search
-		@channels = Channel.search params[:search], limit: 3, operator: "or", where: {web: true}
-		@shows = Show.search params[:search], limit: 3, operator: "or", where: {web: true}
-		@movies = Movie.search params[:search], limit: 3, operator: "or", where: {web: true}
+		@channels = Channel.search params[:search], where: {web: true}, operator: 'or', limit: 3
+		@shows = Show.search params[:search], where: {web: true}, operator: 'or', limit: 3
+		@movies = Movie.search params[:search], where: {web: true}, operator: 'or', limit: 3
 	end
 
-	def channel
-		@channel = Channel.find(params[:channel_id])
-		if @channel.available?('web')
-			@episodes = Episode.where(channel_id: @channel.id).order(episode_number: :desc)
-		else
-			flash[:notice] = 'That channel is not available on the web!'
+	def landing
+		@categories = Category.where(front_page: true).order(rank: :asc)
+	end
+
+	def full_grid
+		@category = Category.find(params[:category_id])
+	end
+
+	private
+
+	def generate_token(stream_name)
+		private_token = Setting.where(name: 'WMS Token').first.data
+
+		random_half = generate_random_half(10)
+		token_creation_time = (Time.now.to_i + 60)*1000
+		token_string = "#{stream_name}-#{token_creation_time}-#{random_half}-#{private_token}"
+		token_encoded = Digest::MD5.hexdigest(token_string)
+		token_hash_string = "#{token_string}-#{token_creation_time}-#{random_half}-#{token_encoded}"
+
+		return token_hash_string
+	end
+
+	def generate_random_half(chars)
+		random_gen = Random.new
+		random = ''
+
+		for i in 0...chars
+			random_1 = random_gen.rand(0..1)
+			random_2 = random_gen.rand(0..2)
+			if random_1 == 0
+				random += (random_gen.rand('a'.ord..'k'.ord)).chr
+			elsif
+				random += random_gen.rand(0..9).to_s
+			end
+
+			if random_2 == 0
+				random = random.downcase
+			end
+		end
+		return random
+	end
+
+	def premium_wall
+		if current_user.expiry.nil? || current_user.expiry < Date.today
+			flash[:error] = 'You must be a premium member to access.'
 			redirect_to root_url and return
 		end
 	end
-	def watch_video
-		@channel = Channel.find(params[:channel_id])
-		if @channel.available?('web')
-			@episodes = Episode.where(channel_id: @channel.id).order(episode_number: :desc)
-			@episode = Episode.find(params[:episode_id])
-		else
-			flash[:notice] = 'That channel is not available on the web!'
-			redirect_to root_url and return
-		end
-	end
+
 end

@@ -5,7 +5,10 @@
             <div class='panel panel-default'>
                 <div class='panel-heading' style='position: relative'>
                     <h3 class='panel-title' id='details-title'>Channel Details</h3>
-                    <a class='upload_image_heading btn btn-primary btn-sm' onclick='$("#update_channel_form").trigger("submit.rails"); $("#details-title").html("Updating...")'>Save Changes</a>
+                    <div class='upload_image_heading'>
+                        <%= link_to 'Delete This Channel', delete_channel_path(id: @channel.id), class: 'btn btn-danger btn-sm', data: {confirm: "Are you sure you want to delete this channel?\nIt can't be undone.", disable_with: 'Deleting...'}, remote: true %>
+                        <a class='btn btn-primary btn-sm' onclick='$("#update_channel_form").trigger("submit.rails"); $("#details-title").html("Updating...")'>Save Changes</a>
+                    </div>
                 </div>
                 <div class='panel-body'>
                     <%= form_tag update_channel_path, remote: true, id: 'update_channel_form' do %>
@@ -17,9 +20,13 @@
                         </div>
                     </div>
                     <div class='row'>
-                        <div class='col-md-12 form-group'>
+                        <div class='col-md-8 form-group'>
                             <label class='unedited'>Stream URL</label>
                             <%= text_field_tag :stream_url, @channel.stream_url, class: 'form-control edit_channel' %>
+                        </div>
+                        <div class='col-md-4 form-group'>
+                            <label class='unedited'>Stream Name</label>
+                            <%= text_field_tag :stream_name, @channel.stream_name, class: 'form-control edit_channel' %>
                         </div>
                     </div>
                     <label class='unedited' id='checkbox_label'>Available on:</label>
@@ -54,7 +61,7 @@
                         </div>
                         <div class='col-sm-6 form-group'>
                             <label class='unedited'>Membership Level</label>
-                            <%= select_tag :free, options_for_select([['Free', 1],['Premium', 0]], @channel.free), class: 'form-control edit_channel' %>
+                            <%= select_tag :free, options_for_select([['Free', true],['Premium', false]], @channel.free), class: 'form-control edit_channel' %>
                         </div>
                     </div>
                     <div class='row'>

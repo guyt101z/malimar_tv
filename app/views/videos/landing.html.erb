@@ -51,130 +51,85 @@
 
 <div class="content">
 	<div class="container">
-    	<div class="panel panel-custom">
-          	<div class="panel-heading">
-            	<div class="icon-left"><span class="glyphicon glyphicon-heart"></span></div>
-            	<h3>FREE Live TV Channels</h3>
-            	<a href="#" class="pull-right"><span class="glyphicon glyphicon-th-large"></span> See All </a>
-            </div>
-          	<div class="panel-body">
-            	<div class="row row0">
-                	<div class="col-sm-4 col-md-2">
-                    	<div class="channel">
-                        	<a href="#">
-                            	<div class="ribbon"><%= image_tag "ribbon-top.png" %></div>
-                        		<div class="channel-img"><%= image_tag "tv-01.png", class: "grayscale" %></div>
-                                <h4>Thai TV3</h4>
-                            </a>
-                        </div>
+        <% @categories.each do |category| %>
+            <%
+            filter_params = Hash.new
+            unless category.content_type.blank?
+                filter_params[:content_type] = category.content_type
+            end
+
+            unless category.content_quality.blank?
+                filter_params[:content_quality] = category.content_quality
+            end
+
+            filter_params[:free] = category.free
+            filter_params[:web] = true
+
+            if category.item_type == 'shows'
+                all_items = Show.where(filter_params).order(name: :asc)
+                filtered_items = Array.new
+
+                unless category.genre.blank?
+                    all_items.each do |item|
+                        filtered_items.push(item) if item.matches_genre?(category.genre)
+                    end
+                else
+                    filtered_items = all_items
+                end
+            elsif category.item_type == 'movies'
+                all_items = Movie.where(filter_params.except(:content_type)).order(name: :asc)
+                filtered_items = Array.new
+
+                unless category.genre.blank?
+                    all_items.each do |item|
+                        filtered_items.push(item) if item.matches_genre?(category.genre)
+                    end
+                else
+                    filtered_items = all_items
+                end
+            else
+                all_items = Channel.where(filter_params).order(name: :asc)
+                filtered_items = Array.new
+
+                unless category.genre.blank?
+                    all_items.each do |item|
+                        filtered_items.push(item) if item.matches_genre?(category.genre)
+                    end
+                else
+                    filtered_items = all_items
+                end
+            end
+            %>
+            <% if filtered_items.any? %>
+            	<div class="panel panel-custom">
+                  	<div class="panel-heading">
+                    	<div class="icon-left"><span class="glyphicon glyphicon-heart"></span></div>
+                    	<h3><%= category.name %></h3>
+                        <%= link_to raw('<span class="glyphicon glyphicon-th-large"></span> See All'), full_grid_path(category_id: category.id), class: 'pull-right' %>
                     </div>
-                	<div class="col-sm-4 col-md-2">
-                    	<div class="channel">
-                        	<a href="#">
-                        		<div class="channel-img"><%= image_tag "tv-02.png", class: "grayscale" %></div>
-                                <h4>TV5 Cambodia</h4>
-                            </a>
+                  	<div class="panel-body">
+                    	<div class="row row0">
+                            <% if filtered_items.count >= 6 %>
+                                <% random_pick = filtered_items.sample(6) %>
+                            <% else %>
+                                <% random_pick = filtered_items.sample(filtered_items.count) %>
+                            <% end %>
+                            <% random_pick.each do |item| %>
+                                <div class="col-sm-4 col-md-2">
+                                    <div class="channel">
+                                        <a href="<%= item.watch_url %>">
+                                            <% if item.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
+                                            <div class="channel-img"><%= image_tag item.image_url(:front_page), class: "grayscale" %></div>
+                                            <h4><%= item.name %></h4>
+                                        </a>
+                                    </div>
+                                </div>
+                            <% end %>
                         </div>
-                    </div>
-                	<div class="col-sm-4 col-md-2">
-                    	<div class="channel">
-                        	<a href="#">
-                            	<div class="ribbon"><%= image_tag "ribbon-top.png" %></div>
-                        		<div class="channel-img"><%= image_tag "tv-03.png", class: "grayscale" %></div>
-                                <h4>Thai Channel 8</h4>
-                            </a>
-                        </div>
-                    </div>
-                	<div class="col-sm-4 col-md-2">
-                    	<div class="channel">
-                        	<a href="#">
-                        		<div class="channel-img"><%= image_tag "tv-04.png", class: "grayscale" %></div>
-                                <h4>TV 3 Malaysia</h4>
-                            </a>
-                        </div>
-                    </div>
-                	<div class="col-sm-4 col-md-2">
-                    	<div class="channel">
-                        	<a href="#">
-                            	<div class="ribbon"><%= image_tag "ribbon-new.png" %></div>
-                        		<div class="channel-img"><%= image_tag "tv-05.png", class: "grayscale" %></div>
-                                <h4>Malaysia TV 8</h4>
-                            </a>
-                        </div>
-                    </div>
-                	<div class="col-sm-4 col-md-2">
-                    	<div class="channel">
-                        	<a href="#">
-                        		<div class="channel-img"><%= image_tag "tv-06.png", class: "grayscale" %></div>
-                                <h4>CTV9 Cambodia</h4>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-          	</div>
-        </div><!--pannel-->
-        <div class="panel panel-custom">
-          	<div class="panel-heading">
-            	<div class="icon-left"><span class="glyphicon glyphicon-heart"></span></div>
-            	<h3>PREMIUM Live TV Channels</h3>
-            	<a href="#" class="pull-right"><span class="glyphicon glyphicon-th-large"></span> See All </a>
-            </div>
-          	<div class="panel-body">
-            	<div class="row row0">
-                	<div class="col-sm-4 col-md-2">
-                    	<div class="channel">
-                        	<a href="#">
-                        		<div class="channel-img"><%= image_tag "tv-07.png", class: "grayscale" %></div>
-                                <h4>TV Lao</h4>
-                            </a>
-                        </div>
-                    </div>
-                	<div class="col-sm-4 col-md-2">
-                    	<div class="channel">
-                        	<a href="#">
-                            	<div class="ribbon"><%= image_tag "ribbon-hd.png" %></div>
-                        		<div class="channel-img"><%= image_tag "tv-08.png", class: "grayscale" %></div>
-                                <h4>LaoNational TV</h4>
-                            </a>
-                        </div>
-                    </div>
-                	<div class="col-sm-4 col-md-2">
-                    	<div class="channel">
-                        	<a href="#">
-                            	<div class="ribbon"><%= image_tag "ribbon-top.png" %></div>
-                        		<div class="channel-img"><%= image_tag "tv-09.png", class: "grayscale" %></div>
-                                <h4>Thai TV 7</h4>
-                            </a>
-                        </div>
-                    </div>
-                	<div class="col-sm-4 col-md-2">
-                    	<div class="channel">
-                        	<a href="#">
-                        		<div class="channel-img"><%= image_tag "tv-10.png", class: "grayscale" %></div>
-                                <h4>Lao Star TV</h4>
-                            </a>
-                        </div>
-                    </div>
-                	<div class="col-sm-4 col-md-2">
-                    	<div class="channel">
-                        	<a href="#">
-                        		<div class="channel-img"><%= image_tag "tv-11.png", class: "grayscale" %></div>
-                                <h4>Thai TV 5</h4>
-                            </a>
-                        </div>
-                    </div>
-                	<div class="col-sm-4 col-md-2">
-                    	<div class="channel">
-                        	<a href="#">
-                            	<div class="ribbon"><%= image_tag "ribbon-hd.png" %></div>
-                        		<div class="channel-img"><%= image_tag "tv-12.png", class: "grayscale" %></div>
-                                <h4>MV Lao Television</h4>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    	</div>
+                  	</div>
+                </div><!--pannel-->
+            <% end %>
+        <% end %>
 
         <div class="row row0 mb30">
         	<div class="col-sm-4">

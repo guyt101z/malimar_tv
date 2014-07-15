@@ -49,7 +49,7 @@ end
 <div class='col-xs-12'>
     <div class='panel panel-default'>
         <div class='panel-heading' style='position:relative'>
-            <h3 class='panel-title'><%= @category.rank %> | <%= @category.name %></h3>
+            <h3 class='panel-title'><%= @category.rank %> | <%= @category.name %> <% if @category.front_page? %>(On Front Page)<% end %></h3>
             <div class='upload_image_heading'>
                 <%= link_to 'Delete Grid', delete_grid_path(id: @category.id), class: 'btn btn-danger btn-sm', data: {confirm: 'Are you sure you want to delete this grid?'}, remote: true %>
                 <%= link_to 'Edit Grid', view_grid_path(id: @category.id), class: 'btn btn-primary btn-sm', remote: true %>

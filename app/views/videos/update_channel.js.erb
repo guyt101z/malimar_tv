@@ -5,6 +5,7 @@ $('#free-error').remove()
 $('#content_quality-error').remove()
 $('#bitrate-error').remove()
 $('#synopsis-error').remove()
+$('#stream_name-error').remove()
 <% if @channel.errors.any? %>
     <% if @channel.errors[:name].present? %>
         $('#name').after('<div class="text-danger" id="name-error">Name <%= @channel.errors[:name].join(", ") %>.</div>')
@@ -26,6 +27,9 @@ $('#synopsis-error').remove()
     <% end %>
     <% if @channel.errors[:synopsis].present? %>
         $('#synopsis').after('<div class="text-danger" id="synopsis-error">Synopsis <%= @channel.errors[:synopsis].join(", ") %>.</div>')
+    <% end %>
+    <% if @channel.errors[:stream_name].present? %>
+        $('#stream_name').after('<div class="text-danger" id="stream_name-error">Stream name <%= @channel.errors[:stream_name].join(", ") %>.</div>')
     <% end %>
     $('#details-title').html('Channel Details - <span class="text-danger">Not Updated</span>')
 <% else %>

@@ -70,11 +70,11 @@
                     <span class="glyphicon glyphicon-search"></span>
                     <%= text_field_tag :video_search, '', class: 'form-control', placeholder: 'What are you looking to watch?', autocomplete: 'off' %>
                 </div>
-                <div class='navbar_search_results hidden-sm hidden-xs' id='search_results'>
+                <div class='navbar_search_results animated_quick zoomIn' id='search_results'>
                     <div class='search_placeholder' id='search_placeholder'>
                         Enter your search
                     </div>
-                    <div class='search_result_list'>
+                    <div class='search_result_list' id='search_result_list'>
 
                     </div>
                 </div>
@@ -95,15 +95,31 @@ $('#video_search').focus(function(){
     $('#search_results').show()
 })
 $('#video_search').blur(function(){
-    $('#search_results').hide()
+    if ($('#search_results').is(":hover")) {
+        // do nothing
+    }
+    else {
+        $('#search_results').hide()
+    }
+})
+$('#search_results').mouseout(function(){
+    if ($('#video_search').is(':focus')){
+        // do nothing
+    }
+    else {
+        $('#search_results').hide()
+    }
 })
 $('#video_search').keyup(function(){
     if ($(this).val() == '') {
         $('#search_placeholder').html('Enter your search')
+        $('#search_result_list').hide().html('')
     }
     else {
         $('#search_placeholder').html('<i class="fa fa-spinner fa-spin"></i> Loading results...')
-
+        $.ajax({
+            url: '/video_search?search='+$('#video_search').val()
+        })
     }
 })
 </script>

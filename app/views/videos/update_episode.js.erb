@@ -6,6 +6,7 @@ $('#edit_ep_content_type-error').remove()
 $('#edit_ep_content_quality-error').remove()
 $('#edit_ep_bitrate-error').remove()
 $('#edit_ep_length-error').remove()
+$('#edit_ep_stream_name-error').remove()
 
 <% if @episode.errors.any? %>
     <% if @episode.errors[:title].present? %>
@@ -31,6 +32,9 @@ $('#edit_ep_length-error').remove()
     <% end %>
     <% if @episode.errors[:length].present? %>
         $('#edit_ep_length').after('<div class="text-danger" id="edit_ep_length-error">Length <%= @episode.errors[:length].join(", ") %>.</div>')
+    <% end %>
+    <% if @episode.errors[:stream_name].present? %>
+        $('#edit_ep_stream_name').after('<div class="text-danger" id="edit_ep_stream_name-error">Stream name <%= @episode.errors[:stream_name].join(", ") %>.</div>')
     <% end %>
 <% else %>
     $('#show_<%= @show.id %>').html('<%= escape_javascript(render("admins/cms_partials/show_list_item")).html_safe %>')

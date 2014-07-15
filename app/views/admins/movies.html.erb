@@ -73,8 +73,8 @@
 
     function viewChannel(id){
         $('.channel_list_item').removeClass('active')
-        $('#channel_'+id).addClass('active')
-        $('#channel_search_'+id).addClass('active')
+        $('#movie_'+id).addClass('active')
+        $('#movie_search_'+id).addClass('active')
         $.ajax({
             url: '/view_movie?id='+id
         })

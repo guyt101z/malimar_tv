@@ -11,8 +11,8 @@ class Show < ActiveRecord::Base
 
     has_many :episodes
 
-    searchkick word_start: [:name]
-
+    searchkick
+    
     def matches?(search_term)
         searchable_string = name.downcase
         if roku == true
@@ -67,5 +67,9 @@ class Show < ActiveRecord::Base
         else
             return true
         end
+    end
+
+    def watch_url
+        return "/watch/shows/#{id}"
     end
 end

@@ -1,5 +1,5 @@
-<% if @channels.count > 0 %>
-    $('#search_placeholder').html('<%= @channels.count %> found')
+<% if @channels.count > 0 || @movies.count > 0 || @shows.count > 0 %>
+    $('#search_placeholder').html('<%= @channels.count + @movies.count + @shows.count %> found')
     $('#search_result_list').html('')
     <% @channels.each do |channel| %>
         $('#search_result_list').append('<div class="result"><%= link_to channel.name, watch_channel_path(channel_id: channel.id) %></div>')

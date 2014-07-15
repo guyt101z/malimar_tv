@@ -1,7 +1,7 @@
 class Movie < ActiveRecord::Base
     attr_accessible :name, :live, :free, :image, :roku, :ios, :android, :web, :stream_url
 
-    validates_presence_of :name, :stream_url
+    validates_presence_of :name, :stream_url, :stream_name
     validates_inclusion_of :free, in: [true,false], message: 'must be selected'
     validates_inclusion_of :content_quality, in: ['HD','SD'], message: 'must be selected'
     validates_numericality_of :bitrate
@@ -10,7 +10,7 @@ class Movie < ActiveRecord::Base
 
     has_many :episodes
 
-    searchkick word_start: [:name]
+    searchkick
 
     def matches?(search_term)
         searchable_string = name.downcase
@@ -77,5 +77,9 @@ class Movie < ActiveRecord::Base
             end
         end
         return matches
+    end
+
+    def watch_url
+        return "/watch/movies/#{id}"
     end
 end

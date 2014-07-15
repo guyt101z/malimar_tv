@@ -1,0 +1,5 @@
+$('#episode_<%= @id %>').remove()
+$('#episode_search_<%= @id %>').remove()
+$('#show_<%= @show.id %>').html('<%= escape_javascript(render("admins/cms_partials/show_list_item")).html_safe %>')
+$('#search_show_<%= @show.id %>').html('<%= escape_javascript(render("admins/cms_partials/show_list_item")).html_safe %>')
+$('#edit_episode_modal').modal('hide')
