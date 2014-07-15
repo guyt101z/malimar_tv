@@ -376,12 +376,14 @@ class VideosController < ApplicationController
 	private
 
 	def generate_token(stream_name)
+		require 'digest/md5'
 		private_token = Setting.where(name: 'WMS Token').first.data
 
 		random_half = generate_random_half(Random.new.rand(10..30))
 		token_creation_time = (Time.now.to_i + 60)*1000
 		token_string = "#{stream_name}-#{token_creation_time}-#{random_half}-#{private_token}"
-		token_hash_string = "#{token_string}-#{token_creation_time}-#{random_half}-#{Digest::MD5.hexdigest(token_string)}"
+		encode = Digest::MD5.hexdigest(token_string)
+		token_hash_string = "#{stream_name}-#{token_creation_time}-#{random_half}-#{encode}"
 
 		return token_hash_string
 	end
