@@ -39,7 +39,7 @@
                             </div>
                             <% @episodes.each do |episode| %>
                             <div class="box-episode clearfix">
-                            	<a href="/watch/shows/<%= @show.id %>/<%= episode.id %>">
+                            	<a href="/watch/shows/<%= @show.id %>/<%= episode.episode_number %>">
                             		<span class="fz12-5"><%= episode.release_date %></span> - Episode <%= episode.episode_number %> - <%= episode.title %>
                                     <i class='fa fa-play-circle-o play-icon'></i>
                                 </a>
