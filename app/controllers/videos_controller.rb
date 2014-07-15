@@ -381,7 +381,7 @@ class VideosController < ApplicationController
 		random_half = generate_random_half(Random.new.rand(10..30))
 		token_creation_time = (Time.now.to_i + 60)*1000
 		token_string = "#{stream_name}-#{token_creation_time}-#{random_half}-#{private_token}"
-		token_hash_string = "#{token_string}-#{token_creation_time}-#{random_half}-#{Digest::MD5.hexdigest(token_string)}"
+		token_hash_string = "#{token_string}-#{token_creation_time}-#{random_half}-#{Digest::MD5.digest(token_string).chr}"
 
 		return token_hash_string
 	end
@@ -395,7 +395,7 @@ class VideosController < ApplicationController
 			random_2 = random_gen.rand(0..2)
 			if random_1 == 0
 				random += (random_gen.rand('a'.ord..'k'.ord)).chr
-			elsif
+			elsif random_1 == 1
 				random += random_gen.rand(0..9).to_s
 			end
 

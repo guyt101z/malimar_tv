@@ -48,7 +48,7 @@
 <script>
 $('#episode_<%= @movie.id %>').addClass('active')
 jwplayer("video_wrapper").setup({
-    file: "<%= @movie.stream_url %>?token=<%= @token %>",
+    file: "<%= @movie.stream_url %>",
     image: "<%= @movie.image_url %>",
     title:"<%= @movie.name %>",
     width: '100%',
