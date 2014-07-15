@@ -1,0 +1,20 @@
+<% unless @category.errors.any? %>
+    window.location = '/admins/videos/home_grid'
+<% else %>
+    $('#new_name-error').remove()
+    $('#new_rank-error').remove()
+    $('#new_item_type-error').remove()
+    $('#new_free-error').remove()
+    <% if @category.errors[:name].present? %>
+        $('#new_name').after('<div class="text-danger" id="new_name-error">Name <%= @category.errors[:name].join(", ") %>.</div>')
+    <% end %>
+    <% if @category.errors[:rank].present? %>
+        $('#new_rank').after('<div class="text-danger" id="new_rank-error">Grid number <%= @category.errors[:rank].join(", ") %>.</div>')
+    <% end %>
+    <% if @category.errors[:item_type].present? %>
+        $('#new_item_type').after('<div class="text-danger" id="new_item_type-error">Class filter <%= @category.errors[:item_type].join(", ") %>.</div>')
+    <% end %>
+    <% if @category.errors[:free].present? %>
+        $('#new_free').after('<div class="text-danger" id="new_free-error">Membership <%= @category.errors[:free].join(", ") %>.</div>')
+    <% end %>
+<% end %>

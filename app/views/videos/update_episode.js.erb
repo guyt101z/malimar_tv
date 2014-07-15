@@ -33,8 +33,8 @@ $('#edit_ep_length-error').remove()
         $('#edit_ep_length').after('<div class="text-danger" id="edit_ep_length-error">Length <%= @episode.errors[:length].join(", ") %>.</div>')
     <% end %>
 <% else %>
-    $('#channel_<%= @channel.id %>').html('<%= escape_javascript(render("admins/cms_partials/channel_list_item")).html_safe %>')
-    $('#search_channel_<%= @channel.id %>').html('<%= escape_javascript(render("admins/cms_partials/channel_list_item")).html_safe %>')
+    $('#show_<%= @show.id %>').html('<%= escape_javascript(render("admins/cms_partials/show_list_item")).html_safe %>')
+    $('#search_show_<%= @show.id %>').html('<%= escape_javascript(render("admins/cms_partials/show_list_item")).html_safe %>')
     $('#episode_wrapper').html('<%= escape_javascript(render("admins/cms_partials/episode_list")).html_safe %>')
     $('#edit_episode_modal').modal('hide')
     $('#edit_ep_title').val('')

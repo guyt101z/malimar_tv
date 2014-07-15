@@ -1,0 +1,31 @@
+$('#name-error').remove()
+$('#free-error').remove()
+$('#content_type-error').remove()
+$('#content_quality-error').remove()
+$('#bitrate-error').remove()
+<% if @show.errors.any? %>
+    <% if @show.errors[:name].present? %>
+        $('#name').after('<div class="text-danger" id="name-error">Name <%= @show.errors[:name].join(", ") %>.</div>')
+    <% end %>
+    <% if @show.errors[:free].present? %>
+        $('#free').after('<div class="text-danger" id="free-error">Membership <%= @show.errors[:free].join(", ") %>.</div>')
+    <% end %>
+    <% if @show.errors[:content_type].present? %>
+        $('#content_type').after('<div class="text-danger" id="content_type-error">Content type <%= @show.errors[:content_type].join(", ") %>.</div>')
+    <% end %>
+    <% if @show.errors[:content_quality].present? %>
+        $('#content_quality').after('<div class="text-danger" id="content_quality-error">Content quality <%= @show.errors[:content_quality].join(", ") %>.</div>')
+    <% end %>
+    <% if @show.errors[:bitrate].present? %>
+        $('#bitrate').after('<div class="text-danger" id="bitrate-error">Bitrate <%= @show.errors[:bitrate].join(", ") %>.</div>')
+    <% end %>
+    $('#details-title').html('Show Details - <span class="text-danger">Not Updated</span>')
+<% else %>
+    var labels = jQuery.makeArray($('label.edited'))
+    $.each(labels, function(index,element){
+        $(element).html($(element).html().replace(' - <span class="edited-tag">Edited</span>',''))
+        $(element).addClass('unedited')
+    })
+    $('#details-title').html('Show Details - <span class="text-success">Updated</span>')
+    $('#show_<%= @show.id %>').html('<%= escape_javascript(render("admins/cms_partials/show_list_item")) %>')
+<% end %>

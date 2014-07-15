@@ -1,0 +1,14 @@
+<% @filtered_shows.each do |show| %>
+    <div id='show_search_<%= show.id %>' class='channel_list_item' onclick='viewShow(<%= show.id %>)'>
+        <div class='image_wrapper'>
+        <%= image_tag show.image_url(:preview) %>
+        </div>
+        <div class='channel_name'><%= show.name %></div>
+        <div class='episode_count'><%= pluralize(show.episode_count, 'episode') %></div>
+        <% if show.free? %>
+            <div class='premium_banner'><span class="label label-success">FREE</span></div>
+        <% else %>
+            <div class='premium_banner'><span class="label label-primary">PREMIUM</span></div>
+        <% end %>
+    </div>
+<% end %>

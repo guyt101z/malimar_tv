@@ -1,0 +1,6 @@
+<div class='row'>
+    <% @categories.each do |category| %>
+        <% @category = category %>
+        <%= render 'admins/cms_partials/grid_details' %>
+    <% end %>
+</div>

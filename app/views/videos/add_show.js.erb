@@ -1,0 +1,37 @@
+$('#new_name-error').remove()
+$('#new_free-error').remove()
+$('#new_content_type-error').remove()
+$('#new_content_quality-error').remove()
+$('#new_bitrate-error').remove()
+<% if @show.errors.any? %>
+    <% if @show.errors[:name].present? %>
+        $('#new_name').after('<div class="text-danger" id="new_name-error">Name <%= @show.errors[:name].join(", ") %>.</div>')
+    <% end %>
+    <% if @show.errors[:free].present? %>
+        $('#new_free').after('<div class="text-danger" id="new_free-error">Membership <%= @show.errors[:free].join(", ") %>.</div>')
+    <% end %>
+    <% if @show.errors[:content_type].present? %>
+        $('#new_content_type').after('<div class="text-danger" id="new_content_type-error">Content type <%= @show.errors[:content_type].join(", ") %>.</div>')
+    <% end %>
+    <% if @show.errors[:content_quality].present? %>
+        $('#new_content_quality').after('<div class="text-danger" id="new_content_quality-error">Content quality <%= @show.errors[:content_quality].join(", ") %>.</div>')
+    <% end %>
+    <% if @show.errors[:bitrate].present? %>
+        $('#new_bitrate').after('<div class="text-danger" id="new_bitrate-error">Bitrate <%= @show.errors[:bitrate].join(", ") %>.</div>')
+    <% end %>
+<% else %>
+    $('#new_show_modal').modal('hide')
+    $('#show_list').prepend('<div class="channel_list_item" id="show_<%= @show.id %>" onclick="viewShow(<%= @show.id %>)"><%= escape_javascript(render("admins/cms_partials/show_list_item")) %></div>')
+    $('#show_search_list').prepend('<div class="channel_list_item" id="show_search_<%= @show.id %>" onclick="viewShow(<%= @show.id %>)"><%= escape_javascript(render("admins/cms_partials/show_list_item")) %></div>')
+    $('#new_name').val('')
+    $('#new_live').val('')
+    $('#new_free').val('')
+    $('#new_content_type').val('')
+    $('#new_content_quality').val('')
+    $('#new_bitrate').val('')
+    $('#new_roku').removeAttr('checked')
+    $('#new_web').removeAttr('checked')
+    $('#new_ios').removeAttr('checked')
+    $('#new_android').removeAttr('checked')
+    $('#show_<%= @show.id %>').click()
+<% end %>

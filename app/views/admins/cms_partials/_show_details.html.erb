@@ -1,0 +1,152 @@
+<div class='channel_title'><%= @show.name %></div>
+<div class='show_details'>
+    <div class='row'>
+        <div class=' col-lg-8 col-md-12'>
+            <div class='panel panel-default'>
+                <div class='panel-heading' style='position: relative'>
+                    <h3 class='panel-title' id='details-title'>Show Details</h3>
+                    <a class='upload_image_heading btn btn-primary btn-sm' onclick='$("#update_channel_form").trigger("submit.rails"); $("#details-title").html("Updating...")'>Save Changes</a>
+                </div>
+                <div class='panel-body'>
+                    <%= form_tag update_show_path, remote: true, id: 'update_channel_form' do %>
+                    <%= hidden_field_tag :id, @show.id %>
+                    <div class='row'>
+                        <div class='col-md-12 form-group'>
+                            <label class='unedited'>Channel Title</label>
+                            <%= text_field_tag :name, @show.name, class: 'form-control edit_channel' %>
+                        </div>
+                    </div>
+                    <label class='unedited' id='checkbox_label'>Available on:</label>
+                    <div class='row'>
+                        <div class='col-md-3 col-xs-6 form-group'>
+                            <%= check_box_tag :roku, true, @show.roku, class: 'edit_channel_checkbox' %> Roku
+                        </div>
+                        <div class='col-md-3 col-xs-6 form-group'>
+                            <%= check_box_tag :ios, true, @show.ios, class: 'edit_channel_checkbox' %> iOS
+                        </div>
+                        <div class='col-md-3 col-xs-6 form-group'>
+                            <%= check_box_tag :android, true, @show.android, class: 'edit_channel_checkbox' %> Android
+                        </div>
+                        <div class='col-md-3 col-xs-6 form-group'>
+                            <%= check_box_tag :web, true, @show.web, class: 'edit_channel_checkbox' %> Web
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-6 form-group'>
+                            <label class='unedited'>Content Type</label>
+                            <%= select_tag :content_type, options_for_select(['Audio','Video'], @show.content_type), class: 'form-control edit_channel' %>
+                        </div>
+                        <div class='col-sm-6 form-group'>
+                            <label class='unedited'>Content Quality</label>
+                            <%= select_tag :content_quality, options_for_select([['High Definition', 'HD'],['Standard Definition', 'SD']], @show.content_quality), class: 'form-control edit_channel' %>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-6 form-group'>
+                            <label class='unedited'>Bitrate</label>
+                            <%= text_field_tag :bitrate, @show.bitrate, class: 'form-control edit_channel' %>
+                        </div>
+                        <div class='col-sm-6 form-group'>
+                            <label class='unedited'>Membership Level</label>
+                            <%= select_tag :free, options_for_select([['Free', 1],['Premium', 0]], @show.free), class: 'form-control edit_channel' %>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-6 form-group'>
+                            <label class='unedited'>Actors</label>
+                            <%= text_area_tag :actors, @show.actors, class: 'form-control edit_channel', style: 'resize:none', rows: 3 %>
+                        </div>
+                        <div class='col-sm-6 form-group'>
+                            <label class='unedited'>Genres</label>
+                            <%= text_area_tag :genres, @show.genres, class: 'form-control edit_channel', style: 'resize:none', rows: 3 %>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-12 form-group'>
+                            <label class='unedited'>Synopsis</label>
+                            <%= text_area_tag :synopsis, @show.synopsis, class: 'form-control edit_channel', style: 'resize:none', rows: 5 %>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+        <div class=' col-lg-4 col-md-12'>
+            <div class='row'>
+                <div class='col-lg-12 col-md-6'>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading' style='position: relative'>
+                            <h3 class='panel-title'>HD Image</h3>
+                            <a class='upload_image_heading btn btn-success btn-sm' id='image-clicker'><i class='fa fa-upload fa-fw'></i></a>
+                        </div>
+                        <div class='panel-body image_preview' id='hd_image_preview'>
+
+                        </div>
+                    </div>
+                </div>
+                <div class=' col-lg-12 col-md-6'>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading' style='position: relative'>
+                            <h3 class='panel-title'>SD Image</h3>
+                        </div>
+                        <div class='panel-body image_preview' id='sd_image_preview'>
+
+                        </div>
+                    </div>
+                </div>
+                <%= form_tag update_show_image_path, remote: true, style: 'display:none' do %>
+                    <%= file_field_tag :image %>
+                    <%= hidden_field_tag :id, @show.id %>
+                <% end %>
+            </div>
+            <script>
+                $('#image-clicker').click(function() {
+                    $('#image').click();
+                });
+                $('#image').fileupload({
+                    dataType: "script",
+                    dropZone: document.getElementById('drop-area'),
+                    add: function(e, data) {
+                        data.context = $(tmpl("template-upload", data.files[0]));
+                        $('#upload-progress').remove()
+                        $('#image-clicker').after(data.context);
+                        return data.submit();
+                    },
+                    progress: function(e, data) {
+                        var progress;
+                        if (data.context) {
+                            progress = parseInt(data.loaded / data.total * 100, 10);
+                            return data.context.find('.progress-bar').attr('aria-valuenow', progress).css('width', progress+'%');
+                        }
+                    },
+                    fail: function(e,data) {
+                        if (data.context) {
+                            $
+                            return data.context.find('.progress-bar').css('width','100%').removeClass('progress-bar-info').addClass('progress-bar-danger')
+                        }
+                    },
+                    done: function(e,data) {
+                        if (data.context) {
+                            return data.context.find('.progress-bar').css('width','100%').removeClass('progress-bar-info').addClass('progress-bar-success')
+                        }
+                    }
+                });
+            </script>
+        </div>
+    </div>
+</div>
+<div class='episode_wrapper' id='episode_wrapper'>
+    <%= render 'admins/cms_partials/episode_list' %>
+</div>
+<%= render 'admins/cms_partials/new_episode_modal' %>
+<%= render 'admins/cms_partials/edit_episode_modal' %>
+<script>
+    $('#hd_image_preview').html('<%= image_tag @show.image_url(:hd) %>')
+    $('#sd_image_preview').html('<%= image_tag @show.image_url(:sd) %>')
+    $('.edit_channel').change(function(){
+        $(this).parent().children('.unedited').append(' - <span class="edited-tag">Edited</span>').removeClass('unedited').addClass('edited')
+    })
+    $('.edit_channel_checkbox').change(function(){
+        $('#checkbox_label.unedited').append(' - <span class="edited-tag">Edited</span>').removeClass('unedited').addClass('edited')
+    })
+</script>

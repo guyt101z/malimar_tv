@@ -48,19 +48,45 @@ Rails.application.routes.draw do
         get 'refund_payment' => 'transactions#refund'
 
   		# Video CMS
-  		get '/admins/videos' => 'admins#videos', as: 'videos'
+        get '/admins/videos/tv_shows' => 'admins#shows', as: 'tv_shows'
+        get 'view_show' => 'videos#view_show'
+
+        get '/admins/videos/movies' => 'admins#movies', as: 'movies'
+        get 'view_movie' => 'videos#view_movie'
+
+  		get '/admins/videos/live_channels' => 'admins#live_channels', as: 'live_channels'
   		get 'view_channel' => 'videos#view_channel'
 
-        post 'add_channel' => 'videos#add_channel'
-        post 'update_channel' => 'videos#update_channel'
-        post 'update_channel_image' => 'videos#update_channel_image'
+        post 'add_show' => 'videos#add_show'
+        post 'update_show' => 'videos#update_show'
+        post 'update_show_image' => 'videos#update_show_image'
+
+        get 'search_shows' => 'videos#search_shows'
+        get 'search_episodes' => 'videos#search_episodes'
 
         post 'add_episode' => 'videos#add_episode'
         post 'update_episode' => 'videos#update_episode'
         get 'view_episode' => 'videos#view_episode'
 
+        post 'add_channel' => 'videos#add_channel'
+        post 'update_channel' => 'videos#update_channel'
+        post 'update_channel_image' => 'videos#update_channel_image'
+
         get 'search_channels' => 'videos#search_channels'
-        get 'search_episodes' => 'videos#search_episodes'
+
+        post 'add_movie' => 'videos#add_movie'
+        post 'update_movie' => 'videos#update_movie'
+        post 'update_movie_image' => 'videos#update_movie_image'
+
+        get 'search_movies' => 'videos#search_movies'
+
+        get '/admins/videos/home_grid' => 'admins#home_grid'
+        post 'add_grid' => 'videos#add_grid'
+        post 'update_grid' => 'videos#update_grid'
+        get 'delete_grid' => 'videos#delete_grid'
+        get 'view_grid' => 'videos#view_grid'
+
+        get 'refresh_grid_view' => 'videos#refresh_grid'
 
       	# Manage Sales Reps
       	get '/admins/sales_reps' => 'admins#sales_reps'
@@ -129,20 +155,24 @@ Rails.application.routes.draw do
 
     get 'video_search' => 'videos#navbar_search'
 
-    get '/watch/:channel_id' => 'videos#channel', as: 'channel'
-    get '/watch/:channel_id/:episode_id' => 'videos#watch_video', as: 'watch_video'
+    get '/watch/live/:channel_id' => 'videos#watch_channel', as: 'watch_channel'
 
-  get 'view_invoice/:id' => 'transactions#view_invoice', as: 'view_invoice'
-  get 'view_user_invoice/:id' => 'transactions#view_all', as: 'view_user_invoice'
+    get '/watch/movies/:movie_id' => 'videos#watch_movie', as: 'watch_movie'
 
-  get 'search_suggestions' => 'videos#search_suggestions'
-  get 'subscribe' => 'users#subscribe'
-  post 'add_subscription' => "users#add_subscription"
+    get '/watch/shows/:show_id' => 'videos#browse_episodes', as: 'browse_episodes'
+    get '/watch/shows/:show_id/:episode_number' => 'videos#watch_episode', as: 'watch_episode'
 
-  post 'create_new_user' => 'users#create_new'
-    	get 'rep_commission' => 'sales_reps#rep_commission'
-    	get 'rep_commission_owed' => 'sales_reps#rep_commission_owed'
-    	get 'rep_commission_paid' => 'sales_reps#rep_commission_paid'
+    get 'view_invoice/:id' => 'transactions#view_invoice', as: 'view_invoice'
+    get 'view_user_invoice/:id' => 'transactions#view_all', as: 'view_user_invoice'
+
+    get 'search_suggestions' => 'videos#search_suggestions'
+    get 'subscribe' => 'users#subscribe'
+    post 'add_subscription' => "users#add_subscription"
+
+    post 'create_new_user' => 'users#create_new'
+    get 'rep_commission' => 'sales_reps#rep_commission'
+    get 'rep_commission_owed' => 'sales_reps#rep_commission_owed'
+    get 'rep_commission_paid' => 'sales_reps#rep_commission_paid'
 
   root :to => 'videos#landing'
 

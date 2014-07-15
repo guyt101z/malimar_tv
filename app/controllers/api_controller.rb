@@ -20,6 +20,62 @@ class ApiController < ApplicationController
         render :xml => builder.to_xml
     end
 
+    def tv_show
+        show = Show.find(params[:show_id])
+        if show.available?(params[:device])
+            episodes = Episode.where(show_id: show.id).order(episode_number: :desc)
+            builder = Nokogiri::XML::Builder.new { |xml|
+                xml.send(:'feed') {
+                    xml.resultLength episodes.count
+                    xml.endIndex episodes.count
+                    episodes.each do |episode|
+
+                        xml.send(:'item', hdImg: root_url.chop+show.image_url(:hd), sdImg: root_url.chop+show.image_url(:sd)){
+                            xml.id episode.id
+                            xml.title episode.title
+                            xml.length episode.length
+                            xml.episodeNumber episode.episode_number
+                            xml.releaseDate episode.release_date.strftime('%d-%B-%Y')
+                            xml.contentQuality episode.content_quality
+                            xml.streamFormat 'hls'
+                            if channel.live?
+                                xml.live 'True'
+                                xml.SwitchingStrategy 'full-adaptation'
+                            else
+                                xml.SwitchingStrategy 'unaligned-segments'
+                            end
+                            xml.send(:'media') {
+                                xml.streamQuality episode.content_quality
+                                xml.streamBitrate episode.bitrate
+                                xml.streamUrl episode.stream_url
+                            }
+                            xml.synopsis episode.synopsis
+                            if episode.actors.present?
+                                actors = episode.actors.split('\n')
+                                xml.send(:'actors') {
+                                    actors.each do |actor|
+                                        xml.actor actor
+                                    end
+                                }
+                            end
+                            if episode.genres.present?
+                                genres = episode.genres.split('\n')
+                                xml.send(:'genres') {
+                                    genres.each do |genre|
+                                        xml.genre genre
+                                    end
+                                }
+                            end
+                        }
+                    end
+                }
+            }
+            render :xml => builder.to_xml
+        else
+            render(:file => File.join(Rails.root, 'public/500.html'), :status => 500, :layout => false)
+        end
+    end
+
     def channel
         channel = Channel.find(params[:channel_id])
         if channel.available?(params[:device])

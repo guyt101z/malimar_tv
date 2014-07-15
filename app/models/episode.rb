@@ -1,9 +1,7 @@
 class Episode < ActiveRecord::Base
-    attr_accessible :channel_id, :title, :episode_number, :stream_url, :release_date, :content_type, :content_quality, :bitrate, :actors, :genres, :synopsis, :length
+    attr_accessible :show_id, :title, :episode_number, :stream_url, :release_date, :synopsis, :length
 
-    validates_presence_of :channel_id, :title, :episode_number, :stream_url, :release_date, :bitrate, :length
-    validates_inclusion_of :content_type, in: ['Audio','Video'], message: 'must be selected'
-    validates_inclusion_of :content_quality, in: ['HD','SD'], message: 'must be selected'
+    validates_presence_of :show_id, :title, :episode_number, :stream_url, :release_date, :length
 
     belongs_to :channel
 

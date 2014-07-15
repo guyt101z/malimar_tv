@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140710172625) do
+ActiveRecord::Schema.define(version: 20140714205632) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -70,19 +70,31 @@ ActiveRecord::Schema.define(version: 20140710172625) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "genre"
+    t.string   "content_type"
+    t.string   "content_quality"
+    t.string   "item_type"
+    t.integer  "rank"
+    t.boolean  "free"
   end
 
   create_table "channels", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "live"
     t.boolean  "free"
     t.boolean  "roku"
     t.boolean  "ios"
     t.boolean  "android"
     t.boolean  "web"
     t.string   "image"
+    t.string   "stream_url"
+    t.text     "genres"
+    t.text     "actors"
+    t.string   "content_type"
+    t.string   "content_quality"
+    t.string   "bitrate"
+    t.text     "synopsis"
   end
 
   create_table "devices", force: true do |t|
@@ -98,20 +110,12 @@ ActiveRecord::Schema.define(version: 20140710172625) do
     t.string   "title"
     t.integer  "episode_number"
     t.date     "release_date"
-    t.string   "content_type"
-    t.string   "content_quality"
-    t.string   "stream_format"
-    t.string   "bitrate"
-    t.string   "stream_quality"
     t.string   "stream_url"
-    t.boolean  "hd"
-    t.text     "actors"
-    t.text     "genres"
     t.string   "synopsis"
-    t.integer  "channel_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "length"
+    t.integer  "show_id"
   end
 
   create_table "genres", force: true do |t|
@@ -126,6 +130,24 @@ ActiveRecord::Schema.define(version: 20140710172625) do
     t.datetime "end"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "movies", force: true do |t|
+    t.string   "name"
+    t.string   "image"
+    t.boolean  "roku"
+    t.boolean  "ios"
+    t.boolean  "android"
+    t.boolean  "web"
+    t.string   "stream_url"
+    t.text     "genres"
+    t.text     "actors"
+    t.boolean  "free"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "content_quality"
+    t.string   "bitrate"
+    t.text     "synopsis"
   end
 
   create_table "plans", force: true do |t|
@@ -183,6 +205,24 @@ ActiveRecord::Schema.define(version: 20140710172625) do
     t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "shows", force: true do |t|
+    t.string   "name"
+    t.string   "image"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "roku"
+    t.boolean  "web"
+    t.boolean  "ios"
+    t.boolean  "android"
+    t.boolean  "free"
+    t.text     "actors"
+    t.text     "genres"
+    t.string   "bitrate"
+    t.string   "content_quality"
+    t.string   "content_type"
+    t.text     "synopsis"
   end
 
   create_table "support_attachments", force: true do |t|

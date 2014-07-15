@@ -1,21 +1,20 @@
 class Channel < ActiveRecord::Base
-    attr_accessible :name, :live, :free, :image, :roku, :ios, :android, :web
+    attr_accessible :name, :live, :free, :image, :roku, :ios, :android, :web, :stream_url, :content_type
 
-    validates_presence_of :name
-    validates_inclusion_of :live, in: [true,false], message: 'must be selected'
+    validates_presence_of :name, :stream_url, :bitrate
     validates_inclusion_of :free, in: [true,false], message: 'must be selected'
+    validates_inclusion_of :content_type, in: ['Audio','Video'], message: 'must be selected'
+    validates_inclusion_of :content_quality, in: ['HD','SD'], message: 'must be selected'
+    validates_numericality_of :bitrate
 
     mount_uploader :image, MovieImageUploader
 
     has_many :episodes
 
-    searchkick
+    searchkick word_start: [:name]
 
     def matches?(search_term)
         searchable_string = name.downcase
-        if live == true
-            searchable_string += ' live'
-        end
         if roku == true
             searchable_string += ' roku'
         end
@@ -56,5 +55,30 @@ class Channel < ActiveRecord::Base
         else
             return false
         end
+    end
+
+    def matches_category?(params)
+        matches = true
+        if params.has_key?(:genre)
+            unless genres.include?(params[:genre])
+                matches = false
+            end
+        end
+        if params.has_key?(:content_type)
+            unless params[:content_type] == content_type
+                matches = false
+            end
+        end
+        if params.has_key?(:content_quality)
+            unless params[:content_quality] == content_quality
+                matches = false
+            end
+        end
+        if params.has_key?(:free)
+            unless params[:free] == free
+                matches = false
+            end
+        end
+        return matches
     end
 end

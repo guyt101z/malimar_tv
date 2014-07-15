@@ -4,10 +4,10 @@
             <div class="col-sm-4 col-md-3">
                 <div class="panel panel-custom">
                     <div class="panel-heading">
-                        <h3 class="fz14"><%= @channel.name %></h3>
+                        <h3 class="fz14"><%= @show.name %></h3>
                     </div>
                     <div class="panel-body b0">
-                        <%= image_tag @channel.image_url, class: 'img-responsive' %>
+                        <%= image_tag @show.image_url, class: 'img-responsive' %>
                     </div>
                 </div>
                 <div class="socials">
@@ -16,7 +16,7 @@
                     </div>
                     <div class='episode_list'>
                         <% @episodes.each do |episode| %>
-                            <div class='episode' id='episode_<%= episode.id %>' onclick='window.location="/watch/<%= @channel.id %>/<%= episode.id %>"'>
+                            <div class='episode' id='episode_<%= episode.id %>' onclick='window.location="/watch/shows/<%= @show.id %>/<%= episode.id %>"'>
                                 <div class='title'>
                                     <%= episode.title %>
                                 </div>
@@ -61,9 +61,10 @@
 $('#episode_<%= @episode.id %>').addClass('active')
 jwplayer("video_wrapper").setup({
     file: "<%= @episode.stream_url %>",
-    image: "<%= @channel.image_url %>",
+    image: "<%= @show.image_url %>",
     title:"<%= @episode.title %>",
     width: '100%',
-    height: 400
+    height: 400,
+    primary: 'flash'
 });
 </script>

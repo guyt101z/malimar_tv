@@ -1,0 +1,39 @@
+$('#name-error').remove()
+$('#stream_url-error').remove()
+$('#content_type-error').remove()
+$('#free-error').remove()
+$('#content_quality-error').remove()
+$('#bitrate-error').remove()
+$('#synopsis-error').remove()
+<% if @movie.errors.any? %>
+    <% if @movie.errors[:name].present? %>
+        $('#name').after('<div class="text-danger" id="name-error">Name <%= @movie.errors[:name].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:stream_url].present? %>
+        $('#stream_url').after('<div class="text-danger" id="stream_url-error">Stream URL <%= @movie.errors[:stream_url].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:content_type].present? %>
+        $('#content_type').after('<div class="text-danger" id="content_type-error">Content type <%= @movie.errors[:content_type].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:free].present? %>
+        $('#free').after('<div class="text-danger" id="free-error">Membership <%= @movie.errors[:free].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:content_quality].present? %>
+        $('#content_quality').after('<div class="text-danger" id="content_quality-error">Content quality <%= @movie.errors[:content_quality].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:bitrate].present? %>
+        $('#bitrate').after('<div class="text-danger" id="bitrate-error">Bitrate <%= @movie.errors[:bitrate].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:synopsis].present? %>
+        $('#synopsis').after('<div class="text-danger" id="synopsis-error">Synopsis <%= @movie.errors[:synopsis].join(", ") %>.</div>')
+    <% end %>
+    $('#details-title').html('Channel Details - <span class="text-danger">Not Updated</span>')
+<% else %>
+    var labels = jQuery.makeArray($('label.edited'))
+    $.each(labels, function(index,element){
+        $(element).html($(element).html().replace(' - <span class="edited-tag">Edited</span>',''))
+        $(element).addClass('unedited')
+    })
+    $('#details-title').html('Channel Details - <span class="text-success">Updated</span>')
+    $('#movie_<%= @movie.id %>').html('<%= escape_javascript(render("admins/cms_partials/movie_list_item")) %>')
+<% end %>

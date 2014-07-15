@@ -13,29 +13,42 @@
 
     	<!-- Collect the nav links, forms, and other content for toggling -->
     	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class='navbar-text'><%= yield(:title) %></li>
+            </ul>
       		<ul class="nav navbar-nav navbar-right">
         		<li><a href="/admins">Home</a></li>
-            <li><a href="/admins/support">Support Tickets</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-users'></i> Users <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="/admins/new_user"><i class='fa fa-asterisk fa-fw'></i> Create User</a></li>
-                  <li><a href="/admins/users"><i class='fa fa-search fa-fw'></i> Search Users</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-users'></i> Sales Reps <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="/admins/new_sales_rep"><i class='fa fa-asterisk fa-fw'></i> Create Sales Rep</a></li>
-                  <li><a href="/admins/sales_reps"><i class='fa fa-search fa-fw'></i> Search Sales Reps</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-gears'></i> Settings <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="/admins/financial"><i class='fa fa-dollar fa-fw'></i> Financial</a></li>
-                </ul>
-            </li>
+                <li><a href="/admins/support">Support Tickets</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-video-camera'></i> Videos <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/admins/videos/live_channels">Live Channels</a></li>
+                        <li><a href="/admins/videos/tv_shows">TV Shows</a></li>
+                        <li><a href="/admins/videos/movies">Movies</a></li>
+                        <li class='divider'></li>
+                        <li><a href='/admins/videos/home_grid'>Home Grid</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-users'></i> Users <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/admins/new_user"><i class='fa fa-asterisk fa-fw'></i> Create User</a></li>
+                        <li><a href="/admins/users"><i class='fa fa-search fa-fw'></i> Search Users</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-users'></i> Sales Reps <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/admins/new_sales_rep"><i class='fa fa-asterisk fa-fw'></i> Create Sales Rep</a></li>
+                        <li><a href="/admins/sales_reps"><i class='fa fa-search fa-fw'></i> Search Sales Reps</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-gears'></i> Settings <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/admins/financial"><i class='fa fa-dollar fa-fw'></i> Financial</a></li>
+                    </ul>
+                </li>
       		</ul>
     	</div><!-- /.navbar-collapse -->
   	</div><!-- /.container-fluid -->

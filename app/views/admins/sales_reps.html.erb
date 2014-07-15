@@ -1,3 +1,4 @@
+<% content_for :title, 'Sales Representative Management' %>
 <div class='users-wrapper'>
 	<div class='users-area'>
 		<div class='users-search'>
@@ -24,11 +25,11 @@
 		</div>
 		<div class='results-count' id='count' style='display:none'></div>
 		<div class='search-users-list' id='search-list' style='display:none'>
-			
+
 		</div>
 	</div>
 	<div class='user-info' id='user-info'>
-		
+
 	</div>
 </div>
 <script type="text/javascript">
@@ -42,11 +43,11 @@
 			'left':120
 		}, 100)
 	})
-	
+
 	$('#placeholder').click(function(){
 		$('#search').focus();
 	})
-	
+
 	$('#search').keydown(function(){
 		$('#placeholder').hide()
 	})
@@ -65,7 +66,7 @@
 			$('#count').hide()
 		}
 	})
-	
+
 	function viewRep(id){
 		$('.user').removeClass('active')
 		$('#rep_'+id).addClass('active')

@@ -38,7 +38,7 @@
             $('#episode_placeholder').hide()
             $('#episode_list').hide()
             $.ajax({
-                url: '/search_episodes?search='+$('#episode_search').val()+'&id='+<%= @channel.id %>
+                url: '/search_episodes?search='+$('#episode_search').val()+'&id='+<%= @show.id %>
             })
         }
         else {

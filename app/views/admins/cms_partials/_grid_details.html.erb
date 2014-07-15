@@ -1,0 +1,75 @@
+<%
+filter_params = Hash.new
+unless @category.content_type.blank?
+    filter_params[:content_type] = @category.content_type
+end
+
+unless @category.content_quality.blank?
+    filter_params[:content_quality] = @category.content_quality
+end
+
+filter_params[:free] = @category.free
+
+if @category.item_type == 'shows'
+    all_items = Show.where(filter_params).order(name: :asc)
+    filtered_items = Array.new
+
+    unless @category.genre.blank?
+        all_items.each do |item|
+            filtered_items.push(item) if item.matches_genre?(@category.genre)
+        end
+    else
+        filtered_items = all_items
+    end
+elsif @category.item_type == 'movies'
+    all_items = Movie.where(filter_params.except(:content_type)).order(name: :asc)
+    filtered_items = Array.new
+
+    unless @category.genre.blank?
+        all_items.each do |item|
+            filtered_items.push(item) if item.matches_genre?(@category.genre)
+        end
+    else
+        filtered_items = all_items
+    end
+else
+    all_items = Channel.where(filter_params).order(name: :asc)
+    filtered_items = Array.new
+
+    unless @category.genre.blank?
+        all_items.each do |item|
+            filtered_items.push(item) if item.matches_genre?(@category.genre)
+        end
+    else
+        filtered_items = all_items
+    end
+end
+%>
+
+<div class='col-xs-12'>
+    <div class='panel panel-default'>
+        <div class='panel-heading' style='position:relative'>
+            <h3 class='panel-title'><%= @category.rank %> | <%= @category.name %></h3>
+            <div class='upload_image_heading'>
+                <%= link_to 'Delete Grid', delete_grid_path(id: @category.id), class: 'btn btn-danger btn-sm', data: {confirm: 'Are you sure you want to delete this grid?'}, remote: true %>
+                <%= link_to 'Edit Grid', view_grid_path(id: @category.id), class: 'btn btn-primary btn-sm', remote: true %>
+            </div>
+        </div>
+        <div class='panel-body grid_body'>
+            <div class='row'>
+            <% filtered_items.each do |item| %>
+            <div class=' col-lg-2 col-sm-3 col-xs-6'>
+                <div class='movie_wrapper'>
+                    <div class='image_wrapper'>
+                        <%= image_tag item.image_url %>
+                    </div>
+                    <div class='title_wrapper'>
+                        <%= item.name %>
+                    </div>
+                </div>
+            </div>
+            <% end %>
+            </div>
+        </div>
+    </div>
+</div>

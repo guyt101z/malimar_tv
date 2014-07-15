@@ -1,0 +1,6 @@
+<% if @success == true %>
+    $('#hd_image_preview').html('<%= image_tag @show.image_url(:hd) %>')
+    $('#sd_image_preview').html('<%= image_tag @show.image_url(:sd) %>')
+    $('#show_<%= @show.id %>').children('.image_wrapper').html('<%= image_tag @show.image_url(:preview) %>')
+    $('#show_search_<%= @show.id %>').children('.image_wrapper').html('<%= image_tag @show.image_url(:preview) %>')
+<% end %>

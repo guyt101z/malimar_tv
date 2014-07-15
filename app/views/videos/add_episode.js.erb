@@ -29,8 +29,8 @@ $('#new_ep_bitrate-error').remove()
         $('#new_ep_bitrate').after('<div class="text-danger" id="new_ep_bitrate-error">Bitrate <%= @episode.errors[:bitrate].join(", ") %>.</div>')
     <% end %>
 <% else %>
-    $('#channel_<%= @channel.id %>').html('<%= escape_javascript(render("admins/cms_partials/channel_list_item")).html_safe %>')
-    $('#search_channel_<%= @channel.id %>').html('<%= escape_javascript(render("admins/cms_partials/channel_list_item")).html_safe %>')
+    $('#show_<%= @show.id %>').html('<%= escape_javascript(render("admins/cms_partials/show_list_item")).html_safe %>')
+    $('#search_show_<%= @show.id %>').html('<%= escape_javascript(render("admins/cms_partials/show_list_item")).html_safe %>')
     $('#episode_wrapper').html('<%= escape_javascript(render("admins/cms_partials/episode_list")).html_safe %>')
     $('#new_episode_modal').modal('hide')
     $('#new_ep_title').val('')

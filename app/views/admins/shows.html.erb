@@ -1,0 +1,84 @@
+<% content_for :title, 'CMS | TV Shows' %>
+<div class='cms_wrapper hidden-sm hidden-xs'>
+    <div class='channel_list_wrapper'>
+        <div class='channel_search_wrapper'>
+            <%= text_field_tag :show_search, '' %>
+            <div class='add_channel' data-toggle="tooltip" data-placement="right" title="Add a show" onclick='$("#new_show_modal").modal("show")'>
+                <i class='fa fa-plus'></i>
+            </div>
+            <div class='placeholder' id='show_placeholder' style='left:75px'><i class='fa fa-search'></i> Search Shows</div>
+        </div>
+        <div class='channel_list' id='show_search_list' style='display:none'>
+
+        </div>
+        <div class='channel_list' id='show_list'>
+            <% @shows.each do |show| %>
+
+                <div id='show_<%= show.id %>' class='channel_list_item' onclick='viewShow(<%= show.id %>)'>
+                    <div class='image_wrapper'>
+                    <%= image_tag show.image_url(:preview) %>
+                    </div>
+                    <div class='channel_name'><%= show.name %></div>
+                    <div class='episode_count'><%= pluralize(show.episode_count, 'episode') %></div>
+                    <% if show.free? %>
+                        <div class='premium_banner'><span class="label label-success">FREE</span></div>
+                    <% else %>
+                        <div class='premium_banner'><span class="label label-primary">PREMIUM</span></div>
+                    <% end %>
+                </div>
+            <% end %>
+        </div>
+    </div>
+    <div class='details_wrapper' id='details_wrapper'>
+
+    </div>
+</div>
+<div class='visible-sm visible-xs'>
+    View the CMS from a larger screened device
+</div>
+<%= render 'admins/cms_partials/new_show' %>
+<script type="text/javascript">
+    $('#show_search').focus(function(){
+        $('#show_placeholder').animate({
+            'left':22
+        }, 100).html('Search Shows')
+    })
+    $('#show_search').blur(function(){
+        $('#show_placeholder').animate({
+            'left':75
+        }, 100).html('<i class="fa fa-search"></i> Search Shows')
+    })
+
+    $('#show_placeholder').click(function(){
+        $('#show_search').focus();
+    })
+
+    $('#show_search').keydown(function(){
+        $('#show_placeholder').hide()
+    })
+    $('#show_search').keyup(function(){
+        if ($('#show_search').val() != '') {
+            $('#show_placeholder').hide()
+            $('#show_list').hide()
+            $.ajax({
+                url: '/search_shows?search='+$('#show_search').val()
+            })
+        }
+        else {
+            $('#show_placeholder').show()
+            $('#show_list').show()
+            $('#show_search_list').hide()
+            $('#count').hide()
+        }
+    })
+
+    function viewShow(id){
+        $('.channel_list_item').removeClass('active')
+        $('#show_'+id).addClass('active')
+        $('#show_search_'+id).addClass('active')
+        $.ajax({
+            url: '/view_show?id='+id
+        })
+    }
+    $('.add_channel').tooltip()
+</script>

@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <%= form_tag update_episode_path, remote: true do %>
-            <%= hidden_field_tag :edit_ep_channel_id %>
+            <%= hidden_field_tag :edit_ep_show_id %>
             <%= hidden_field_tag :edit_ep_id %>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -28,36 +28,12 @@
                 </div>
                 <div class='row'>
                     <div class='col-sm-6 form-group'>
-                        <label>Release Date</label>
-                        <%= text_field_tag :edit_ep_release_date, '', class: 'form-control', placeholder: 'Ex: '+Date.today.strftime("%Y-%m-%d") %>
-                    </div>
-                    <div class='col-sm-6 form-group'>
-                        <label>Content Type</label>
-                        <%= select_tag :edit_ep_content_type, options_for_select([['',nil], 'Video', 'Audio']), class: 'form-control' %>
-                    </div>
-                </div>
-                <div class='row'>
-                    <div class='col-sm-6 form-group'>
-                        <label>Quality</label>
-                        <%= select_tag :edit_ep_content_quality, options_for_select([['',nil], ['High Definition', 'HD'], ['Standard Definition','SD']]), class: 'form-control' %>
-                    </div>
-                    <div class='col-sm-3 form-group'>
-                        <label>Bitrate</label>
-                        <%= text_field_tag :edit_ep_bitrate, '', class: 'form-control' %>
-                    </div>
-                    <div class='col-sm-3 form-group'>
                         <label>Length</label>
                         <%= text_field_tag :edit_ep_length, '', class: 'form-control' %>
                     </div>
-                </div>
-                <div class='row'>
                     <div class='col-sm-6 form-group'>
-                        <label>Genres</label>
-                        <%= text_area_tag :edit_ep_genres, '', class: 'form-control', style: 'resize: none', rows: 4 %>
-                    </div>
-                    <div class='col-sm-6 form-group'>
-                        <label>Actors</label>
-                        <%= text_area_tag :edit_ep_actors, '', class: 'form-control', style: 'resize: none', rows: 4 %>
+                        <label>Release Date</label>
+                        <%= text_field_tag :edit_ep_release_date, '', class: 'form-control', placeholder: 'Ex: '+Date.today.strftime("%Y-%m-%d") %>
                     </div>
                 </div>
                 <div class='row'>

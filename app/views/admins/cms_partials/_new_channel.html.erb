@@ -15,6 +15,12 @@
                     </div>
                 </div>
                 <div class='row'>
+                    <div class='col-sm-12 form-group'>
+                        <label>Stream URL</label>
+                        <%= text_field_tag :new_stream_url, '', class: 'form-control' %>
+                    </div>
+                </div>
+                <div class='row'>
                     <div class='col-md-3 col-xs-6 form-group'>
                         <label>Available on:</label><br/>
                         <%= check_box_tag :new_roku, true %> Roku
@@ -34,12 +40,38 @@
                 </div>
                 <div class='row'>
                     <div class='col-sm-6 form-group'>
+                        <label>Content Type</label>
+                        <%= select_tag :new_content_type, options_for_select([['',nil],'Audio','Video']), class: 'form-control' %>
+                    </div>
+                    <div class='col-sm-6 form-group'>
+                        <label>Content Quality</label>
+                        <%= select_tag :new_content_quality, options_for_select([['',nil],['High Definition', 'HD'],['Standard Definition', 'SD']]), class: 'form-control' %>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-6 form-group'>
+                        <label>Bitrate</label>
+                        <%= text_field_tag :new_bitrate, '', class: 'form-control' %>
+                    </div>
+                    <div class='col-sm-6 form-group'>
                         <label>Membership Level</label>
                         <%= select_tag :new_free, options_for_select([['',nil],['Free', 1],['Premium', 0]]), class: 'form-control' %>
                     </div>
+                </div>
+                <div class='row'>
                     <div class='col-sm-6 form-group'>
-                        <label>Live Channel</label>
-                        <%= select_tag :new_live, options_for_select([['',nil],['Live', 1],['Not Live', 0]]), class: 'form-control' %>
+                        <label class='unedited'>Actors</label>
+                        <%= text_area_tag :new_actors, '', class: 'form-control edit_channel', style: 'resize:none', rows: 3 %>
+                    </div>
+                    <div class='col-sm-6 form-group'>
+                        <label class='unedited'>Genres</label>
+                        <%= text_area_tag :new_genres, '', class: 'form-control edit_channel', style: 'resize:none', rows: 3 %>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-12 form-group'>
+                        <label>Synopsis</label>
+                        <%= text_area_tag :new_synopsis, '', class: 'form-control', style: 'resize:none', rows: 5 %>
                     </div>
                 </div>
             </div>

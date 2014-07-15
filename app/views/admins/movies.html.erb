@@ -1,0 +1,83 @@
+<% content_for :title, 'CMS | Movies' %>
+<div class='cms_wrapper hidden-sm hidden-xs'>
+    <div class='channel_list_wrapper'>
+        <div class='channel_search_wrapper'>
+            <%= text_field_tag :channel_search, '' %>
+            <div class='add_channel' data-toggle="tooltip" data-placement="right" title="Add a movie" onclick='$("#new_movie_modal").modal("show")'>
+                <i class='fa fa-plus'></i>
+            </div>
+            <div class='placeholder' id='channel_placeholder'><i class='fa fa-search'></i> Search Movies</div>
+        </div>
+        <div class='channel_list' id='movie_search_list' style='display:none'>
+
+        </div>
+        <div class='channel_list' id='movie_list'>
+            <% @movies.each do |movie| %>
+
+                <div id='movie_<%= movie.id %>' class='channel_list_item' onclick='viewChannel(<%= movie.id %>)'>
+                    <div class='image_wrapper'>
+                    <%= image_tag movie.image_url(:preview) %>
+                    </div>
+                    <div class='channel_name'><%= movie.name %></div>
+                    <% if movie.free? %>
+                        <div class='premium_banner'><span class="label label-success">FREE</span></div>
+                    <% else %>
+                        <div class='premium_banner'><span class="label label-primary">PREMIUM</span></div>
+                    <% end %>
+                </div>
+            <% end %>
+        </div>
+    </div>
+    <div class='details_wrapper' id='details_wrapper'>
+
+    </div>
+</div>
+<div class='visible-sm visible-xs'>
+    View the CMS from a larger screened device
+</div>
+<%= render 'admins/cms_partials/new_movie' %>
+<script type="text/javascript">
+    $('#channel_search').focus(function(){
+        $('#channel_placeholder').animate({
+            'left':22
+        }, 100).html('Search Movies')
+    })
+    $('#channel_search').blur(function(){
+        $('#channel_placeholder').animate({
+            'left':63
+        }, 100).html('<i class="fa fa-search"></i> Search Movies')
+    })
+
+    $('#channel_placeholder').click(function(){
+        $('#channel_search').focus();
+    })
+
+    $('#channel_search').keydown(function(){
+        $('#channel_placeholder').hide()
+    })
+    $('#channel_search').keyup(function(){
+        if ($('#channel_search').val() != '') {
+            $('#channel_placeholder').hide()
+            $('#channel_list').hide()
+            $.ajax({
+                url: '/search_movies?search='+$('#channel_search').val()
+            })
+        }
+        else {
+            $('#channel_placeholder').show()
+            $('#channel_list').show()
+            $('#channel_search_list').hide()
+            $('#count').hide()
+        }
+    })
+
+    function viewChannel(id){
+        $('.channel_list_item').removeClass('active')
+        $('#channel_'+id).addClass('active')
+        $('#channel_search_'+id).addClass('active')
+        $.ajax({
+            url: '/view_movie?id='+id
+        })
+    }
+    $('.add_channel').tooltip()
+</script>

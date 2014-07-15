@@ -2,4 +2,5 @@
     $('#hd_image_preview').html('<%= image_tag @channel.image_url(:hd) %>')
     $('#sd_image_preview').html('<%= image_tag @channel.image_url(:sd) %>')
     $('#channel_<%= @channel.id %>').children('.image_wrapper').html('<%= image_tag @channel.image_url(:preview) %>')
+    $('#channel_search_<%= @channel.id %>').children('.image_wrapper').html('<%= image_tag @channel.image_url(:preview) %>')
 <% end %>

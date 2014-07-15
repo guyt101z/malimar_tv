@@ -1,0 +1,38 @@
+$('#new_name-error').remove()
+$('#new_stream_url-error').remove()
+$('#new_content_type-error').remove()
+$('#new_free-error').remove()
+$('#new_content_quality-error').remove()
+$('#new_bitrate-error').remove()
+$('#new_synopsis-error').remove()
+<% if @movie.errors.any? %>
+    <% if @movie.errors[:name].present? %>
+        $('#new_name').after('<div class="text-danger" id="new_name-error">Name <%= @movie.errors[:name].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:stream_url].present? %>
+        $('#new_stream_url').after('<div class="text-danger" id="new_stream_url-error">Stream URL <%= @movie.errors[:stream_url].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:free].present? %>
+        $('#new_free').after('<div class="text-danger" id="new_free-error">Membership <%= @movie.errors[:free].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:content_quality].present? %>
+        $('#new_content_quality').after('<div class="text-danger" id="new_content_quality-error">Content quality <%= @movie.errors[:content_quality].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:bitrate].present? %>
+        $('#new_bitrate').after('<div class="text-danger" id="new_bitrate-error">Bitrate <%= @movie.errors[:bitrate].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:synopsis].present? %>
+        $('#new_synopsis').after('<div class="text-danger" id="new_synopsis-error">Synopsis <%= @movie.errors[:synopsis].join(", ") %>.</div>')
+    <% end %>
+<% else %>
+    $('#new_movie_modal').modal('hide')
+    $('#channel_list').prepend('<div class="channel_list_item" id="movie_<%= @movie.id %>" onclick="viewChannel(<%= @movie.id %>)"><%= escape_javascript(render("admins/cms_partials/movie_list_item")) %></div>')
+    $('#new_name').val('')
+    $('#new_live').val('')
+    $('#new_free').val('')
+    $('#new_roku').removeAttr('checked')
+    $('#new_web').removeAttr('checked')
+    $('#new_ios').removeAttr('checked')
+    $('#new_android').removeAttr('checked')
+    $('#movie_<%= @movie.id %>').click()
+<% end %>

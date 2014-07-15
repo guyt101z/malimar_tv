@@ -55,22 +55,19 @@ class AdminsController < ApplicationController
 
 
 
-	def videos
+	def live_channels
 		@channels = Channel.all.order(name: :asc)
 	end
-
-	def add_video
-		@movie = Movie.new(params)
-		@movie.save
+	def shows
+		@shows = Show.all.order(name: :asc)
 	end
-
-	def add_image_to_video
-		@movie = Movie.find(params[:movie_id])
-		@movie.image = params[:image]
-		@movie.save
+	def movies
+		@movies = Movie.all.order(name: :asc)
 	end
-
-
+	def home_grid
+		@categories = Category.all.order(rank: :asc)
+	end
+	
 
 	def create_sales_rep
 		@sales_rep = SalesRepresentative.new(params)

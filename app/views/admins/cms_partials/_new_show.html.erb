@@ -1,0 +1,79 @@
+
+<div class="modal fade" id="new_show_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <%= form_tag add_show_path, remote: true do %>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">New TV Show</h4>
+            </div>
+            <div class="modal-body">
+                <div class='row'>
+                    <div class='col-sm-12 form-group'>
+                        <label>Show Name</label>
+                        <%= text_field_tag :new_name, '', class: 'form-control' %>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-md-3 col-xs-6 form-group'>
+                        <label>Available on:</label><br/>
+                        <%= check_box_tag :new_roku, true %> Roku
+                    </div>
+                    <div class='col-md-3 col-xs-6 form-group'>
+                        <label>&nbsp;</label><br/>
+                        <%= check_box_tag :new_ios, true %> iOS
+                    </div>
+                    <div class='col-md-3 col-xs-6 form-group'>
+                        <label>&nbsp;</label><br/>
+                        <%= check_box_tag :new_android, true %> Android
+                    </div>
+                    <div class='col-md-3 col-xs-6 form-group'>
+                        <label>&nbsp;</label><br/>
+                        <%= check_box_tag :new_web, true %> Web
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-6 form-group'>
+                        <label>Content Type</label>
+                        <%= select_tag :new_content_type, options_for_select([['',nil],'Audio','Video']), class: 'form-control' %>
+                    </div>
+                    <div class='col-sm-6 form-group'>
+                        <label>Content Quality</label>
+                        <%= select_tag :new_content_quality, options_for_select([['',nil],['High Definition', 'HD'],['Standard Definition', 'SD']]), class: 'form-control' %>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-6 form-group'>
+                        <label>Bitrate</label>
+                        <%= text_field_tag :new_bitrate, '', class: 'form-control' %>
+                    </div>
+                    <div class='col-sm-6 form-group'>
+                        <label>Membership Level</label>
+                        <%= select_tag :new_free, options_for_select([['',nil],['Free', 1],['Premium', 0]]), class: 'form-control' %>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-6 form-group'>
+                        <label class='unedited'>Actors</label>
+                        <%= text_area_tag :new_actors, '', class: 'form-control edit_channel', style: 'resize:none', rows: 3 %>
+                    </div>
+                    <div class='col-sm-6 form-group'>
+                        <label class='unedited'>Genres</label>
+                        <%= text_area_tag :new_genres, '', class: 'form-control edit_channel', style: 'resize:none', rows: 3 %>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-12 form-group'>
+                        <label>Synopsis</label>
+                        <%= text_area_tag :new_synopsis, '', class: 'form-control', style: 'resize:none', rows: 5 %>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <%= submit_tag 'Create Channel', class: 'btn btn-primary' %>
+            </div>
+            <% end %>
+        </div>
+    </div>
+</div>
