@@ -14,5 +14,10 @@ plans = [Plan.create(price: 12, months: 1, name: '1 Month', features: YAML.dump(
 
 paypal_setting = Setting.create(name: 'Paypal Credentials', data: YAML.dump({login: 'jtate_api1.variationmedia.com', password: '1400603735', signature: 'AFcWxV21C7fd0v3bYYYRCpSSRl31AeXKxTP5ntM4YPwc-sPQTHNXfXts'}))
 wowza_token = Setting.create(name: 'WMS Token', data: 'sfV45RvdHJR.658sSSferyhD6HYmlxRt.95Tyg6VGpoz56.dHTeribAdrG654')
+withdrawal_limits = Setting.create(name: 'Withdrawal Limits', data: {max: 100, min: 10})
 
 admin = Admin.create(first_name: 'Josh', last_name: 'Tate', password: 'buh12345', email: 'jtate@variationmedia.com')
+
+invoice_logo = InvoiceLogo.create(image: nil)
+
+invoice_settings = Setting.create(name: 'Invoice Details', data: YAML.dump({company_name: 'Malimar TV', address: "10 This Way\nManhattan, NY 10001\n800-111-2222\nbilling@malimar-tv.com"}))

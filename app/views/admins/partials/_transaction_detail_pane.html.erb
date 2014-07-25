@@ -1,0 +1,18 @@
+<p><strong>Range Transactions:</strong><br>
+    <%= @range_transactions.count %></p>
+<p><strong>Range Value:</strong><br>
+    $<%= number_with_precision(@range_balance, precision: 2) %></p>
+
+<p><strong>Total Transactions:</strong><br>
+    <%= @transactions.count %></p>
+<p><strong>Current Balance:</strong><br>
+    $<%= number_with_precision(@total_balance, precision: 2) %></p>
+<% if @detail == 'current_balance' %>
+<p><strong>Total Value:</strong><br>
+    $<%= number_with_precision(@total_tx, precision: 2) %></p>
+<% end %>
+
+<p><%= link_to 'View Invoice', admin_rep_tx_invoice_path(status: @status, id: @rep.id,
+                                              start_day: params[:start_day], start_month: params[:start_month], start_year: params[:start_year],
+                                              end_day: params[:end_day], end_month: params[:end_month], end_year: params[:end_year]),
+                                              class: 'btn btn-success', target: '_blank' %>

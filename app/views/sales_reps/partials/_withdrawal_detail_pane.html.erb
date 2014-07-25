@@ -1,0 +1,17 @@
+<p><strong>Range Withdrawals:</strong><br>
+    <%= @range_withdrawals.count %></p>
+<% if @detail == 'total_payout' %>
+<p><strong>Range Approved Funds:</strong><br>
+<% else %>
+<p><strong>Range Requested Funds:</strong><br>
+<% end %>
+    $<%= number_with_precision(@range_balance, precision: 2) %></p>
+
+<p><strong>Total Withdrawals:</strong><br>
+    <%= @withdrawals.count %></p>
+<% if @detail == 'total_payout' %>
+<p><strong>Total Approved Funds:</strong><br>
+<% else %>
+<p><strong>Total Requested Funds:</strong><br>
+<% end %>
+    $<%= number_with_precision(@total_balance, precision: 2) %></p>

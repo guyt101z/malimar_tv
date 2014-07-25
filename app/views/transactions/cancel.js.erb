@@ -1,1 +1,5 @@
-$('#trans_<%= @transaction.id %>').children('.status').removeClass('pending').addClass('cancelled').html('Cancelled')
+<% if params[:admin_action] == 'queue' %>
+    $('#tx_<%= @transaction.id %>').remove()
+<% else %>
+    $('#trans_<%= @transaction.id %>').children('.status').removeClass('pending').addClass('cancelled').html('Cancelled')
+<% end %>

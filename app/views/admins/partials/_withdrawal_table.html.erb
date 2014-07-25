@@ -1,0 +1,20 @@
+<table class='table table-hover table-scroll'>
+    <thead>
+        <tr>
+            <th>Date Requested</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Last Updated</th>
+        </tr>
+    </thead>
+    <tbody>
+    <% @range_withdrawals.each do |withdrawal| %>
+        <tr onclick='window.open("<%= admin_view_withdrawal_invoice_path(id: withdrawal.id) %>")' style='cursor:pointer'>
+            <td><%= withdrawal.created_at.strftime('%B %-d, %Y') %></td>
+            <td>$<%= number_with_precision(withdrawal.amount, precision: 2) %></td>
+            <td><%= withdrawal.status %></td>
+            <td><%= withdrawal.updated_at.strftime('%B %-d, %Y') %></td>
+        </tr>
+    <% end %>
+    </tbody>
+</table>

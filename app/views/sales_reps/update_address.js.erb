@@ -1,0 +1,48 @@
+$('#address_1-error').remove()
+$('#address_2-error').remove()
+$('#city-error').remove()
+$('#state-error').remove()
+$('#country-error').remove()
+$('#zip-error').remove()
+
+
+<% if @sales_rep.errors.any? %>
+    <% if @sales_rep.errors[:address_1].present? %>
+        $('#address_1').after('<div class="text-danger" id="address_1-error">Address <%= @sales_rep.errors[:address_1].join(", ") %></div>')
+    <% end %>
+    <% if @sales_rep.errors[:address_2].present? %>
+        $('#address_2').after('<div class="text-danger" id="address_2-error">Address <%= @sales_rep.errors[:address_2].join(", ") %></div>')
+    <% end %>
+    <% if @sales_rep.errors[:city].present? %>
+        $('#city').after('<div class="text-danger" id="city-error">City <%= @sales_rep.errors[:city].join(", ") %></div>')
+    <% end %>
+    <% if @sales_rep.errors[:state].present? %>
+        $('#state').after('<div class="text-danger" id="state-error">State <%= @sales_rep.errors[:state].join(", ") %></div>')
+    <% end %>
+    <% if @sales_rep.errors[:country].present? %>
+        $('#country').after('<div class="text-danger" id="country-error">Country <%= @sales_rep.errors[:country].join(", ") %></div>')
+    <% end %>
+    <% if @sales_rep.errors[:zip].present? %>
+        $('#zip').after('<div class="text-danger" id="zip-error">Zip/Postal code <%= @sales_rep.errors[:zip].join(", ") %></div>')
+    <% end %>
+
+    var notification = new NotificationFx({
+        message : '<p>Your account could not be updated.</p><p>Please see form for further information.</p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'danger', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+
+    notification.show()
+<% else %>
+    var notification = new NotificationFx({
+        message : '<p>Your account has been updated!</p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'success', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+
+    notification.show()
+<% end %>

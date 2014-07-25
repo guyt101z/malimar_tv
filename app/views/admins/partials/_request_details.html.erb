@@ -1,0 +1,54 @@
+<div class='panel-heading'>
+    <h3 class='panel-title'>Request Details</h3>
+</div>
+
+<div class='panel-body'>
+    <div class='row'>
+        <div class='col-md-6'>
+            <p><strong>Withdrawal Amount:</strong><br/><span class='wd_detail'>$<%= number_with_precision(@withdrawal.amount, precision: 2) %></span></p>
+        </div>
+        <div class='col-md-6'>
+            <p><strong>Created:</strong><br/><span class='wd_detail'><%= @withdrawal.created_at.strftime('%B %-d, %Y at %-l:%M %p') %></span></p>
+        </div>
+    </div>
+    <hr/>
+    <div class='row'>
+        <div class='col-md-6'>
+            <p><strong>Representative Name:</strong><br/><span class='wd_detail'><%= @rep.name %></span></p>
+            <p><strong>Representative Email:</strong><br/><span class='wd_detail'><%= @rep.email %></span></p>
+        </div>
+        <div class='col-md-6'>
+            <p><strong>Representative Balance:</strong><br/><span class='wd_detail'>$<%= number_with_precision(@rep.current_balance_wo_pending_withdrawals, precision: 2) %></span></p>
+            <p><strong>Balance After Approval:</strong><br/><span class='wd_detail'>$<%= number_with_precision(@rep.current_balance_wo_pending_withdrawals - @withdrawal.amount, precision: 2) %></span></p>
+        </div>
+        <div class='col-md-12 form-group'>
+            <label>Note</label>
+            <%= text_area_tag :note, '', class: 'form-control', style: 'resize: none', rows: 4 %>
+        </div>
+    </div>
+</div>
+<div class='panel-footer'>
+    <div class='row'>
+        <div class='col-xs-6'>
+            <a class='btn btn-success' style='width: 100%' onclick='approveRequest()'>Approve Request</a>
+        </div>
+        <div class='col-xs-6'>
+            <a class='btn btn-danger' style='width: 100%' onclick='denyRequest()'>Deny Request</a>
+        </div>
+    </div>
+</div>
+<script>
+    function approveRequest(){
+        note = $('#note').val()
+        $.ajax({
+            url: '<%= approve_request_path(id: @withdrawal.id) %>&note='+note
+        })
+    }
+
+    function denyRequest(){
+        note = $('#note').val()
+        $.ajax({
+            url: '<%= deny_request_path(id: @withdrawal.id) %>&note='+note
+        })
+    }
+</script>

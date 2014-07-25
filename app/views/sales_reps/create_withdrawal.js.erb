@@ -1,0 +1,6 @@
+<% if @error.nil? %>
+    alert('Your request has been submitted.')
+    window.location = '/sales_reps/transactions'
+<% else %>
+    alert('<%= @error %>')
+<% end %>

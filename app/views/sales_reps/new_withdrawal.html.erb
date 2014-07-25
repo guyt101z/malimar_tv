@@ -1,0 +1,115 @@
+<div class='container'>
+    <div class='row'>
+        <div class='col-md-3 col-sm-1 hidden-xs'></div>
+        <div class='col-md-3 col-sm-5'>
+            <div class='panel panel-default' id='current_balance'>
+                <div class='panel-heading'>
+                    <h3 class='panel-title'>Current Balance</h3>
+                </div>
+                <div class='panel-body text-center balance'>
+                    <i class='fa fa-refresh fa-spin'></i>
+                </div>
+            </div>
+        </div>
+        <div class='col-md-3 col-sm-5'>
+            <%= form_tag create_withdrawal_path, remote: true, id: 'request-form' do %>
+            <div class='panel panel-default'>
+                <div class='panel-heading'>
+                    <h3 class='panel-title'>Your Request</h3>
+                </div>
+                <div class='panel-body' style='position: relative'>
+                    <%= text_field_tag :amount, '10.00', class: 'form-control withdrawal-field' %>
+                    <div class='withdrawal-icon'><i class='fa fa-dollar'></i></div>
+                </div>
+                <div class='panel-footer'>
+                    <a class='btn btn-primary' style='width: 100%' onclick='submitRequest()' id='submit_button'>Submit Request</a>
+                </div>
+            </div>
+            <% end %>
+        </div>
+        <div class='col-md-3 col-sm-1 hidden-xs'></div>
+    </div>
+</div>
+<script>
+    $.ajax({
+        url: '/rep_current_balance'
+    })
+
+    if($(window).width() > 991){
+        var screen_size = 'large'
+    }
+    else {
+        var screen_size = 'small'
+    }
+
+    $(window).resize(function(){
+
+        if($('#transactions').width() <= 398 && screen_size == 'large') {
+            waitForFinalEvent(function(){
+                chart.redraw()
+            },500,makeid())
+
+            screen_size = 'small'
+        }
+        else if ($('#transactions').width() > 397 && screen_size == 'small') {
+            waitForFinalEvent(function(){
+                chart.redraw()
+            },500,makeid())
+            screen_size = 'large'
+        }
+    })
+    var waitForFinalEvent = (function () {
+        var timers = {};
+        return function (callback, ms, uniqueId) {
+            if (!uniqueId) {
+                uniqueId = "Don't call this twice without a uniqueId";
+            }
+            if (timers[uniqueId]) {
+                clearTimeout (timers[uniqueId]);
+            }
+            timers[uniqueId] = setTimeout(callback, ms);
+        };
+    })();
+    function makeid() {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for( var i=0; i < 5; i++ )
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+    }
+    $('svg').css('overflow','visible')
+
+    function updateChartDetails(){
+        loadDetails($('#hidden_tag').val(), $('#start_month').val(), $('#start_day').val(), $('#start_year').val(), $('#end_month').val(), $('#end_day').val(), $('#end_year').val())
+    }
+
+    function loadDetails(detail, start_month, start_day, start_year, end_month, end_day, end_year) {
+        $('#loading_chart').html('<i class="fa fa-refresh fa-spin"></i>')
+        $('#loading_table').css('line-height','200px').html('<i class="fa fa-refresh fa-spin"></i>')
+        $('#loading_chart').show()
+        $('#loading_table').show()
+        $('#transactions').html('')
+        $('#transaction_table').html('')
+        $('#details_pane').html('')
+
+        $('#start_month').val(start_month)
+        $('#start_day').val(start_day)
+        $('#start_year').val(start_year)
+        $('#end_month').val(end_month)
+        $('#end_day').val(end_day)
+        $('#end_year').val(end_year)
+        $('#transactions_details_modal').modal('show');
+        $.ajax({
+            url: '/view_'+detail+'_details?start_month='+start_month+'&start_day='+start_day+'&start_year='+start_year+'&end_month='+end_month+'&end_day='+end_day+'&end_year='+end_year
+        })
+    }
+</script>
+<%= render 'sales_reps/partials/transactions_details_modal' %>
+<script>
+    function submitRequest(){
+        $('#submit_button').html('Submitting...').attr('disabled','disabled');
+        $('#request-form').trigger('submit.rails');
+    }
+</script>

@@ -21,7 +21,7 @@
         			<a href="/sales_reps/register"><i class='fa fa-asterisk'></i> Register Customer</a>
         		</li>
         		<li id='transactions_link'>
-        			<a href="/sales_reps/transactions"><i class='fa fa-dollar'></i> My Transactions</a>
+        			<a href="/sales_reps/transactions"><i class='fa fa-dollar'></i> Financials</a>
         		</li>
 	            <li class="dropdown" id='settings_link'>
 	                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-exclamation'></i> Support <b class="caret"></b></a>
@@ -34,7 +34,7 @@
                 <li class="dropdown" id='settings_link'>
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-gears'></i> Settings <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                      <li><a href="/admins/new_sales_rep"><i class='fa fa-list fa-fw'></i> Manage Account</a></li>
+                      <li><a href="/sales_reps/profile"><i class='fa fa-list fa-fw'></i> Manage Account</a></li>
                       <li><%= link_to raw("<i class='fa fa-sign-out fa-fw'></i> Sign Out"), destroy_sales_representative_session_path, method: :delete %></li>
                     </ul>
                 </li>

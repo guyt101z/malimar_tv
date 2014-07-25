@@ -1,0 +1,20 @@
+<% if @success == true %>
+    var notification = new NotificationFx({
+        message : '<p>Your logo has been successfully uploaded!</p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'success', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+    notification.show()
+    $('#invoice_image').attr('src','<%= @logo.image_url %>')
+<% else %>
+    var notification = new NotificationFx({
+        message : '<p>There was an error uploading the image.<br/>Please ensure that the file is either a jpg/jpeg, png, or gif.</p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'danger', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+    notification.show()
+<% end %>

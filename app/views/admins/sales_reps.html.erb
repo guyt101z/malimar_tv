@@ -1,81 +1,41 @@
-<% content_for :title, 'Sales Representative Management' %>
-<div class='users-wrapper'>
-	<div class='users-area'>
-		<div class='users-search'>
-			<%= text_field_tag :search, '', autocomplete: 'off' %>
-			<div class='placeholder' id='placeholder'><i class='fa fa-search'></i> Search</div>
-		</div>
-		<div class='users-list' id='full-list'>
-			<% @reps.each do |user| %>
-				<div class='user' id='rep_<%= user.id %>' onclick="viewRep(<%= user.id %>)">
-					<div class='profile-picture'>
-						<div class='wrapper'>
-							<% if user.photo.blank? %>
-								<i class='fa fa-user'></i>
-							<% else %>
-								<%= image_tag user.photo_url.to_s, style: 'height: 50px; width: 50px;' %>
-							<% end %>
-						</div>
-					</div>
-					<p class='name'><%= user.name %></p>
-					<p class='email'><%= user.email %></p>
-					<p class='email'>Representative Since: <%= user.created_at.strftime('%B %-d, %Y') %></p>
+<% content_for :title, 'Sales Representatives' %>
+<div class='container'>
+	<div class='row'>
+		<div class='col-xs-12'>
+			<div class='panel panel-default'>
+				<div class='panel-heading'>
+					<h3 class='panel-title'>Search Sales Representatives</h3>
 				</div>
-			<% end %>
+				<div class='panel-body'>
+					<table class='table table-hover table-bordered' id='sales_rep_table'>
+						<thead><tr>
+							<th>ID</th>
+							<th>Last Name</th>
+							<th>First Name</th>
+							<th>Email</th>
+							<th>Country</th>
+							<th>Current Balance</th>
+							<th>Pending Balance</th>
+							<th>Pending Withdrawals</th>
+						</tr></thead>
+						<% @reps.each do |rep| %>
+							<tr onclick='window.location = "<%= view_rep_path(id: rep.id) %>"' style='cursor:pointer'>
+								<th><%= rep.id %></th>
+								<td><%= rep.last_name %></td>
+								<td><%= rep.first_name %></td>
+								<td><%= rep.email %></td>
+								<td><%= rep.country %></td>
+								<td>$<%= number_with_precision(rep.current_balance, precision: 2) %></td>
+								<td>$<%= number_with_precision(rep.pending_balance, precision: 2) %></td>
+								<td>$<%= number_with_precision(rep.pending_withdrawals, precision: 2) %></td>
+							</tr>
+						<% end %>
+					</table>
+				</div>
+			</div>
 		</div>
-		<div class='results-count' id='count' style='display:none'></div>
-		<div class='search-users-list' id='search-list' style='display:none'>
-
-		</div>
-	</div>
-	<div class='user-info' id='user-info'>
-
 	</div>
 </div>
-<script type="text/javascript">
-	$('#search').focus(function(){
-		$('#placeholder').animate({
-			'left':17
-		}, 100)
-	})
-	$('#search').blur(function(){
-		$('#placeholder').animate({
-			'left':120
-		}, 100)
-	})
-
-	$('#placeholder').click(function(){
-		$('#search').focus();
-	})
-
-	$('#search').keydown(function(){
-		$('#placeholder').hide()
-	})
-	$('#search').keyup(function(){
-		if ($('#search').val() != '') {
-			$('#placeholder').hide()
-			$('#full-list').hide()
-			$.ajax({
-				url: '/search_reps?search='+$('#search').val()
-			})
-		}
-		else {
-			$('#placeholder').show()
-			$('#full-list').show()
-			$('#search-list').hide()
-			$('#count').hide()
-		}
-	})
-
-	function viewRep(id){
-		$('.user').removeClass('active')
-		$('#rep_'+id).addClass('active')
-		$('#search_'+id).addClass('active')
-		$.ajax({
-			url: '/view_rep?id='+id
-		})
-	}
-	<% if params[:id].present? %>
-		$('#rep_<%= params[:id] %>').click()
-	<% end %>
+<script>
+	$('#sales_rep_table').dataTable()
 </script>

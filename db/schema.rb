@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140715200410) do
+ActiveRecord::Schema.define(version: 20140725131733) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -30,12 +30,12 @@ ActiveRecord::Schema.define(version: 20140715200410) do
 
   create_table "admin_notifications", force: true do |t|
     t.integer  "admin_id"
-    t.string   "type"
     t.string   "message"
     t.datetime "expiry"
-    t.boolean  "read"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "viewed"
+    t.string   "notif_type"
   end
 
   create_table "admins", force: true do |t|
@@ -126,6 +126,12 @@ ActiveRecord::Schema.define(version: 20140715200410) do
     t.datetime "updated_at"
   end
 
+  create_table "invoice_logos", force: true do |t|
+    t.string   "image"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "login_messages", force: true do |t|
     t.text     "message"
     t.datetime "start"
@@ -158,6 +164,16 @@ ActiveRecord::Schema.define(version: 20140715200410) do
     t.text     "features"
     t.integer  "price"
     t.integer  "months"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "rep_notifications", force: true do |t|
+    t.integer  "sales_rep_id"
+    t.string   "message"
+    t.string   "notif_type"
+    t.date     "expires"
+    t.boolean  "viewed"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -198,6 +214,7 @@ ActiveRecord::Schema.define(version: 20140715200410) do
     t.string   "company"
     t.float    "account_balance"
     t.float    "commission_rate"
+    t.string   "paypal"
   end
 
   add_index "sales_representatives", ["email"], name: "index_sales_representatives_on_email", unique: true, using: :btree
@@ -276,12 +293,12 @@ ActiveRecord::Schema.define(version: 20140715200410) do
 
   create_table "user_notifications", force: true do |t|
     t.integer  "user_id"
-    t.string   "type"
     t.string   "message"
     t.datetime "expiry"
-    t.boolean  "read"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "viewed"
+    t.string   "notif_type"
   end
 
   create_table "users", force: true do |t|
@@ -314,5 +331,16 @@ ActiveRecord::Schema.define(version: 20140715200410) do
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+
+  create_table "withdrawals", force: true do |t|
+    t.integer  "sales_rep_id"
+    t.float    "amount"
+    t.string   "status"
+    t.integer  "admin_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "approved"
+    t.text     "note"
+  end
 
 end

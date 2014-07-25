@@ -58,6 +58,8 @@ Rails.application.routes.draw do
         get 'cancel_payment' => 'transactions#cancel'
         get 'refund_payment' => 'transactions#refund'
 
+        get '/admins/users/pending_payments' => 'admins#user_payment_queue'
+
   		# Video CMS
         get '/admins/videos/tv_shows' => 'admins#shows', as: 'tv_shows'
         get 'view_show' => 'videos#view_show'
@@ -110,16 +112,44 @@ Rails.application.routes.draw do
       	get '/admins/new_sales_rep' => 'admins#new_sales_rep'
       	post 'admin_create_sales_rep' => 'admins#create_sales_rep'
 
-      	# Manage Plans
+        post 'admin_update_rep_profile' => 'admins#update_rep_profile'
+        post 'admin_update_rep_mailing' => 'admins#update_rep_mailing'
+        post 'admin_update_rep_commission' => 'admins#update_rep_commission'
+
+        get 'admin_rep_current_balance' => 'admins#rep_current_balance'
+        get 'admin_rep_pending_balance' => 'admins#rep_pending_balance'
+        get 'admin_rep_pending_withdrawals' => 'admins#rep_pending_withdrawals'
+        get 'admin_rep_total_payout' => 'admins#rep_total_payout'
+
+        get 'admin_view_pending_balance_details' => 'admins#view_pending_balance_details'
+        get 'admin_view_current_balance_details' => 'admins#view_current_balance_details'
+        get 'admin_view_pending_withdrawals_details' => 'admins#view_pending_withdrawals_details'
+        get 'admin_view_total_payout_details' => 'admins#view_total_payout_details'
+
+      	# Manage Plans/Invoice
       	get '/admins/financial' => 'admins#plans'
       	post 'update_plan' => 'plans#update'
         post 'update_paypal' => 'admins#update_paypal'
+
+        post 'update_invoice_details' => 'admins#update_invoice_details'
+        post 'upload_invoice_logo' => 'admins#upload_invoice_logo'
 
         # Activity Feed
         get 'load_activity_feed' => 'feed#load'
         get 'load_admin_activity_feed' => 'feed#load_admin'
         get 'refresh_feed' => 'feed#refresh'
         get '/admins/view_update' => 'feed#view_update', as: 'view_update'
+
+        # Sales Rep Withdrawals
+        get '/admins/sales_reps/payment_requests' => 'admins#payment_requests', as: 'sales_payment_requests'
+        get 'view_request' => 'admins#view_request'
+        get 'approve_request' => 'admins#approve_request'
+        get 'deny_request' => 'admins#deny_request'
+
+        get '/admins/sales_reps/payments' => 'admins#payments', as: 'all_payments'
+
+        get '/admins/sales_reps/invoices/withdrawals/:id' => 'admins#view_withdrawal_invoice', as: 'admin_view_withdrawal_invoice'
+        get '/admins/sales_reps/invoices/transactions' => 'admins#view_transactions_over_period', as: 'admin_rep_tx_invoice'
 
         # Support
         get '/admins/support' => 'admins#support', as: 'admin_support'
@@ -143,6 +173,10 @@ Rails.application.routes.draw do
     authenticate :sales_representative do
     	get 'sales_reps' => 'sales_reps#index'
 
+        get '/sales_reps/profile' => 'sales_reps#profile', as: 'rep_profile'
+        post 'update_sales_rep_profile' => 'sales_reps#update_profile'
+        post 'update_sales_rep_address' => 'sales_reps#update_address'
+
     	get '/sales_reps/register' => 'sales_reps#register'
     	post 'register_step_one' => 'sales_reps#register_step_one'
     	get 'sales_rep_choose_plan' => 'sales_reps#choose_plan'
@@ -152,14 +186,31 @@ Rails.application.routes.draw do
 
     	get '/sales_reps/settings' => 'sales_reps#settings'
 
-      get '/sales_reps/support' => 'sales_reps#support', as: 'sales_rep_support'
-      get '/sales_reps/archived_tickets' => 'sales_reps#archived_tickets', as: 'sales_rep_archived_tickets'
-      get '/sales_reps/new_ticket' => 'sales_reps#new_ticket', as: 'sales_rep_new_ticket'
-      post 'sales_rep_create_ticket' => 'support#sales_rep_create_ticket'
-      get 'sales_rep_view_ticket' => 'support#sales_rep_view_ticket'
+        get '/sales_reps/support' => 'sales_reps#support', as: 'sales_rep_support'
+        get '/sales_reps/archived_tickets' => 'sales_reps#archived_tickets', as: 'sales_rep_archived_tickets'
+        get '/sales_reps/new_ticket' => 'sales_reps#new_ticket', as: 'sales_rep_new_ticket'
+        post 'sales_rep_create_ticket' => 'support#sales_rep_create_ticket'
+        get 'sales_rep_view_ticket' => 'support#sales_rep_view_ticket'
 
-      post 'sales_rep_send_message_on_ticket' => 'support#sales_rep_send_message'
-      post 'sales_rep_attach_file_to_ticket' => 'support#sales_rep_attach_file'
+        post 'sales_rep_send_message_on_ticket' => 'support#sales_rep_send_message'
+        post 'sales_rep_attach_file_to_ticket' => 'support#sales_rep_attach_file'
+
+        get 'rep_pending_balance' => 'sales_reps#pending_balance'
+        get 'rep_current_balance' => 'sales_reps#current_balance'
+        get 'rep_pending_withdrawals' => 'sales_reps#pending_withdrawals'
+        get 'rep_total_payout' => 'sales_reps#total_payout'
+        get 'rep_meets_limit' => 'sales_reps#meets_limit'
+
+        get 'view_pending_balance_details' => 'sales_reps#view_pending_balance_details'
+        get 'view_current_balance_details' => 'sales_reps#view_current_balance_details'
+        get 'view_pending_withdrawals_details' => 'sales_reps#view_pending_withdrawals_details'
+        get 'view_total_payout_details' => 'sales_reps#view_total_payout_details'
+
+        get '/sales_reps/new_withdrawal' => 'sales_reps#new_withdrawal'
+        post 'create_withdrawal' => 'sales_reps#create_withdrawal'
+
+        get '/sales_reps/invoices/withdrawals/:id' => 'sales_reps#view_withdrawal_invoice', as: 'rep_view_invoice'
+        get '/sales_reps/invoices/transactions' => 'sales_reps#view_transactions_over_period', as: 'rep_tx_invoice'
     end
 
     # Roku API
@@ -176,11 +227,6 @@ Rails.application.routes.draw do
     get 'search_suggestions' => 'videos#search_suggestions'
     get 'subscribe' => 'users#subscribe'
     post 'add_subscription' => "users#add_subscription"
-
-    post 'create_new_user' => 'users#create_new'
-    get 'rep_commission' => 'sales_reps#rep_commission'
-    get 'rep_commission_owed' => 'sales_reps#rep_commission_owed'
-    get 'rep_commission_paid' => 'sales_reps#rep_commission_paid'
 
   root :to => 'videos#landing'
 

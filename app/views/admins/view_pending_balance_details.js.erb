@@ -1,0 +1,32 @@
+$('#transaction_details_title').html('Pending Transactions')
+
+$('#hidden_tag').val('<%= @detail %>')
+
+<% if @error == true %>
+    $('#loading_chart').html('<i class="fa fa-exclamation-triangle text-danger animated fadeIn"></i>')
+    $('#loading_table').css('line-height','150px').html('<span class="text-danger animated fadeIn" style="font-size: 30px">Please choose a valid date range</span>')
+<% else %>
+    setTimeout(function(){
+        $('#transactions').html('<%= escape_javascript(render("admins/partials/transaction_chart")) %>')
+        $('#transaction_table').html('<%= escape_javascript(render("admins/partials/transaction_table")) %>')
+        $('#details_pane').html('<%= escape_javascript(render("admins/partials/transaction_detail_pane")) %>')
+        $('#loading_table').hide()
+        $('#loading_chart').hide()
+    },500)
+<% end %>
+$(window).resize(function(){
+
+    if($('#transactions').width() <= 398 && screen_size == 'large') {
+        waitForFinalEvent(function(){
+            chart.redraw()
+        },500,makeid())
+
+        screen_size = 'small'
+    }
+    else if ($('#transactions').width() > 397 && screen_size == 'small') {
+        waitForFinalEvent(function(){
+            chart.redraw()
+        },500,makeid())
+        screen_size = 'large'
+    }
+})

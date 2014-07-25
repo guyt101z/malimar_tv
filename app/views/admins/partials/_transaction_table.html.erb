@@ -1,0 +1,23 @@
+<table class='table table-hover table-scroll'>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Comm. Rate</th>
+            <th>Comm. Payable</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    <% @range_transactions.each do |transaction| %>
+        <% details = YAML.load(transaction.product_details) %>
+        <tr>
+            <td><%= transaction.created_at.strftime('%B %-d, %Y') %></td>
+            <td>$<%= number_with_precision(details[:price], precision: 2) %></td>
+            <td><%= number_with_precision(details[:commission_rate], precision: 2) %>%</td>
+            <td>$<%= number_with_precision((details[:commission_rate]/100)*details[:price], precision: 2) %></td>
+        </tr>
+    <% end %>
+
+    </tbody>
+</table>

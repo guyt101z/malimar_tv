@@ -1,0 +1,43 @@
+<% content_for :title, 'Approved Withdrawals' %>
+<div class='container'>
+    <div class='row'>
+        <div class='col-md-12'>
+            <div class='panel panel-default'>
+                <div class='panel-heading'>
+                    <h3 class='panel-title'>Withdrawals</h3>
+                </div>
+                <div class='panel-body'>
+                    <table id='withdrawals_table' class='table table-hover table-bordered'>
+                        <thead><tr>
+                            <th style='white-space:nowrap'>With. ID</th>
+                            <th style='white-space:nowrap'>Rep ID</th>
+                            <th style='white-space:nowrap'>Rep Name</th>
+                            <th style='white-space:nowrap'>Rep Email</th>
+                            <th style='white-space:nowrap'>Amount</th>
+                            <th style='white-space:nowrap'>Requested</th>
+                            <th style='white-space:nowrap'>Approved</th>
+                            <th style='white-space:nowrap'>Approved By</th>
+                        </tr></thead>
+                        <% @withdrawals.each do |withdrawal| %>
+                            <tr class='withdrawal_item' id='request_<%= withdrawal.id %>' onclick='window.open("<%= admin_view_withdrawal_invoice_path(id: withdrawal.id) %>")'>
+                                <th><%= withdrawal.id %></th>
+                                <% rep = SalesRepresentative.find(withdrawal.sales_rep_id) %>
+                                <% admin = Admin.find(withdrawal.admin_id) %>
+                                <td><%= rep.id %></td>
+                                <td><%= rep.name %></td>
+                                <td><%= rep.email %></td>
+                                <td><%= number_with_precision(withdrawal.amount, precision: 2) %></td>
+                                <td><strong><%= withdrawal.created_at.strftime('%Y/%m/%d') %></strong></td>
+                                <td><strong><%= withdrawal.approved.strftime('%Y/%m/%d') %></strong></td>
+                                <td><%= admin.name %></td>
+                            </tr>
+                        <% end %>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#withdrawals_table').dataTable()
+</script>

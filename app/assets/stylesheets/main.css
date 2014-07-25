@@ -18,6 +18,7 @@
  *= require user_support_styles
  *= require animate
  *= require minimalist
+ *= require notifications
  */
 .col-centered{
     float: none;

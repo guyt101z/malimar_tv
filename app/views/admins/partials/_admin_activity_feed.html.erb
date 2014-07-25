@@ -15,7 +15,7 @@
 				<% if update.created_at.to_date > Date.today - 7.days %>
 					<%= distance_of_time_in_words(DateTime.now, update.created_at) %> ago
 				<% else %>
-					<%= updated.created_at.strftime('%d-%m-%Y at %l:%M %p') %>
+					<%= update.created_at.strftime('%d-%m-%Y at %l:%M %p') %>
 				<% end %>
 			</p>
 		</div>

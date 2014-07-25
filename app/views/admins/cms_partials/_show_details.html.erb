@@ -51,7 +51,7 @@
                         </div>
                         <div class='col-sm-6 form-group'>
                             <label class='unedited'>Membership Level</label>
-                            <%= select_tag :free, options_for_select([['Free', 1],['Premium', 0]], @show.free), class: 'form-control edit_channel' %>
+                            <%= select_tag :free, options_for_select([['Free', true],['Premium', false]], @show.free), class: 'form-control edit_channel' %>
                         </div>
                     </div>
                     <div class='row'>

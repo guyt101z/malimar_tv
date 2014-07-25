@@ -1,0 +1,36 @@
+$('#first_name-error').remove()
+$('#last_name-error').remove()
+$('#email-error').remove()
+
+
+<% if @sales_rep.errors.any? %>
+    <% if @sales_rep.errors[:first_name].present? %>
+        $('#first_name').after('<div class="text-danger" id="first_name-error">First name <%= @sales_rep.errors[:first_name].join(", ") %></div>')
+    <% end %>
+    <% if @sales_rep.errors[:last_name].present? %>
+        $('#last_name').after('<div class="text-danger" id="address_2-error">Last name <%= @sales_rep.errors[:last_name].join(", ") %></div>')
+    <% end %>
+    <% if @sales_rep.errors[:email].present? %>
+        $('#email').after('<div class="text-danger" id="email-error">Email address <%= @sales_rep.errors[:email].join(", ") %></div>')
+    <% end %>
+
+    var notification = new NotificationFx({
+        message : '<p>Your account could not be updated.</p><p>Please see form for further information.</p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'danger', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+
+    notification.show()
+<% else %>
+    var notification = new NotificationFx({
+        message : '<p>Your account has been updated!</p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'success', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+
+    notification.show()
+<% end %>

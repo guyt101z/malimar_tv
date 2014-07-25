@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  	<title>Malimar TV</title>
-  	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-  	<% if params[:controller] == 'admins' || params[:controller] == 'sales_reps' || params[:controller] == 'feed' %>
-  		<%= stylesheet_link_tag    'admin', media: 'all', 'data-turbolinks-track' => true %>
-  	<% else %>
-  		<%= stylesheet_link_tag    'main', media: 'all', 'data-turbolinks-track' => true %>
-  	<% end %>
-  	<%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  	<link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
+	<title>Malimar TV</title>
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<% if params[:controller] == 'admins' || params[:controller] == 'sales_reps' || params[:controller] == 'feed' %>
+		<%= stylesheet_link_tag    'admin', media: 'all', 'data-turbolinks-track' => true %>
+	<% else %>
+		<%= stylesheet_link_tag    'main', media: 'all', 'data-turbolinks-track' => true %>
+	<% end %>
+
+	<%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+	<link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
 	<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 	<script src="http://cdn.oesmith.co.uk/morris-0.4.3.min.js"></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js'></script>
@@ -18,26 +19,71 @@
     <script type='text/javascript'>jwplayer.key = 'SkTelUdJ7DU2z068gn4mt6/EhKvLHRJnoBeHqf2IqNg='</script>
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:600,400,300,700' rel='stylesheet' type='text/css'>
-  	<%= csrf_meta_tags %>
+	<%= csrf_meta_tags %>
 </head>
 <% if params[:controller] == 'admins' || params[:controller] == 'feed' %>
 <body>
+    <div class='notification-section' id='notifications'></div>
 	<%= render 'admins/nav/navbar' %>
 	<%= yield %>
-	<% flash.each do |name, msg| -%>
-	    <script>alert('<%= msg %>')</script>
-	<% end %>
+	<script>
+        var num = 0;
+
+        <% flash.each do |name, msg| -%>
+
+            var notification = new NotificationFx({
+                message : '<p><%= msg %></p>',
+                layout : 'growl',
+                effect : 'jelly',
+                <% if name == 'error' %>
+                    type : 'danger', // notice, warning, error or success
+                <% elsif name == 'alert' %>
+                    type: 'warning',
+                <% else %>
+                    type : '<%= name %>', // notice, warning, error or success
+                <% end %>
+                num: num
+            });
+
+            notification.show()
+            num++;
+
+        <% end %>
+    </script>
 </body>
 <% elsif params[:controller] == 'sales_reps' %>
 <body>
+    <div class='notification-section' id='notifications'></div>
 	<%= render 'sales_reps/nav/navbar' %>
 	<%= yield %>
-	<% flash.each do |name, msg| -%>
-	    <script>alert('<%= msg %>')</script>
-	<% end %>
+	<script>
+        var num = 0;
+
+        <% flash.each do |name, msg| -%>
+
+            var notification = new NotificationFx({
+                message : '<p><%= msg %></p>',
+                layout : 'growl',
+                effect : 'jelly',
+                <% if name == 'error' %>
+                    type : 'danger', // notice, warning, error or success
+                <% elsif name == 'alert' %>
+                    type: 'warning',
+                <% else %>
+                    type : '<%= name %>', // notice, warning, error or success
+                <% end %>
+                num: num
+            });
+
+            notification.show()
+            num++;
+
+        <% end %>
+    </script>
 </body>
 <% else %>
 <body>
+    <div class='notification-section' id='notifications'></div>
 	<% unless user_signed_in? %>
 		<%= render 'layouts/nav/navbar' %>
 	<% else %>
@@ -45,9 +91,30 @@
 	<% end %>
 	<%= yield %>
 	<%= render 'layouts/nav/footer' %>
-	<% flash.each do |name, msg| -%>
-	    <script>alert('<%= msg %>')</script>
-	<% end %>
+	<script>
+        var num = 0;
+
+        <% flash.each do |name, msg| -%>
+
+            var notification = new NotificationFx({
+				message : '<p><%= msg %></p>',
+				layout : 'growl',
+				effect : 'jelly',
+                <% if name == 'error' %>
+				    type : 'danger', // notice, warning, error or success
+                <% elsif name == 'alert' %>
+                    type: 'warning',
+                <% else %>
+                    type : '<%= name %>', // notice, warning, error or success
+                <% end %>
+                num: num
+			});
+
+            notification.show()
+            num++;
+
+	    <% end %>
+    </script>
 </body>
 <% end %>
 

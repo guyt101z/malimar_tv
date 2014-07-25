@@ -4,13 +4,27 @@ $('#payment-error').remove()
 	<% if @message.nil? %>
 		$('#serial').after('<span class="text-danger" id="type-error"><%= @device.errors.full_messages.join(". ") %>.</span>')
 	<% else %>
-		alert('<%= @message %>')
+		var notification = new NotificationFx({
+			message : '<p><%= @message %></p>',
+			layout : 'growl',
+			effect : 'jelly',
+			type : 'danger', // notice, warning, error or success
+			num: <%= (100 + rand(10000)).to_s %>
+		});
+		notification.show()
 	<% end %>
 <% elsif @payment_success == false %>
 	<% if @message.nil? %>
 		$('#payment_type').after('<span class="text-danger" id="payment-error"><%= @transaction.errors.full_messages.join(". ") %>.</span>')
 	<% else %>
-		alert('<%= @message %>')
+		var notification = new NotificationFx({
+			message : '<p><%= @message %></p>',
+			layout : 'growl',
+			effect : 'jelly',
+			type : 'danger', // notice, warning, error or success
+			num: <%= (100 + rand(10000)).to_s %>
+		});
+		notification.show()
 	<% end %>
 <% else %>
 	$('#submit_payment_modal').modal('hide')

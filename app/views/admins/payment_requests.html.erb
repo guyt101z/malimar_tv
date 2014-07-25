@@ -1,0 +1,48 @@
+<% content_for :title, 'Pending Withdrawals' %>
+<div class='container'>
+    <div class='row'>
+        <div class='col-md-6'>
+            <div class='panel panel-default'>
+                <div class='panel-heading'>
+                    <h3 class='panel-title'>Withdrawals</h3>
+                </div>
+                <div class='panel-body'>
+                    <table id='withdrawals_table' class='table table-hover table-bordered'>
+                        <thead><tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Amount</th>
+                            <th>Requested</th>
+                        </tr></thead>
+                        <% @withdrawals.each do |withdrawal| %>
+                            <tr class='withdrawal_item' onclick="selectWithdrawal(<%= withdrawal.id %>)" id='request_<%= withdrawal.id %>'>
+                                <th><%= withdrawal.id %></th>
+                                <% rep = SalesRepresentative.find(withdrawal.sales_rep_id) %>
+                                <td><%= rep.name %></td>
+                                <td><%= rep.email %></td>
+                                <td><%= number_with_precision(withdrawal.amount, precision: 2) %></td>
+                                <td><strong><%= withdrawal.created_at.strftime('%Y/%m/%d') %></strong></td>
+                            </tr>
+                        <% end %>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class='col-md-5'>
+            <div class='panel panel-default' id='request_details'>
+                <div class='panel-heading'>
+                    <h3 class='panel-title'>Select A Withdrawal to view details</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#withdrawals_table').dataTable()
+    function selectWithdrawal(id) {
+        $('.withdrawal_item').removeClass('active');
+        $('#request_'+id).addClass('active');
+        $.ajax({url: '/view_request?id='+id});
+    }
+</script>

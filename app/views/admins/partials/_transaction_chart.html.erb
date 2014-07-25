@@ -1,0 +1,37 @@
+<%
+dates = Hash.new
+day_index = @start_day
+until day_index >= @end_day + 1.day
+    dates[day_index.strftime('%Y-%m-%d')] = {transactions: 0, value: 0}
+    day_index += 1.day
+end
+@range_transactions.each do |transaction|
+    dates[transaction.created_at.strftime('%Y-%m-%d')][:transactions] += 1
+    details = YAML.load(transaction.product_details)
+    dates[transaction.created_at.strftime('%Y-%m-%d')][:value] += ((details[:commission_rate]/100)*details[:price])
+end
+%>
+<script>
+    var chart = Morris.Line({
+        element: 'transactions',
+        data: [
+            <% i = 1 %>
+            <% dates.each do |date, tx_details| %>
+                {
+                    y: '<%= date %>',
+                    a: <%= number_with_precision(tx_details[:value], precision: 2) %>
+                }
+                <% unless i == dates.count %>
+                ,
+                <% end %>
+            <% end %>
+        ],
+        xkey: 'y',
+        ykeys: ['a'],
+        labels: ['<%= @title %>', 'Comm. Payable'],
+        lineColors: ['<%= @color %>'],
+        resize: true,
+        hideHover: true,
+        preUnits: '$'
+      });
+</script>

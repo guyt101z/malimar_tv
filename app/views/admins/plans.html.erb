@@ -1,13 +1,16 @@
 <% content_for :title, 'Plan Management' %>
 <div class='container'>
 	<div class='row'>
-		<div class='col-md-6 col-sm-9 col-xs-12 col-centered'>
+		<div class='col-md-6 col-xs-12'>
 			<%= form_tag update_paypal_path, remote: true do %>
 			<div class='panel panel-default'>
-				<div class='panel-heading'>
+				<div class='panel-heading' style='position: relative'>
 					<h3 class='panel-title'>Paypal Credentials</h3>
+					<div class='upload_image_heading'>
+						<%= submit_tag 'Update', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+					</div>
 				</div>
-				<div class='panel-body'>
+				<div class='panel-body' style='height: 252px'>
 					<div class='form-group'>
 						<label>Paypal Login</label>
 						<%= text_field_tag :login, @credentials[:login], class: 'form-control' %>
@@ -23,11 +26,91 @@
 						<span class='show_password' onclick="$(this).parent().remove()"><i class='fa fa-search'></i></span>
 					</div>
 				</div>
-				<div class='panel-footer text-right'>
-					<%= submit_tag 'Update Credentials', class: 'btn btn-primary' %>
+			</div>
+			<% end %>
+		</div>
+		<div class='col-md-3 col-sm-6'>
+			<%= form_tag update_invoice_details_path, remote: true do %>
+			<div class='panel panel-default'>
+				<div class='panel-heading'style='position: relative'>
+					<h3 class='panel-title'>Invoice Settings</h3>
+					<div class='upload_image_heading'>
+						<%= submit_tag 'Update', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+					</div>
+				</div>
+				<div class='panel-body' style='height: 252px'>
+					<div class='form-group'>
+						<label>Company Name</label>
+						<%= text_field_tag :company_name, @invoice_details[:company_name], class: 'form-control' %>
+					</div>
+					<div class='form-group password'>
+						<label>Contact Info</label>
+						<%= text_area_tag :address, @invoice_details[:address], class: 'form-control', style: 'resize:none', rows: 5 %>
+					</div>
 				</div>
 			</div>
 			<% end %>
+		</div>
+		<div class='col-md-3 col-sm-6'>
+			<div class='panel panel-default'>
+				<div class='panel-heading' style='position: relative'>
+					<h3 class='panel-title'>Invoice Logo</h3>
+					<div class='upload_image_heading'>
+						<a id='logo_click' class='btn btn-primary btn-sm'>Choose</a>
+					</div>
+				</div>
+				<div class='panel-body' style='height: 252px; position: relative'>
+					<div class='logo-preview'>
+						<%= image_tag @logo.image_url, id: 'invoice_image' %>
+					</div>
+					<div class='upload-bottom' id='logo-upload'>
+
+					</div>
+					<%= form_tag upload_invoice_logo_path, remote: true, style: 'display:none' do %>
+						<%= file_field_tag :image %>
+					<% end %>
+				</div>
+			</div>
+			<script>
+				$('#logo_click').click(function() {
+					$('#image').click();
+				});
+				$('#image').fileupload({
+					dataType: "script",
+					add: function(e, data) {
+						data.context = $(tmpl("template-upload", data.files[0]));
+						$('#upload-progress').remove()
+						$('#logo-upload').html(data.context);
+						return data.submit();
+					},
+					progress: function(e, data) {
+						var progress;
+						if (data.context) {
+							progress = parseInt(data.loaded / data.total * 100, 10);
+							return data.context.find('.progress-bar').attr('aria-valuenow', progress).css('width', progress+'%');
+						}
+					},
+					fail: function(e,data) {
+						var notification = new NotificationFx({
+							message : '<p>There was an error uploading the image.<br/>Please ensure that the file is either a jpg/jpeg, png, or gif.</p>',
+							layout : 'growl',
+							effect : 'jelly',
+							type : 'danger', // notice, warning, error or success
+							num: <%= (100 + rand(10000)).to_s %>
+						});
+						notification.show()
+						if (data.context) {
+							$
+							return data.context.find('.progress-bar').css('width','100%').removeClass('progress-bar-info').addClass('progress-bar-danger')
+						}
+					},
+					done: function(e,data) {
+						if (data.context) {
+							return data.context.find('.progress-bar').css('width','100%').removeClass('progress-bar-info').addClass('progress-bar-success')
+						}
+					}
+				});
+			</script>
 		</div>
 	</div>
 	<div class='row'>

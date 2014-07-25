@@ -18,6 +18,12 @@
 //= require jquery-fileupload/vendor/tmpl
 //= require Autolinker
 //= require timeago
+//= require snap_svg-min
+//= require modernizr_custom
+//= require classie
+//= require notificationFx
+//= require dataTables
+//= require dataTables_bootstrap
 //= require_tree .
 /**
  * Timeago is a jQuery plugin that makes it easy to support automatically

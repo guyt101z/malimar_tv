@@ -41,6 +41,7 @@ gem 'unicorn', group: :production
 gem 'devise'
 gem 'protected_attributes'
 gem 'bootstrap-sass'
+gem 'modernizr-rails'
 gem 'jquery-fileupload-rails'
 gem 'carrierwave'
 gem 'mini_magick'
