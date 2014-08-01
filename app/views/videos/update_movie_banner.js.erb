@@ -1,0 +1,3 @@
+<% if @success == true %>
+    $('#banner_preview').html('<%= image_tag @movie.banner_url(:preview) %>')
+<% end %>

@@ -1,2 +1,6 @@
-$('#submit_payment_modal').modal('show')
-$('#plan_id').val(<%= params[:plan_id] %>)
+$('#plan_id').val(<%= @plan.id %>)
+$('#plan-price').html('$<%= number_with_precision(@plan.price, precision: 2) %>')
+$('#payment_cycle').html('Every <%= pluralize(@plan.months, "Month") %>')
+$('#renewal').html('<%= (Date.today + @plan.months.months).strftime("%Y-%m-%d") %>')
+$('#total').html('$<%= number_with_precision(@plan.price, precision: 2) %>')
+$('#subscribe_modal').modal('show')

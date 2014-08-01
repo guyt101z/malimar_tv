@@ -1,0 +1,111 @@
+<div class='container'>
+    <div class='row'>
+        <div class='col-xs-12'><h2 class='page-header'>Mail Settings</h2></div>
+        <div class='col-md-3 col-sm-4'>
+            <%= render 'admins/nav/mail_side_nav' %>
+        </div>
+        <div class='col-md-9 col-sm-8'>
+            <div class='row'>
+                <div class='col-md-8'>
+                <div>
+                    <%= form_tag update_mail_template_subject_path, remote: true do %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading' style='position:relative'>
+                            <h3 class='panel-title'>Subject Line</h3>
+                            <div class='upload_image_heading'>
+                                <%= submit_tag 'Update Subject', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+                            </div>
+                        </div>
+                        <div class='panel-body'>
+                            <div class='form-group'>
+                                <%= hidden_field_tag :id, @template.id %>
+                                <%= text_field_tag :subject, @template.subject, class: 'form-control' %>
+                            </div>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+                <div>
+                    <%= form_tag update_mail_template_css_path, remote: true do %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading' style='position:relative'>
+                            <h3 class='panel-title'>CSS</h3>
+                            <div class='upload_image_heading'>
+                                <%= submit_tag 'Update CSS', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+                            </div>
+                        </div>
+                        <div class='panel-body'>
+                            <div class='form-group'>
+                                <%= hidden_field_tag :id, @template.id %>
+                                <%= text_area_tag :css, @template.css, class: 'form-control', style: 'resize: vertical; font-family: Monaco', rows: 6 %>
+                            </div>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+                <div>
+                    <%= form_tag update_mail_template_body_path, remote: true do %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading' style='position:relative'>
+                            <h3 class='panel-title'>Body Markup</h3>
+                            <div class='upload_image_heading'>
+                                <%= submit_tag 'Update Body', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+                            </div>
+                        </div>
+                        <div class='panel-body'>
+                            <div class='form-group'>
+                                <%= hidden_field_tag :id, @template.id %>
+                                <%= text_area_tag :body, @template.body, class: 'form-control', style: 'resize: vertical; font-family: Monaco', rows: 6 %>
+                            </div>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+                </div>
+                <div class='col-md-4'>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading' style='position:relative'>
+                            <h3 class='panel-title'>Body Variables</h3>
+                        </div>
+                        <div class='panel-body'>
+                            <h4 class='page-header' style='margin-top:0'>Required</h4>
+                            <% @variables.each do |var| %>
+                                <p><strong>*|<%= var.upcase %>|*</strong></p>
+                            <% end %>
+                        </div>
+                        <div class='panel-body'>
+                            <h4 class='page-header' style='margin-top:0'>Optional</h4>
+                            <p><strong>*|TIMESTAMP|*</strong></p>
+                            <p><strong>*|DATESTAMP|*</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#mail_<%= @template.name.gsub(" ","_").downcase %>').addClass('active')
+
+    $("textarea").keydown(function(e) {
+        if(e.keyCode === 9) { // tab was pressed
+            // get caret position/selection
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+
+            var $this = $(this);
+            var value = $this.val();
+
+            // set textarea value to: text before caret + tab + text after caret
+            $this.val(value.substring(0, start)
+                        + "\t"
+                        + value.substring(end));
+
+            // put caret at right position again (add one for the tab)
+            this.selectionStart = this.selectionEnd = start + 1;
+
+            // prevent the focus lose
+            e.preventDefault();
+        }
+    });
+</script>

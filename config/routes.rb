@@ -3,10 +3,6 @@ Rails.application.routes.draw do
   devise_for :sales_representatives
   devise_for :users
 
-
-    # Roku API
-    get '/api/authenticate' => 'api#authenticate'
-
   	# User Methods
     authenticate :user do
   	  	get 'account' => 'users#account'
@@ -18,8 +14,10 @@ Rails.application.routes.draw do
         post 'user_attach_file_to_ticket' => 'support#user_attach_file'
 
         get 'view_device/:id' => 'users#view_device', as: 'view_device'
-        post 'update_device_serial' => 'users#update_device_serial'
+        post 'update_roku' => 'users#update_roku'
+        post 'update_device' => 'users#update_device'
         post 'register_new_device' => 'users#register_new_device'
+        get 'unlink_device' => 'users#unlink_device'
 
         post 'update_profile' => 'users#update_profile'
 
@@ -33,6 +31,12 @@ Rails.application.routes.draw do
 
         get '/watch/shows/:show_id' => 'videos#browse_episodes', as: 'browse_episodes'
         get '/watch/shows/:show_id/:episode_number' => 'videos#watch_episode', as: 'watch_episode'
+
+        get 'subscribe' => 'users#subscribe'
+        get 'view_plan' => 'users#view_plan'
+        post 'add_subscription' => "users#add_subscription"
+
+        get 'start_free_trial' => 'users#start_free_trial'
     end
 
     get 'events/admin/:id' => 'events#admin_events'
@@ -41,15 +45,46 @@ Rails.application.routes.draw do
 
   	# Admin Methods
     authenticate :admin do
+        mount ResqueWeb::Engine => "/resque_web"
+
+        get '/admins/notifications' => 'admin_notifications#my_notifications', as: 'my_admin_notifications'
+        get '/admins/notifications/view/:id' => 'admin_notifications#notification_redirect', as: 'admin_view_notification'
 
   	  	get '/admins' => 'admins#index', as: 'admins'
+
+        # General Settings
+        get '/admins/settings' => 'admins#general_settings', as: 'general_settings'
+
+        get '/admins/settings/timezone' => 'admins#edit_timezone', as: 'edit_timezone'
+        post 'update_default_timezone' => 'admins#update_default_timezone'
+
+        get '/admins/settings/device_limit' => 'admins#edit_device_limit', as: 'edit_device_limit'
+        post 'update_device_limit' => 'admins#update_device_limit'
+
+        get '/admins/settings/free_trial' => 'admins#edit_free_trial', as: 'edit_free_trial'
+        post 'update_free_trial' => 'admins#update_free_trial'
+
+        get '/admins/settings/wd_limits' => 'admins#edit_wd_limits', as: 'edit_wd_limits'
+        post 'update_lower_wd_limit' => 'admins#update_lower_wd_limit'
+        post 'update_upper_wd_limit' => 'admins#update_upper_wd_limit'
+
 
   		# Manage Users
   		get '/admins/users' => 'admins#users', as: 'search_users'
   		get 'search_users' => 'admins#search_users'
   		get 'view_user' => 'admins#view_user'
-  		post 'add_note_to_user' => 'users#add_note'
-  		post 'admin_register_device' => 'admins#register_device'
+
+        post 'add_note_to_user' => 'users#add_note'
+        post 'add_image_to_note' => 'users#add_image_to_note'
+        post 'update_note' => 'users#update_note'
+        post 'add_image_to_existing_note' => 'users#add_image_to_existing_note'
+        get 'delete_note_file' => 'users#delete_note_file'
+        get 'delete_note' => 'users#delete_note'
+        get 'delete_unsaved_note' => 'users#delete_unsaved_note'
+
+        post 'update_user_balance' => 'admins#update_user_balance'
+
+        post 'admin_register_device' => 'admins#register_device'
 
   		get '/admins/new_user' => 'admins#new_user', as: 'new_user'
   		post 'admin_create_user' => 'admins#create_user'
@@ -74,6 +109,7 @@ Rails.application.routes.draw do
         post 'add_show' => 'videos#add_show'
         post 'update_show' => 'videos#update_show'
         post 'update_show_image' => 'videos#update_show_image'
+        post 'update_show_banner' => 'videos#update_show_banner'
         get 'delete_show' => 'videos#delete_show'
 
         get 'search_shows' => 'videos#search_shows'
@@ -87,12 +123,14 @@ Rails.application.routes.draw do
         post 'add_channel' => 'videos#add_channel'
         post 'update_channel' => 'videos#update_channel'
         post 'update_channel_image' => 'videos#update_channel_image'
+        post 'update_channel_banner' => 'videos#update_channel_banner'
 
         get 'search_channels' => 'videos#search_channels'
 
         post 'add_movie' => 'videos#add_movie'
         post 'update_movie' => 'videos#update_movie'
         post 'update_movie_image' => 'videos#update_movie_image'
+        post 'update_movie_banner' => 'videos#update_movie_banner'
         get 'delete_movie' => 'videos#delete_movie'
 
         get 'search_movies' => 'videos#search_movies'
@@ -106,9 +144,9 @@ Rails.application.routes.draw do
         get 'refresh_grid_view' => 'videos#refresh_grid'
 
       	# Manage Sales Reps
-      	get '/admins/sales_reps' => 'admins#sales_reps'
+      	get '/admins/sales_reps' => 'admins#sales_reps', as: 'search_reps_main'
       	get 'search_reps' => 'admins#search_reps'
-      	get 'view_rep' => 'admins#view_rep'
+      	get '/admins/sales_reps/view/:id' => 'admins#view_rep', as: 'view_rep'
       	get '/admins/new_sales_rep' => 'admins#new_sales_rep'
       	post 'admin_create_sales_rep' => 'admins#create_sales_rep'
 
@@ -166,6 +204,45 @@ Rails.application.routes.draw do
 
         get 'issue_refund' => 'support#issue_refund'
 
+
+        # Permissions
+        get '/admins/roles' => 'admins#roles', as: 'admin_roles'
+
+        get '/admins/roles/new' => 'admins#new_admin_role', as: 'new_role'
+        post 'create_admin_role' => 'admins#create_admin_role'
+
+        get '/admins/roles/:id' => 'admins#role', as: 'role'
+        post 'update_role' => 'admins#update_role'
+        get 'delete_role' => 'admins#delete_role'
+
+        post 'update_admin_permissions' => 'permissions#update'
+
+        # Manage Admins
+        get '/admins/manage_admins' => 'admins#manage_admins'
+        get '/admins/manage_admins/new' => 'admins#new_admin', as: 'new_admin'
+        post 'create_admin' => 'admins#create_admin'
+
+        get '/admins/manage_admins/view/:id' => 'admins#view_admin', as: 'view_admin'
+        post 'update_admin' => 'admins#update_admin'
+        get 'delete_admin' => 'admins#delete_admin'
+        get 'reset_admin_password' => 'admins#send_password_reset'
+
+        # Mail Settings
+        get '/admins/mail' => 'admins#mail_settings', as: 'mail_settings'
+        post 'update_mailchimp' => 'admins#update_mailchimp'
+        post 'update_smtp' => 'admins#update_smtp'
+        post 'update_send_address' => 'admins#update_send_address'
+
+        get '/admins/mail/markup' => 'admins#mail_markup', as: 'mail_markup'
+        post 'update_mail_css' => 'admins#update_mail_css'
+        post 'update_mail_header' => 'admins#update_mail_header'
+        post 'update_mail_footer' => 'admins#update_mail_footer'
+
+        get '/admins/mail/template/:id' => 'admins#mail_template', as: 'mail_template'
+        post 'update_mail_template_body' => 'admins#update_mail_template_body'
+        post 'update_mail_template_css' => 'admins#update_mail_template_css'
+        post 'update_mail_template_subject' => 'admins#update_mail_template_subject'
+
         get 'admin_view_device/:id' => 'admins#view_device', as: 'admin_view_device'
         post 'admin_update_device_serial' => 'admins#update_device_serial'
     end
@@ -213,20 +290,54 @@ Rails.application.routes.draw do
         get '/sales_reps/invoices/transactions' => 'sales_reps#view_transactions_over_period', as: 'rep_tx_invoice'
     end
 
-    # Roku API
-    get '/api/:device' => 'api#home', as: 'api_home' # Home Grid Feed
-    get '/api/:device/:channel_id' => 'api#channel', as: 'api_channel' # Channel Feed
-    get '/api/:device/:channel_id/:epsiode_id' => 'api#episode', as: 'api_episode' # Web Only (for video page)
-    get '/api/authorize/:serial' => 'api#authorize_roku', as: 'api_authorize_roku' # Roku authentication
+    # Roku API (All XML)
 
+        # Home Grid
+        get '/api/v1/roku/grid/home' => 'roku_api#home_grid', as: 'roku_home_grid' #returns XML
 
+        # View Grid
+        get '/api/v1/roku/grid/view/:id' => 'roku_api#view_grid', as: 'roku_view_grid' #returns XML
+
+        # View Live Channel
+        get '/api/v1/roku/channel/:id' => 'roku_api#view_channel', as: 'roku_view_channel' #returns XML
+
+        # View TV/Radio Show
+        get '/api/v1/roku/show/:id' => 'roku_api#view_show', as: 'roku_view_show' #returns XML
+
+        # View Movie
+        get '/api/v1/roku/movie/:id' => 'roku_api#view_movie' #returns XML
+
+    # Other device API (Uses JSON instead).
+    # Roku devices MAY use this method if needed. The roku serial number will be used in place of the token.
+
+        # Home Grid
+        get '/api/v1/json/grid/home'=> 'api#home_grid' #returns JSON
+
+        # View Grid
+        get '/api/v1/json/grid/view/:id' => 'api#view_grid', as: 'json_view_grid' #returns JSON
+
+        # View Live Channel
+        get '/api/v1/json/channel/:id' => 'api#view_channel' #returns JSON
+
+        # View TV/Radio Show
+        get '/api/v1/json/show/:id' => 'api#view_show' #returns JSON
+
+        # View TV/Radio Show Episode
+        get '/api/v1/json/show/:show_id/:episode_number' => 'api#view_episode' #returns JSON
+
+        # View Movie
+        get '/api/v1/json/movie/:id' => 'api#view_movie' #returns JSON
+
+        # Authenticate Device
+        post '/api/v1/json/authenticate' => 'api#authenticate' #returns JSON with token for reauthentication later
+        get '/api/v1/json/authenticate' => 'api#authenticate' #returns JSON with token for reauthentication later
+
+    post 'create_new_user' => 'users#create_new'
 
     get 'view_invoice/:id' => 'transactions#view_invoice', as: 'view_invoice'
     get 'view_user_invoice/:id' => 'transactions#view_all', as: 'view_user_invoice'
 
     get 'search_suggestions' => 'videos#search_suggestions'
-    get 'subscribe' => 'users#subscribe'
-    post 'add_subscription' => "users#add_subscription"
 
   root :to => 'videos#landing'
 

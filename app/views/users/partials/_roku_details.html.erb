@@ -1,0 +1,24 @@
+<div class='row'>
+    <div class='col-sm-6'>
+        <p><strong>Device Type:</strong></br><%= @device.humanized_type %></p>
+    </div>
+    <div class='col-sm-6'>
+        <p><strong>Date Linked:</strong></br><%= @device.created_at.strftime('%B %-d, %Y') %></p>
+    </div>
+</div>
+<%= form_tag update_roku_path, remote: true, id: 'update_serial_form' do %>
+    <div class='row'>
+        <div class='col-md-12 form-group'>
+            <label id='device-label'>Nickname</label>
+            <%= text_field_tag :name, @device.name, id: 'device_serial', class: 'form-control' %>
+            <%= hidden_field_tag :id, @device.id, id: 'device_id' %>
+        </div>
+        <div class='col-md-12 form-group'>
+            <label id='device-label'>Serial Number</label>
+            <%= text_field_tag :serial, @device.serial, id: 'device_serial', class: 'form-control' %>
+        </div>
+    </div>
+<% end %>
+<div class='col-xs-12' style='position:absolute; bottom: 0; left: 0; width: 100%; height: 50px; line-height: 50px;'>
+    <%= link_to 'Unlink This Device', unlink_device_path(id: @device.id), class: 'btn btn-danger',style: 'width: 100%', remote: true, data: {disable_with: "Unlinking...", confirm: 'Are you sure you want to unlink this device?'} %>
+</div>

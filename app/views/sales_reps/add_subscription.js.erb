@@ -1,34 +1,28 @@
-$('#type-error').remove()
+$('#device_serial-error').remove()
+$('#device_limit-error').remove()
+$('#serial').parent().removeClass('has-error has-feedback')
+$('#refer-error').remove()
+$('#refer_code').parent().removeClass('has-error has-feedback')
 $('#payment-error').remove()
-<% if @device_success == false %>
-	<% if @message.nil? %>
-		$('#serial').after('<span class="text-danger" id="type-error"><%= @device.errors.full_messages.join(". ") %>.</span>')
-	<% else %>
-		var notification = new NotificationFx({
-			message : '<p><%= @message %></p>',
-			layout : 'growl',
-			effect : 'jelly',
-			type : 'danger', // notice, warning, error or success
-			num: <%= (100 + rand(10000)).to_s %>
-		});
-		notification.show()
-	<% end %>
-<% elsif @payment_success == false %>
-	<% if @message.nil? %>
-		$('#payment_type').after('<span class="text-danger" id="payment-error"><%= @transaction.errors.full_messages.join(". ") %>.</span>')
-	<% else %>
-		var notification = new NotificationFx({
-			message : '<p><%= @message %></p>',
-			layout : 'growl',
-			effect : 'jelly',
-			type : 'danger', // notice, warning, error or success
-			num: <%= (100 + rand(10000)).to_s %>
-		});
-		notification.show()
-	<% end %>
-<% else %>
-	$('#submit_payment_modal').modal('hide')
+$('#payment_type').parent().removeClass('has-error has-feedback')
+<% if @success == true %>
+	$('#subscribe_modal').modal('hide')
 	setTimeout(function(){
 		$('#register-panel').html('<%= escape_javascript(render("sales_reps/partials/registration_success")).html_safe %>')
 	}, 200)
+<% else %>
+	<% if @device_errors == true %>
+		<% if @device.errors[:serial].present? %>
+			$('#serial').parent().addClass('has-error has-feedback').append('<div class="text-danger" id="device_serial-error">Serial <%= @device.errors[:serial].join(", ") %></div>')
+		<% end %>
+		<% if @device.errors[:base].present? %>
+			$('#serial').parent().addClass('has-error has-feedback').append('<div class="text-danger" id="device_limit-error"><%= @device.errors[:base] %></div>')
+		<% end %>
+	<% end %>
+	<% if @referral_errors.present? %>
+		$('#refer_code').parent().addClass('has-error has-feedback').append('<div class="text-danger" id="refer-error"><%= @referral_message %></div>')
+	<% end %>
+	<% if @payment_errors == true %>
+		$('#payment_type').parent().addClass('has-error has-feedback').append('<div class="text-danger" id="payment-error"><%= @payment_message %></div>')
+	<% end %>
 <% end %>

@@ -1,0 +1,73 @@
+<h2 class='page-header'>
+    Admin Profile: <%= @admin.name %>
+</h2>
+<div class='row'>
+    <div class='col-sm-6'>
+
+        <%= hidden_field_tag :id, @admin.id %>
+        <div class='panel panel-default'>
+            <div class='panel-heading' style='position:relative'>
+                <h3 class='panel-title'>Account Info</h3>
+                <div class='upload_image_heading'>
+                    <%= submit_tag 'Update Account', class: 'btn btn-primary btn-sm', disabled: 'disabled' %>
+                </div>
+            </div>
+            <div class='panel-body'>
+                <div class='row'>
+                    <div class='col-md-6 form-group'>
+                        <label>First Name</label>
+                        <%= text_field_tag :first_name, @admin.first_name, class: 'form-control', disabled: 'disabled' %>
+                    </div>
+                    <div class='col-md-6 form-group'>
+                        <label>Last Name</label>
+                        <%= text_field_tag :last_name, @admin.last_name, class: 'form-control', disabled: 'disabled' %>
+                    </div>
+                    <div class='col-xs-12 form-group'>
+                        <label>Email Address</label>
+                        <%= text_field_tag :email, @admin.email, class: 'form-control', disabled: 'disabled' %>
+                    </div>
+                    <div class='col-xs-12'>
+                        <label>Role</label>
+                        <% @roles_array.push(['Root',0]) %>
+                        <%= select_tag :role_id, options_for_select(@roles_array, @admin.role_id), class: 'form-control', disabled: 'disabled' %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class='panel panel-default'>
+            <div class='panel-heading' style='position:relative'>
+                <h3 class='panel-title'>Password Reset</h3>
+            </div>
+            <div class='panel-body'>
+                <%= link_to 'Send Reset Email', '#', class: 'btn btn-primary', remote: true, disabled: 'disabled' %>
+            </div>
+        </div>
+    </div>
+    <div class='col-sm-6'>
+        <div class='panel panel-default'>
+            <div class='panel-heading'>
+                <h3 class='panel-title'>Activity Feed</h3>
+            </div>
+            <div class='panel-body' style='padding:0' id='feed_wrapper'>
+                <div id='user_feed'>
+
+                </div>
+                <div class='text-center feed_message' style='' id='user_loading'>
+                    <i class='fa fa-refresh fa-spin'></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $.ajax({
+        url: '/load_admin_activity_feed?id=<%= @admin.id %>'
+    })
+    function load_admin_updates(timestamp){
+        $('#loading').html()
+        $.ajax({
+            url: '/load_admin_activity_feed?before='+timestamp+'&id=<%= @admin.id %>'
+        })
+    }
+</script>

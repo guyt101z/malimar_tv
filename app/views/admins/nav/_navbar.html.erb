@@ -16,10 +16,11 @@
             <ul class="nav navbar-nav">
                 <li class='navbar-text'><%= yield(:title) %></li>
             </ul>
+            <% if admin_signed_in? %>
       		<ul class="nav navbar-nav navbar-right">
         		<li><a href="/admins">Home</a></li>
-                <li><a href="/admins/support">Support Tickets</a></li>
-                <li class="dropdown">
+                <% if current_admin.authorized_to?('manage_support_tickets') %><li><a href="/admins/support">Support Tickets</a></li><% end %>
+                <% if current_admin.authorized_to?('update_videos') %><li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-video-camera'></i> Videos <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="/admins/videos/live_channels">Live Channels</a></li>
@@ -28,8 +29,8 @@
                         <li class='divider'></li>
                         <li><a href='/admins/videos/home_grid'>Home Grid</a></li>
                     </ul>
-                </li>
-                <li class="dropdown">
+                </li><% end %>
+                <% if current_admin.authorized_to?('manage_user') %><li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-users'></i> Users <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="/admins/new_user"><i class='fa fa-asterisk fa-fw'></i> Create User</a></li>
@@ -37,8 +38,8 @@
                         <li class='divider'></li>
                         <li><a href="/admins/users/pending_payments"><i class='fa fa-dollar fa-fw'></i> Pending Payments</a></li>
                     </ul>
-                </li>
-                <li class="dropdown">
+                </li><% end %>
+                <% if current_admin.authorized_to?('manage_rep') %><li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-users'></i> Sales Reps <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="/admins/new_sales_rep"><i class='fa fa-asterisk fa-fw'></i> Create Sales Rep</a></li>
@@ -47,14 +48,54 @@
                         <li><a href="/admins/sales_reps/payment_requests"><i class='fa fa-dollar fa-fw'></i> Pending Withdrawals</a></li>
                         <li><a href="/admins/sales_reps/payments"><i class='fa fa-dollar fa-fw'></i> Approved Withdrawals</a></li>
                     </ul>
+                </li><% end %>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-bell'></i> <span class='badge'><%= current_admin.missed_system_notifications %></span></a>
+                    <ul class='dropdown-menu'>
+                    <% if current_admin.system_notifications.any? %>
+                        <% current_admin.system_notifications.limit(3).each do |notif| %>
+                            <% if notif.viewed == true %>
+                                <li><%= link_to notif.message, notif.link %></li>
+                            <% else %>
+                                <li style='background-color: #ccc'><%= link_to notif.message, admin_view_notification_path(id: notif.id) %></li>
+                            <% end %>
+                        <% end %>
+                    <% else %>
+                        <li><a>No System Notifications</a></li>
+                    <% end %>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-ticket'></i> <span class='badge'><%= current_admin.missed_ticket_notifications %></span></a>
+                    <ul class='dropdown-menu'>
+                    <% if current_admin.ticket_notifications.any? %>
+                        <% current_admin.ticket_notifications.limit(3).each do |notif| %>
+                            <% if notif.viewed == true %>
+                                <li><%= link_to notif.message, notif.link %></li>
+                            <% else %>
+                                <li style='background-color: #ccc'><%= link_to notif.message, admin_view_notification_path(id: notif.id) %></li>
+                            <% end %>
+                        <% end %>
+                    <% else %>
+                        <li><a>No Ticket Notifications</a></li>
+                    <% end %>
+                    </ul>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-gears'></i> Settings <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/admins/financial"><i class='fa fa-dollar fa-fw'></i> Financial</a></li>
+                        <% if current_admin.authorized_to?('edit_general_settings') %><li><a href="/admins/settings"><i class='fa fa-gear fa-fw'></i> General Settings</a></li><% end %>
+                        <% if current_admin.authorized_to?('update_plan_invoice') %><li><a href="/admins/financial"><i class='fa fa-dollar fa-fw'></i> Financial</a></li><% end %>
+                        <% if current_admin.authorized_to?('update_mail_settings') %><li><a href="/admins/mail"><i class='fa fa-envelope fa-fw'></i> Mail</a></li><% end %>
+                        <% if current_admin.authorized_to?('manage_admin') %><li><a href="/admins/manage_admins"><i class='fa fa-users fa-fw'></i> Admin Management</a></li><% end %>
+                        <% if current_admin.authorized_to?('edit_permissions') %><li><a href="/admins/roles"><i class='fa fa-sitemap fa-fw'></i> Permissions</a></li><% end %>
+                        <li><a href="/admins/manage_admins/view/<%= current_admin.id %>"><i class='fa fa-user fa-fw'></i> My Profile</a></li>
+                        <li class='divider'></li>
+                        <li><%= link_to raw("<i class='fa fa-sign-out fa-fw'></i> Sign Out"), destroy_admin_session_path, method: :delete %></li>
                     </ul>
                 </li>
-      		</ul>
+		    </ul>
+            <% end %>
     	</div><!-- /.navbar-collapse -->
   	</div><!-- /.container-fluid -->
 </nav>

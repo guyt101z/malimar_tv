@@ -1,0 +1,8 @@
+<ul class="nav nav-pills nav-stacked">
+    <li id='mail_api'><%= link_to 'Server Settings', mail_settings_path %></li>
+    <li id='mail_markup'><%= link_to 'Default Markup', mail_markup_path %></li>
+    <hr>
+    <% @templates.each do |template| %>
+        <li id='mail_<%= template.name.gsub(" ","_").downcase %>'><%= link_to template.name, mail_template_path(id: template.id) %></a></li>
+    <% end %>
+</ul>

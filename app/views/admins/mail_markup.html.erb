@@ -1,0 +1,88 @@
+<div class='container'>
+    <div class='row'>
+        <div class='col-xs-12'><h2 class='page-header'>Mail Settings</h2></div>
+        <div class='col-md-3 col-sm-4'>
+            <%= render 'admins/nav/mail_side_nav' %>
+        </div>
+        <div class='col-md-9 col-sm-8'>
+            <div class='row'>
+                <div class='col-md-12'>
+                    <%= form_tag update_mail_css_path, remote: true do %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading' style='position:relative'>
+                            <h3 class='panel-title'>Global CSS</h3>
+                            <div class='upload_image_heading'>
+                                <%= submit_tag 'Update CSS', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+                            </div>
+                        </div>
+                        <div class='panel-body'>
+                            <div class='form-group'>
+                                <%= text_area_tag :css, @css, class: 'form-control', style: 'resize: vertical; font-family: Monaco', rows: 6 %>
+                            </div>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+                <div class='col-md-12'>
+                    <%= form_tag update_mail_header_path, remote: true do %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading' style='position:relative'>
+                            <h3 class='panel-title'>Header Markup</h3>
+                            <div class='upload_image_heading'>
+                                <%= submit_tag 'Update Header', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+                            </div>
+                        </div>
+                        <div class='panel-body'>
+                            <div class='form-group'>
+                                <%= text_area_tag :header, @header, class: 'form-control', style: 'resize: vertical; font-family: Monaco', rows: 6 %>
+                            </div>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+                <div class='col-md-12'>
+                    <%= form_tag update_mail_footer_path, remote: true do %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading' style='position:relative'>
+                            <h3 class='panel-title'>Footer Markup</h3>
+                            <div class='upload_image_heading'>
+                                <%= submit_tag 'Update Footer', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+                            </div>
+                        </div>
+                        <div class='panel-body'>
+                            <div class='form-group'>
+                                <%= text_area_tag :footer, @footer, class: 'form-control', style: 'resize: vertical; font-family: Monaco', rows: 6 %>
+                            </div>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#mail_markup').addClass('active')
+
+    $("textarea").keydown(function(e) {
+        if(e.keyCode === 9) { // tab was pressed
+            // get caret position/selection
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+
+            var $this = $(this);
+            var value = $this.val();
+
+            // set textarea value to: text before caret + tab + text after caret
+            $this.val(value.substring(0, start)
+                        + "\t"
+                        + value.substring(end));
+
+            // put caret at right position again (add one for the tab)
+            this.selectionStart = this.selectionEnd = start + 1;
+
+            // prevent the focus lose
+            e.preventDefault();
+        }
+    });
+</script>

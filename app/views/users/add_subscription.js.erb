@@ -1,17 +1,26 @@
-alert('<%= @message %>')
-$('#device-errors').remove()
-$('#type-error_icon').remove()
-$('#type').parent().removeClass('has-error')
-$('#payment_type-error_icon').remove()
-$('#payment_type-error').remove()
-$('#payment_type').parent().removeClass('has-error')
-<% if @success %>
+
+$('#device_serial-error').remove()
+$('#device_limit-error').remove()
+$('#serial').parent().removeClass('has-error has-feedback')
+$('#refer-error').remove()
+$('#refer_code').parent().removeClass('has-error has-feedback')
+$('#payment-error').remove()
+$('#payment_type').parent().removeClass('has-error has-feedback')
+<% if @success == true %>
 	window.location = '/account'
 <% else %>
-	<% if @device_valid == false %>
-		$('#type').parent().addClass('has-error has-feedback').append('<span id="type-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span>')
-		$('#serial').after('<span class="text-danger" id="device-errors"><%= @device.errors.full_messages.join(". ") %>.')
-	<% elsif @payment == false %>
-		$('#payment_type').parent().addClass('has-error has-feedback').append('<span id="payment_type-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span>')
+	<% if @device_errors == true %>
+		<% if @device.errors[:serial].present? %>
+			$('#serial').parent().addClass('has-error has-feedback').append('<div class="text-danger" id="device_serial-error">Serial <%= @device.errors[:serial].join(", ") %></div>')
+		<% end %>
+		<% if @device.errors[:base].present? %>
+			$('#serial').parent().addClass('has-error has-feedback').append('<div class="text-danger" id="device_limit-error"><%= @device.errors[:base] %></div>')
+		<% end %>
+	<% end %>
+	<% if @referral_errors.present? %>
+		$('#refer_code').parent().addClass('has-error has-feedback').append('<div class="text-danger" id="refer-error"><%= @referral_message %></div>')
+	<% end %>
+	<% if @payment_errors == true %>
+		$('#payment_type').parent().addClass('has-error has-feedback').append('<div class="text-danger" id="payment-error"><%= @payment_message %></div>')
 	<% end %>
 <% end %>

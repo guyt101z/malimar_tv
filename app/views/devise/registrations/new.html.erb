@@ -1,18 +1,19 @@
 <% if resource.is_a? Admin %>
     <script type="text/javascript">window.location = '/'</script>
+<% elsif resource.is_a? SalesRepresentative %>
+    <script type="text/javascript">window.location = '/'</script>
 <% end %>
 <div class="splash">
 	<div class="container">
     	<h3 class="name">Register New Account</h3>
     </div>
 </div><!--splash-->
-<script type="text/javascript">alert('<%= resource_name %>')</script>
 <%= form_tag create_new_user_path, id: 'new_user_form', remote: true do %>
 <div class="content">
 	<div class="container">
         <div class="mlr90">
             <div class="box-white">
-            	
+
             	<h4 class="title4">User Information</h4>
                 <p class="fz12"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod.</p>
                 <form>
@@ -96,7 +97,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!--<hr>
                 <h4 class="title4">Profile Picture</h4>
                 <div class="row">

@@ -1,52 +1,44 @@
 <div class="content">
-        	<div class="container">
-            	<div class="row">
-                	<div class="col-sm-4 col-md-3">
-                    	<div class="panel panel-custom">
-                        	<div class="panel-heading">
-                            	<h3 class="fz14"><%= @show.name %></h3>
-                            </div>
-                            <div class="panel-body b0">
-                                <%= image_tag @show.image_url, class: 'img-responsive' %>
-                            </div>
-                        </div>
-                        <div class="socials">
-                        	<a href="#"><span class="fb"></span></a>
-                        	<a href="#"><span class="tw"></span></a>
-                        	<a href="#"><span class="rss"></span></a>
-                        </div>
+	<div class="container">
+    	<div class="row">
+        	<div class="col-sm-4 col-md-3">
+            	<div class="panel panel-custom">
+                	<div class="panel-heading">
+                    	<h3 class="fz14"><%= @show.name %></h3>
                     </div>
-                    <div class="col-sm-8 col-md-9">
-                   		<div class="box-white">
-                        	<div class="data-bb clearfix">
-                            	<div class="pull-left">
-                                    <span class="star-wrap">
-                                        <span class="glyphicon glyphicon-star yellow"></span>
-                                        <span class="glyphicon glyphicon-star yellow"></span>
-                                        <span class="glyphicon glyphicon-star yellow"></span>
-                                        <span class="glyphicon glyphicon-star yellow"></span>
-                                        <span class="glyphicon glyphicon-star"></span>
-                                    </span>
-                                    <div class="fz12-5">2013</div>
-                                </div>
-                                <div class="pull-right">
-                                	<br>
-                                	<div class="fz12-5"><%= pluralize(@show.episode_count, 'Episode') %></div>
-                                </div>
-                            </div>
-                            <div class="data-bb">
-                        	<%= simple_format(@show.synopsis) %>
-                            </div>
-                            <% @episodes.each do |episode| %>
-                            <div class="box-episode clearfix">
-                            	<a href="/watch/shows/<%= @show.id %>/<%= episode.episode_number %>">
-                            		<span class="fz12-5"><%= episode.release_date %></span> - Episode <%= episode.episode_number %> - <%= episode.title %>
-                                    <i class='fa fa-play-circle-o play-icon'></i>
-                                </a>
-                            </div>
-                            <% end %>
-                        </div>
+                    <div class="panel-body b0">
+                        <%= image_tag @show.image_url, class: 'img-responsive' %>
                     </div>
                 </div>
+                <!--<div class="socials">
+                	<a href="#"><span class="fb"></span></a>
+                	<a href="#"><span class="tw"></span></a>
+                	<a href="#"><span class="rss"></span></a>
+                </div>-->
             </div>
-        </div><!--content-->
+            <div class="col-sm-8 col-md-9">
+           		<div class="box-white">
+                	<div class="data-bb clearfix">
+                    	<div class="pull-left">
+                            <div class="fz12-5">Latest episode: <%= @show.latest_episode %></div>
+                        </div>
+                        <div class="pull-right">
+                        	<div class="fz12-5"><%= pluralize(@show.episode_count, 'Episode') %></div>
+                        </div>
+                    </div>
+                    <div class="data-bb">
+                	       <%= simple_format(@show.synopsis) %>
+                    </div>
+                    <% @episodes.each do |episode| %>
+                    <div class="box-episode clearfix">
+                    	<a href="/watch/shows/<%= @show.id %>/<%= episode.episode_number %>">
+                    		<span class="fz12-5"><%= episode.release_date %></span> - Episode <%= episode.episode_number %> - <%= episode.title %>
+                            <i class='fa fa-play-circle-o play-icon'></i>
+                        </a>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!--content-->

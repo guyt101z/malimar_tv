@@ -33,7 +33,11 @@
                             <% @transactions.each do |transaction| %>
                             <% details = YAML.load(transaction.product_details) %>
                                 <div class='transaction'>
-                                    <p class='plan'>#<%= transaction.id %>: <%= details[:name] %> – <%= pluralize(details[:duration], 'month') %></p>
+									<% if details[:name] == 'Free Trial' %>
+                                    	<p class='plan'>#<%= transaction.id %>: <%= details[:name] %> – <%= pluralize(details[:duration], 'day') %></p>
+									<% else %>
+										<p class='plan'>#<%= transaction.id %>: <%= details[:name] %> – <%= pluralize(details[:duration], 'month') %></p>
+									<% end %>
                                     <p class='timestamp'><%= transaction.created_at.strftime('%d/%m/%Y') %></p>
                                     <p class='status'><%= transaction.status %></p>
                                     <p class='amount'>$<%= number_with_precision(details[:price], precision: 2) %></p>
@@ -63,7 +67,7 @@
 				</div>
 				<div class='col-md-6'>
 					<div class="box-white account-box">
-						<h4 class="name">My Devices - <a onclick='newDevice()' style='cursor:pointer'>Register New Device</a></h4>
+						<h4 class="name" id='device-title'>My Devices - <a onclick='newDevice()' style='cursor:pointer'>Register Roku</a></h4>
 						<div class='panel-scroll devices' id='devices'>
 							<% @devices.each do |device| %>
 								<% case device.type %>
@@ -72,24 +76,27 @@
 										<div class='image_wrapper'>
 											<%= image_tag 'roku.png' %>
 										</div>
-										<p class='type'>Roku</p>
-										<p class='serial'><%= device.serial %></p>
-									</div>
-								<% when 'Playstation3' %>
-									<div class='device' onclick='viewDevice(<%= device.id %>)' id='device_<%= device.id %>'>
-										<div class='image_wrapper'>
-											<%= image_tag 'ps3.png' %>
-										</div>
-										<p class='type'>Playstation 3</p>
+										<p class='type'>
+											<% if device.name.present? %>
+												<%= device.nickname(true) %>
+											<% else %>
+												<%= device.humanized_type %>
+											<% end %>
+										</p>
 										<p class='serial'><%= device.serial %></p>
 									</div>
 								<% else %>
 									<div class='device' onclick='viewDevice(<%= device.id %>)' id='device_<%= device.id %>'>
 										<div class='image_wrapper'>
-											<i class='fa fa-question-circle'></i>
+											<%= image_tag "#{device.type.downcase}_large.png" %>
 										</div>
-										<p class='type'>Unrecognized (<%= device.type %>)</p>
-										<p class='serial'><%= device.serial %></p>
+										<p class='type'>
+											<% if device.name.present? %>
+												<%= device.nickname(true) %>
+											<% else %>
+												<%= device.humanized_type %>
+											<% end %>
+										</p>
 									</div>
 								<% end %>
 							<% end %>
@@ -108,32 +115,9 @@
 <%= render('users/partials/edit_profile_modal') %>
 
 <script type="text/javascript">
-var chatListener = ''
-function testAddMessage(){
-    $('#messages').prepend("<div class='message animated bounceIn'><div class='admin_message'><p class='title'>Josh Tate said:</p><p class='timestamp'><em>Just now</em></p><p>"+ $('#message').val() +"</p></div></div>")
-}
 function viewTicket(id) {
     $.ajax({
         url: '<%= user_view_ticket_path %>?id='+id
-
-    })
-    .done(function(){
-        if (chatListener != ''){
-            chatListener.close()
-        }
-        chatListener = new EventSource('/events/user/'+id)
-        chatListener.addEventListener ('message', function(e) {
-            var message = $.parseJSON(e.data)
-            if (message.kind == 'message') {
-                $('#ticket_messages').prepend("<div class='message animated fadeIn'><div class='recv_message'><p class='title'>"+message.name+" said:</p><p class='timestamp'><em class='timeago' title='"+message.timestamp+"'></em></p><p>"+Autolinker.link(message.message)+"</p></div></div>")
-                $('.timeago').timeago()
-            }
-            else if (message.kind == 'file') {
-                $('#ticket_messages').prepend("<div class='message animated fadeIn'><div class='recv_message'><p class='title'>"+message.name+" said:</p><p class='timestamp'><em class='timeago' title='"+message.timestamp+"'></em></p><p>"+Autolinker.link(message.message)+"</p></div></div>")
-                $('.timeago').timeago()
-                $('#ticket_attachments').prepend('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><a href="'+message.file_url+'" target="new"><img src="'+message.file_url+'" /></a></div>')
-            }
-        })
     })
 }
 function viewDevice(id) {
@@ -149,11 +133,6 @@ function newDevice() {
 	$('#new_serial_error').remove()
 	$('#new_device_modal').modal('show')
 }
-$('#support_modal').on('hidden.bs.modal', function () {
-    if (chatListener != ''){
-        chatListener.close()
-    }
-})
 <% if params[:id].present? %>
 $('#ticket_<%= params[:id] %>').click()
 <% end %>

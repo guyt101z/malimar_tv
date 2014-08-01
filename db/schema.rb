@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140725131733) do
+ActiveRecord::Schema.define(version: 20140801001952) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -36,6 +36,32 @@ ActiveRecord::Schema.define(version: 20140725131733) do
     t.datetime "updated_at"
     t.boolean  "viewed"
     t.string   "notif_type"
+    t.string   "link"
+  end
+
+  create_table "admin_permissions", force: true do |t|
+    t.string   "permission"
+    t.integer  "level"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "admin_roles", force: true do |t|
+    t.string   "name"
+    t.boolean  "create_user"
+    t.boolean  "manage_user"
+    t.boolean  "create_rep"
+    t.boolean  "manage_rep"
+    t.boolean  "accept_cancel_payment"
+    t.boolean  "authorize_withdrawal"
+    t.boolean  "update_plan_invoice"
+    t.boolean  "update_videos"
+    t.boolean  "update_mail_settings"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "manage_support_tickets"
+    t.boolean  "create_admin"
+    t.boolean  "manage_admin"
   end
 
   create_table "admins", force: true do |t|
@@ -53,6 +79,9 @@ ActiveRecord::Schema.define(version: 20140725131733) do
     t.datetime "updated_at"
     t.string   "first_name"
     t.string   "last_name"
+    t.integer  "role_id"
+    t.datetime "last_seen"
+    t.string   "timezone"
   end
 
   add_index "admins", ["email"], name: "index_admins_on_email", unique: true, using: :btree
@@ -97,6 +126,33 @@ ActiveRecord::Schema.define(version: 20140725131733) do
     t.string   "bitrate"
     t.text     "synopsis"
     t.string   "stream_name"
+    t.string   "rtmp_url"
+    t.boolean  "front_page"
+    t.string   "banner"
+  end
+
+  create_table "daily_data", force: true do |t|
+    t.date     "date"
+    t.integer  "new_sign_ups",                       default: 0
+    t.integer  "renewals",                           default: 0
+    t.datetime "user_updated"
+    t.float    "commission_earned",                  default: 0.0
+    t.float    "commission_confirmed",               default: 0.0
+    t.integer  "withdrawal_requests_created",        default: 0
+    t.float    "withdrawal_requests_created_value",  default: 0.0
+    t.integer  "withdrawal_requests_approved",       default: 0
+    t.float    "withdrawal_requests_approved_value", default: 0.0
+    t.integer  "withdrawal_requests_denied",         default: 0
+    t.float    "withdrawal_requests_denied_value",   default: 0.0
+    t.datetime "rep_updated"
+    t.integer  "transactions_completed",             default: 0
+    t.float    "transactions_completed_value",       default: 0.0
+    t.integer  "transactions_paid",                  default: 0
+    t.float    "transactions_paid_value",            default: 0.0
+    t.datetime "tx_updated"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "wd_updated"
   end
 
   create_table "devices", force: true do |t|
@@ -105,6 +161,8 @@ ActiveRecord::Schema.define(version: 20140725131733) do
     t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "name"
+    t.date     "expiry"
   end
 
   create_table "episodes", force: true do |t|
@@ -118,6 +176,7 @@ ActiveRecord::Schema.define(version: 20140725131733) do
     t.datetime "updated_at"
     t.integer  "length"
     t.integer  "show_id"
+    t.string   "rtmp_url"
   end
 
   create_table "genres", force: true do |t|
@@ -125,6 +184,31 @@ ActiveRecord::Schema.define(version: 20140725131733) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "impressions", force: true do |t|
+    t.string   "impressionable_type"
+    t.integer  "impressionable_id"
+    t.integer  "user_id"
+    t.string   "controller_name"
+    t.string   "action_name"
+    t.string   "view_name"
+    t.string   "request_hash"
+    t.string   "ip_address"
+    t.string   "session_hash"
+    t.text     "message"
+    t.text     "referrer"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "impressions", ["controller_name", "action_name", "ip_address"], name: "controlleraction_ip_index", using: :btree
+  add_index "impressions", ["controller_name", "action_name", "request_hash"], name: "controlleraction_request_index", using: :btree
+  add_index "impressions", ["controller_name", "action_name", "session_hash"], name: "controlleraction_session_index", using: :btree
+  add_index "impressions", ["impressionable_type", "impressionable_id", "ip_address"], name: "poly_ip_index", using: :btree
+  add_index "impressions", ["impressionable_type", "impressionable_id", "request_hash"], name: "poly_request_index", using: :btree
+  add_index "impressions", ["impressionable_type", "impressionable_id", "session_hash"], name: "poly_session_index", using: :btree
+  add_index "impressions", ["impressionable_type", "message", "impressionable_id"], name: "impressionable_type_message_index", length: {"impressionable_type"=>nil, "message"=>255, "impressionable_id"=>nil}, using: :btree
+  add_index "impressions", ["user_id"], name: "index_impressions_on_user_id", using: :btree
 
   create_table "invoice_logos", force: true do |t|
     t.string   "image"
@@ -138,6 +222,16 @@ ActiveRecord::Schema.define(version: 20140725131733) do
     t.datetime "end"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "mail_templates", force: true do |t|
+    t.string   "name"
+    t.text     "body"
+    t.text     "css"
+    t.text     "required_variables"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "subject"
   end
 
   create_table "movies", force: true do |t|
@@ -157,6 +251,18 @@ ActiveRecord::Schema.define(version: 20140725131733) do
     t.string   "bitrate"
     t.text     "synopsis"
     t.string   "stream_name"
+    t.string   "rtmp_url"
+    t.date     "release_date"
+    t.integer  "length"
+    t.boolean  "front_page"
+    t.string   "banner"
+  end
+
+  create_table "note_files", force: true do |t|
+    t.integer  "note_id"
+    t.string   "file"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "plans", force: true do |t|
@@ -174,16 +280,6 @@ ActiveRecord::Schema.define(version: 20140725131733) do
     t.string   "notif_type"
     t.date     "expires"
     t.boolean  "viewed"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "sales_notifications", force: true do |t|
-    t.integer  "sales_rep_id"
-    t.string   "type"
-    t.string   "message"
-    t.datetime "expiry"
-    t.boolean  "read"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -215,6 +311,7 @@ ActiveRecord::Schema.define(version: 20140725131733) do
     t.float    "account_balance"
     t.float    "commission_rate"
     t.string   "paypal"
+    t.string   "timezone"
   end
 
   add_index "sales_representatives", ["email"], name: "index_sales_representatives_on_email", unique: true, using: :btree
@@ -243,6 +340,8 @@ ActiveRecord::Schema.define(version: 20140725131733) do
     t.string   "content_quality"
     t.string   "content_type"
     t.text     "synopsis"
+    t.boolean  "front_page"
+    t.string   "banner"
   end
 
   create_table "support_attachments", force: true do |t|
@@ -289,6 +388,18 @@ ActiveRecord::Schema.define(version: 20140725131733) do
     t.datetime "customer_paid"
     t.datetime "sales_rep_paid"
     t.datetime "customer_refunded"
+    t.float    "balance_used"
+    t.string   "paypal_id"
+  end
+
+  create_table "user_notes", force: true do |t|
+    t.integer  "user_id"
+    t.string   "title"
+    t.text     "note"
+    t.string   "note_colour"
+    t.text     "checklist",   limit: 2147483647
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "user_notifications", force: true do |t|
@@ -327,6 +438,9 @@ ActiveRecord::Schema.define(version: 20140725131733) do
     t.datetime "last_seen"
     t.text     "note"
     t.date     "expiry"
+    t.string   "timezone"
+    t.string   "refer_code"
+    t.float    "balance"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

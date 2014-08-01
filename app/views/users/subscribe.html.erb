@@ -37,7 +37,9 @@
                                 <% end %>
                                 <% daily = @one_month.price.to_f/(30*@one_month.months) %>
                                 <p class="fz12">$<%= number_with_precision(daily, precision: 2) %> /day!</p>
-                                <div><a class="btn btn-default btn-block" onclick='$("#plan_id").val(1); $("#myModal").modal("show")'>Add a Device</a></div>
+								<div>
+									<%= link_to 'Add Subscription', view_plan_path(id: 1), class: 'btn btn-default btn-block', remote: true %>
+								</div>
                             </div>
                         </div>
                     </div>
@@ -57,7 +59,9 @@
                                 <% end %>
                                 <% daily = @six_month.price.to_f/(30*@six_month.months) %>
                                 <p class="fz12">$<%= number_with_precision(daily, precision: 2) %> /day!</p>
-                                <div><a class="btn btn-default btn-block" onclick='$("#plan_id").val(3); $("#myModal").modal("show")'>Add a Device</a></div>
+                                <div>
+									<%= link_to 'Add Subscription', view_plan_path(id: 3), class: 'btn btn-default btn-block', remote: true %>
+								</div>
                             </div>
                         </div>
                     </div>
@@ -77,7 +81,9 @@
                                 <% end %>
                                 <% daily = @twelve_month.price.to_f/(30*@twelve_month.months) %>
                                 <p class="fz12">$<%= number_with_precision(daily, precision: 2) %> /day!</p>
-                                <div><a class="btn btn-primary btn-block" onclick='$("#plan_id").val(4); $("#myModal").modal("show")'>Add a Device</a></div>
+								<div>
+									<%= link_to 'Add Subscription', view_plan_path(id: 4), class: 'btn btn-default btn-block', remote: true %>
+								</div>
                             </div>
                         </div>
                     </div>
@@ -97,20 +103,18 @@
                                 <% end %>
                                 <% daily = @three_month.price.to_f/(30*@three_month.months) %>
                                 <p class="fz12">$<%= number_with_precision(daily, precision: 2) %> /day!</p>
-                                <div><a class="btn btn-default btn-block" onclick='$("#plan_id").val(2); $("#myModal").modal("show")'>Add a Device</a></div>
+								<div>
+									<%= link_to 'Add Subscription', view_plan_path(id: 2), class: 'btn btn-default btn-block', remote: true %>
+								</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
+					<div class='col-sm-3 hidden-xs'></div>
                 	<div class="col-sm-6">
                     	<div class="bg-blue-light text-center p30">
-                        	<div class="fz18">30 days free plan! <a href="#" class="text-sans-semi">Create Now</a></div>
-                        </div>
-                    </div>
-                	<div class="col-sm-6">
-                    	<div class="bg-blue-light text-center p30">
-                        	<div class="fz18"><a href="#" class="text-sans-semi">See All Features</a> or <a href="#" class="text-sans-semi">Compare Plans</a></div>
+                        	<div class="fz18"><%= pluralize(Setting.where(name: 'Free Trial Length').first.data, 'day') %> free plan! <%= link_to 'Start Now', start_free_trial_path %></div>
                         </div>
                     </div>
                 </div>

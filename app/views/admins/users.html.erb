@@ -33,6 +33,14 @@
 	</div>
 </div>
 <script type="text/javascript">
+function addChecklist(id){
+	$('#note-checklist_'+id).show()
+	$('#note-checklist_'+id).append('<%= escape_javascript(render("users/partials/checklist_item")) %>')
+}
+function addReglist(id){
+	$('#note-reglist_'+id).show()
+	$('#note-reglist_'+id).append('<%= escape_javascript(render("users/partials/reglist_item")) %>')
+}
 	$('#search').focus(function(){
 		$('#placeholder').animate({
 			'left':17
@@ -71,6 +79,9 @@
 		$('.user').removeClass('active')
 		$('#user_'+id).addClass('active')
 		$('#search_'+id).addClass('active')
+		$.ajax({
+			url: '/delete_unsaved_note?id='+$('#new_note_id').val()
+		})
 		$.ajax({
 			url: '/view_user?id='+id
 		})

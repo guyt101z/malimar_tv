@@ -1,0 +1,28 @@
+$('#first_name-error').remove()
+$('#last_name-error').remove()
+$('#email-error').remove()
+$('#role-error').remove()
+<% if @admin.errors.present? %>
+    <% if @admin.errors[:first_name].present? %>
+        $('#first_name').after("<div class='text-danger' id='first_name-error'>First name <%= @admin.errors[:first_name].join(', ') %>")
+    <% end %>
+    <% if @admin.errors[:last_name].present? %>
+        $('#last_name').after("<div class='text-danger' id='last_name-error'>Last name <%= @admin.errors[:last_name].join(', ') %>")
+    <% end %>
+    <% if @admin.errors[:email].present? %>
+        $('#email').after("<div class='text-danger' id='email-error'>Email address <%= @admin.errors[:email].join(', ') %>")
+    <% end %>
+    <% if @admin.errors[:role_id].present? %>
+        $('#role_id').after("<div class='text-danger' id='role_id-error'>Role <%= @admin.errors[:role_id].join(', ') %>")
+    <% end %>
+    var notification = new NotificationFx({
+        message : '<p>There was an error saving the account. Please see the form for more info.</p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'danger', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+    notification.show()
+<% else %>
+    window.location = '<%= view_admin_path(id: @admin.id) %>'
+<% end %>

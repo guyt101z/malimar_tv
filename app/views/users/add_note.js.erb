@@ -1,1 +1,6 @@
-alert('Note Added!')
+$('#notes_list').prepend('<%= escape_javascript(render("users/partials/note")).html_safe %>')
+$('#img-list').html('<div class="col-md-4 col-sm-6" id="template-add"><div class="note-image"><div class="note-image-wrapper"><i class="fa fa-plus"></i></div><div class="note-image-name">Add An Image</div></div</div>')
+$('#add_image').click(function() {
+    $('#image').click();
+});
+alert('<%= params[:check_status] %>')

@@ -1,0 +1,18 @@
+$('#plan_id').val(<%= params[:id] %>)
+$('#plan-price').html('$<%= number_with_precision(@plan.price, precision: 2) %>')
+$('#balance').html('$<%= number_with_precision(current_user.balance, precision: 2) %>')
+$('#payment_cycle').html('Every <%= pluralize(@plan.months, "Month") %>')
+<% if current_user.expiry.nil? || current_user.expiry < Date.today %>
+    $('#renewal').html('<%= (Date.today + @plan.months.months).strftime("%Y-%m-%d") %>')
+<% else %>
+    $('#renewal').html('<%= (current_user.expiry + @plan.months.months).strftime("%Y-%m-%d") %>')
+<% end %>
+<% total = @plan.price - current_user.balance %>
+<% if total < 0 %>
+    $('#total').html('$<%= number_with_precision(0, precision: 2) %>')
+    $('#remaining_balance').html('$<%= number_with_precision(current_user.balance - @plan.price, precision: 2) %>')
+<% else %>
+    $('#total').html('$<%= number_with_precision(total, precision: 2) %>')
+    $('#remaining_balance').html('$<%= number_with_precision(0, precision: 2) %>')
+<% end %>
+$("#subscribe_modal").modal("show")

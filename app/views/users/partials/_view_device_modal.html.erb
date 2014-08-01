@@ -6,20 +6,14 @@
                 <h4 class="modal-title" id="myModalLabel">My Device</h4>
             </div>
             <div class="modal-body">
-                <%= form_tag update_device_serial_path, remote: true, id: 'update_serial_form' do %>
+
                 <div class='row'>
-                    <div class='col-sm-6 hidden-xs'>
-                        <%= image_tag 'roku_large.png', style: 'width:100%;' %>
+                    <div class='col-sm-4 hidden-xs large_image_wrapper' id='device-image'>
                     </div>
-                    <div class='col-sm-6 hidden-xs'>
-                        <div class='form-group'>
-                            <label>Device Serial</label>
-                            <%= text_field_tag :serial, '', id: 'device_serial', class: 'form-control' %>
-                            <%= hidden_field_tag :id, '', id: 'device_id' %>
-                        </div>
+                    <div class='col-sm-8 hidden-xs' id='device-details' style='position:relative; height: 250px'>
+
                     </div>
                 </div>
-                <% end %>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

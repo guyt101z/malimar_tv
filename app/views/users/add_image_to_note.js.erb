@@ -1,0 +1,3 @@
+$('#note_id_for_image').val('<%= @note.id %>')
+$('#new_note_id').val('<%= @note.id %>')
+$('#img-list').append('<div class="col-md-4 col-sm-6" id="file-wrapper_<%= @note_image.id %>"><div class="note-image"><div class="del-note-image-wrapper" onclick="deleteImage(<%= @note_image.id %>)"><i class="fa fa-times"></i></div><div class="note-image-wrapper"><%= image_tag @note_image.file_url(:preview) %></div><div class="note-image-name"><%= File.basename(@note_image.file.path) %></div></div></div>')

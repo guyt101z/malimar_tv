@@ -20,73 +20,150 @@ class SalesRepsController < ApplicationController
 		@sales_rep.first_name = params[:first_name]
 		@sales_rep.last_name = params[:last_name]
 		@sales_rep.email = params[:email]
+		@sales_rep.timezone = params[:timezone]
 
 		@sales_rep.save
 	end
 
 	def register_step_one
 		@user = User.new(params)
+		code = SecureRandom.hex(5).upcase
+		until User.where(refer_code: code).count < 1
+			code = SecureRandom.hex(5).upcase
+		end
+		@user.refer_code = code
+		@user.balance = 0
 		password = SecureRandom.hex(7)
 		@user.password = password
 
 		if @user.save
-		 	TransactionalMailer.new_user(@user, password).deliver
+		 	TransactionalMailer.sales_rep_register_customer(current_sales_representative, @user, password).deliver
 		 	@plans = Plan.all.order(months: :asc)
+			Resque.enqueue(AdminNotifier, 0, 'system', "#{user.name} has joined.", sales_payment_requests_path)
 		end
 	end
 
 	def add_subscription
 		@user = User.find(params[:user_id])
 		@plan = Plan.find(params[:plan_id])
-		@transaction = Transaction.new()
 
-		if params[:type].present?
-			unless params[:type] == 'None'
-				@device = Device.new(type: params[:type], serial: params[:serial], user_id: @user.id)
-				if @device.valid?
-					@device_success = true
-				else
-					@device_success = false
-					@message.nil?
-				end
+
+		if params[:serial].present?
+			@device = Roku.new
+			@device.user_id = @user
+			@device.serial = params[:serial]
+
+			if @device.valid? && @user.max_devices?
+				@device_errors = true
+				@device.errors.add(:base, 'You have reached the maximum number of devices allowed.')
+			elsif @device.valid?
+				@device_errors = false
 			else
-				@device = nil
-				@device_success = true
+				@device_errors = true
 			end
 		else
-			@device_success = false
-			@message = 'You must choose a device from the list.'
+			@device = nil
+			@device_errors = false
 		end
 
-		if @device_success == true
-			if params[:payment_type] == 'Credit Card'
-				@payment_success = false
-				@message = "Credit Card Payments are not yet active."
-			else
-				@transaction.user_id = @user.id
-				@transaction.payment_type = params[:payment_type]
-				@transaction.sales_rep_id = current_sales_representative.id
-				@transaction.product_details = YAML.dump({plan: @plan.name, duration: @plan.months, price: @plan.price, commission_rate: current_sales_representative.commission_rate})
-				@transaction.status = 'Pending'
-				@transaction.payment_status = 'Pending'
+		if @device_errors == false
+			total = @plan.price - @user.balance
 
-				if @transaction.valid?
-					@payment_success = true
+			if total > 0 && params[:payment_type].present?
+				if params[:payment_type] == 'Credit Card'
+					# Send requests to the gateway's test servers
+					ActiveMerchant::Billing::Base.mode = :test
 
-					unless @device.nil?
-						@device.save
-						@transaction.roku_id = @device.id
-					end
-					if @transaction.save
-						@payment_success = true
+					# Create a new credit card object
+					credit_card = ActiveMerchant::Billing::CreditCard.new(
+						:number     => params[:card],
+						:month      => params[:card_month],
+						:year       => params[:card_year],
+						:first_name => params[:card_first_name],
+						:last_name  => params[:card_last_name],
+						:verification_value  => params[:ccv]
+					)
+
+					if credit_card.valid?
+						@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
+						gateway = ActiveMerchant::Billing::PaypalGateway.new(
+							login:    	@paypal[:login],
+							password: 	@paypal[:password],
+							signature: 	@paypal[:signature]
+						)
+
+
+
+
+
+						response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
+
+						if response.success?
+							user = User.find(params[:user_id])
+							user.balance = 0
+							if user.expiry.nil? || user.expiry < Date.today
+								user.expiry = Date.today + @plan.months.months
+							else
+								user.expiry += @plan.months.months
+							end
+							user.save
+							transaction = Transaction.new
+							transaction.user_id = user.id
+							transaction.payment_type = 'Credit Card'
+							transaction.paypal_id = response.params['transaction_id']
+							transaction.status = 'Paid'
+							transaction.sales_rep_id = current_sales_representative.id
+							transaction.customer_paid = DateTime.now
+
+							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, commission_rate: current_sales_representative.commission_rate})
+
+							unless @device.nil?
+								transaction.roku_id = @device.id
+								@device.save
+							end
+							transaction.balance_used = @plan.price - total
+							transaction.save
+							@success = true
+							TransactionalMailer.order_paid(transaction,user).deliver
+						else
+							@payment_errors = true
+							@payment_message = response.message
+						end
 					else
-						@payment_success = false
+						@payment_errors = true
+						@payment_message = 'This credit card is not valid.'
 					end
 				else
-					@payment_success = false
+					user = User.find(params[:user_id])
+					user.balance = 0
+					if user.expiry.nil? || user.expiry < Date.today
+						user.expiry = Date.today + @plan.months.months
+					else
+						user.expiry += @plan.months.months
+					end
+					user.save
+					transaction = Transaction.new
+					transaction.user_id = user.id
+					transaction.payment_type = params[:payment_type]
+					transaction.status = 'Pending'
+					transaction.sales_rep_id = current_sales_representative.id
+
+					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, commission_rate: current_sales_representative.commission_rate})
+
+					transaction.balance_used = @plan.price - total
+					transaction.save
+					@success = true
+					TransactionalMailer.order_created(transaction,user).deliver
 				end
+			else
+				@payment_errors = true
+				@payment_message = 'You must select a payment type.'
 			end
 		end
+	end
+
+	def choose_plan
+		@plan = Plan.find(params[:plan_id])
 	end
 
 	def transactions
@@ -237,6 +314,8 @@ class SalesRepsController < ApplicationController
 				@withdrawal.sales_rep_id = current_sales_representative.id
 				@withdrawal.status = 'Pending'
 				@withdrawal.save
+				TransactionalMailer.withdrawal_created(@withdrawal).deliver
+				Resque.enqueue(AdminNotifier, 0, 'withdrawal', "A new withdrawal has been submitted.", sales_payment_requests_path)
 			end
 		end
 	end

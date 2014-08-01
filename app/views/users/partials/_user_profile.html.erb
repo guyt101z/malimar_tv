@@ -16,3 +16,11 @@
     <p><strong>Zip/Postal</strong><br>
         <%= current_user.zip %></p>
 </div>
+<div class='col-sm-6'>
+    <p><strong>Referral Code</strong><br>
+        <%= current_user.refer_code %>&nbsp;</p>
+</div>
+<div class='col-sm-6'>
+    <p><strong>Current Balance</strong><br>
+        $<%= number_with_precision(current_user.balance, precision: 2) %>&nbsp;</p>
+</div>

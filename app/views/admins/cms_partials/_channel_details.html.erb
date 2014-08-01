@@ -14,19 +14,27 @@
                     <%= form_tag update_channel_path, remote: true, id: 'update_channel_form' do %>
                     <%= hidden_field_tag :id, @channel.id %>
                     <div class='row'>
-                        <div class='col-md-12 form-group'>
+                        <div class='col-md-8 form-group'>
                             <label class='unedited'>Channel Title</label>
                             <%= text_field_tag :name, @channel.name, class: 'form-control edit_channel' %>
+                        </div>
+                        <div class='col-md-4 form-group'>
+                            <label class='unedited'>Front Page Banner?</label>
+                            <%= select_tag :front_page, options_for_select([['No',false],['Yes',true]],@channel.front_page), class: 'form-control edit_channel' %>
                         </div>
                     </div>
                     <div class='row'>
                         <div class='col-md-8 form-group'>
-                            <label class='unedited'>Stream URL</label>
+                            <label class='unedited'>HLS URL</label>
                             <%= text_field_tag :stream_url, @channel.stream_url, class: 'form-control edit_channel' %>
                         </div>
                         <div class='col-md-4 form-group'>
                             <label class='unedited'>Stream Name</label>
                             <%= text_field_tag :stream_name, @channel.stream_name, class: 'form-control edit_channel' %>
+                        </div>
+                        <div class='col-md-8 form-group'>
+                            <label class='unedited'>RTMP URL</label>
+                            <%= text_field_tag :rtmp_url, @channel.rtmp_url, class: 'form-control edit_channel' %>
                         </div>
                     </div>
                     <label class='unedited' id='checkbox_label'>Available on:</label>
@@ -111,12 +119,59 @@
                     <%= file_field_tag :image %>
                     <%= hidden_field_tag :id, @channel.id %>
                 <% end %>
+
+                <div class=' col-lg-12 col-md-6'>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading' style='position: relative'>
+                            <h3 class='panel-title'>Banner Image</h3>
+                            <a class='upload_image_heading btn btn-success btn-sm' id='banner-clicker'><i class='fa fa-upload fa-fw'></i></a>
+                        </div>
+                        <div class='panel-body image_preview' id='banner_preview'>
+                            <%= image_tag @channel.banner_url(:preview) %>
+                        </div>
+                    </div>
+                </div>
+                <%= form_tag update_channel_banner_path, remote: true, style: 'display:none' do %>
+                    <%= file_field_tag :banner %>
+                    <%= hidden_field_tag :id, @channel.id %>
+                <% end %>
             </div>
             <script>
                 $('#image-clicker').click(function() {
                     $('#image').click();
                 });
                 $('#image').fileupload({
+                    dataType: "script",
+                    dropZone: document.getElementById('drop-area'),
+                    add: function(e, data) {
+                        data.context = $(tmpl("template-upload", data.files[0]));
+                        $('#upload-progress').remove()
+                        $('#image-clicker').after(data.context);
+                        return data.submit();
+                    },
+                    progress: function(e, data) {
+                        var progress;
+                        if (data.context) {
+                            progress = parseInt(data.loaded / data.total * 100, 10);
+                            return data.context.find('.progress-bar').attr('aria-valuenow', progress).css('width', progress+'%');
+                        }
+                    },
+                    fail: function(e,data) {
+                        if (data.context) {
+                            $
+                            return data.context.find('.progress-bar').css('width','100%').removeClass('progress-bar-info').addClass('progress-bar-danger')
+                        }
+                    },
+                    done: function(e,data) {
+                        if (data.context) {
+                            return data.context.find('.progress-bar').css('width','100%').removeClass('progress-bar-info').addClass('progress-bar-success')
+                        }
+                    }
+                });
+                $('#banner-clicker').click(function() {
+                    $('#banner').click();
+                });
+                $('#banner').fileupload({
                     dataType: "script",
                     dropZone: document.getElementById('drop-area'),
                     add: function(e, data) {

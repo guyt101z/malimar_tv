@@ -1,4 +1,8 @@
 $('#serial_message').remove()
-$('#device_serial').val('<%= @device.serial %>')
-$('#device_id').val(<%= @device.id %>)
+$('#device-image').html('<%= image_tag "#{@device.type.downcase}_large.png" %>')
+<% if @device.type == 'Roku' %>
+    $('#device-details').html('<%= escape_javascript(render("users/partials/roku_details")) %>')
+<% else %>
+    $('#device-details').html('<%= escape_javascript(render("users/partials/device_details")) %>')
+<% end %>
 $('#device_modal').modal('show')

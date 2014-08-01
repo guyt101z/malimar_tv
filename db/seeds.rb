@@ -21,3 +21,34 @@ admin = Admin.create(first_name: 'Josh', last_name: 'Tate', password: 'buh12345'
 invoice_logo = InvoiceLogo.create(image: nil)
 
 invoice_settings = Setting.create(name: 'Invoice Details', data: YAML.dump({company_name: 'Malimar TV', address: "10 This Way\nManhattan, NY 10001\n800-111-2222\nbilling@malimar-tv.com"}))
+
+device_limit = Setting.create(name: 'Device Limit', data: 5)
+default_timezone = Setting.create(name: 'Default Timezone', data: 'Pacific Time (US & Canada)')
+referral_bonus = Setting.create(name: 'Referral Bonus', data: YAML.dump(method: 'Lump Sum', rate: 5)) # methods are 'Lump Sum' or 'Percentage of Referral Purchase'
+free_trial_length = Setting.create(name: 'Free Trial Length', data: 30)
+
+
+
+mail_templates = [
+	MailTemplate.create(name: 'Self Sign Up', required_variables: YAML.dump(['user_name','user_email'])),
+	MailTemplate.create(name: 'Subscription Reminder', required_variables: YAML.dump(['user_name','user_email', 'expiry_date'])),
+	MailTemplate.create(name: 'Admin Register Admin', required_variables: YAML.dump(['admin_name','admin_email','admin_password'])),
+	MailTemplate.create(name: 'Admin Register Sales Representative', required_variables: YAML.dump(['rep_email', 'rep_name', 'rep_password'])),
+	MailTemplate.create(name: 'Admin Register Customer', required_variables: YAML.dump(['user_email', 'user_name', 'user_password'])),
+	MailTemplate.create(name: 'Sales Rep Register Customer', required_variables: YAML.dump(['user_email','user_name','user_password','rep_name','rep_company'])),
+	MailTemplate.create(name: 'Order Created', required_variables: YAML.dump(['plan_name','plan_duration','plan_price','created_at'])),
+	MailTemplate.create(name: 'Order Paid', required_variables: YAML.dump(['user_name','user_email','plan_name','plan_duration','plan_price','created_at','paid_date','new_expiry'])),
+	MailTemplate.create(name: 'Withdrawal Created', required_variables: YAML.dump(['rep_name','rep_email','amount','created_at'])),
+	MailTemplate.create(name: 'Withdrawal Approved', required_variables: YAML.dump(['rep_name','rep_email','amount','created_at','approval_date', 'message'])),
+	MailTemplate.create(name: 'Withdrawal Denied', required_variables: YAML.dump(['rep_name','rep_email','amount','created_at','denial_date','message']))
+]
+
+mail_settings = [
+	Setting.create(name: 'MailChimp Credentials', data: YAML.dump({api_key: '0fec58ea225e6267d09236252209fedc-us3'})),
+	Setting.create(name: 'Default Send Address', data: 'donotreply@malimar.tv')
+	Setting.create(name: 'SMTP Credentials', data: YAML.dump({address: 'smtp.mandrillapp.com', port: 587, user_name: 'jtate@variationmedia.com', password: 'eoJXAS4dpN86YIuS6LL48w', domain: 'malimar.tv'})),
+
+	Setting.create(name: 'Mail Header Markup', data: ''),
+	Setting.create(name: 'Mail Footer Markup', data: ''),
+	Setting.create(name: 'Mail Global CSS', data: '')
+]

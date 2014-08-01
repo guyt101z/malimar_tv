@@ -7,45 +7,20 @@
 			</div>
 			<div class='panel-body'>
 				<div class='row'>
-					<div class='col-xs-12'>
-						<p>This is the administration section. From here, you will be able to:
-							<ul>
-								<li>
-									Manage Users
-									<ul>
-										<li>Create New</li>
-										<li>Register Devices</li>
-										<li>Subscribe</li>
-										<li>View General Information</li>
-									</ul>
-								</li>
-								<li>
-									Manage Plans
-									<ul>
-										<li>Add/Remove Feature sets</li>
-										<li>Change Prices</li>
-									</ul>
-								</li>
-								<li>
-									Manage Sales Representatives/Resellers
-									<ul>
-										<li>Create/Destroy</li>
-										<li>View Performance</li>
-										<li>Adjust Commission</li>
-									</ul>
-								</li>
-								<li>
-									View CRON Jobs (Background Tasks) Status/Updates
-								</li>
-								<li>
-									View Overall Statistics
-								</li>
-								<li>
-									And more as outlined in the project proposal
-								</li>
-							</ul>
-						</p>
-						<p>Right now you can test some of the existing features: Create(Register) New User, and Search/Manage Users. You will be able to create a new user and be redirected to view the user's profile. Search is possible through email, name, and account number.</p>
+					<div class='col-sm-6'>
+						<p><strong>New Sign Ups</strong><br><%= @data.new_sign_ups %></p>
+						<p><strong>Renewals</strong><br><%= @data.renewals %></p>
+						<p><strong>Updated:</strong><br><%= @data.user_updated %></p>
+						<hr>
+						<p><strong>Transactions Completed</strong><br><%= @data.transactions_completed %> | $<%= number_with_precision(@data.transactions_completed_value, precision: 2) %></p>
+						<p><strong>Transactions Paid</strong><br><%= @data.transactions_paid %> | $<%= number_with_precision(@data.transactions_paid_value, precision: 2) %></p>
+						<p><strong>Updated:</strong><br><%= @data.tx_updated %></p>
+					</div>
+					<div class='col-sm-6'>
+						<p><strong>Withdrawals Requested</strong><br><%= @data.withdrawal_requests_created %> | $<%= number_with_precision(@data.withdrawal_requests_created_value, precision: 2) %></p>
+						<p><strong>Withdrawals Approved</strong><br><%= @data.withdrawal_requests_approved %> | $<%= number_with_precision(@data.withdrawal_requests_approved_value, precision: 2) %></p>
+						<p><strong>Withdrawals Denied</strong><br><%= @data.withdrawal_requests_denied %> | $<%= number_with_precision(@data.withdrawal_requests_denied_value, precision: 2) %></p>
+						<p><strong>Updated:</strong><br><%= @data.wd_updated %></p>
 					</div>
 				</div>
 			</div>

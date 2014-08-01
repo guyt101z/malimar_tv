@@ -10,35 +10,19 @@
                         <%= image_tag @channel.image_url, class: 'img-responsive' %>
                     </div>
                 </div>
-                <div class="socials">
+                <!--<div class="socials">
                     <a href="#"><span class="fb"></span></a>
                     <a href="#"><span class="tw"></span></a>
                     <a href="#"><span class="rss"></span></a>
-                </div>
+                </div>-->
             </div>
             <div class="col-sm-8 col-md-9">
-                   <div class="box-white">
-                    <div class="data-bb clearfix">
-                        <div class="pull-left">
-                            <span class="star-wrap">
-                                <span class="glyphicon glyphicon-star yellow"></span>
-                                <span class="glyphicon glyphicon-star yellow"></span>
-                                <span class="glyphicon glyphicon-star yellow"></span>
-                                <span class="glyphicon glyphicon-star yellow"></span>
-                                <span class="glyphicon glyphicon-star"></span>
-                            </span>
-                            <div class="fz12-5">2013</div>
-                        </div>
-                        <div class="pull-right">
-                            <br>
-                            <div class="fz12-5">4 Episodes</div>
-                        </div>
+                <div class="box-white">
+                    <div class="data-bb">
+                        <%= simple_format(@channel.synopsis) %>
                     </div>
                     <div class='video_wrapper' id='video_wrapper'>
 
-                    </div>
-                    <div class="data-bb">
-                        <%= simple_format(@channel.synopsis) %>
                     </div>
                 </div>
             </div>
@@ -46,12 +30,28 @@
     </div>
 </div><!--content-->
 <script>
+<% if @channel.rtmp_url.present? %>
 jwplayer("video_wrapper").setup({
-    file: "<%= @channel.stream_url %>?token=<%= @token %>",
+    sources: [
+        {file: "<%= @channel.rtmp_url %>?token=<%= @token %>"},
+        {file: "<%= @channel.stream_url %>?token=<%= @token %>"}
+    ],
     image: "<%= @channel.image_url %>",
     title:"<%= @channel.name %>",
     width: '100%',
     height: 400,
     primary: 'flash'
 });
+<% else %>
+jwplayer("video_wrapper").setup({
+    sources: [
+        {file: "<%= @channel.stream_url %>?token=<%= @token %>"}
+    ],
+    image: "<%= @channel.image_url %>",
+    title:"<%= @channel.name %>",
+    width: '100%',
+    height: 400,
+    primary: 'flash'
+});
+<% end %>
 </script>

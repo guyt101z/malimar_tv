@@ -1,1 +1,21 @@
-$('#trans_<%= @transaction.id %>').children('.status').removeClass('paid').addClass('refunded').html('Refunded')
+<% if @success == true %>
+    $('#trans_<%= @transaction.id %>').children('.status').removeClass('paid').addClass('refunded').html('Refunded')
+    var notification = new NotificationFx({
+        message : '<p><%= @message %></p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'success', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+    notification.show()
+<% else %>
+    $('#trans_<%= @transaction.id %>').children('.status').removeClass('paid').addClass('refunded').html('Refunded')
+    var notification = new NotificationFx({
+        message : '<p><%= @message %></p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'danger', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+    notification.show()
+<% end %>

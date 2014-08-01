@@ -3,4 +3,5 @@
     window.location = '/sales_reps/transactions'
 <% else %>
     alert('<%= @error %>')
+    $('#submit_button').html('Submit Request').removeAttr('disabled');
 <% end %>

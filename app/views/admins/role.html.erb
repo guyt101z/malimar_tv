@@ -1,0 +1,133 @@
+<div class='container'>
+<div class='row'>
+    <div class='col-xs-12'><h2 class='page-header'>Admin Roles</h2></div>
+        <div class='col-md-3 col-sm-4'>
+            <%= render 'admins/nav/roles_side_nav' %>
+        </div>
+        <div class='col-md-9 col-sm-8'>
+            <%= form_tag update_role_path, remote: true do %>
+                <%= hidden_field_tag :id, @role.id %>
+                <div class='panel panel-default'>
+                    <div class='panel-body'>
+                        <div class='row'>
+                            <div class='col-xs-12'>
+                                <div class='panel panel-default'>
+                                    <div class='panel-heading'>
+                                        <h3 class='panel-title'>Role Name</h3>
+                                    </div>
+                                    <div class='panel-body'>
+                                        <%= text_field_tag :name, @role.name, class: 'form-control' %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-6'>
+                                <div class='panel panel-default'>
+                                    <div class='panel-heading'>
+                                        <h3 class='panel-title'>User Management</h3>
+                                    </div>
+                                    <div class='panel-body'>
+                                        <div class='row'>
+                                            <div class='col-md-6'>
+                                                <label>Create User</label>
+                                                <%= select_tag :create_user, options_for_select([['No',false],['Yes',true]], @role.create_user), class: 'form-control' %>
+                                            </div>
+                                            <div class='col-md-6'>
+                                                <label>Manage User</label>
+                                                <%= select_tag :manage_user, options_for_select([['No',false],['Yes',true]], @role.manage_user), class: 'form-control' %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='panel panel-default'>
+                                    <div class='panel-heading'>
+                                        <h3 class='panel-title'>Sales Rep Management</h3>
+                                    </div>
+                                    <div class='panel-body'>
+                                        <div class='row'>
+                                            <div class='col-md-6'>
+                                                <label>Create Rep</label>
+                                                <%= select_tag :create_rep, options_for_select([['No',false],['Yes',true]], @role.create_rep), class: 'form-control' %>
+                                            </div>
+                                            <div class='col-md-6'>
+                                                <label>Manage Rep</label>
+                                                <%= select_tag :manage_rep, options_for_select([['No',false],['Yes',true]], @role.manage_rep), class: 'form-control' %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='panel panel-default'>
+                                    <div class='panel-heading'>
+                                        <h3 class='panel-title'>Administrator Management</h3>
+                                    </div>
+                                    <div class='panel-body'>
+                                        <div class='row'>
+                                            <div class='col-md-6'>
+                                                <label>Create Administrator</label>
+                                                <%= select_tag :create_admin, options_for_select([['No',false],['Yes',true]], @role.create_admin), class: 'form-control' %>
+                                            </div>
+                                            <div class='col-md-6'>
+                                                <label>Manage Administrator</label>
+                                                <%= select_tag :manage_admin, options_for_select([['No',false],['Yes',true]], @role.manage_admin), class: 'form-control' %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-sm-6'>
+                                <div class='panel panel-default'>
+                                    <div class='panel-heading'>
+                                        <h3 class='panel-title'>Financial</h3>
+                                    </div>
+                                    <div class='panel-body'>
+                                        <div class='row'>
+                                            <div class='col-md-6 form-group'>
+                                                <label>Manage Plan Pricing/Invoices</label>
+                                                <%= select_tag :update_plan_invoice, options_for_select([['No',false],['Yes',true]], @role.update_plan_invoice), class: 'form-control' %>
+                                            </div>
+                                            <div class='col-md-6 form-group'>
+                                                <label>Authorize Sales Rep Withdrawals</label>
+                                                <%= select_tag :authorize_withdrawal, options_for_select([['No',false],['Yes',true]], @role.authorize_withdrawal), class: 'form-control' %>
+                                            </div>
+                                            <div class='col-md-6'>
+                                                <label>Accept/Cancel Payments</label>
+                                                <%= select_tag :accept_cancel_payment, options_for_select([['No',false],['Yes',true]], @role.accept_cancel_payment), class: 'form-control' %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='panel panel-default'>
+                                    <div class='panel-heading'>
+                                        <h3 class='panel-title'>System</h3>
+                                    </div>
+                                    <div class='panel-body'>
+                                        <div class='row'>
+                                            <div class='col-md-6 form-group'>
+                                                <label>Manage Videos</label>
+                                                <%= select_tag :update_videos, options_for_select([['No',false],['Yes',true]], @role.update_videos), class: 'form-control' %>
+                                            </div>
+                                            <div class='col-md-6 form-group'>
+                                                <label>Manage Mail Settings</label>
+                                                <%= select_tag :update_mail_settings, options_for_select([['No',false],['Yes',true]], @role.update_mail_settings), class: 'form-control' %>
+                                            </div>
+                                            <div class='col-md-6'>
+                                                <label>Manage Support Tickets</label>
+                                                <%= select_tag :manage_support_tickets, options_for_select([['No',false],['Yes',true]], @role.manage_support_tickets), class: 'form-control' %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='panel-footer text-right'>
+                        <%= link_to 'Delete Role', delete_role_path(id: @role.id), class: 'btn btn-danger', data: {confirm: 'Are you sure you want to delete this admin role?'} %>
+                        <%= submit_tag 'Create Admin Role', class: 'btn btn-primary', data: {disable_with: 'Creating...'} %>
+                    </div>
+                </div>
+            <% end %>
+        </div>
+    </div>
+</div>
+<script>
+    $('#role_<%= @role.name.gsub(" ","_").downcase %>').addClass('active')
+</script>

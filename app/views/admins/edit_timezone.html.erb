@@ -1,0 +1,52 @@
+<% map = ActiveSupport::TimeZone.all %>
+<% array = Array.new %>
+<% map.each do |tz| %>
+    <% array.push(tz.to_s) %>
+<% end %>
+
+<% tz_options = [['Select A Timezone',nil]] %>
+
+<% array.each do |tz_s| %>
+    <% tz_s.slice!(0..11) %>
+    <% tz_options.push(tz_s) unless tz_s.nil? %>
+<% end %>
+<div class='container'>
+    <div class='row'>
+        <div class='col-xs-12'><h2 class='page-header'>General Settings</h2></div>
+        <div class='col-md-3 col-sm-4'>
+            <%= render 'admins/nav/gen_side_nav' %>
+        </div>
+        <div class='col-md-9 col-sm-8'>
+            <div class='row'>
+                <div class='col-md-4 col-sm-6'>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>Current Timezone</h3>
+                        </div>
+                        <div class='panel-body text-center', style='font-size: 180%'>
+                            <%= @current_zone %>
+                        </div>
+                    </div>
+                </div>
+                <div class='col-md-4 col-sm-6'>
+                    <%= form_tag update_default_timezone_path do %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>Set New Default</h3>
+                        </div>
+                        <div class='panel-body text-center', style='font-size: 180%'>
+                            <%= select_tag :timezone, options_for_select(tz_options, @current_zone), class: 'form-control' %>
+                        </div>
+                        <div class='panel-footer'>
+                            <%= submit_tag 'Update', class: 'btn btn-primary', style: 'width: 100%' %>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#timezone_side').addClass('active')
+</script>

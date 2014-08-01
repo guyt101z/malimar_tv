@@ -54,6 +54,12 @@ gem 'random_data'
 gem 'payday'
 
 gem 'redis'
+gem 'resque'
+gem 'resque-web', require: 'resque_web'
 
 gem 'nokogiri'
 gem 'searchkick'
+
+gem 'impressionist'
+gem 'whenever', require: false
+gem 'activemerchant'

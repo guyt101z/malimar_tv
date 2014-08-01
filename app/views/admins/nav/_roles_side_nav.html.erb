@@ -1,0 +1,7 @@
+<ul class="nav nav-pills nav-stacked">
+    <li id='new_role'><%= link_to 'New Admin Role', new_role_path %></li>
+    <hr>
+    <% @roles.each do |role| %>
+        <li id='role_<%= role.name.gsub(" ","_").downcase %>'><%= link_to role.name, role_path(id: role.id) %></a></li>
+    <% end %>
+</ul>

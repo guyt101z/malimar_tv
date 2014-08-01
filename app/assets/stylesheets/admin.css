@@ -729,3 +729,52 @@ input.has-error {
 .upload-bottom .progress .progress-bar {
     max-height: 20px
 }
+
+.note-images {
+    display: none;
+    height: 250px;
+    overflow-y: scroll;
+}
+.note-image {
+    border: 1px solid #ccc;
+    position: relative;
+    margin-bottom: 5px;
+}
+.note-image-wrapper {
+    height: 200px;
+    width: 100%;
+    line-height: 200px;
+    border-radius: 3px;
+    text-align: center;
+}
+.note-image-wrapper img, .note-image-wrapper .fa {
+    max-height: 100%;
+    max-width: 100%;
+}
+.note-image-wrapper .fa {
+    font-size: 200%;
+}
+.del-note-image-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #f00;
+    padding: 0 4px;
+    color: #fff;
+}
+.del-note-image-wrapper:hover {
+    cursor: pointer;
+    color: #f00;
+    background-color: #fff;
+}
+.note-image-name {
+    height: 20px;
+    width: 100%;
+    border-top: 1px solid #ccc;
+    line-height: 19px;
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    o-text-overflow:ellipsis;
+    text-align: center;
+}

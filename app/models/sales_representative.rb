@@ -121,7 +121,7 @@ class SalesRepresentative < ActiveRecord::Base
     end
 
     def meets_min_limit?
-        min_limit = (YAML.load(Setting.where(name: 'Withdrawal Limits').first.data))[:min]
+        min_limit = (YAML.load(Setting.where(name: 'Withdrawal Limits').first.data))[:min].to_f
 
         return (current_balance >= min_limit)
     end

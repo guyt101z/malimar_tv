@@ -6,7 +6,7 @@
                     <div class="panel-heading">
                         <h3 class="fz14"><%= @show.name %></h3>
                     </div>
-                    <div class="panel-body b0">
+                    <div class="panel-body b0" style='text-align:center'>
                         <%= image_tag @show.image_url, class: 'img-responsive' %>
                     </div>
                 </div>
@@ -23,34 +23,24 @@
                             </div>
                         <% end %>
                     </div>
-                    <a href="#"><span class="fb"></span></a>
-                    <a href="#"><span class="tw"></span></a>
-                    <a href="#"><span class="rss"></span></a>
                 </div>
             </div>
             <div class="col-sm-8 col-md-9">
                    <div class="box-white">
                     <div class="data-bb clearfix">
                         <div class="pull-left">
-                            <span class="star-wrap">
-                                <span class="glyphicon glyphicon-star yellow"></span>
-                                <span class="glyphicon glyphicon-star yellow"></span>
-                                <span class="glyphicon glyphicon-star yellow"></span>
-                                <span class="glyphicon glyphicon-star yellow"></span>
-                                <span class="glyphicon glyphicon-star"></span>
-                            </span>
-                            <div class="fz12-5">2013</div>
+                            <strong><%= @episode.title %></strong>
+                            <div class="fz12-5"><%= @episode.release_date.strftime('%B %-d, %Y') %></div>
                         </div>
                         <div class="pull-right">
-                            <br>
-                            <div class="fz12-5">4 Episodes</div>
+                            <div class="fz12-5"><%= pluralize(@episodes.count, 'Episode') %></div>
                         </div>
-                    </div>
-                    <div class='video_wrapper' id='video_wrapper'>
-
                     </div>
                     <div class="data-bb">
                         <%= simple_format(@episode.synopsis) %>
+                    </div>
+                    <div class='video_wrapper' id='video_wrapper'>
+
                     </div>
                 </div>
             </div>
@@ -59,12 +49,28 @@
 </div><!--content-->
 <script>
 $('#episode_<%= @episode.id %>').addClass('active')
+<% if @episode.rtmp_url.present? %>
 jwplayer("video_wrapper").setup({
-    file: "<%= @episode.stream_url %>",
+    sources: [
+        {file: "<%= @episode.rtmp_url %>"},
+        {file: "<%= @episode.stream_url %>"}
+    ],
     image: "<%= @show.image_url %>",
     title:"<%= @episode.title %>",
     width: '100%',
     height: 400,
     primary: 'flash'
 });
+<% else %>
+jwplayer("video_wrapper").setup({
+    sources: [
+        {file: "<%= @episode.stream_url %>"}
+    ],
+    image: "<%= @show.image_url %>",
+    title:"<%= @episode.title %>",
+    width: '100%',
+    height: 400,
+    primary: 'flash'
+});
+<% end %>
 </script>

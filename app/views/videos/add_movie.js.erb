@@ -5,7 +5,8 @@ $('#new_free-error').remove()
 $('#new_content_quality-error').remove()
 $('#new_bitrate-error').remove()
 $('#new_synopsis-error').remove()
-$('#new_stream_name-error').remove()
+$('#new_release_date-error').remove()
+$('#new_length-error').remove()
 <% if @movie.errors.any? %>
     <% if @movie.errors[:name].present? %>
         $('#new_name').after('<div class="text-danger" id="new_name-error">Name <%= @movie.errors[:name].join(", ") %>.</div>')
@@ -25,20 +26,24 @@ $('#new_stream_name-error').remove()
     <% if @movie.errors[:synopsis].present? %>
         $('#new_synopsis').after('<div class="text-danger" id="new_synopsis-error">Synopsis <%= @movie.errors[:synopsis].join(", ") %>.</div>')
     <% end %>
-    <% if @movie.errors[:stream_name].present? %>
-        $('#new_stream_name').after('<div class="text-danger" id="new_stream_name-error">Stream name <%= @movie.errors[:stream_name].join(", ") %>.</div>')
+    <% if @movie.errors[:release_date].present? %>
+        $('#new_release_date').after('<div class="text-danger" id="new_release_date-error">Release date <%= @movie.errors[:release_date].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:length].present? %>
+        $('#new_length').after('<div class="text-danger" id="new_length-error">Length <%= @movie.errors[:length].join(", ") %>.</div>')
     <% end %>
 <% else %>
     $('#new_movie_modal').modal('hide')
     $('#movie_list').prepend('<div class="channel_list_item" id="movie_<%= @movie.id %>" onclick="viewChannel(<%= @movie.id %>)"><%= escape_javascript(render("admins/cms_partials/movie_list_item")) %></div>')
     $('#new_name').val('')
-    $('#new_live').val('')
     $('#new_stream_url').val('')
+    $('#new_rtmp_url').val('')
     $('#new_content_quality').val('')
     $('#new_bitrate').val('')
     $('#new_synopsis').val('')
     $('#new_actors').val('')
     $('#new_genres').val('')
+    $('#new_free').val('')
     $('#new_free').val('')
     $('#new_roku').removeAttr('checked')
     $('#new_web').removeAttr('checked')

@@ -1,6 +1,7 @@
+<% if resource.is_a? User %>
 <div class="splash">
 	<div class="container">
-    	<h3 class="name">Sign Into Your Account - <%= (resource_name.slice(0,1).capitalize + resource_name.slice(1..-1)).gsub('_',' ') %></h3>
+    	<h3 class="name">Sign Into Your Account</h3>
     </div>
 </div><!--splash-->
 <div class="content">
@@ -29,5 +30,39 @@
 		</div>
 	</div>
 </div>
+<% else %>
+	<div class="container">
+		<div class='col-md-6 col-sm-8 col-xs-10 col-centered'>
+			<div class='panel panel-default'>
+				<div class='panel-heading'>
+					<% if resource.is_a? SalesRepresentative %>
+						<h3 class='panel-title'>Sales Representative Account Portal</h3>
+					<% else %>
+						<h3 class='panel-title'>Administrator Account Portal</h3>
+					<% end %>
+				</div>
+				<div class='panel-body'>
+					<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+						<div class='form-group'>
+							<%= f.email_field :email, autofocus: true, placeholder: 'Email Address', class: 'form-control' %>
+						</div>
 
+						<div class='form-group'>
+							<%= f.password_field :password, autocomplete: "off", placeholder: 'Password', class: 'form-control' %>
+						</div>
 
+						<div class='form-group'>
+							<%= f.submit "Sign in", class: 'btn btn-primary form-control' %>
+						</div>
+						<% if resource.is_a? SalesRepresentative %>
+							<%= link_to 'Forgot your password?', '/sales_representatives/password/new' %>
+						<% else %>
+							<%= link_to 'Forgot your password?', '/admins/password/new' %>
+						<% end %>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<% end %>

@@ -1,0 +1,13 @@
+<div class='row'>
+    <div class='col-xs-2 text-center'>
+        <%= text_field_tag 'check_status[]', 'incomplete', style:'display:none' %>
+        <i class='fa fa-check-square' style='display:none' onclick='$(this).parent().children("input").val("incomplete"); $(this).hide(); $(this).parent().children(".fa-square-o").show();'></i>
+        <i class='fa fa-square-o' onclick='$(this).parent().children("input").val("complete"); $(this).hide(); $(this).parent().children(".fa-check-square").show();'></i>
+    </div>
+    <div class='col-xs-8'>
+        <%= text_field_tag 'check_item[]', '', class: 'form-control' %>
+    </div>
+    <div class='col-xs-2'>
+        <i class='fa fa-times' onclick='$(this).parent().parent().remove()'></i>
+    </div>
+</div>

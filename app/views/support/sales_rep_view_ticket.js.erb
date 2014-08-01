@@ -23,13 +23,27 @@ $('#ticket_messages').html('')
 	<% @admin = Admin.find(@case.admin_id) %>
 <% end %>
 <% @messages.each do |message| %>
-	<% if message.admin_id.nil? %>
-		var message = Autolinker.link('<%= message.message.squish %>')
-		$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em><%= custom_time_ago(message.created_at) %></em></p><p>"+message+"</p></div></div>")
+	var message = Autolinker.link('<%= message.message.squish %>')
+	<% if message.sales_representative_id.nil? %>
+		//Received Message
+		<% admin = Admin.where(id: message.admin_id).first %>
+		<% if admin.nil? %>
+			$('#ticket_messages').append("<div class='message animated fadeIn'><div class='recv_message'><p class='title'>Admin said:</p><p class='timestamp'><em title='<%= (message.created_at) %>' class='timeago'></em></p><p>"+message+"</p></div></div>")
+		<% else %>
+			$('#ticket_messages').append("<div class='message animated fadeIn'><div class='recv_message'><p class='title'><%= admin.first_name %> said:</p><p class='timestamp'><em title='<%= (message.created_at) %>' class='timeago'></em></p><p>"+message+"</p></div></div>")
+		<% end %>
 	<% else %>
-		<% admin = Admin.find(message.admin_id) %>
-		var message = Autolinker.link('<%= message.message.squish %>')
-		$('#ticket_messages').append("<div class='message animated fadeIn'><div class='recv_message'><p class='title'><%= admin.name %> said:</p><p class='timestamp'><em><%= custom_time_ago(message.created_at) %></em><p>"+message+"</p></div></div>")
+		// Sent message
+		<% rep = SalesRepresentative.where(id: message.sales_representative_id).first %>
+		<% if rep.nil? %>
+			$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>Representative said:</p><p class='timestamp'><em title='<%= (message.created_at) %>' class='timeago'></em></p><p>"+message+"</p></div></div>")
+		<% else %>
+			<% if rep.id = current_sales_representative.id %>
+				$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em title='<%= (message.created_at) %>' class='timeago'></em></p><p>"+message+"</p></div></div>")
+			<% else %>
+				$('#ticket_messages').append("<div class='message animated fadeIn'><div class='sent_message'><p class='title'><%= rep.name %> said:</p><p class='timestamp'><em title='<%= (message.created_at) %>' class='timeago'></em></p><p>"+message+"</p></div></div>")
+			<% end %>
+		<% end %>
 	<% end %>
 <% end %>
 
@@ -41,4 +55,3 @@ $('#ticket_attachments').html('')
 		$('#ticket_attachments').append('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><%= image_tag attachment.file_url %></div>')
 	<% end %>
 <% end %>
-

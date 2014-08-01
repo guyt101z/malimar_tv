@@ -1,0 +1,49 @@
+<div class='container'>
+    <div class='row'>
+        <div class='col-xs-12'><h2 class='page-header'>General Settings</h2></div>
+        <div class='col-md-3 col-sm-4'>
+            <%= render 'admins/nav/gen_side_nav' %>
+        </div>
+        <div class='col-md-9 col-sm-8'>
+            <div class='row'>
+                <div class='col-md-4 col-sm-6'>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>Current Trial Length</h3>
+                        </div>
+                        <div class='panel-body text-center', style='font-size: 180%'>
+                            <%= pluralize(@current_length, 'day') %>
+                        </div>
+                    </div>
+                </div>
+                <div class='col-md-4 col-sm-6'>
+                    <%= form_tag update_free_trial_path do %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>Set New Trial Length</h3>
+                        </div>
+                        <div class='panel-body text-center', style='font-size: 180%'>
+                            <%= text_field_tag :free_trial_length, @current_length, class: 'form-control', onkeypress: 'return isNumberKey(event)' %>
+                        </div>
+                        <div class='panel-footer'>
+                            <%= submit_tag 'Update', class: 'btn btn-primary', style: 'width: 100%' %>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#free_trial').addClass('active')
+    function isNumberKey(evt)
+   {
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      if (charCode != 46 && charCode > 31
+        && (charCode < 48 || charCode > 57))
+         return false;
+
+      return true;
+   }
+</script>

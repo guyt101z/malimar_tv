@@ -1,0 +1,86 @@
+<style>
+    <%= raw(@global_css) %>
+    * {
+        font-family: 'Helvitica'
+    }
+    #report-header {
+        margin-top: 0;
+        padding-top: 0;
+    }
+    #report-details {
+        padding: 10px;
+    }
+    #report-details .report-detail {
+        width: 100%;
+        padding: 10px;
+        border-top: 1px solid #ccc;
+        border-left: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+    }
+    #report-details .report-detail:last-child {
+        border-bottom: 1px solid #ccc;
+    }
+    #report-details .report-detail .detail-title {
+        width: 100%;
+        margin-bottom: 5px;
+        height: 26px;
+        line-height: 26px;
+        font-size: 20px;
+        text-align: center;
+        font-weight:bolder;
+    }
+    #report-details .report-detail .detail-data {
+        width: 100%;
+        margin-bottom: 5px;
+        height: 26px;
+        line-height: 26px;
+        font-size: 14px;
+        text-align: center;
+    }
+</style>
+<%= raw(@header) %>
+<div id='body'>
+    <h3 id='report-header'>Your Daily Report</h3>
+    <div id='report-details'>
+        <div class='detail'>
+            <div class='detail-title'>New Sign Ups</div>
+            <div class='detail-data'><%= @data.new_sign_ups %></div>
+        </div>
+
+        <div class='detail'>
+            <div class='detail-title'>Renewals</div>
+            <div class='detail-data'><%= @data.renewals %></div>
+        </div>
+
+        <div class='detail'>
+            <div class='detail-title'>Transactions Completed</div>
+            <div class='detail-data'><%= @data.transactions_completed %></div>
+            <div class='detail-data'>$<%= number_with_precision(@data.transactions_completed_value, precision: 2) %></div>
+        </div>
+
+        <div class='detail'>
+            <div class='detail-title'>Transactions Paid</div>
+            <div class='detail-data'><%= @data.transactions_paid %></div>
+            <div class='detail-data'>$<%= number_with_precision(@data.transactions_paid_value, precision: 2) %></div>
+        </div>
+
+        <div class='detail'>
+            <div class='detail-title'>Withdrawals Requested</div>
+            <div class='detail-data'><%= @data.withdrawal_requests_created %></div>
+            <div class='detail-data'>$<%= number_with_precision(@data.withdrawal_requests_created_value, precision: 2) %></div>
+        </div>
+
+        <div class='detail'>
+            <div class='detail-title'>Withdrawals Approved</div>
+            <div class='detail-data'><%= @data.withdrawal_requests_approved %></div>
+            <div class='detail-data'>$<%= number_with_precision(@data.withdrawal_requests_approved_value, precision: 2) %></div>
+        </div>
+
+        <div class='detail'>
+            <div class='detail-title'>Withdrawals Denied</div>
+            <div class='detail-data'><%= @data.withdrawal_requests_denied %></div>
+            <div class='detail-data'>$<%= number_with_precision(@data.withdrawal_requests_denied_value, precision: 2) %></div>
+        </div>
+    </div>
+</div>
+<%= raw(@footer) %>

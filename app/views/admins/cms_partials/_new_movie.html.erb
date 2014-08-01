@@ -16,12 +16,20 @@
                 </div>
                 <div class='row'>
                     <div class='col-sm-8 form-group'>
-                        <label>Stream URL</label>
+                        <label>HLS URL</label>
                         <%= text_field_tag :new_stream_url, '', class: 'form-control' %>
                     </div>
                     <div class='col-sm-4 form-group'>
-                        <label>Stream Name</label>
-                        <%= text_field_tag :new_stream_name, '', class: 'form-control' %>
+                        <label>Release Date</label>
+                        <%= text_field_tag :new_release_date, '', class: 'form-control', placeholder: 'Eg: 2014-07-29' %>
+                    </div>
+                    <div class='col-sm-8 form-group'>
+                        <label>RTMP URL</label>
+                        <%= text_field_tag :new_rtmp_url, '', class: 'form-control' %>
+                    </div>
+                    <div class='col-sm-4 form-group'>
+                        <label>Length</label>
+                        <%= text_field_tag :new_length, '', class: 'form-control' %>
                     </div>
                 </div>
                 <div class='row'>

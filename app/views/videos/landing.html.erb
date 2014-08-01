@@ -1,43 +1,29 @@
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
   	<div class="carousel-inner">
-    	<div class="item active">
-      		<%= image_tag "banner.jpg" %>
-      		<div class="carousel-caption">
-            	<div class="container">
-            		<h2>The Voice Thailand Season 2</h2>
-                    <div class="row">
-                    	<div class="col-md-10 col-sm-9">
-                            <div class="media">
-                                <a href="#" class="pull-left"><%= image_tag "tv-01-sm.png", class: "media-object" %></a>
-                                <div class="media-body">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et.</div>
+        <% @front_page_array.shuffle %>
+        <% i = 0 %>
+        <% @front_page_array.each do |item| %>
+            <% if i == 0 %><div class="item active"><% else %><div class='item'> %><% end %>
+                  <%= image_tag item.banner_url(:front_page) %>
+                  <div class="carousel-caption">
+                    <div class="container">
+                        <h2><%= item.name %></h2>
+                        <div class="row">
+                            <div class="col-md-10 col-sm-9">
+                                <div class="media">
+                                    <a href="#" class="pull-left"><%= image_tag item.image_url(:preview), class: "media-object",style: 'max-width: 50px; max-height: 50px' %></a>
+                                    <div class="media-body"><%= item.synopsis %></div>
+                                </div>
                             </div>
-                    	</div>
-                        <div class="col-md-2 col-sm-3">
-                        	<a href="#" class="btn btn-primary btn-block btn-bold">Watch Now</a>
+                            <div class="col-md-2 col-sm-3">
+                                <a href="<%= item.watch_url %>" class="btn btn-primary btn-block btn-bold">Watch Now</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-      		</div>
-    	</div>
-    	<div class="item">
-      		<%= image_tag "banner.jpg" %>
-      		<div class="carousel-caption">
-            	<div class="container">
-            		<h2>The Voice Thailand Season 2</h2>
-                    <div class="row">
-                    	<div class="col-md-10 col-sm-9">
-                            <div class="media">
-                                <a href="#" class="pull-left"><%= image_tag "tv-01-sm.png", class: "media-object" %></a>
-                                <div class="media-body">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et.</div>
-                            </div>
-                    	</div>
-                        <div class="col-md-2 col-sm-3">
-                        	<a href="#" class="btn btn-primary btn-block btn-bold">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-      		</div>
-    	</div>
+                  </div>
+            </div>
+            <% i += 1 %>
+        <% end %>
   	</div>
 </div><!--carousel-->
 

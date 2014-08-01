@@ -5,7 +5,9 @@ $('#free-error').remove()
 $('#content_quality-error').remove()
 $('#bitrate-error').remove()
 $('#synopsis-error').remove()
-$('#stream_name-error').remove()
+$('#length-error').remove()
+$('#release_date-error').remove()
+$('#front_page-error').remove()
 <% if @movie.errors.any? %>
     <% if @movie.errors[:name].present? %>
         $('#name').after('<div class="text-danger" id="name-error">Name <%= @movie.errors[:name].join(", ") %>.</div>')
@@ -28,8 +30,14 @@ $('#stream_name-error').remove()
     <% if @movie.errors[:synopsis].present? %>
         $('#synopsis').after('<div class="text-danger" id="synopsis-error">Synopsis <%= @movie.errors[:synopsis].join(", ") %>.</div>')
     <% end %>
-    <% if @movie.errors[:stream_name].present? %>
-        $('#stream_name').after('<div class="text-danger" id="stream_name-error">Stream name <%= @movie.errors[:stream_name].join(", ") %>.</div>')
+    <% if @movie.errors[:length].present? %>
+        $('#length').after('<div class="text-danger" id="length-error">Length <%= @movie.errors[:length].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:release_date].present? %>
+        $('#release_date').after('<div class="text-danger" id="release_date-error">Release date <%= @movie.errors[:release_date].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:front_page].present? %>
+        $('#front_page').after('<div class="text-danger" id="front_page-error"><%= @movie.errors[:front_page].join(", ") %>.</div>')
     <% end %>
     $('#details-title').html('Channel Details - <span class="text-danger">Not Updated</span>')
 <% else %>

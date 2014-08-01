@@ -1,6 +1,12 @@
 $('#new_serial_error').remove()
+$('#limit_error').remove()
 <% if @device.errors.any? %>
-    $('#new_device_serial').after('<span class="text-danger" id="new_serial_error">Serial <%= @device.errors[:serial].join(", ") %></span>')
+    <% if @device.errors[:serial].any? %>
+        $('#new_device_serial').after('<div class="text-danger" id="new_serial_error">Serial <%= @device.errors[:serial].join(", ") %></div>')
+    <% end %>
+    <% if @device.errors[:base].any? %>
+        $('#new_device_serial').after('<div class="text-danger" id="limit_error"><%= @device.errors[:base].join(", ") %></div>')
+    <% end %>
 <% else %>
     $('#new_device_success').show()
     $('#new_submit').hide()

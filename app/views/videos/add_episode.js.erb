@@ -5,8 +5,7 @@ $('#new_ep_release_date-error').remove()
 $('#new_ep_content_type-error').remove()
 $('#new_ep_content_quality-error').remove()
 $('#new_ep_bitrate-error').remove()
-$('#new_ep_stream_name-error').remove()
-
+$('#new_ep_length-error').remove()
 <% if @episode.errors.any? %>
     <% if @episode.errors[:title].present? %>
         $('#new_ep_title').after('<div class="text-danger" id="new_ep_title-error">Title <%= @episode.errors[:title].join(", ") %>.</div>')
@@ -29,8 +28,8 @@ $('#new_ep_stream_name-error').remove()
     <% if @episode.errors[:bitrate].present? %>
         $('#new_ep_bitrate').after('<div class="text-danger" id="new_ep_bitrate-error">Bitrate <%= @episode.errors[:bitrate].join(", ") %>.</div>')
     <% end %>
-    <% if @episode.errors[:stream_name].present? %>
-        $('#new_ep_stream_name').after('<div class="text-danger" id="new_ep_stream_name-error">Stream name <%= @episode.errors[:stream_name].join(", ") %>.</div>')
+    <% if @episode.errors[:length].present? %>
+        $('#new_ep_length').after('<div class="text-danger" id="new_ep_length-error">Length <%= @episode.errors[:length].join(", ") %>.</div>')
     <% end %>
 <% else %>
     $('#show_<%= @show.id %>').html('<%= escape_javascript(render("admins/cms_partials/show_list_item")).html_safe %>')

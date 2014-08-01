@@ -1,0 +1,32 @@
+$('#serial_message').remove()
+<% if @device.errors.any? %>
+    $('#device_serial').after('<span class="text-danger" id="serial_message">Serial <%= @device.errors[:serial].join(", ") %></span>')
+    var notification = new NotificationFx({
+        message : '<p>There was an error updating your device.</p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'danger', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+
+    notification.show()
+<% else %>
+
+    <% if @device.type == 'Roku' %>
+        $('#device_<%= @device.id %>').children('.serial').html('<%= @device.serial %>')
+    <% end %>
+    <% if @device.name.blank? %>
+        $('#device_<%= @device.id %>').children('.type').html('<%= @device.humanized_type %>')
+    <% else %>
+        $('#device_<%= @device.id %>').children('.type').html('<%= @device.nickname(true) %>')
+    <% end %>
+    var notification = new NotificationFx({
+        message : '<p>Your device has been updated!</p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'success', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+
+    notification.show()
+<% end %>

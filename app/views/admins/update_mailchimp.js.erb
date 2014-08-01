@@ -1,0 +1,21 @@
+<% if @success == true %>
+    var notification = new NotificationFx({
+        message : '<p><%= @message %></p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'success', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+
+    notification.show()
+<% else %>
+    var notification = new NotificationFx({
+        message : '<p><%= @message %></p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'danger', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+
+    notification.show()
+<% end %>

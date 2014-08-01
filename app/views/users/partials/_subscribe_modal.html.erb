@@ -1,6 +1,6 @@
 <%= form_tag add_subscription_path, remote: true do %>
 <%= hidden_field_tag :plan_id %>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="subscribe_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       	<div class="modal-content">
     		<div class="modal-header">
@@ -8,77 +8,133 @@
         		<h4 class="modal-title" id="myModalLabel">Subscribe Your Device</h4>
     		</div>
     		<div class="modal-body">
-        		<h4 style='margin-top:0;'>Device Details</h4>
+        		<h4 style='margin-top:0;'>Roku Details</h4>
         		<div class='row'>
         			<div class='col-sm-6'>
         				<div class='form-group'>
-        					<%= select_tag :type, options_for_select([['Select A Device (Optional)', nil],
-        															  ['Roku', 'Roku']]), class: 'form-control' %>
+        					<div class='form-group'>
+                                <%= text_field_tag :serial, '', class: 'form-control', placeholder: 'Serial Number (Optional)' %>
+                            </div>
         				</div>
+                        <hr>
+                        <h4 style='margin-top:0;'>Payment Details</h4>
+                        <% if Transaction.where(user_id: current_user.id).count == 0 %>
+                            <div class='form-group'>
+                                <%= text_field_tag :refer_code, '', class: 'form-control', placeholder: 'Refer A Friend Code' %>
+                            </div>
+                        <% end %>
+                        <div class='form-group'>
+                            <%= select_tag :payment_type, options_for_select([['Payment Method', nil],
+                                                                      'Credit Card',
+                                                                      'Cheque',
+                                                                      'Money Order',
+                                                                      'Bank Transfer']), class: 'form-control' %>
+                        </div>
+
+                        <div class='row' style='display: none' id='credit_info'>
+                            <div class='col-sm-6 form-group'>
+                                <%= text_field_tag :card_first_name, '', class: 'form-control', placeholder: 'First Name' %>
+                            </div>
+                            <div class='col-sm-6 form-group'>
+                                <%= text_field_tag :card_last_name, '', class: 'form-control', placeholder: 'Last Name' %>
+                            </div>
+                            <div class='col-xs-12 form-group' style='display: none' id='credit_card'>
+                                <%= text_field_tag :card, '', class: 'form-control', placeholder: 'Credit Card Number' %>
+                            </div>
+                            <div class='col-sm-6'>
+                                <div class='form-group'>
+                                    <%= select_tag :card_month, options_for_select([['Expiry Month', nil],
+                                                                                    ['Jan (01)',1],
+                                                                                    ['Feb (02)',2],
+                                                                                    ['Mar (03)',3],
+                                                                                    ['Apr (04)',4],
+                                                                                    ['May (05)',5],
+                                                                                    ['Jun (06)',6],
+                                                                                    ['Jul (07)',7],
+                                                                                    ['Aug (08)',8],
+                                                                                    ['Sep (09)',9],
+                                                                                    ['Oct (10)',10],
+                                                                                    ['Nov (11)',11],
+                                                                                    ['Dec (12)',12]]), class: 'form-control' %>
+                                </div>
+                            </div>
+                            <div class='col-sm-6'>
+                                <div class='form-group'>
+                                    <% years = [['Expiry Year', nil]] %>
+                                    <% this_year = (Date.today.strftime('%Y')).to_i %>
+                                    <% end_year = ((Date.today+15.years).strftime('%Y')).to_i %>
+                                    <% for i in this_year..end_year %>
+                                       <% years.push(i) %>
+                                    <% end %>
+                                    <%= select_tag :card_year, options_for_select(years), class: 'form-control' %>
+                                </div>
+                            </div>
+                            <div class='col-sm-6'>
+                                <div class=''>
+                                    <%= text_field_tag :ccv, '', class: 'form-control', placeholder: 'CCV' %>
+                                </div>
+                            </div>
+                        </div>
         			</div>
-        			<div class='col-sm-6'>
-        				<div class='form-group'>
-        					<%= text_field_tag :serial, '', class: 'form-control', placeholder: 'Serial Number' %>
-        				</div>
-        			</div>
-        		</div>
-    		<hr>
-        		<h4 style='margin-top:0;'>Payment Details</h4>
-        		<div class='row'>
-        			<div class='col-sm-6'>
-        				<div class='form-group'>
-        					<%= select_tag :payment_type, options_for_select([['Payment Method', nil],
-        															  'Credit Card',
-        															  'Cheque',
-        															  'Money Order',
-        															  'Bank Transfer']), class: 'form-control' %>
-        				</div>
-        			</div>
-        		</div>
-        		<div class='row' id='credit_info' style='display:none'>
-        			<div class='col-sm-6'>
-        				<div class='form-group'>
-        					<%= text_field_tag :card, '', class: 'form-control', placeholder: 'Credit Card Number' %>
-        				</div>
-        			</div>
-        			<div class='col-sm-3'>
-        				<div class='form-group'>
-        					<%= select_tag :card_month, options_for_select([['Expiry Month', nil],
-                                                                            ['Jan (01)',1],
-                                                                            ['Feb (02)',2],
-                                                                            ['Mar (03)',3],
-                                                                            ['Apr (04)',4],
-                                                                            ['May (05)',5],
-                                                                            ['Jun (06)',6],
-                                                                            ['Jul (07)',7],
-                                                                            ['Aug (08)',8],
-                                                                            ['Sep (09)',9],
-                                                                            ['Oct (10)',10],
-                                                                            ['Nov (11)',11],
-                                                                            ['Dec (12)',12]]), class: 'form-control' %>
-        				</div>
-        			</div>
-        			<div class='col-sm-3'>
-        				<div class='form-group'>
-        					<% years = [['Expiry Year', nil]] %>
-                            <% this_year = (Date.today.strftime('%Y')).to_i %>
-                            <% end_year = ((Date.today+15.years).strftime('%Y')).to_i %>
-                            <% for i in this_year..end_year %>
-                               <% years.push(i) %>
-                            <% end %>
-        					<%= select_tag :card_year, options_for_select(years), class: 'form-control' %>
-        				</div>
-        			</div>
-        			<div class='col-sm-3'>
-        				<div class='form-group'>
-        					<%= text_field_tag :ccv, '', class: 'form-control', placeholder: 'CCV' %>
-        				</div>
-        			</div>
+                    <div class="col-sm-6">
+                    	<div class="list-group mb0">
+                            <div class="list-group-item">
+                            	<table class="table table-noborder">
+                                <tbody>
+                                <tr>
+                                    <td class="text-sans-semi">Plan</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-right text-blue text-sans-semi" id='plan-price'></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-sans-semi">Balance</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-right text-blue text-sans-semi" id='balance'></td>
+                                </tr>
+                                <tr>
+                                	<td class="text-sans-semi">Payment</td>
+                                    <td colspan='3' id='payment_cycle' style='text-align:right'></td>
+                                </tr>
+                                <tr>
+                                	<td>Renewal</td>
+                                    <td colspan='3' style='text-align:right' id='renewal'></td>
+                                </tr>
+                                </tbody>
+                                </table>
+                            </div>
+                            <div class="list-group-item">
+                            	<table class="table table-noborder">
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-sans-semi">Total</td>
+                                        <td class="text-right text-blue text-sans-semi" id='total'></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-sans-semi">Remaining Balance</td>
+                                        <td class="text-right text-blue text-sans-semi" id='remaining_balance'></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                        	</div>
+                            <div class="list-group-item">
+                            	<table class="table table-noborder">
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-sans-semi fz12-5 vam"><span class="glyphicon glyphicon-lock"></span> Your transaction is 100% secure by:</td>
+                                        <td class="text-right"><img src="img/secure.jpg"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                        	</div>
+                        </div>
+                    </div>
         		</div>
     		</div>
     		<div class="modal-footer">
         		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        		<%= submit_tag 'Subscribe', class: 'btn btn-primary' %>
+        		<%= submit_tag 'Subscribe', class: 'btn btn-primary', data: {disable_with: 'Adding Subscription...'} %>
     		</div>
       	</div>
     </div>
@@ -88,9 +144,11 @@
 	$('#payment_type').change(function(){
 		if ($(this).val() == 'Credit Card') {
 			$('#credit_info').show()
+            $('#credit_card').show()
 		}
 		else {
 			$('#credit_info').hide()
+            $('#credit_card').hide()
 		}
 	})
 </script>

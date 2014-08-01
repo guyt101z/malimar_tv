@@ -11,7 +11,7 @@
 	</div>
 </h2>
 <div class='row'>
-	<div class='col-lg-3 col-md-4 col-sm-5'>
+	<div class='col-md-6'>
 		<div class='panel panel-default'>
 			<div class='panel-heading'>
 				<h3 class='panel-title'>User Details</h3>
@@ -55,28 +55,6 @@
 				</p>
 			</div>
 		</div>
-	</div>
-	<%= form_tag add_note_to_user_path, remote: true do %>
-	<%= hidden_field_tag :user_id, @user.id %>
-	<div class='col-lg-6 col-md-6 col-sm-7'>
-		<div class='panel panel-default'>
-			<div class='panel-heading'>
-				<h3 class='panel-title'>User Notes</h3>
-			</div>
-			<div class='panel-body'>
-				<%= text_area_tag :note, @user.note, class: 'form-control', rows: 8 %>
-			</div>
-			<div class='panel-footer'>
-				<%= submit_tag 'Update Notes', class: 'btn btn-primary pull-right' %>
-				<div class='clearfix'></div>
-			</div>
-		</div>
-	</div>
-	<% end %>
-</div>
-
-<div class='row'>
-	<div class='col-md-6 col-sm-12'>
 		<%= form_tag admin_register_device_path, remote: true do %>
 		<div class='panel panel-default'>
 			<%= hidden_field_tag :user_id, @user.id %>
@@ -88,7 +66,7 @@
 					<div class='col-md-6'>
 						<div class='form-group'>
 							<%= select_tag :type, options_for_select([['Select A Device', nil],
-        															  ['Roku', 'Roku']]), class: 'form-control' %>
+																	['Roku', 'Roku']]), class: 'form-control' %>
 						</div>
 					</div>
 					<div class='col-md-6'>
@@ -112,16 +90,22 @@
 				<% @devices.each do |device| %>
 					<div class='device' onclick='viewDevice(<%= device.id %>)' id='device_<%= device.id %>'>
 						<div class='image_wrapper'>
-							<%= image_tag 'roku.png' %>
+							<%= image_tag device.type.downcase+'_large.png' %>
 						</div>
-						<p class='type'>Roku</p>
-						<p class='serial'><%= device.serial %></p>
+						<% if device.name.blank? %>
+							<p class='type'><%= device.humanized_type %></p>
+						<% else %>
+							<p class='type'><%= device.nickname(true) %></p>
+						<% end %>
+						<% if device.type == 'Roku' %>
+							<p class='serial'><strong>Serial:</strong> <%= device.serial %></p>
+						<% else %>
+							<p class='serial'><strong>Token:</strong> <%= device.serial %></p>
+						<% end %>
 					</div>
 				<% end %>
 			</div>
 		</div>
-	</div>
-	<div class='col-md-6 col-sm-12'>
 		<div class='panel panel-default'>
 			<div class='panel-heading'>
 				<h3 class='panel-title'>User Transactions</h3>
@@ -137,9 +121,9 @@
 							<p class='plan'><%= details[:plan] %>: <%= pluralize(details[:duration], 'month') %></p>
 							<p class='status <%= transaction.status.downcase %>'><%= transaction.status %>
 								<% if transaction.status == 'Paid' || transaction.status == 'Accepted' %>
-									<br/><%= link_to 'Refund', refund_payment_path(id: transaction.id), remote: true %>
+									<br/><%= link_to 'Refund', refund_payment_path(id: transaction.id), remote: true, data: {disable_with: 'Processing...'} %>
 								<% elsif transaction.status == 'Pending' %>
-									<br/><%= link_to 'Accept', accept_payment_path(id: transaction.id), remote: true %> | <%= link_to "Cancel", cancel_payment_path(id: transaction.id), remote: true %>
+									<br/><%= link_to 'Accept', accept_payment_path(id: transaction.id), remote: true, data: {disable_with: 'Processing...'} %> | <%= link_to "Cancel", cancel_payment_path(id: transaction.id), remote: true, data: {disable_with: 'Processing...'} %>
 								<% end %>
 							</p>
 							<p class='invoice'><%= link_to 'View Invoice', view_invoice_path(id: transaction.id)+'.pdf', format: :pdf, target: 'new' %></p>
@@ -149,13 +133,162 @@
 			</div>
 		</div>
 	</div>
+	<div class='col-md-6 col-sm-12'>
+		<div class='row'>
+			<div class='col-sm-6'>
+				<div class='panel panel-default'>
+					<div class='panel-heading'>
+						<h3 class='panel-title'>Current Balance</h3>
+					</div>
+					<div class='panel-body text-center' style='font-size: 180%' id='user_balance'>
+						$<%= number_with_precision(@user.balance, precision: 2) %>
+					</div>
+				</div>
+			</div>
+			<div class='col-sm-6'>
+				<%= form_tag update_user_balance_path, remote: true do %>
+				<div class='panel panel-default'>
+					<div class='panel-heading'>
+						<h3 class='panel-title'>Current Balance</h3>
+					</div>
+					<div class='panel-body'>
+						<%= hidden_field_tag :user_id, @user.id %>
+						<%= text_field_tag :add_balance, '', class: 'form-control' %>
+					</div>
+					<div class='panel-footer'>
+						<%= submit_tag 'Add Balance', class: 'btn btn-primary', style: 'width: 100%' %>
+					</div>
+				</div>
+				<% end %>
+			</div>
+		</div>
+		<%= form_tag add_note_to_user_path, remote: true do %>
+			<%= hidden_field_tag :user_id, @user.id %>
+			<%= hidden_field_tag :new_note_id %>
+			<div class='panel panel-default'>
+				<div class='panel-heading'>
+					<h3 class='panel-title'>User Notes</h3>
+				</div>
+				<div class='panel-body note-images' id='new_note_images'>
+					<div class='row' id='img-list'>
+						<div class='col-md-4 col-sm-6' id='template-add'>
+							<div class='note-image' id='add_image'>
+								<div class='note-image-wrapper'>
+									<i class='fa fa-plus'></i>
+								</div>
+								<div class='note-image-name'>Add An Image</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class='panel-body'>
+					<%= text_field_tag :title, @user.note, class: 'form-control', placeholder: 'Add title' %>
+					<%= text_area_tag :note, @user.note, class: 'form-control', rows: 4, placeholder: 'Add note', style: 'resize: verticle' %>
+				</div>
+				<div class='panel-body' id='note-reglist' style='display:none'></div>
+				<div class='panel-body' id='note-checklist' style='display:none'></div>
+				<div class='panel-footer'>
+					<div class='pull-left'>
+						<a onclick='addChecklistNew()' class='btn btn-success'><i class='fa fa-check-square-o fa-fw'></i></a>
+						<a onclick='addReglistNew()' class='btn btn-success'><i class='fa fa-list fa-fw'></i></a>
+						<a onclick='$("#new_note_images").show()' class='btn btn-success'><i class='fa fa-file fa-fw'></i></a>
+					</div>
+					<%= submit_tag 'Save Note', class: 'btn btn-primary pull-right' %>
+					<div class='clearfix'></div>
+				</div>
+			</div>
+		<% end %>
+		<%= form_tag add_image_to_note_path, remote: true, style: 'display:none' do %>
+			<%= file_field_tag :image %>
+			<%= hidden_field_tag :note_id_for_image %>
+		<% end %>
+		<script>
+			function addChecklistNew(){
+				$('#note-checklist').show()
+				$('#note-checklist').append('<%= escape_javascript(render("users/partials/checklist_item")) %>')
+			}
+			function addReglistNew(){
+				$('#note-reglist').show()
+				$('#note-reglist').append('<%= escape_javascript(render("users/partials/reglist_item")) %>')
+			}
+			$('#add_image').click(function() {
+				$('#image').click();
+			});
+			$('#image').fileupload({
+				dataType: "script",
+				dropZone: document.getElementById('add_image'),
+				add: function(e, data) {
+					data.context = $(tmpl("template-upload", data.files[0]));
+					$('#add_image').hide()
+					$('#template_add').append(data.context);
+					return data.submit();
+				},
+				progress: function(e, data) {
+					var progress;
+					if (data.context) {
+						progress = parseInt(data.loaded / data.total * 100, 10);
+						return data.context.find('.upload-percentage').html(progress+'%');
+					}
+				},
+				fail: function(e,data) {
+					if (data.context) {
+						data.context.remove()
+						$('#add_image').show()
+						var notification = new NotificationFx({
+							message : '<p>There was an error uploading the file. Please ensure that it is a jpg/jpeg, png, or gif.</p>',
+							layout : 'growl',
+							effect : 'jelly',
+							type : 'danger', // notice, warning, error or success
+							num: Math.floor((Math.random() * 10000) + 1)
+						});
+
+						return notification.show()
+					}
+				},
+				done: function(e,data) {
+					if (data.context) {
+						data.context.remove()
+						$('#add_image').show()
+						var notification = new NotificationFx({
+							message : '<p>File uploaded!</p>',
+							layout : 'growl',
+							effect : 'jelly',
+							type : 'success', // notice, warning, error or success
+							num: Math.floor((Math.random() * 10000) + 1)
+						});
+
+						return notification.show()
+					}
+				}
+			});
+		</script>
+		<div id='notes_list'>
+			<% @notes.each do |note| %>
+				<div id='note_<%= note.id %>'>
+					<% @note = note %>
+					<% @note_files = NoteFile.where(note_id: note.id) %>
+					<%= render('users/partials/note') %>
+				</div>
+			<% end %>
+		</div>
+	</div>
 </div>
 <%= render 'admins/partials/view_device_modal' %>
 <script>
-
+var current_uploaded_image = 0
 function viewDevice(id) {
 	$.ajax({
 		url: '/admin_view_device/'+id
 	})
 }
+function deleteImage(id){
+	$.ajax({
+		url: '/delete_note_file?id='+id
+	})
+}
+$(window).bind('beforeunload', function(){
+	$.ajax({
+		url: '/delete_unsaved_note?id='+$('#new_note_id').val()
+	})
+});
 </script>

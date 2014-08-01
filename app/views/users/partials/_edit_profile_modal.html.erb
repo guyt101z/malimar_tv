@@ -48,7 +48,7 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <%= select_tag :country, options_for_select([['Select One', nil], 'Canada', 'United States', ['This will be configurable', nil]], current_user.country), class: 'form-control' %>
+                                    <%= text_field_tag :city, current_user.city, class: 'form-control', placeholder: 'City' %>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -57,12 +57,10 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6">
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <%= text_field_tag :city, current_user.city, class: 'form-control', placeholder: 'City' %>
+                                    <%= select_tag :country, options_for_select([['Select One', nil], 'Canada', 'United States', ['This will be configurable', nil]], current_user.country), class: 'form-control' %>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -70,6 +68,23 @@
                                     <%= text_field_tag :zip, current_user.zip, class: 'form-control', placeholder: 'Zip Code' %>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class='form-group'>
+                            <% map = ActiveSupport::TimeZone.all %>
+                            <% array = Array.new %>
+                            <% map.each do |tz| %>
+                                <% array.push(tz.to_s) %>
+                            <% end %>
+
+                            <% tz_options = [['Select A Timezone',nil]] %>
+
+                            <% array.each do |tz_s| %>
+                                <% tz_s.slice!(0..11) %>
+                                <% tz_options.push(tz_s) unless tz_s.nil? %>
+                            <% end %>
+                            <%= select_tag :timezone, options_for_select(tz_options, current_user.timezone), class: 'form-control' %>
                         </div>
                     </div>
                 </div>

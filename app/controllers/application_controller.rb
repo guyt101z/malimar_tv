@@ -2,20 +2,34 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   	protect_from_forgery
-  	
-  	before_filter :update_last_seen
-  
+
+  	before_filter :update_last_seen, :timezone
+
 
   	def update_last_seen
   		if user_signed_in?
   			@user = current_user
   			@user.last_seen = DateTime.now
   			@user.save
-		  end
+		end
+        if admin_signed_in?
+            @admin = current_admin
+            @admin.last_seen = DateTime.now
+            @admin.save
+        end
   	end
 
+    helper_method :timezone
     def timezone
-      Time.zone = 'UTC'
+        if admin_signed_in? && current_admin.timezone != nil
+            Time.zone = current_admin.timezone
+        elsif sales_representative_signed_in? && current_sales_representative.timezone != nil
+            Time.zone = current_sales_representative.timezone
+        elsif user_signed_in? && current_user.timezone != nil
+            Time.zone = current_user.timezone
+        else
+            Time.zone = Setting.where(name: 'Default Timezone').first.data
+        end
     end
 
     def after_sign_in_path_for(resource)

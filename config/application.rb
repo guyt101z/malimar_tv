@@ -19,7 +19,7 @@ module MalimarTv
         :port      => 587,
         :user_name => 'jtate@variationmedia.com',
         :password  => 'eoJXAS4dpN86YIuS6LL48w',
-        :domain    => 'print-pages.com'
+        :domain    => 'malimar.tv'
     }
     MandrillMailer.configure do |config|
         config.api_key = 'eoJXAS4dpN86YIuS6LL48w'
