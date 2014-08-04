@@ -32,8 +32,9 @@ gem 'spring',        group: :development
 # Use unicorn as the app server
 gem 'unicorn', group: :production
 
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
+# integrate bundler with capistrano
+gem 'capistrano-bundler'
+gem 'capistrano-rails', group: :development
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
@@ -44,6 +45,7 @@ gem 'bootstrap-sass'
 gem 'modernizr-rails'
 gem 'jquery-fileupload-rails'
 gem 'carrierwave'
+gem 'carrierwave-ftp'
 gem 'mini_magick'
 gem "rmagick"
 gem 'mandrill_mailer'
