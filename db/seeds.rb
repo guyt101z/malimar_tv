@@ -52,3 +52,13 @@ mail_settings = [
 	Setting.create(name: 'Mail Footer Markup', data: ''),
 	Setting.create(name: 'Mail Global CSS', data: '')
 ]
+
+background_tasks = [
+	BackgroundTask.create(name: 'Clear Admin Activities'),
+	BackgroundTask.create(name: 'Clear Duplicate Refer Codes'),
+	BackgroundTask.create(name: 'Clear Notifications'),
+	BackgroundTask.create(name: 'Clear Unsaved Notes'),
+	BackgroundTask.create(name: 'Daily Data Update'),
+	BackgroundTask.create(name: 'Subscription Reminder'),
+	BackgroundTask.create(name: 'Previous Day\'s Data Update'),
+]
