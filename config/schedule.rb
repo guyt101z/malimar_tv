@@ -8,5 +8,8 @@ every 1.day, at: '12:30 am' do
 end
 
 every 1.day, at: '12:01 am' do
-    rake 'daily_report', environment: 'production'
+    rake 'clear_duplicate_refer_codes'
+    rake 'clear_notifications'
+    rake 'clear_unsaved_notes'
+    rake 'clear_admin_activities'
 end

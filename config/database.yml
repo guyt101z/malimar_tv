@@ -29,7 +29,7 @@ production:
   database: malimar_prod
   port:    3306
   username: malimar_app
-  password: 683A0F711AF6E946
-  host: 10.128.118.105
+  password: C98CBB28D13D8BAF
+  host: 104.131.205.115
   socket: /var/run/mysqld/mysqld.sock
   pool: 50
