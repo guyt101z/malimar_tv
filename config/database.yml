@@ -3,7 +3,7 @@ development:
   encoding: utf8
   reconnect: false
   database: malimar_dev
-  port:    8889 
+  port:    8889
   username: root
   password: root
   host: localhost
@@ -15,7 +15,7 @@ test:
   encoding: utf8
   reconnect: false
   database: malimar_test
-  port:    8889 
+  port:    8889
   username: root
   password: root
   host: localhost
@@ -27,9 +27,9 @@ production:
   encoding: utf8
   reconnect: false
   database: malimar_prod
-  port:    3306 
-  username: root
-  password: rails123
-  host: localhost
+  port:    3306
+  username: malimar_app
+  password: 683A0F711AF6E946
+  host: 10.128.118.105
   socket: /var/run/mysqld/mysqld.sock
   pool: 50
