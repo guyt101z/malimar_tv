@@ -1,1 +1,17 @@
-alert('<%= @message %>')
+<% if @success == true %>
+    var notification = new NotificationFx({
+        message : '<p><%= raw(@message) %></p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'success', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+<% else %>
+    var notification = new NotificationFx({
+        message : '<p><%= raw(@message) %></p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'danger', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+<% end %>

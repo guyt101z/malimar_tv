@@ -245,6 +245,10 @@ Rails.application.routes.draw do
 
         get 'admin_view_device/:id' => 'admins#view_device', as: 'admin_view_device'
         post 'admin_update_device_serial' => 'admins#update_device_serial'
+
+        # System
+        get '/admins/background_tasks_status' => 'admins#bg_tasks', as: 'bg_tasks'
+        get '/admins/system_log' => 'admins#sys_log', as: 'sys_log'
     end
 
     authenticate :sales_representative do

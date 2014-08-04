@@ -1,0 +1,56 @@
+<div class='panel panel-default'>
+    <div class='panel-heading'>
+        <h3 class='panel-title'>Unlinked Device</h3>
+    </div>
+    <div class='panel-body'>
+        <% admin = Admin.find(@update.admin_id) %>
+        <% user = User.find(@update_data[:user_id]) %>
+        <% device = @update_data[:device_details] %>
+        <div class='row'>
+            <div class='col-xs-12'>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Update Details</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <div class='row'>
+                            <div class='col-md-4 col-sm-6'>
+                                <p><strong>Performed by:</strong><br/><%= admin.name %><br><%= link_to admin.email, 'mailto:'+admin.email %></p>
+                            </div>
+                            <div class='col-md-4 col-sm-6'>
+                                <p><strong>Time of update:</strong><br/><%= @update.created_at.strftime('%B %-d, %Y at %l:%M %p') %><br/><span style='font-weight: lighter'><em><%= distance_of_time_in_words(DateTime.now, @update.created_at) %> ago</em></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6'>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Customer Details</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <p><strong>Name:</strong><br/><%= user.name %></p>
+                        <p><strong>Email:</strong><br/><%= user.email %></p>
+                        <p><strong>Member Since:</strong><br/><%= user.created_at.strftime('%B %-d, %Y') %><br/><span style='font-weight: lighter'><em><%= distance_of_time_in_words(DateTime.now, user.created_at) %></em></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6'>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Device Details</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <p><strong>Type:</strong><br/><%= device[:type] %></p>
+                        <% if device[:type] == 'Roku' %>
+                            <p><strong>Serial:</strong><br/><%= device[:serial] %></p>
+                        <% else %>
+                            <p><strong>Token:</strong><br/><%= device[:serial] %></p>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

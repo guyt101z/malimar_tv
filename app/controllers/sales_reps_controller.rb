@@ -39,7 +39,7 @@ class SalesRepsController < ApplicationController
 		if @user.save
 		 	TransactionalMailer.sales_rep_register_customer(current_sales_representative, @user, password).deliver
 		 	@plans = Plan.all.order(months: :asc)
-			Resque.enqueue(AdminNotifier, 0, 'system', "#{user.name} has joined.", sales_payment_requests_path)
+			Resque.enqueue(AdminNotifier, 0, 'system', "#{@user.name} has joined.", sales_payment_requests_path)
 		end
 	end
 

@@ -13,9 +13,20 @@ class TransactionsController < ApplicationController
 		end
 		@transaction.customer_paid = DateTime.now
 		@transaction.status = 'Paid'
-		@transaction.save
-
-		TransactionalMailer.order_paid(@transaction, @user).deliver
+		if @transaction.save
+			TransactionalMailer.order_paid(@transaction, @user).deliver
+			AdminActivity.create(admin_id: current_admin.id,
+								data: YAML.dump({
+									type: 'Accepted Payment',
+									message: "#{current_admin.name} accepted a payment.",
+									tx_details: {
+										user_id: @transaction.user_id,
+										name: details[:name],
+										duration: details[:duration],
+										price: details[:price]
+									}
+								}))
+		end
 	end
 
 	def cancel
@@ -24,9 +35,21 @@ class TransactionsController < ApplicationController
 		@transaction.customer_refunded = DateTime.now
 		@transaction.status = 'Cancelled'
 		details = YAML.load(@transaction.product_details)
-		details[:plan] = 'CANCELLED: '+ details[:plan]
+		details[:name] = 'CANCELLED: '+ details[:name]
 		@transaction.product_details = YAML.dump(details)
-		@transaction.save
+		if @transaction.save
+			AdminActivity.create(admin_id: current_admin.id,
+								data: YAML.dump({
+									type: 'Cancelled Payment',
+									message: "#{current_admin.name} cancelled a payment.",
+									tx_details: {
+										user_id: @transaction.user_id,
+										name: details[:name],
+										duration: details[:duration],
+										price: details[:price]
+									}
+								}))
+		end
 	end
 
 	def refund
@@ -36,9 +59,24 @@ class TransactionsController < ApplicationController
 			@user = User.find(@transaction.user_id)
 			@transaction.customer_refunded = DateTime.now
 			@transaction.status = 'Refunded'
-			@transaction.save
-			@message = "Transaction \##{@transaction.id} successfully refunded!"
-			@success = true
+			details = YAML.load(@transaction.product_details)
+			details[:name] = 'REFUNDED: '+ details[:name]
+			@transaction.product_details = YAML.dump(details)
+			if @transaction.save
+				@message = "Transaction \##{@transaction.id} successfully refunded!"
+				@success = true
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'Refunded Payment',
+										message: "#{current_admin.name} refunded a payment.",
+										tx_details: {
+											user_id: @transaction.user_id,
+											name: details[:name],
+											duration: details[:duration],
+											price: details[:price]
+										}
+									}))
+			end
 		else
 			@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
 			gateway = ActiveMerchant::Billing::PaypalGateway.new(
@@ -50,9 +88,23 @@ class TransactionsController < ApplicationController
 			response = gateway.refund nil, @transaction.paypal_id
 			if response.success?
 				@transaction.status = 'Refunded'
+				details = YAML.load(@transaction.product_details)
+				details[:name] = 'REFUNDED: '+ details[:name]
+				@transaction.product_details = YAML.dump(details)
 				@transaction.save
 				@message = "Transaction \##{@transaction.id} successfully refunded!"
 				@success = true
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'Refunded Payment',
+										message: "#{current_admin.name} refunded a payment.",
+										tx_details: {
+											user_id: @transaction.user_id,
+											name: details[:name],
+											duration: details[:duration],
+											price: details[:price]
+										}
+									}))
 			else
 				@success = false
 				@message = 'There was an error refunding this transaction.'

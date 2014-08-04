@@ -84,7 +84,9 @@ class AdminsController < ApplicationController
 		end
 	end
 
-
+	def sys_log
+		@logs = SystemLog.all.reverse
+	end
 
 
 
@@ -198,8 +200,10 @@ class AdminsController < ApplicationController
 				@credentials.save
 				@message = 'Your credentials have been updated.'
 				update = AdminActivity.create(admin_id: current_admin.id, data: YAML.dump({type: 'Paypal Credential Update', message: "#{current_admin.name} changed the Paypal Credentials."}))
+				@success = true
 			else
 				@message = 'Please ensure all fields are filled out.'
+				@success = false
 			end
 		else
 			render status: 403
@@ -274,9 +278,17 @@ class AdminsController < ApplicationController
 			@withdrawal.approved = DateTime.now
 			@withdrawal.admin_id = current_admin.id
 			@withdrawal.note = params[:note]
-			@withdrawal.save
+			if @withdrawal.save
 
-			TransactionalMailer.withdrawal_approved(@withdrawal).deliver
+				TransactionalMailer.withdrawal_approved(@withdrawal).deliver
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'Accepted Withdrawal',
+										message: "#{current_admin.name} accepted a withdrawal.",
+										rep_id: @withdrawal.sales_rep_id,
+										wd_id: @withdrawal.id
+									}))
+			end
 		else
 			render status: 403
 		end
@@ -289,9 +301,17 @@ class AdminsController < ApplicationController
 			@withdrawal.approved = DateTime.now
 			@withdrawal.admin_id = current_admin.id
 			@withdrawal.note = params[:note]
-			@withdrawal.save
+			if @withdrawal.save
 
-			TransactionalMailer.withdrawal_denied(@withdrawal).deliver
+				TransactionalMailer.withdrawal_denied(@withdrawal).deliver
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'Denied Withdrawal',
+										message: "#{current_admin.name} denied a withdrawal.",
+										rep_id: @withdrawal.sales_rep_id,
+										wd_id: @withdrawal.id
+									}))
+			end
 		else
 			render status: 403
 		end
@@ -308,7 +328,14 @@ class AdminsController < ApplicationController
 			@rep.first_name = params[:first_name]
 			@rep.last_name = params[:last_name]
 			@rep.email = params[:email]
-			@rep.save
+			if @rep.save
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'Updated Representative',
+										message: "#{current_admin.name} a Sales Rep account.",
+										rep_id: @rep.id
+									}))
+			end
 		else
 			render status: 403
 		end
@@ -768,8 +795,9 @@ class AdminsController < ApplicationController
 		@mailchimp = Setting.where(name: 'MailChimp Credentials').first
 		data = YAML.load(@mailchimp.data)
 
-		if params[:api_key].present?
+		if params[:api_key].present? && params[:list_id].present?
 			data[:api_key] = params[:api_key]
+			data[:list_id] = params[:list_id]
 
 			@mailchimp.data = YAML.dump(data)
 			@mailchimp.save
@@ -1178,9 +1206,19 @@ class AdminsController < ApplicationController
 		end
 		if params[:timezone].present? && params[:timezone] != 'Select A Timezone'
 			timezone = Setting.where(name: 'Default Timezone').first
+			old = timezone.data
 			timezone.data = params[:timezone]
-			timezone.save
-			flash[:success] = 'Successfully updated time zone!'
+			if timezone.save
+				flash[:success] = 'Successfully updated time zone!'
+
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'Timezone Updated',
+										message: "#{current_admin.name} denied a withdrawal.",
+										old_zone: old,
+										new_zone: timezone.data
+									}))
+			end
 		else
 			flash[:error] = 'There was an error updating the time zone.'
 		end
@@ -1281,12 +1319,22 @@ class AdminsController < ApplicationController
 
 	def update_user_balance
 		@user = User.find(params[:user_id])
+		prev_balance = @user.balance
 
 		if @user.balance.nil?
 			@user.balance = params[:add_balance].to_f
 		else
 			@user.balance += params[:add_balance].to_f
 		end
-		@user.save
+		if @user.save
+			AdminActivity.create(admin_id: current_admin.id,
+								data: YAML.dump({
+									type: 'Balance Adjustment',
+									message: "#{current_admin.name} added funds to a balance.",
+									user_id: @user.id,
+									prev_balance: prev_balance,
+									new_balance: @user.balance
+								}))
+		end
 	end
 end

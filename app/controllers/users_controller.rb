@@ -11,6 +11,16 @@ class UsersController < ApplicationController
 			@success = true
 			sign_in(@user)
 			TransactionalMailer.self_sign_up(@user).deliver
+
+			begin
+				if @user.mailchimp == true
+					mailchimp_credentials = YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)
+					gb = Gibbon::API.new(mailchimp_credentials[:api_key], {timeout: 10})
+
+					gb.lists.subscribe({id: mailchimp_credentials[:list_id], :email => {:email => @user.email}, :merge_vars => {:FNAME => @user.first_name, :LNAME => @user.last_name}, :double_optin => false})
+				end
+			end
+
 			Resque.enqueue(AdminNotifier, 0, 'system', "#{@user.name} has joined.", search_users_path(id: @user.id))
 		else
 			@success = false

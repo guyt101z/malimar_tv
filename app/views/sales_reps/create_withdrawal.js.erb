@@ -1,7 +1,14 @@
 <% if @error.nil? %>
-    alert('Your request has been submitted.')
+    <% flash[:success] = 'Your request has been submitted.' %>
     window.location = '/sales_reps/transactions'
 <% else %>
-    alert('<%= @error %>')
+    var notification = new NotificationFx({
+        message : '<p><%= raw(@error) %></p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'danger', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+    notification.show()
     $('#submit_button').html('Submit Request').removeAttr('disabled');
 <% end %>

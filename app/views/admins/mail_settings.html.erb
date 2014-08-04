@@ -55,6 +55,10 @@
                                 <label>API Key</label>
                                 <%= text_field_tag :api_key, @mailchimp[:api_key], class: 'form-control' %>
                             </div>
+                            <div class='form-group'>
+                                <label>List ID/Name</label>
+                                <%= text_field_tag :list_id, @mailchimp[:list_id], class: 'form-control' %>
+                            </div>
                         </div>
                     </div>
                     <% end %>

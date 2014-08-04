@@ -16,6 +16,6 @@ $('#issue_description-error').remove()
 		$('#issue_description').after('<span class="text-danger" id="issue_description-error">Issue <%= @case.errors[:issue_description].join(", ") %></span>')
 	<% end %>
 <% else %>
-	alert('Your ticket has been submitted. We will be in touch with you soon.')
+	<% flash[:success] = 'Your ticket has been submitted. We will be in touch with you soon.' %>
 	window.location = '/sales_reps/support?id=<%= @case.id %>'
 <% end %>

@@ -1,0 +1,46 @@
+<div class='panel panel-default'>
+    <div class='panel-heading'>
+        <h3 class='panel-title'>Updated Episode</h3>
+    </div>
+    <div class='panel-body'>
+        <% show = Show.find(@update_data[:show_id]) %>
+        <% episode = Episode.find(@update_data[:show_id]) %>
+        <% admin = Admin.find(@update.admin_id) %>
+        <div class='row'>
+            <div class='col-xs-12'>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Update Details</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <div class='row'>
+                            <div class='col-md-4 col-sm-6'>
+                                <p><strong>Performed by:</strong><br/><%= admin.name %><br><%= link_to admin.email, 'mailto:'+admin.email %></p>
+                            </div>
+                            <div class='col-md-4 col-sm-6'>
+                                <p><strong>Time of update:</strong><br/><%= @update.created_at.strftime('%B %-d, %Y at %l:%M %p') %><br/><span style='font-weight: lighter'><em><%= distance_of_time_in_words(DateTime.now, @update.created_at) %> ago</em></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-12'>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Episode Details</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <div class='col-md-6'>
+                            <p><strong>Show Title:</strong><br/><%= show.name %></p>
+                            <p><strong>Episode Title:</strong><br/><%= episode.title %></p>
+                            <p><strong>Synopsis:</strong><br/><%= episode.synopsis.squish %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6'>
+
+            </div>
+        </div>
+    </div>
+</div>

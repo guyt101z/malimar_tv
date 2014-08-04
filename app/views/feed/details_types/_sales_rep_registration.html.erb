@@ -4,6 +4,7 @@
 	</div>
 	<div class='panel-body'>
 		<% admin = Admin.find(@update.admin_id) %>
+		<% rep = SalesRepresentative.find(@update_data[:rep_id]) %>
 		<div class='row'>
 			<div class='col-xs-12'>
 				<div class='panel panel-default'>
@@ -17,6 +18,24 @@
 							</div>
 							<div class='col-md-4 col-sm-6'>
 								<p><strong>Time of update:</strong><br/><%= @update.created_at.strftime('%B %-d, %Y at %l:%M %p') %><br/><span style='font-weight: lighter'><em><%= distance_of_time_in_words(DateTime.now, @update.created_at) %> ago</em></span></p>
+							</div>
+							<div class='col-md-12'>
+								<div class='panel panel-default'>
+									<div class='panel-heading'>
+										<h3 class='panel-title'>Representative Details</h3>
+									</div>
+									<div class='panel-body'>
+										<div class='row'>
+											<div class='col-sm-6'>
+												<p><strong>Name:</strong><br/><%= rep.name %></p>
+												<p><strong>Email:</strong><br/><%= rep.email %></p>
+											</div>
+											<div class='col-sm-6'>
+												<p><strong>Commission Rate:</strong><br/><%= number_with_precision(rep.commission_rate, precision: 2) %>%</p>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

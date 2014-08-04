@@ -1,0 +1,52 @@
+<div class='panel panel-default'>
+    <div class='panel-heading'>
+        <h3 class='panel-title'>Accepted Withdrawal</h3>
+    </div>
+    <div class='panel-body'>
+        <% admin = Admin.find(@update.admin_id) %>
+        <% rep = SalesRepresentative.find(@update_data[:rep_id]) %>
+        <% wd = Withdrawal.find(@update_data[:wd_id]) %>
+        <div class='row'>
+            <div class='col-xs-12'>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Update Details</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <div class='row'>
+                            <div class='col-md-4 col-sm-6'>
+                                <p><strong>Performed by:</strong><br/><%= admin.name %><br><%= link_to admin.email, 'mailto:'+admin.email %></p>
+                            </div>
+                            <div class='col-md-4 col-sm-6'>
+                                <p><strong>Time of update:</strong><br/><%= @update.created_at.strftime('%B %-d, %Y at %l:%M %p') %><br/><span style='font-weight: lighter'><em><%= distance_of_time_in_words(DateTime.now, @update.created_at) %> ago</em></span></p>
+                            </div>
+                            <div class='col-md-6'>
+                                <div class='panel panel-default'>
+                                    <div class='panel-heading'>
+                                        <h3 class='panel-title'>Representative Details</h3>
+                                    </div>
+                                    <div class='panel-body'>
+                                        <p><strong>Name:</strong><br/><%= rep.name %></p>
+                                        <p><strong>Email:</strong><br/><%= rep.email %></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-md-6'>
+                                <div class='panel panel-default'>
+                                    <div class='panel-heading'>
+                                        <h3 class='panel-title'>Withdrawal Details</h3>
+                                    </div>
+                                    <div class='panel-body'>
+                                        <p><strong>Amount:</strong><br/>$<%= number_with_precision(wd.amount, precision: 2) %></p>
+                                        <p><strong>Submitted:</strong><br/><%= wd.created_at.strftime('%B %-d, %Y') %></p>
+                                        <p><strong>Accepted:</strong><br/><%= wd.approved.strftime('%B %-d, %Y') %></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

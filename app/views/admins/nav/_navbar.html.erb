@@ -53,7 +53,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-bell'></i> <span class='badge'><%= current_admin.missed_system_notifications %></span></a>
                     <ul class='dropdown-menu'>
                     <% if current_admin.system_notifications.any? %>
-                        <% current_admin.system_notifications.limit(3).each do |notif| %>
+                        <% current_admin.system_notifications[0..2].each do |notif| %>
                             <% if notif.viewed == true %>
                                 <li><%= link_to notif.message, notif.link %></li>
                             <% else %>
@@ -69,7 +69,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-ticket'></i> <span class='badge'><%= current_admin.missed_ticket_notifications %></span></a>
                     <ul class='dropdown-menu'>
                     <% if current_admin.ticket_notifications.any? %>
-                        <% current_admin.ticket_notifications.limit(3).each do |notif| %>
+                        <% current_admin.ticket_notifications[0..2].each do |notif| %>
                             <% if notif.viewed == true %>
                                 <li><%= link_to notif.message, notif.link %></li>
                             <% else %>

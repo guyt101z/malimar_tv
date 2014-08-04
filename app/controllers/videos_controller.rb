@@ -32,6 +32,12 @@ class VideosController < ApplicationController
 			@channel.stream_name = params[:new_stream_name]
 			if @channel.save
 				Channel.reindex
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'New Channel',
+										message: "#{current_admin.name} created a new live channel.",
+										channel_id: @channel.id
+									}))
 			end
 		else
 			render status: 403
@@ -59,6 +65,12 @@ class VideosController < ApplicationController
 			@channel.front_page = params[:front_page]
 			if @channel.save
 				Channel.reindex
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'Updated Channel',
+										message: "#{current_admin.name} updated a live channel.",
+										channel_id: @channel.id
+									}))
 			end
 		else
 			render status: 403
@@ -151,6 +163,12 @@ class VideosController < ApplicationController
 			@movie.release_date = params[:new_release_date]
 			if @movie.save
 				Movie.reindex
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'New Movie',
+										message: "#{current_admin.name} created a new movie.",
+										movie_id: @movie.id
+									}))
 			end
 		else
 			render status: 403
@@ -178,6 +196,12 @@ class VideosController < ApplicationController
 			@movie.front_page = params[:front_page]
 			if @movie.save
 				Movie.reindex
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'Updated Movie',
+										message: "#{current_admin.name} updated a movie.",
+										movie_id: @movie.id
+									}))
 			end
 		else
 			render status: 403
@@ -268,6 +292,12 @@ class VideosController < ApplicationController
 			@show.actors = params[:new_actors]
 			if @show.save
 				Show.reindex
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'New Show',
+										message: "#{current_admin.name} created a new on demand show.",
+										show_id: @show.id
+									}))
 			end
 		else
 			render status: 403
@@ -292,6 +322,12 @@ class VideosController < ApplicationController
 			@show.front_page = params[:front_page]
 			if @show.save
 				Show.reindex
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'Updated Show',
+										message: "#{current_admin.name} updated a on demand show.",
+										show_id: @show.id
+									}))
 			end
 		else
 			render status: 403
@@ -374,6 +410,13 @@ class VideosController < ApplicationController
 			@episode.length = params[:new_ep_length]
 			if @episode.save
 				@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'New Episode',
+										message: "#{current_admin.name} created a new episode for #{@show.name}.",
+										show_id: @show.id,
+										episode_id: @episode.id
+									}))
 			end
 		else
 			render status: 403
@@ -402,6 +445,14 @@ class VideosController < ApplicationController
 			@episode.length = params[:edit_ep_length]
 			if @episode.save
 				@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
+
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'Updated Episode',
+										message: "#{current_admin.name} updated an episode for #{@show.name}.",
+										show_id: @show.id,
+										episode_id: @episode.id
+									}))
 			end
 		else
 			render status: 403

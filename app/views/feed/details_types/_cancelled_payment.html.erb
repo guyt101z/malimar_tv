@@ -1,0 +1,51 @@
+<div class='panel panel-default'>
+    <div class='panel-heading'>
+        <h3 class='panel-title'>Cancelled Payment</h3>
+    </div>
+    <div class='panel-body'>
+        <% user = User.find(@update_data[:tx_details][:user_id]) %>
+        <% admin = Admin.find(@update.admin_id) %>
+        <div class='row'>
+            <div class='col-xs-12'>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Update Details</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <div class='row'>
+                            <div class='col-md-4 col-sm-6'>
+                                <p><strong>Performed by:</strong><br/><%= admin.name %><br><%= link_to admin.email, 'mailto:'+admin.email %></p>
+                            </div>
+                            <div class='col-md-4 col-sm-6'>
+                                <p><strong>Time of update:</strong><br/><%= @update.created_at.strftime('%B %-d, %Y at %l:%M %p') %><br/><span style='font-weight: lighter'><em><%= distance_of_time_in_words(DateTime.now, @update.created_at) %> ago</em></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6'>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Customer Details</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <p><strong>Name:</strong><br/><%= user.name %></p>
+                        <p><strong>Email:</strong><br/><%= user.email %></p>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6'>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Transaction Details</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <p><strong>Plan Name:</strong><br/><%= @update_data[:tx_details][:name] %></p>
+                        <p><strong>Duration:</strong><br/><%= pluralize(@update_data[:tx_details][:duration], 'month') %></p>
+                        <p><strong>Price:</strong><br/>$<%= number_with_precision(@update_data[:tx_details][:price], precision: 2) %></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

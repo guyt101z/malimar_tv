@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140801001952) do
+ActiveRecord::Schema.define(version: 20140804122802) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -93,6 +93,14 @@ ActiveRecord::Schema.define(version: 20140801001952) do
     t.datetime "expiry"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "background_tasks", force: true do |t|
+    t.string   "name"
+    t.datetime "last_performed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "error"
   end
 
   create_table "categories", force: true do |t|
@@ -375,6 +383,14 @@ ActiveRecord::Schema.define(version: 20140801001952) do
     t.datetime "updated_at"
   end
 
+  create_table "system_logs", force: true do |t|
+    t.string   "message"
+    t.boolean  "error"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "title"
+  end
+
   create_table "transactions", force: true do |t|
     t.integer  "user_id"
     t.integer  "roku_id"
@@ -441,6 +457,7 @@ ActiveRecord::Schema.define(version: 20140801001952) do
     t.string   "timezone"
     t.string   "refer_code"
     t.float    "balance"
+    t.boolean  "mailchimp"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

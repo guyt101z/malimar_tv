@@ -35,7 +35,7 @@ $('#password_confirmation-error_icon').remove()
 $('#password_confirmation-error').remove()
 $('#password_confirmation').parent().removeClass('has-error')
 <% if @success == true %>
-	alert('User created')
+	<% flash[:success] = 'You have been successfully registered!' %>
 	window.location = '/subscribe'
 <% else %>
 	<% if @user.errors[:first_name].present? %>

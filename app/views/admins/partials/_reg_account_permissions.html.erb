@@ -1,0 +1,33 @@
+<div class='panel-heading'>
+    <h3 class='panel-title'>Admin Permissions | <%= @admin.role %></h3>
+</div>
+<div class='panel-body'>
+    <div class='row'>
+        <div class='col-sm-6'>
+            <p><strong>Create User</strong> – <% if @admin.authorized_to?('create_user') %>Yes<% else %>No<% end %></p>
+            <p><strong>Manage User</strong> – <% if @admin.authorized_to?('manage_user') %>Yes<% else %>No<% end %></p>
+
+            <p><strong>Create Sales Rep</strong> – <% if @admin.authorized_to?('create_rep') %>Yes<% else %>No<% end %></p>
+            <p><strong>Manage Sales Rep</strong> – <% if @admin.authorized_to?('manage_rep') %>Yes<% else %>No<% end %></p>
+
+            <p><strong>Create Admin</strong> – <% if @admin.authorized_to?('create_admin') %>Yes<% else %>No<% end %></p>
+            <p><strong>Manage Admin</strong> – <% if @admin.authorized_to?('manage_admin') %>Yes<% else %>No<% end %></p>
+        </div>
+        <div class='col-sm-6'>
+            <p><strong>Accept/Cancel Payments</strong> – <% if @admin.authorized_to?('accept_cancel_payments') %>Yes<% else %>No<% end %></p>
+            <p><strong>Authorize Rep Withdrawals</strong> – <% if @admin.authorized_to?('authorize_withdrawal') %>Yes<% else %>No<% end %></p>
+
+            <p><strong>Update Plans/Invoice Info</strong> – <% if @admin.authorized_to?('update_plan_invoice') %>Yes<% else %>No<% end %></p>
+
+            <p><strong>Manage Video Content</strong> – <% if @admin.authorized_to?('update_videos') %>Yes<% else %>No<% end %></p>
+
+            <p><strong>Update Mail Settings</strong> – <% if @admin.authorized_to?('update_mail_settings') %>Yes<% else %>No<% end %></p>
+
+            <p><strong>Manage Support Tickets</strong> – <% if @admin.authorized_to?('manage_support_tickets') %>Yes<% else %>No<% end %></p>
+
+            <p><strong>Edit Site Settings</strong> – <% if @admin.authorized_to?('edit_general_settings') %>Yes<% else %>No<% end %></p>
+
+            <p><strong>Edit Admin Permissions</strong> – <% if @admin.authorized_to?('edit_permissions') %>Yes<% else %>No<% end %></p>
+        </div>
+    </div>
+</div>

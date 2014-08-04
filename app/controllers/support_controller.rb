@@ -64,7 +64,14 @@ class SupportController < ApplicationController
 			@case = SupportCase.find(params[:id])
 			@case.admin_id = current_admin.id
 			@case.status = 'Open'
-			@case.save
+			if @case.save
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'Open Ticket',
+										message: "#{current_admin.name} accepted a ticket.",
+										ticket_id: @case.id
+									}))
+			end
 		else
 			render status: 403
 		end
@@ -74,7 +81,14 @@ class SupportController < ApplicationController
 		if current_admin.authorized_to?('manage_support_tickets')
 			@case = SupportCase.find(params[:id])
 			@case.status = 'Closed'
-			@case.save
+			if @case.save
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'Closed Ticket',
+										message: "#{current_admin.name} closed a ticket.",
+										ticket_id: @case.id
+									}))
+			end
 		else
 			render status: 403
 		end
@@ -84,7 +98,14 @@ class SupportController < ApplicationController
 		if current_admin.authorized_to?('manage_support_tickets')
 			@case = SupportCase.find(params[:id])
 			@case.status = 'Open'
-			@case.save
+			if @case.save
+				AdminActivity.create(admin_id: current_admin.id,
+									data: YAML.dump({
+										type: 'Reopened Ticket',
+										message: "#{current_admin.name} reopened a ticket.",
+										ticket_id: @case.id
+									}))
+			end
 		else
 			render status: 403
 		end

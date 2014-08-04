@@ -62,7 +62,7 @@ class Admin < ActiveRecord::Base
                         false
                     end
                 elsif action == 'accept_cancel_payments'
-                    if role.accept_cancel_payments == true
+                    if role.accept_cancel_payment == true
                         true
                     else
                         false
@@ -128,9 +128,9 @@ class Admin < ActiveRecord::Base
 
     def system_notifications
         if role_id == 0
-            return AdminNotification.where(admin_id: id, notif_type: ['system','root_only'])
+            return AdminNotification.where(admin_id: id, notif_type: ['system','root_only']).reverse
         else
-            return AdminNotification.where(admin_id: id, notif_type: 'system')
+            return AdminNotification.where(admin_id: id, notif_type: 'system').reverse
         end
     end
 
@@ -139,6 +139,6 @@ class Admin < ActiveRecord::Base
     end
 
     def ticket_notifications
-        return AdminNotification.where(admin_id: id, notif_type: 'ticket')
+        return AdminNotification.where(admin_id: id, notif_type: 'ticket').reverse
     end
 end

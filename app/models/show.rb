@@ -6,7 +6,6 @@ class Show < ActiveRecord::Base
     validates_inclusion_of :content_type, in: ['Audio','Video'], message: 'must be selected'
     validates_inclusion_of :content_quality, in: ['HD','SD'], message: 'must be selected'
     validates_numericality_of :bitrate
-    validates_presence_of :banner, :unless => lambda { self.front_page == false }
 
     mount_uploader :image, MovieImageUploader
     mount_uploader :banner, BannerUploader

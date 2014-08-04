@@ -1,0 +1,120 @@
+<div class='container'>
+    <div class='row'>
+        <div class='panel panel-default'>
+            <div class='panel-heading'>
+                <h3 class='panel-title'>Background Tasks</h3>
+            </div>
+            <div class='panel-body'>
+                <div class='row'>
+                    <div class='col-sm-6'>
+                        <% task = BackgroundTask.where(name: 'Daily Data Update').first %>
+                        <p><strong>Daily Data Update</strong><br/>
+                            <% if task.error == true %>
+                                <span class='text-error'>Error</span>
+                            <% else %>
+                                <span class='text-success'>Success</span>
+                            <% end %>
+                            <br/>
+                            <% unless task.last_performed.present? %>
+                                <em>N/A</em>
+                            <% else %>
+                                <em><%= task.last_performed.strftime('%B %-d, %Y at %l:%M %p') %></em>
+                            <% end %>
+                        </p>
+
+                        <% task = BackgroundTask.where(name: 'Previous Day\'s Data Update').first %>
+                        <p><strong>Previous Day's Data Update</strong><br/>
+                            <% if task.error == true %>
+                                <span class='text-error'>Error</span>
+                            <% else %>
+                                <span class='text-success'>Success</span>
+                            <% end %>
+                            <br/>
+                            <% unless task.last_performed.present? %>
+                                <em>N/A</em>
+                            <% else %>
+                                <em><%= task.last_performed.strftime('%B %-d, %Y at %l:%M %p') %></em>
+                            <% end %>
+                        </p>
+
+                        <% task = BackgroundTask.where(name: 'Subscription Reminder').first %>
+                        <p><strong>Subscription Reminder</strong><br/>
+                            <% if task.error == true %>
+                                <span class='text-error'>Error</span>
+                            <% else %>
+                                <span class='text-success'>Success</span>
+                            <% end %>
+                            <br/>
+                            <% unless task.last_performed.present? %>
+                                <em>N/A</em>
+                            <% else %>
+                                <em><%= task.last_performed.strftime('%B %-d, %Y at %l:%M %p') %></em>
+                            <% end %>
+                        </p>
+                    </div>
+                    <div class='col-sm-6'>
+                        <% task = BackgroundTask.where(name: 'Clear Admin Activities').first %>
+                        <p><strong>Clear Admin Activities</strong><br/>
+                            <% if task.error == true %>
+                                <span class='text-error'>Error</span>
+                            <% else %>
+                                <span class='text-success'>Success</span>
+                            <% end %>
+                            <br/>
+                            <% unless task.last_performed.present? %>
+                                <em>N/A</em>
+                            <% else %>
+                                <em><%= task.last_performed.strftime('%B %-d, %Y at %l:%M %p') %></em>
+                            <% end %>
+                        </p>
+
+                        <% task = BackgroundTask.where(name: 'Clear Notifications').first %>
+                        <p><strong>Clear Notifications</strong><br/>
+                            <% if task.error == true %>
+                                <span class='text-error'>Error</span>
+                            <% else %>
+                                <span class='text-success'>Success</span>
+                            <% end %>
+                            <br/>
+                            <% unless task.last_performed.present? %>
+                                <em>N/A</em>
+                            <% else %>
+                                <em><%= task.last_performed.strftime('%B %-d, %Y at %l:%M %p') %></em>
+                            <% end %>
+                        </p>
+
+                        <% task = BackgroundTask.where(name: 'Clear Unsaved Notes').first %>
+                        <p><strong>Clear Unsaved Notes</strong><br/>
+                            <% if task.error == true %>
+                                <span class='text-error'>Error</span>
+                            <% else %>
+                                <span class='text-success'>Success</span>
+                            <% end %>
+                            <br/>
+                            <% unless task.last_performed.present? %>
+                                <em>N/A</em>
+                            <% else %>
+                                <em><%= task.last_performed.strftime('%B %-d, %Y at %l:%M %p') %></em>
+                            <% end %>
+                        </p>
+
+                        <% task = BackgroundTask.where(name: 'Clear Duplicate Refer Codes').first %>
+                        <p><strong>Clear Duplicate Refer Codes</strong><br/>
+                            <% if task.error == true %>
+                                <span class='text-error'>Error</span>
+                            <% else %>
+                                <span class='text-success'>Success</span>
+                            <% end %>
+                            <br/>
+                            <% unless task.last_performed.present? %>
+                                <em>N/A</em>
+                            <% else %>
+                                <em><%= task.last_performed.strftime('%B %-d, %Y at %l:%M %p') %></em>
+                            <% end %>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

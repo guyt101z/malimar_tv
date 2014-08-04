@@ -1,5 +1,19 @@
 <% if @movie.errors.any? %>
-	alert('There was an error uploading your file.')
+	var notification = new NotificationFx({
+		message : '<p>There was an error uploading your file.</p>',
+		layout : 'growl',
+		effect : 'jelly',
+		type : 'danger', // notice, warning, error or success
+		num: <%= (100 + rand(10000)).to_s %>
+	});
 <% else %>
 	$('#video_<%= @movie.id %>').children(".image-wrapper").html('<%= image_tag @movie.image_url(:preview).to_s %>')
+	var notification = new NotificationFx({
+		message : '<p>File has been successfully uploaded!</p>',
+		layout : 'growl',
+		effect : 'jelly',
+		type : 'success', // notice, warning, error or success
+		num: <%= (100 + rand(10000)).to_s %>
+	});
 <% end %>
+notification.show()

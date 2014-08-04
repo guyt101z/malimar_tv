@@ -1,5 +1,12 @@
 <% if @message.errors.any? %>
-	alert('You must enter text to send a message')
+	var notification = new NotificationFx({
+		message : '<p>You must enter text to send a message</p>',
+		layout : 'growl',
+		effect : 'jelly',
+		type : 'danger', // notice, warning, error or success
+		num: <%= (100 + rand(10000)).to_s %>
+	});
+	notification.show()
 <% else %>
 	var message = Autolinker.link('<%= @message.message.squish %>')
 	$('#ticket_messages').prepend("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em class='timeago' title='<%= @message.created_at %>'></em></p><p>"+message+"</p></div></div>")

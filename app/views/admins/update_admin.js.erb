@@ -31,5 +31,6 @@ $('#role-error').remove()
         type : 'success', // notice, warning, error or success
         num: <%= (100 + rand(10000)).to_s %>
     });
+    $('#admin_permissions').html('<%= escape_javascript(render("admins/partials/reg_account_permissions")) %>')
     notification.show()
 <% end %>

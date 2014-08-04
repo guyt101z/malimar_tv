@@ -13,6 +13,7 @@ class AdminNotifier
                     notif.notif_type = 'system'
                     notif.link = link
                     notif.viewed = false
+                    notif.expiry = Date.today + 30.days
                     notif.save
                 end
             elsif type == 'ticket'
@@ -26,6 +27,7 @@ class AdminNotifier
                         notif.notif_type = type
                         notif.link = link
                         notif.viewed = false
+                        notif.expiry = Date.today + 30.days
                         notif.save
                     end
                 end
@@ -40,6 +42,7 @@ class AdminNotifier
                         notif.notif_type = 'system'
                         notif.link = link
                         notif.viewed = false
+                        notif.expiry = Date.today + 30.days
                         notif.save
                     end
                 end
@@ -53,6 +56,7 @@ class AdminNotifier
                     notif.notif_type = 'system'
                     notif.link = link
                     notif.viewed = false
+                    notif.expiry = Date.today + 30.days
                     notif.save
                 end
             end
@@ -63,6 +67,7 @@ class AdminNotifier
             notif.notif_type = type
             notif.link = link
             notif.viewed = false
+            notif.expiry = Date.today + 30.days
             notif.save
         end
     end

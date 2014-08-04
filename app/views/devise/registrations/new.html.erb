@@ -117,14 +117,14 @@
                 <h4 class="title4">Notification</h4>
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" value="">
+                    <%= check_box_tag :mailchimp, true %>
                 Stay informed for all the latest news from Malimar.tv to take your career to where you want it to go. This newsletter includes search tips, cool companies, highlights of new services and much more.
                 	</label>
                 </div>
                 <hr>
                 <div class="text-right">
                 	<a href="#" class="btn btn-default btn-w180">Cancel</a>
-                	<%= submit_tag 'Save Changes', class: 'btn btn-primary btn-w180' %>
+                	<%= submit_tag 'Register', class: 'btn btn-primary btn-w180', data: {disable_with: 'Registering...'} %>
                 </div>
                 </form>
             </div>

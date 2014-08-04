@@ -44,7 +44,7 @@ mail_templates = [
 ]
 
 mail_settings = [
-	Setting.create(name: 'MailChimp Credentials', data: YAML.dump({api_key: '0fec58ea225e6267d09236252209fedc-us3'})),
+	Setting.create(name: 'MailChimp Credentials', data: YAML.dump({api_key: '0fec58ea225e6267d09236252209fedc-us3', list_id: 'malimar'})),
 	Setting.create(name: 'Default Send Address', data: 'donotreply@malimar.tv')
 	Setting.create(name: 'SMTP Credentials', data: YAML.dump({address: 'smtp.mandrillapp.com', port: 587, user_name: 'jtate@variationmedia.com', password: 'eoJXAS4dpN86YIuS6LL48w', domain: 'malimar.tv'})),
 
