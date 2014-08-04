@@ -1,4 +1,4 @@
-root = "/var/www/apps/malimar-tv/current"
+root = "/var/www/malimar-tv"
 working_directory root
 pid "#{root}/tmp/pids/unicorn.pid"
 stderr_path "#{root}/log/unicorn.log"
