@@ -6,7 +6,7 @@ class BannerUploader < CarrierWave::Uploader::Base
   storage :file
 
   def store_dir
-    "banners/#{model.id}"
+    "uploads/banners/#{model.id}"
   end
 
   version :front_page do
