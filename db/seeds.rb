@@ -16,7 +16,7 @@ paypal_setting = Setting.create(name: 'Paypal Credentials', data: YAML.dump({log
 wowza_token = Setting.create(name: 'WMS Token', data: 'sfV45RvdHJR.658sSSferyhD6HYmlxRt.95Tyg6VGpoz56.dHTeribAdrG654')
 withdrawal_limits = Setting.create(name: 'Withdrawal Limits', data: {max: 100, min: 10})
 
-admin = Admin.create(first_name: 'Josh', last_name: 'Tate', password: 'buh12345', email: 'jtate@variationmedia.com')
+admin = Admin.create(first_name: 'Josh', last_name: 'Tate', password: 'buh12345', email: 'jtate@variationmedia.com', role_id: 0)
 
 invoice_logo = InvoiceLogo.create(image: nil)
 
