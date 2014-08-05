@@ -19,6 +19,8 @@ class UsersController < ApplicationController
 
 					gb.lists.subscribe({id: mailchimp_credentials[:list_id], :email => {:email => @user.email}, :merge_vars => {:FNAME => @user.first_name, :LNAME => @user.last_name}, :double_optin => false})
 				end
+			rescue
+				
 			end
 
 			Resque.enqueue(AdminNotifier, 0, 'system', "#{@user.name} has joined.", search_users_path(id: @user.id))
