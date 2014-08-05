@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   devise_for :sales_representatives
   devise_for :users
 
+        get 'video_search' => 'videos#navbar_search'
   	# User Methods
     authenticate :user do
   	  	get 'account' => 'users#account'
@@ -21,7 +22,6 @@ Rails.application.routes.draw do
 
         post 'update_profile' => 'users#update_profile'
 
-        get 'video_search' => 'videos#navbar_search'
 
         get 'watch/grid/:category_id' => 'videos#full_grid', as: 'full_grid'
 
