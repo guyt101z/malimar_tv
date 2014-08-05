@@ -5,7 +5,7 @@ class NoteImageUploader < CarrierWave::Uploader::Base
     storage :file
 
     def store_dir
-      "uploads/notes/#{model.note_id}/#{model.id}"
+      "notes/#{model.note_id}/#{model.id}"
     end
 
     version :preview do

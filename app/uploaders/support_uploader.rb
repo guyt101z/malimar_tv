@@ -13,13 +13,13 @@ class SupportUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "uploads/support/#{model.support_case_id}"
+    "support/#{model.support_case_id}"
   end
 
   version :preview do
     process :resize_to_limit => [60, 80]
   end
-  
+
   def extension_white_list
     %w(jpg jpeg png zip gif)
   end

@@ -13,20 +13,20 @@ class ProfileUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    "#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
-  
+
   version :navbar do
     process :resize_to_limit => [46, 46]
   end
-  
+
   version :admin_small do
     process :resize_to_fit => [50, 50]
   end
   version :admin do
     process :resize_to_fit => [66, 66]
   end
-  
+
   def extension_white_list
     %w(jpg jpeg png)
   end
