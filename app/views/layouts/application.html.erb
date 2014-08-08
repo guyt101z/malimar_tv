@@ -71,36 +71,38 @@
 			$(window).on('resize', function() {
 				setHeight();
 			});
-			$('[data-toggle="sidebar"]').click(function(){
-				if( $('.sidebar').is(':visible') ) {
-					$('.sidebar').animate({ 'left': '-220px' }, 'slow', function(){
-						$('.sidebar').hide();
-					});
-					$('.content').animate({ 'left': '0px' }, 'slow');
-				}
-				else {
-					$('.sidebar').show();
-					$('.sidebar').animate({ 'left': '15px' }, 'slow');
-					$('.content').animate({ 'left': '220px' }, 'slow');
-				}
-			});
-			$('[data-toggle="popover"]').popover();
-			/*$.growl({
-				message: '<div class="notif-left"><img src="img/img-circle-user.png"></div><div class="notif-right"><div class="fz16">Zoe Moulder </div><div class="fz12-5">registered to the site</div></div>'
-			},{
-				type: "notif",
-				placement: {
-					from: "bottom",
-					align: "right"
-				},
-				template: '<div data-growl="container" class="alert" role="alert">' +
-					'<button type="button" class="close" data-growl="dismiss">' +
-						'<span aria-hidden="true">×</span>' +
-						'<span class="sr-only">Close</span>' +
-					'</button>' +
-					'<div data-growl="message"></div>' +
-				'</div>'
-			});*/
+            $(function(){
+				$('[data-toggle="sidebar"]').click(function(){
+					if( $('.sidebar').is(':visible') ) {
+						$('.sidebar').animate({ 'left': '-220px' }, 'slow', function(){
+							$('.sidebar').hide();
+						});
+						$('.content').animate({ 'left': '0px' }, 'slow');
+					}
+					else {
+						$('.sidebar').show();
+						$('.sidebar').animate({ 'left': '15px' }, 'slow');
+						$('.content').animate({ 'left': '220px' }, 'slow');
+					}
+				});
+				$('[data-toggle="popover"]').popover();
+				/*$.growl({
+					message: '<div class="notif-left"><img src="img/img-circle-user.png"></div><div class="notif-right"><div class="fz16">Zoe Moulder </div><div class="fz12-5">registered to the site</div></div>'
+				},{
+					type: "notif",
+					placement: {
+						from: "bottom",
+						align: "right"
+					},
+					template: '<div data-growl="container" class="alert" role="alert">' +
+						'<button type="button" class="close" data-growl="dismiss">' +
+							'<span aria-hidden="true">×</span>' +
+							'<span class="sr-only">Close</span>' +
+						'</button>' +
+						'<div data-growl="message"></div>' +
+					'</div>'
+				});*/
+            });
 
 			function setHeight(){
 				$('#left-scroll').css('height', $('.content').height())
