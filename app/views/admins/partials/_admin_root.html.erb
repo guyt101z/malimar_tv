@@ -1,6 +1,4 @@
-<h2 class='page-header'>
-    Admin Profile: <%= @admin.name %>
-</h2>
+<% content_for :low_levels, YAML.dump([@admin.name]) %>
 <div class='row'>
     <div class='col-sm-6'>
 

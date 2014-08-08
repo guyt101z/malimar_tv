@@ -1,64 +1,66 @@
-<div class='container'>
-    <h2 class='page-header'>Manage Admins
-    <% if current_admin.authorized_to?('create_admin') %><%= link_to 'Create Admin', new_admin_path, class: 'btn btn-primary pull-right' %><% end %></h2>
-    <div class='row'>
-        <div class='col-xs-12'>
-            <div class='panel panel-default'>
-                <div class='panel-body'>
-                    <table class='table table-hover table-bordered' id='admins_table'>
-                        <thead><tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Current Login</th>
-                            <th>Current Login IP</th>
-                            <th>Last Login</th>
-                            <th>Last Login IP</th>
-                        </tr></thead>
-                        <% @admins.each do |admin| %>
-                        <tr onclick='window.location = "<%= view_admin_path(id: admin.id) %>"', style='cursor:pointer'>
-                            <td width='12.5%'><%= admin.name %></td>
-                            <td><%= admin.email %></td>
-                            <td><%= admin.role %></td>
-                            <td>
-                                <% if admin.last_seen.nil? || admin.last_seen < 5.minutes.ago %>
-                                    <span class='text-muted'>Offline</span>
-                                <% else %>
-                                    <span class='text-success'>Online</span>
-                                <% end %>
-                            </td>
-                            <td>
-                                <% if admin.current_sign_in_at.nil? %>
-                                    ---
-                                <% else %>
-                                    <%= raw(admin.current_sign_in_at.strftime('<span style="white-space:nowrap">%B %-d, %Y</span> <span style="white-space:nowrap">at %l:%M %p</span>')) %>
-                                <% end %>
-                            </td>
-                            <td>
-                                <% if admin.current_sign_in_ip.nil? %>
-                                    ---
-                                <% else %>
-                                    <%= admin.current_sign_in_ip %>
-                                <% end %>
-                            </td>
-                            <td>
-                                <% if admin.last_sign_in_at.nil? %>
-                                    ---
-                                <% else %>
-                                    <%= raw(admin.last_sign_in_at.strftime('<span style="white-space:nowrap">%B %-d, %Y</span> <span style="white-space:nowrap">at %l:%M %p</span>')) %>
-                                <% end %>
-                            </td>
-                            <td>
-                                <% if admin.last_sign_in_ip.nil? %>
-                                    ---
-                                <% else %>
-                                    <%= admin.last_sign_in_ip %>
-                                <% end %>
-                            </td>
-                        </tr>
-                        <% end %>
-                    </table>
+<% content_for :top_level, 'Administrator Management' %>
+<% content_for :low_levels, YAML.dump([]) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='row'>
+            <div class='col-xs-12'>
+                <div class='panel panel-default'>
+                    <div class='panel-body'>
+                        <table class='table table-hover table-bordered' id='admins_table'>
+                            <thead><tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Current Login</th>
+                                <th>Current Login IP</th>
+                                <th>Last Login</th>
+                                <th>Last Login IP</th>
+                            </tr></thead>
+                            <% @admins.each do |admin| %>
+                            <tr onclick='window.location = "<%= view_admin_path(id: admin.id) %>"', style='cursor:pointer'>
+                                <td width='12.5%'><%= admin.name %></td>
+                                <td><%= admin.email %></td>
+                                <td><%= admin.role %></td>
+                                <td>
+                                    <% if admin.last_seen.nil? || admin.last_seen < 5.minutes.ago %>
+                                        <span class='text-muted'>Offline</span>
+                                    <% else %>
+                                        <span class='text-success'>Online</span>
+                                    <% end %>
+                                </td>
+                                <td>
+                                    <% if admin.current_sign_in_at.nil? %>
+                                        ---
+                                    <% else %>
+                                        <%= raw(admin.current_sign_in_at.strftime('<span style="white-space:nowrap">%B %-d, %Y</span> <span style="white-space:nowrap">at %l:%M %p</span>')) %>
+                                    <% end %>
+                                </td>
+                                <td>
+                                    <% if admin.current_sign_in_ip.nil? %>
+                                        ---
+                                    <% else %>
+                                        <%= admin.current_sign_in_ip %>
+                                    <% end %>
+                                </td>
+                                <td>
+                                    <% if admin.last_sign_in_at.nil? %>
+                                        ---
+                                    <% else %>
+                                        <%= raw(admin.last_sign_in_at.strftime('<span style="white-space:nowrap">%B %-d, %Y</span> <span style="white-space:nowrap">at %l:%M %p</span>')) %>
+                                    <% end %>
+                                </td>
+                                <td>
+                                    <% if admin.last_sign_in_ip.nil? %>
+                                        ---
+                                    <% else %>
+                                        <%= admin.last_sign_in_ip %>
+                                    <% end %>
+                                </td>
+                            </tr>
+                            <% end %>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,4 +68,5 @@
 </div>
 <script>
     $('#admins_table').dataTable()
+    $('#all_admins').addClass('active')
 </script>

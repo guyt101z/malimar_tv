@@ -1,5 +1,5 @@
-<% content_for :title, 'Home' %>
-
+<% content_for :top_level, 'Dashboard' %>
+<% content_for :low_levels, YAML.dump([]) %>
 <div class="left-side clearfix">
 	<div class="pull-left w100">
     	<div id="left-scroll" class="nano">
@@ -54,17 +54,12 @@
                         <div class="col-md-9 text-right">
 							<%= link_to 'Client Registration', admin_view_client_reg_report_path, class: "btn btn-default btn-sm btn-w170 active", remote: true, id: 'view_reg', data: {disable_with: 'Loading...'} %>
 							<%= link_to 'Orders & Sales', admin_view_orders_report_path, class: "btn btn-default btn-sm btn-w170", remote: true, id: 'view_orders', data: {disable_with: 'Loading...'} %>
-							<%= link_to 'Support Tickets', admin_view_support_report_path, class: "btn btn-default btn-sm btn-w170", remote: true, id: 'view_orders', data: {disable_with: 'Loading...'} %>
-                            <div class="panel-control">
-                                <button type="button" class="close"><span class="times">&times;</span></button>
-                                <button type="button" class="close"><span class="fa fa-angle-down"></span></button>
-                                <button type="button" class="close"><span class="fa fa-cog"></span></button>
-                            </div>
+							<%= link_to 'Support Tickets', admin_view_support_report_path, class: "btn btn-default btn-sm btn-w170", remote: true, id: 'view_support', data: {disable_with: 'Loading...'} %>
                         </div>
                     </div>
                 </div>
                 <div class="panel-body" id='reports' style='height:300px;'>
-                    <%= render 'admins/reports/orders_sales' %>
+                    <%= render 'admins/reports/registrations' %>
                 </div>
             </div>
             <div class="row row5">
@@ -74,13 +69,6 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <span class="icon-tags1 mr7"></span> New Orders
-                                </div>
-                                <div class="col-sm-6 text-right">
-                                    <div class="panel-control">
-                                        <button type="button" class="close"><span class="times">&times;</span></button>
-                                        <button type="button" class="close"><span class="fa fa-angle-down"></span></button>
-                                        <button type="button" class="close"><span class="fa fa-cog"></span></button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -145,13 +133,6 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <span class="icon-bell mr7"></span> Notifications
-                                </div>
-                                <div class="col-sm-6 text-right">
-                                    <div class="panel-control">
-                                        <button type="button" class="close"><span class="times">&times;</span></button>
-                                        <button type="button" class="close"><span class="fa fa-angle-down"></span></button>
-                                        <button type="button" class="close"><span class="fa fa-cog"></span></button>
-                                    </div>
                                 </div>
                             </div>
                         </div>

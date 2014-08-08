@@ -18,9 +18,26 @@
                     <li><a href="#">Billing</a></li>
                     <li><a href="#">Support</a></li>
                     <li><a href="#">Report</a></li>
-                    <li><a href="#">Utilities</a></li>
-                    <li><a href="#">Setup</a></li>
-                    <li><a href="#">Help</a></li>
+                    <li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Utilities</a>
+                        <ul class="dropdown-menu w265">
+                            <li class="bb0"><span><i class="fa fa-gears"></i> Utilities</span></li>
+                            <li><%= link_to 'Adminstrator Management', manage_admins_path %></li>
+                            <li><%= link_to 'General Settings', general_settings_path %></li>
+                            <li><%= link_to 'Mail Settings', mail_settings_path %></li>
+                            <li><%= link_to 'Financial Settings', financial_settings_path %></li>
+                            <li><%= link_to 'Permissions Settings', admin_roles_path %></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Videos</a>
+                        <ul class="dropdown-menu w265">
+                            <li class="bb0"><span><i class="fa fa-video-camera"></i> Video CMS</span></li>
+                            <li><%= link_to 'Live Channels', live_channels_path %></li>
+                            <li><%= link_to 'OnDemand Shows', tv_shows_path %></li>
+                            <li><%= link_to 'OnDemand Movies', movies_path %></li>
+                        </ul>
+                    </li>
                     <li class="menu-icon dropdown">
                     	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-tags fa-flip-horizontal"></span><span class="count">2</span></a>
                     	<ul class="dropdown-menu w265">
@@ -168,8 +185,11 @@
                 </div>
                 <div class="subnav-right">
                 	<ol class="breadcrumb">
-                    	<li><a href="#"><span class="icon-home"></a></li>
-                        <li class="active"><span>Dashboard</span></li>
+                    	<li><a href="/admins"><span class="icon-home"></a></li>
+                        <li class="active"><span><%= yield(:top_level) %></span></li>
+                        <% YAML.load(yield(:low_levels)).each do |level| %>
+                            <li class='active'><span><%= level %></span></li>
+                        <% end %>
                     </ol>
                 </div>
             </div>

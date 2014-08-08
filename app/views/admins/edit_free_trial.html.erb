@@ -1,12 +1,10 @@
-<div class='container'>
-    <div class='row'>
-        <div class='col-xs-12'><h2 class='page-header'>General Settings</h2></div>
-        <div class='col-md-3 col-sm-4'>
-            <%= render 'admins/nav/gen_side_nav' %>
-        </div>
-        <div class='col-md-9 col-sm-8'>
+<% content_for :top_level, 'Utilities' %>
+<% content_for :low_levels, YAML.dump(['General Settings','Free Trial']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='col-md-6 col-sm-9 col-centered'>
             <div class='row'>
-                <div class='col-md-4 col-sm-6'>
+                <div class='col-sm-6 col-centered'>
                     <div class='panel panel-default'>
                         <div class='panel-heading'>
                             <h3 class='panel-title'>Current Trial Length</h3>
@@ -15,8 +13,6 @@
                             <%= pluralize(@current_length, 'day') %>
                         </div>
                     </div>
-                </div>
-                <div class='col-md-4 col-sm-6'>
                     <%= form_tag update_free_trial_path do %>
                     <div class='panel panel-default'>
                         <div class='panel-heading'>

@@ -1,6 +1,4 @@
-<h2 class='page-header'>
-    My Profile
-</h2>
+<% content_for :low_levels, YAML.dump(['My Profile']) %>
 <div class='row'>
     <div class='col-sm-6'>
         <%= form_tag update_admin_path, remote: true do %>

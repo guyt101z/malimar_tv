@@ -169,7 +169,7 @@ Rails.application.routes.draw do
         get 'admin_view_total_payout_details' => 'admins#view_total_payout_details'
 
       	# Manage Plans/Invoice
-      	get '/admins/financial' => 'admins#plans'
+      	get '/admins/financial' => 'admins#plans', as: 'financial_settings'
       	post 'update_plan' => 'plans#update'
         post 'update_paypal' => 'admins#update_paypal'
 
@@ -222,7 +222,7 @@ Rails.application.routes.draw do
         post 'update_admin_permissions' => 'permissions#update'
 
         # Manage Admins
-        get '/admins/manage_admins' => 'admins#manage_admins'
+        get '/admins/manage_admins' => 'admins#manage_admins', as: 'manage_admins'
         get '/admins/manage_admins/new' => 'admins#new_admin', as: 'new_admin'
         post 'create_admin' => 'admins#create_admin'
 

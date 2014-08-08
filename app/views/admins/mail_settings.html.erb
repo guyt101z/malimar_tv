@@ -1,10 +1,8 @@
-<div class='container'>
-    <div class='row'>
-        <div class='col-xs-12'><h2 class='page-header'>Mail Settings</h2></div>
-        <div class='col-md-3 col-sm-4'>
-            <%= render 'admins/nav/mail_side_nav' %>
-        </div>
-        <div class='col-md-9 col-sm-8'>
+<% content_for :top_level, 'Utilities' %>
+<% content_for :low_levels, YAML.dump(['Mail Settings',raw("Server and API")]) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='col-md-12'>
             <div class='row'>
                 <div class='col-md-6'>
                     <%= form_tag update_smtp_path, remote: true do %>
@@ -56,7 +54,7 @@
                                 <%= text_field_tag :api_key, @mailchimp[:api_key], class: 'form-control' %>
                             </div>
                             <div class='form-group'>
-                                <label>List ID/Name</label>
+                                <label>List ID</label>
                                 <%= text_field_tag :list_id, @mailchimp[:list_id], class: 'form-control' %>
                             </div>
                         </div>

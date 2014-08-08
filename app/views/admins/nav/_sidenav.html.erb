@@ -1,10 +1,18 @@
 <div class="sidebar">
 	<ul class="nav">
-    	<li><a href="#"><span class="icon-user"></span> New Client</a></li>
-    	<li><a href="#"><span class="icon-tags"></span> Manage Orders</a></li>
-    	<li><a href="#"><span class="icon-phone"></span> Register New Device</a></li>
-    	<li><a href="#"><span class="icon-attach"></span> New To-Do Entry</a></li>
-    	<li><a href="#"><span class="icon-ticket"></span> Open New Ticket</a></li>
+    	<% if params[:action] == 'general_settings' || params[:action] == 'edit_timezone' ||
+			params[:action] == 'edit_device_limit' || params[:action] == 'edit_free_trial' || params[:action] == 'edit_wd_limits' %>
+			<%= render 'admins/nav/sidenavs/general_settings' %>
+
+		<% elsif params[:action] == 'mail_settings' || params[:action] == 'mail_markup' || params[:action] == 'mail_template' %>
+			<%= render 'admins/nav/sidenavs/mail' %>
+
+		<% elsif params[:action] == 'roles' || params[:action] == 'new_admin_role' || params[:action] == 'role' %>
+			<%= render 'admins/nav/sidenavs/roles' %>
+
+		<% elsif params[:action] == 'manage_admins' || params[:action] == 'new_admin' || params[:action] == 'view_admin' %>
+			<%= render 'admins/nav/sidenavs/admins' %>
+		<% end %>
     </ul>
     <div class="sign-out">
     	<a href="#" class="btn btn-inverse btn-sm btn-block"><span class="glyphicon glyphicon-lock"></span> Sign Out</a>

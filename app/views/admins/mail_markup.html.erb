@@ -1,10 +1,8 @@
-<div class='container'>
-    <div class='row'>
-        <div class='col-xs-12'><h2 class='page-header'>Mail Settings</h2></div>
-        <div class='col-md-3 col-sm-4'>
-            <%= render 'admins/nav/mail_side_nav' %>
-        </div>
-        <div class='col-md-9 col-sm-8'>
+<% content_for :top_level, 'Utilities' %>
+<% content_for :low_levels, YAML.dump(['Mail Settings','Default Markup']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='col-md-12'>
             <div class='row'>
                 <div class='col-md-12'>
                     <%= form_tag update_mail_css_path, remote: true do %>

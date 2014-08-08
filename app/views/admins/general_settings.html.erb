@@ -1,11 +1,2 @@
-<div class='container'>
-    <div class='row'>
-        <div class='col-xs-12'><h2 class='page-header'>General Settings</h2></div>
-        <div class='col-md-3 col-sm-4'>
-            <%= render 'admins/nav/gen_side_nav' %>
-        </div>
-        <div class='col-md-9 col-sm-8'>
-
-        </div>
-    </div>
-</div>
+<% content_for :top_level, 'Utilities' %>
+<% content_for :low_levels, YAML.dump(['General Settings']) %>
