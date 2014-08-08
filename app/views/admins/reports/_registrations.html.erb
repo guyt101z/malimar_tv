@@ -1,0 +1,38 @@
+<%
+    i = 30
+    data_array = Array.new
+
+    until i < 0
+        data = DailyData.where(date: Date.today - i.days).last
+        if data.nil?
+            data = DailyData.new(date: Date.today - i.days, new_sign_ups: 0)
+        end
+
+        data_array.push(data)
+
+        i -= 1
+    end
+%>
+<script>
+    var chart = Morris.Line({
+        element: 'reports',
+        data: [
+            <% data_array.each_with_index do |data, i| %>
+                <% days = 30 - i %>
+                {
+                    y: '<%= (Date.today - days.days).strftime("%Y-%m-%d") %>',
+                    a: <%= data.new_sign_ups %>
+                },
+            <% end %>
+        ],
+        xkey: 'y',
+        ykeys: ['a'],
+        labels: ['New Sign Ups'],
+        lineColors: ['#73DEA9'],
+        resize: true,
+        hideHover: true,
+        pointSize: 0,
+        smooth: false,
+        lineWidth: 2
+      });
+</script>

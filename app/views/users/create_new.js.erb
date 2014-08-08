@@ -75,4 +75,3 @@ $('#password_confirmation').parent().removeClass('has-error')
 		$('#password_confirmation').parent().addClass('has-error has-feedback').append('<span id="password_confirmation-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="password_confirmation-error" class="fz15">Password confirmation <%= @user.errors[:password_confirmation].join(", ") %></div>')
 	<% end %>
 <% end %>
-alert('<%= escape_javascript(@user.errors.full_messages.join("/n")) %>')

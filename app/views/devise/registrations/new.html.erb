@@ -8,15 +8,14 @@
     	<h3 class="name">Register New Account</h3>
     </div>
 </div><!--splash-->
-<%= form_tag create_new_user_path, id: 'new_user_form', remote: true do %>
+
 <div class="content">
 	<div class="container">
         <div class="mlr90">
+            <%= form_tag free_trial_1_path, id: 'new_user_form', remote: true do %>
             <div class="box-white">
 
-            	<h4 class="title4">User Information</h4>
-                <p class="fz12"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod.</p>
-                <form>
+            	<h4 class="title4">Your Information</h4>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -126,12 +125,11 @@
                 	<a href="#" class="btn btn-default btn-w180">Cancel</a>
                 	<%= submit_tag 'Register', class: 'btn btn-primary btn-w180', data: {disable_with: 'Registering...'} %>
                 </div>
-                </form>
             </div>
+            <% end %>
         </div>
     </div>
 </div><!--content-->
-<% end %>
 <script type="text/javascript">
 function PreviewImage() {
 	var oFReader = new FileReader();

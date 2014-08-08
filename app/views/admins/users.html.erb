@@ -1,92 +1,303 @@
 <% content_for :title, 'Customer Management' %>
-<div class='users-wrapper'>
-	<div class='users-area'>
-		<div class='users-search'>
-			<%= text_field_tag :search, '', autocomplete: 'off' %>
-			<div class='placeholder' id='placeholder'><i class='fa fa-search'></i> Search</div>
-		</div>
-		<div class='users-list' id='full-list'>
-			<% @users.each do |user| %>
-				<div class='user' id='user_<%= user.id %>' onclick="viewUser(<%= user.id %>)">
-					<div class='profile-picture'>
-						<div class='wrapper'>
-							<% if user.photo.blank? %>
-								<i class='fa fa-user'></i>
-							<% else %>
-								<%= image_tag user.photo_url.to_s, style: 'height: 50px; width: 50px;' %>
-							<% end %>
-						</div>
-					</div>
-					<p class='name'><%= user.name %></p>
-					<p class='email'><%= user.email %></p>
-					<p class='email'>Member Since: <%= user.created_at.strftime('%B %-d, %Y') %></p>
-				</div>
-			<% end %>
-		</div>
-		<div class='results-count' id='count' style='display:none'></div>
-		<div class='search-users-list' id='search-list' style='display:none'>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
 
-		</div>
+        <div class="panel">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-sm-6">
+                        Client List
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <div class="panel-control">
+                            <button type="button" class="close"><span class="times">&times;</span></button>
+                            <button type="button" class="close"><span class="fa fa-angle-down"></span></button>
+                            <button type="button" class="close"><span class="fa fa-cog"></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body plr20">
+            	<div class="row">
+                	<div class="col-sm-6">
+                        <div class="form-group has-feedback feedback-wt">
+                            <input type="text" class="form-control input-md" id="" placeholder="Search by Name, Email, or ID">
+                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <select class="form-control input-md">
+                            	<option>Plan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <select class="form-control input-md">
+                            	<option>Date</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                    	<button type="button" class="btn btn-default btn-md btn-block">Filter Orders</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                <table class="table table-list fz11-5">
+                	<thead>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                        <td>Order Number
+                        	<span class="sort">
+                            	<span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Client
+                        	<span class="sort">
+                            	<span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Plan
+                        	<span class="sort">
+                            	<span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Adden On
+                        	<span class="sort">
+                            	<span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Status
+                        	<span class="sort">
+                            	<span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                   	<tr>
+                    	<td colspan="7" class="title fz12-5">Today</td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
+                        </td>
+                    </tr>
+                   	<tr>
+                    	<td colspan="7" class="title fz12-5">Yesterday</td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
+                        </td>
+                    </tr>
+                   	<tr>
+                    	<td colspan="7" class="title fz12-5">This Week</td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td><input type="checkbox"></td>
+                    	<td class="text-bold">#72edfg45</td>
+                    	<td>Victor Tacitus</td>
+                    	<td>6 Months</td>
+                    	<td>July 25, 2014 at 02:55</td>
+                    	<td>Pay at: July 25, 2014 at 02:55</td>
+                        <td>
+                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
+                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div class="row">
+                	<div class="col-sm-6 fz11-5">
+                    	<span class="text-bold">18 Records Found</span>, Showing 1 to 15 of 18.
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <select class="form-control input-sm mw-170">
+                        	<option>Delete Selected</option>
+                        </select>
+                        &nbsp;&nbsp;
+                        <a href="#"><span class="fa fa-angle-left"></span></a> &nbsp;&nbsp;
+                        <a href="#"><span class="fa fa-angle-right"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 	</div>
-	<div class='user-info' id='user-info'>
-
 	</div>
-</div>
-<script type="text/javascript">
-function addChecklist(id){
-	$('#note-checklist_'+id).show()
-	$('#note-checklist_'+id).append('<%= escape_javascript(render("users/partials/checklist_item")) %>')
-}
-function addReglist(id){
-	$('#note-reglist_'+id).show()
-	$('#note-reglist_'+id).append('<%= escape_javascript(render("users/partials/reglist_item")) %>')
-}
-	$('#search').focus(function(){
-		$('#placeholder').animate({
-			'left':17
-		}, 100)
-	})
-	$('#search').blur(function(){
-		$('#placeholder').animate({
-			'left':120
-		}, 100)
-	})
-
-	$('#placeholder').click(function(){
-		$('#search').focus();
-	})
-
-	$('#search').keydown(function(){
-		$('#placeholder').hide()
-	})
-	$('#search').keyup(function(){
-		if ($('#search').val() != '') {
-			$('#placeholder').hide()
-			$('#full-list').hide()
-			$.ajax({
-				url: '/search_users?search='+$('#search').val()
-			})
-		}
-		else {
-			$('#placeholder').show()
-			$('#full-list').show()
-			$('#search-list').hide()
-			$('#count').hide()
-		}
-	})
-
-	function viewUser(id){
-		$('.user').removeClass('active')
-		$('#user_'+id).addClass('active')
-		$('#search_'+id).addClass('active')
-		$.ajax({
-			url: '/delete_unsaved_note?id='+$('#new_note_id').val()
-		})
-		$.ajax({
-			url: '/view_user?id='+id
-		})
-	}
-	<% if params[:id].present? %>
-		$('#user_<%= params[:id] %>').click()
-	<% end %>
-</script>

@@ -21,7 +21,7 @@
                 </div>
                 <div class='col-md-6'>
                     <div class="box-white account-box">
-                        <h4 class="name">My Subscription – <%= link_to 'Add Subscription', subscribe_path %></h4>
+                        <h4 class="name">My Subscription <!--– <%= link_to 'Add Subscription', subscribe_path %></h4>-->
                         <% if current_user.expiry.nil? || current_user.expiry < Date.today %>
                             <h5 class='member-level'>Free Member</h5>
                             <p class='expiry'>Expires: N/A</p>
@@ -48,7 +48,7 @@
                 </div>
             </div>
             <div class='row'>
-				<div class='col-md-6'>
+				<!--<div class='col-md-6'>
 					<div class="box-white account-box">
 						<h4 class="name">My Support – <%= link_to 'Create Ticket', user_new_ticket_path %></h4>
 						<div class='panel-scroll tickets'>
@@ -64,10 +64,10 @@
 							<% end %>
 						</div>
 					</div>
-				</div>
+				</div>-->
 				<div class='col-md-6'>
 					<div class="box-white account-box">
-						<h4 class="name" id='device-title'>My Devices - <a onclick='newDevice()' style='cursor:pointer'>Register Roku</a></h4>
+						<h4 class="name" id='device-title'>My Devices <!--- <a onclick='newDevice()' style='cursor:pointer'>Register Roku</a></h4>-->
 						<div class='panel-scroll devices' id='devices'>
 							<% @devices.each do |device| %>
 								<% case device.type %>

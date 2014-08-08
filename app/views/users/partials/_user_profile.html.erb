@@ -17,10 +17,15 @@
         <%= current_user.zip %></p>
 </div>
 <div class='col-sm-6'>
-    <p><strong>Referral Code</strong><br>
+    <p><strong><!--Referral Code --></strong><br>
         <%= current_user.refer_code %>&nbsp;</p>
 </div>
 <div class='col-sm-6'>
     <p><strong>Current Balance</strong><br>
-        $<%= number_with_precision(current_user.balance, precision: 2) %>&nbsp;</p>
+        <% if current_user.balance.nil? %>
+            $<%= number_with_precision(0, precision: 2) %>&nbsp;
+        <% else %>
+            $<%= number_with_precision(current_user.balance, precision: 2) %>&nbsp;
+        <% end %>
+    </p>
 </div>

@@ -1,6 +1,9 @@
 class AdminsController < ApplicationController
 	def index
 		@data = DailyData.where(date: Date.today).last
+		if @data.nil?
+			@data = DailyData.where(date: Date.yesterday).last
+		end
 	end
 	def new_user
 		unless current_admin.authorized_to?('create_user')

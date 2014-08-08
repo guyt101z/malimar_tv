@@ -1,101 +1,179 @@
-<nav class="navbar navbar-inverse" role="navigation">
-  	<div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    	<div class="navbar-header">
-      		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        		<span class="sr-only">Toggle navigation</span>
-        		<span class="icon-bar"></span>
-        		<span class="icon-bar"></span>
-        		<span class="icon-bar"></span>
-      		</button>
-      		<a class="navbar-brand" href="/admins">Malimar TV</a>
-    	</div>
-
-    	<!-- Collect the nav links, forms, and other content for toggling -->
-    	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class='navbar-text'><%= yield(:title) %></li>
-            </ul>
+<div class="navbar-fixed-top">
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <%= link_to image_tag('admin_logo.png'), '/admins', class: 'navbar-brand' %>
+            </div>
             <% if admin_signed_in? %>
-      		<ul class="nav navbar-nav navbar-right">
-        		<li><a href="/admins">Home</a></li>
-                <% if current_admin.authorized_to?('manage_support_tickets') %><li><a href="/admins/support">Support Tickets</a></li><% end %>
-                <% if current_admin.authorized_to?('update_videos') %><li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-video-camera'></i> Videos <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/admins/videos/live_channels">Live Channels</a></li>
-                        <li><a href="/admins/videos/tv_shows">TV Shows</a></li>
-                        <li><a href="/admins/videos/movies">Movies</a></li>
-                        <li class='divider'></li>
-                        <li><a href='/admins/videos/home_grid'>Home Grid</a></li>
-                    </ul>
-                </li><% end %>
-                <% if current_admin.authorized_to?('manage_user') %><li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-users'></i> Users <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/admins/new_user"><i class='fa fa-asterisk fa-fw'></i> Create User</a></li>
-                        <li><a href="/admins/users"><i class='fa fa-search fa-fw'></i> Search Users</a></li>
-                        <li class='divider'></li>
-                        <li><a href="/admins/users/pending_payments"><i class='fa fa-dollar fa-fw'></i> Pending Payments</a></li>
-                    </ul>
-                </li><% end %>
-                <% if current_admin.authorized_to?('manage_rep') %><li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-users'></i> Sales Reps <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/admins/new_sales_rep"><i class='fa fa-asterisk fa-fw'></i> Create Sales Rep</a></li>
-                        <li><a href="/admins/sales_reps"><i class='fa fa-search fa-fw'></i> Search Sales Reps</a></li>
-                        <li class='divider'></li>
-                        <li><a href="/admins/sales_reps/payment_requests"><i class='fa fa-dollar fa-fw'></i> Pending Withdrawals</a></li>
-                        <li><a href="/admins/sales_reps/payments"><i class='fa fa-dollar fa-fw'></i> Approved Withdrawals</a></li>
-                    </ul>
-                </li><% end %>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-bell'></i> <span class='badge'><%= current_admin.missed_system_notifications %></span></a>
-                    <ul class='dropdown-menu'>
-                    <% if current_admin.system_notifications.any? %>
-                        <% current_admin.system_notifications[0..2].each do |notif| %>
-                            <% if notif.viewed == true %>
-                                <li><%= link_to notif.message, notif.link %></li>
-                            <% else %>
-                                <li style='background-color: #ccc'><%= link_to notif.message, admin_view_notification_path(id: notif.id) %></li>
-                            <% end %>
-                        <% end %>
-                    <% else %>
-                        <li><a>No System Notifications</a></li>
-                    <% end %>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-ticket'></i> <span class='badge'><%= current_admin.missed_ticket_notifications %></span></a>
-                    <ul class='dropdown-menu'>
-                    <% if current_admin.ticket_notifications.any? %>
-                        <% current_admin.ticket_notifications[0..2].each do |notif| %>
-                            <% if notif.viewed == true %>
-                                <li><%= link_to notif.message, notif.link %></li>
-                            <% else %>
-                                <li style='background-color: #ccc'><%= link_to notif.message, admin_view_notification_path(id: notif.id) %></li>
-                            <% end %>
-                        <% end %>
-                    <% else %>
-                        <li><a>No Ticket Notifications</a></li>
-                    <% end %>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-gears'></i> Settings <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <% if current_admin.authorized_to?('edit_general_settings') %><li><a href="/admins/settings"><i class='fa fa-gear fa-fw'></i> General Settings</a></li><% end %>
-                        <% if current_admin.authorized_to?('update_plan_invoice') %><li><a href="/admins/financial"><i class='fa fa-dollar fa-fw'></i> Financial</a></li><% end %>
-                        <% if current_admin.authorized_to?('update_mail_settings') %><li><a href="/admins/mail"><i class='fa fa-envelope fa-fw'></i> Mail</a></li><% end %>
-                        <% if current_admin.authorized_to?('manage_admin') %><li><a href="/admins/manage_admins"><i class='fa fa-users fa-fw'></i> Admin Management</a></li><% end %>
-                        <% if current_admin.authorized_to?('edit_permissions') %><li><a href="/admins/roles"><i class='fa fa-sitemap fa-fw'></i> Permissions</a></li><% end %>
-                        <li><a href="/admins/manage_admins/view/<%= current_admin.id %>"><i class='fa fa-user fa-fw'></i> My Profile</a></li>
-                        <li class='divider'></li>
-                        <li><%= link_to raw("<i class='fa fa-sign-out fa-fw'></i> Sign Out"), destroy_admin_session_path, method: :delete %></li>
-                    </ul>
-                </li>
-		    </ul>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <% if current_admin.authorized_to?('manage_user') %><li><%= link_to 'Clients', search_users_path %></li><% end %>
+                    <li><a href="#">Orders</a></li>
+                    <li><a href="#">Billing</a></li>
+                    <li><a href="#">Support</a></li>
+                    <li><a href="#">Report</a></li>
+                    <li><a href="#">Utilities</a></li>
+                    <li><a href="#">Setup</a></li>
+                    <li><a href="#">Help</a></li>
+                    <li class="menu-icon dropdown">
+                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-tags fa-flip-horizontal"></span><span class="count">2</span></a>
+                    	<ul class="dropdown-menu w265">
+                        	<li class="bb0"><span><i class="icon-tags"></i> Recent Orders</span></li>
+                            <li>
+                            	<table class="table fz12-5">
+                                	<tbody>
+                                    <tr>
+                                    	<td class="text-grey">23:50</td>
+                                    	<td>#72edfg45</td>
+                                    	<td><span class="icon-user-sm"></span> Victor Tacitus</td>
+                                    </tr>
+                                    <tr>
+                                    	<td class="text-grey">23:10</td>
+                                    	<td>#qwedcs2</td>
+                                    	<td><span class="icon-user-sm"></span> Yun Ragna</td>
+                                    </tr>
+                                    <tr>
+                                    	<td class="text-grey">22:15</td>
+                                    	<td>#qwe34gv</td>
+                                    	<td><span class="icon-user-sm"></span> Olayin Kristin</td>
+                                    </tr>
+                                    <tr>
+                                    	<td class="text-grey">20:40</td>
+                                    	<td>#wqecds5</td>
+                                    	<td><span class="icon-user-sm"></span> Danko Nikodim</td>
+                                    </tr>
+                                    <tr>
+                                    	<td class="text-grey">13:12</td>
+                                    	<td>#587kjmfg</td>
+                                    	<td><span class="icon-user-sm"></span> Elvire Maya</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </li>
+                        	<li class="dropdown-footer"><a href="#">See All Orders</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-icon dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ticket"></i><span class="count">18</span></a>
+                        <ul class="dropdown-menu w265">
+                            <li class="bb0"><span><span class="icon-ticket"></span> Recent Support Tickets</span></li>
+                            <li>
+                                <table class="table fz12-5">
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-grey">23:50</td>
+                                        <td>#72edfg45</td>
+                                        <td><span class="icon-user-sm"></span> Victor Tacitus</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-grey">23:10</td>
+                                        <td>#qwedcs2</td>
+                                        <td><span class="icon-user-sm"></span> Yun Ragna</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-grey">22:15</td>
+                                        <td>#qwe34gv</td>
+                                        <td><span class="icon-user-sm"></span> Olayin Kristin</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-grey">20:40</td>
+                                        <td>#wqecds5</td>
+                                        <td><span class="icon-user-sm"></span> Danko Nikodim</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-grey">13:12</td>
+                                        <td>#587kjmfg</td>
+                                        <td><span class="icon-user-sm"></span> Elvire Maya</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </li>
+                            <li class="dropdown-footer"><a href="#">See All Tickets</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-icon dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i><span class="count">18</span></a>
+                        <ul class="dropdown-menu w265">
+                            <li class="bb0"><span><i class="fa fa-bell"></i> Notifications</span></li>
+                            <li>
+                                <table class="table fz12-5">
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-grey">23:50</td>
+                                        <td>#72edfg45</td>
+                                        <td><span class="icon-user-sm"></span> Victor Tacitus</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-grey">23:10</td>
+                                        <td>#qwedcs2</td>
+                                        <td><span class="icon-user-sm"></span> Yun Ragna</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-grey">22:15</td>
+                                        <td>#qwe34gv</td>
+                                        <td><span class="icon-user-sm"></span> Olayin Kristin</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-grey">20:40</td>
+                                        <td>#wqecds5</td>
+                                        <td><span class="icon-user-sm"></span> Danko Nikodim</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-grey">13:12</td>
+                                        <td>#587kjmfg</td>
+                                        <td><span class="icon-user-sm"></span> Elvire Maya</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </li>
+                            <li class="dropdown-footer"><a href="#">See All Tickets</a></li>
+                        </ul>
+                    </li>
+                    <li><div class="sep"></div></li>
+                    <li class="user dropdown">
+                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="img/avatar.png"> <%= current_admin.name %> <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                        	<li><span>Gordon Shumway <span class="online"></span></span></li>
+                        	<li><a href="#"><span class="icon-user-circle"></span> Admin Profile</a></li>
+                        	<li><a href="#"><span class="icon-cog"></span> Preferences</a></li>
+                        	<li><a href="#"><span class="icon-key"></span> Password</a></li>
+                        	<li class="dropdown-footer"><a href="#"><span class="glyphicon glyphicon-lock"></span> Sign Out</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
             <% end %>
-    	</div><!-- /.navbar-collapse -->
-  	</div><!-- /.container-fluid -->
-</nav>
+        </div>
+    </nav>
+    <% if admin_signed_in? %>
+    <div class="subnav">
+    	<div class="container-fluid">
+        	<div class="clearfix">
+                <div class="subnav-left">
+                    <button type="button" class="sidebar-toggle" data-toggle="sidebar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <form class="form-search">
+                    	<input type="text" class="form-control" placeholder="Quick Search">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </form>
+                </div>
+                <div class="subnav-right">
+                	<ol class="breadcrumb">
+                    	<li><a href="#"><span class="icon-home"></a></li>
+                        <li class="active"><span>Dashboard</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% end %>
+</div>

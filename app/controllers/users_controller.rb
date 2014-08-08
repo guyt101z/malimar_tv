@@ -14,13 +14,11 @@ class UsersController < ApplicationController
 
 			begin
 				if @user.mailchimp == true
-					mailchimp_credentials = YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)
-					gb = Gibbon::API.new(mailchimp_credentials[:api_key], {timeout: 10})
-
-					gb.lists.subscribe({id: mailchimp_credentials[:list_id], :email => {:email => @user.email}, :merge_vars => {:FNAME => @user.first_name, :LNAME => @user.last_name}, :double_optin => false})
+					mailchimp = Mailchimp::API.new(YAML.load(Setting.where(name: 'MailChimp Credentials').first)[:api_key])
+					mailchimp.lists.subscribe(YAML.load(Setting.where(name: 'MailChimp Credentials').first)[:list_id], {'EMAIL' => @user.email})
 				end
 			rescue
-				
+
 			end
 
 			Resque.enqueue(AdminNotifier, 0, 'system', "#{@user.name} has joined.", search_users_path(id: @user.id))
@@ -440,5 +438,106 @@ class UsersController < ApplicationController
 		@user = current_user
 		@user.update_attributes(params)
 		@user.save
+	end
+
+	def free_trial
+		if user_signed_in?
+			redirect_to '/account'
+		end
+	end
+
+	def free_trial_1
+		if params[:serial].present?
+			serial = params[:serial].upcase
+			if serial.include?('O')
+				serial = serial.gsub!('O','0')
+			end
+			@device = Device.new
+			@device.serial = serial
+		else
+			@device = nil
+		end
+
+
+		@user = User.new
+		@user.first_name = params[:first_name]
+		@user.last_name = params[:last_name]
+		@user.email = params[:email]
+		@user.phone = params[:phone]
+		@user.country = params[:country]
+		@user.state = params[:state]
+		@user.city = params[:city]
+		@user.zip = params[:zip]
+		@user.address_1 = params[:address_1]
+		@user.address_2 = params[:address_2]
+		@user.password = params[:password]
+		@user.password_confirmation = params[:password_confirmation]
+		if params[:mailchimp].present?
+			@user.mailchimp = true
+		end
+
+
+
+		if @user.valid?
+			if @user.mailchimp == true
+				mailchimp = Mailchimp::API.new(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:api_key])
+				mailchimp.lists.subscribe(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:list_id], { "email" => @user.email})
+			end
+			if @device.nil?
+				@success = true
+				@user.save
+				sign_in(@user)
+
+				length = Setting.where(name: 'Free Trial Length').first.data
+				@user.expiry = Date.today + length.to_i.days
+				@user.save
+				transaction = Transaction.new
+				transaction.user_id = @user.id
+				transaction.status = 'Paid'
+				transaction.product_details = YAML.dump({name: 'Free Trial', price: 0, duration: length})
+				transaction.payment_type = 'N/A'
+				transaction.save
+				flash[:success] = 'Your free trial has started. It will end on '+@user.expiry.strftime('%B %-d, %Y')+'.'
+			else
+				@user.save
+				@device.user_id = @user.id
+				@device.type = 'Roku'
+
+				if @device.save
+					@success = true
+					@device_present = true
+
+					if Rails.env.development?
+						path = "#{Rails.root}/serials/#{serial}"
+					elsif Rails.env.production?
+						path = "/tmp/serials/#{serial}"
+					end
+
+					serial_file = File.open(path,'w+')
+					@device.serial_file = serial_file
+					@device.save
+
+					sign_in(@user)
+
+					length = Setting.where(name: 'Free Trial Length').first.data
+					@user.expiry = Date.today + length.to_i.days
+					@user.save
+					transaction = Transaction.new
+					transaction.user_id = @user.id
+					transaction.status = 'Paid'
+					transaction.product_details = YAML.dump({name: 'Free Trial', price: 0, duration: length})
+					transaction.payment_type = 'N/A'
+					transaction.save
+					flash[:success] = 'Your free trial has started. It will end on '+@user.expiry.strftime('%B %-d, %Y')+'.'
+				else
+					@success = false
+					@user.destroy
+				end
+			end
+		else
+			@success = false
+			@user.destroy
+		end
+
 	end
 end

@@ -45,10 +45,12 @@ gem 'bootstrap-sass'
 gem 'modernizr-rails'
 gem 'jquery-fileupload-rails'
 gem 'carrierwave'
-gem 'carrierwave-ftp'
+gem 'fog'
 gem 'mini_magick'
 gem "rmagick"
 gem 'mandrill_mailer'
+
+gem 'mailchimp-api', require: 'mailchimp'
 
 gem 'will_paginate'
 

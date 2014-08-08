@@ -52,6 +52,10 @@ Rails.application.routes.draw do
 
   	  	get '/admins' => 'admins#index', as: 'admins'
 
+        get 'admin_view_client_reg_report' => 'admins#view_client_reg_report'
+        get 'admin_view_orders_report' => 'admins#view_orders_report'
+        get 'admin_view_support_report' => 'admins#view_support_report'
+
         # General Settings
         get '/admins/settings' => 'admins#general_settings', as: 'general_settings'
 
@@ -337,6 +341,12 @@ Rails.application.routes.draw do
         get '/api/v1/json/authenticate' => 'api#authenticate' #returns JSON with token for reauthentication later
 
     post 'create_new_user' => 'users#create_new'
+
+    get 'free_trial' => 'users#free_trial'
+    post 'free_trial_1' => 'users#free_trial_1'
+    get 'free_trial_2' => 'users#free_trial_2'
+    get 'free_trial_3' => 'users#free_trial_3'
+    get 'free_trial_4' => 'users#free_trial_4'
 
     get 'view_invoice/:id' => 'transactions#view_invoice', as: 'view_invoice'
     get 'view_user_invoice/:id' => 'transactions#view_all', as: 'view_user_invoice'

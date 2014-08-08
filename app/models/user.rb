@@ -78,4 +78,12 @@ class User < ActiveRecord::Base
             return false
         end
     end
+
+    def area
+        if state.present?
+            return "#{city}, #{state}"
+        else
+            return "#{city}, #{country}"
+        end
+    end
 end
