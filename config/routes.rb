@@ -139,7 +139,7 @@ Rails.application.routes.draw do
 
         get 'search_movies' => 'videos#search_movies'
 
-        get '/admins/videos/home_grid' => 'admins#home_grid'
+        get '/admins/videos/home_grid' => 'admins#home_grid', as: 'admin_home_grid'
         post 'add_grid' => 'videos#add_grid'
         post 'update_grid' => 'videos#update_grid'
         get 'delete_grid' => 'videos#delete_grid'
