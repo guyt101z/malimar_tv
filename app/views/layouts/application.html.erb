@@ -65,13 +65,11 @@
             num++;
 
         <% end %>
-    </script>
-	<script>
-			setHeight();
-			$(window).on('resize', function() {
-				setHeight();
-			});
             $(function(){
+				setHeight();
+				$(window).on('resize', function() {
+					setHeight();
+				});
 				$('[data-toggle="sidebar"]').click(function(){
 					if( $('.sidebar').is(':visible') ) {
 						$('.sidebar').animate({ 'left': '-220px' }, 'slow', function(){
