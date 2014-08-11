@@ -263,7 +263,7 @@
         width: calc(100% - 250px);
     }
     .transaction_details_wrapper .details_wrapper {
-        height: 100&;
+        height: 100%;
     }
 }
 .dataTables_filter label {
