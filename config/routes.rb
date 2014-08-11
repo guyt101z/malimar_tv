@@ -78,6 +78,14 @@ Rails.application.routes.draw do
   		get 'search_users' => 'admins#search_users'
   		get 'view_user' => 'admins#view_user'
 
+        post 'admin_update_user_profile' => 'admins#update_user_profile'
+        post 'admin_update_user_mailing' => 'admins#update_user_mailing'
+        post 'extend_user_subscription' => 'admins#extend_user_subscription'
+        post 'update_user_balance' => 'admins#update_user_balance'
+        post 'admin_create_transaction' => 'admins#create_transaction'
+        post 'admin_register_device' => 'admins#register_device'
+        get 'admin_unlink_device' => 'admins#unlink_device'
+
         post 'add_note_to_user' => 'users#add_note'
         post 'add_image_to_note' => 'users#add_image_to_note'
         post 'update_note' => 'users#update_note'
@@ -86,18 +94,25 @@ Rails.application.routes.draw do
         get 'delete_note' => 'users#delete_note'
         get 'delete_unsaved_note' => 'users#delete_unsaved_note'
 
-        post 'update_user_balance' => 'admins#update_user_balance'
-
-        post 'admin_register_device' => 'admins#register_device'
 
   		get '/admins/new_user' => 'admins#new_user', as: 'new_user'
   		post 'admin_create_user' => 'admins#create_user'
 
+        get '/admins/users/pending_payments' => 'admins#user_payment_queue'
+
+        # Transactions
+        get '/admins/orders/all' => 'transactions#index', as: 'all_tx'
+        post '/admins/orders/all' => 'transactions#index', as: 'all_tx_search'
+        get '/admins/orders/view/:id' => 'transactions#show', as: 'view_tx'
+
+        get '/admins/orders/new' => 'transactions#new', as: 'new_tx'
+        post 'create_tx_standalone' => 'transactions#create_standalone'
+
+        post 'create_tx_user' => 'transactions#create_user'
+
         get 'accept_payment' => 'transactions#accept'
         get 'cancel_payment' => 'transactions#cancel'
         get 'refund_payment' => 'transactions#refund'
-
-        get '/admins/users/pending_payments' => 'admins#user_payment_queue'
 
   		# Video CMS
         get '/admins/videos/tv_shows' => 'admins#shows', as: 'tv_shows'
@@ -151,7 +166,7 @@ Rails.application.routes.draw do
       	get '/admins/sales_reps' => 'admins#sales_reps', as: 'search_reps_main'
       	get 'search_reps' => 'admins#search_reps'
       	get '/admins/sales_reps/view/:id' => 'admins#view_rep', as: 'view_rep'
-      	get '/admins/new_sales_rep' => 'admins#new_sales_rep'
+      	get '/admins/new_sales_rep' => 'admins#new_sales_rep', as: 'new_rep'
       	post 'admin_create_sales_rep' => 'admins#create_sales_rep'
 
         post 'admin_update_rep_profile' => 'admins#update_rep_profile'

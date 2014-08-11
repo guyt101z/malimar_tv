@@ -5,8 +5,56 @@
         <div class='row'>
             <div class='col-sm-12'>
                 <div class='container'>
+                    <div class="panel">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="stat-number" id='current_balance'>
+                                        <div class="number"><i class='fa fa-refresh fa-spin'></i></div>
+                                        Current Balance
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="stat-number" id='pending_balance'>
+                                        <div class="number"><i class='fa fa-refresh fa-spin'></i></div>
+                                        Pending Balance
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="stat-number" id='pending_withdrawals'>
+                                        <div class="number"><i class='fa fa-refresh fa-spin'></i></div>
+                                        Pending Withdrawals
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="stat-number" id='total_payout'>
+                                        <div class="number"><i class='fa fa-refresh fa-spin'></i></div>
+                                        Total Payout
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class='row'>
-                        <div class='col-md-6 col-sm-8'>
+                        <div class='col-md-4 col-sm-5'>
+                            <%= form_tag admin_update_rep_commission_path, remote: true do %>
+                            <%= hidden_field_tag :id, @rep.id %>
+                            <div class='panel panel-default' id=''>
+                                <div class='panel-heading' style='position: relative'>
+                                    <h3 class='panel-title'>Commission Rate: <span id='rep_rate'><%= @rep.commission_rate %>%</span></h3>
+                                    <div class='upload_image_heading'>
+                                        <%= submit_tag 'Update Rate', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+                                    </div>
+                                </div>
+                                <div class='panel-body'>
+                                    <div class='form-group'>
+                                        <label>New Rate</label>
+                                        <%= text_field_tag :new_rate, '', class: 'form-control', style: 'margin:0' %>
+                                    </div>
+                                </div>
+                            </div>
+                            <% end %>
+
                             <%= form_tag admin_update_rep_profile_path, remote: true do %>
                             <%= hidden_field_tag :id, @rep.id %>
                             <div class='panel panel-default'>
@@ -81,67 +129,40 @@
                             </div>
                             <% end %>
                         </div>
-                        <div class='col-md-6 col-sm-4' id='transaction_area'>
+                        <div class='col-md-8 col-sm-7' id='transaction_area'>
                             <div class='row'>
                                 <div class='col-xs-12'>
-                                    <%= form_tag admin_update_rep_commission_path, remote: true do %>
-                                    <%= hidden_field_tag :id, @rep.id %>
                                     <div class='panel panel-default' id=''>
                                         <div class='panel-heading' style='position: relative'>
-                                            <h3 class='panel-title'>Current Commission Rate: <span id='rep_rate'><%= @rep.commission_rate %>%</span></h3>
-                                            <div class='upload_image_heading'>
-                                                <%= submit_tag 'Update Commission Rate', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
-                                            </div>
+                                            <h3 class='panel-title'>Withdrawals</h3>
                                         </div>
                                         <div class='panel-body'>
-                                            <div class='row'>
-                                                <div class='col-md-3 hidden-sm hidden-xs'></div>
-                                                <div class='col-md-6 form-group' style='margin:0'>
-                                                    <label>New Rate</label>
-                                                    <%= text_field_tag :new_rate, '', class: 'form-control', style: 'margin:0' %>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <% end %>
-                                </div>
-                                <div class='col-md-6 col-sm-12'>
-                                    <div class='panel panel-default' id='current_balance'>
-                                        <div class='panel-heading'>
-                                            <h3 class='panel-title'>Current Balance</h3>
-                                        </div>
-                                        <div class='panel-body text-center balance'>
-                                            <i class='fa fa-refresh fa-spin'></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class='col-md-6 col-sm-12'>
-                                    <div class='panel panel-default' id='pending_balance'>
-                                        <div class='panel-heading'>
-                                            <h3 class='panel-title'>Pending Balance</h3>
-                                        </div>
-                                        <div class='panel-body text-center balance'>
-                                            <i class='fa fa-refresh fa-spin text-warning'></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class='col-md-6 col-sm-12'>
-                                    <div class='panel panel-default' id='pending_withdrawals'>
-                                        <div class='panel-heading'>
-                                            <h3 class='panel-title'>Pending Withdrawals</h3>
-                                        </div>
-                                        <div class='panel-body text-center balance'>
-                                            <i class='fa fa-refresh fa-spin text-primary'></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class='col-md-6 col-sm-12'>
-                                    <div class='panel panel-default' id='total_payout'>
-                                        <div class='panel-heading'>
-                                            <h3 class='panel-title'>Total Payout</h3>
-                                        </div>
-                                        <div class='panel-body text-center balance'>
-                                            <i class='fa fa-refresh fa-spin text-success'></i>
+                                            <table class='table table-hover table-bordered' id='wd_table'>
+                                                <thead><tr>
+                                                    <th>Date</th>
+                                                    <th>Amount</th>
+                                                    <th>Status</th>
+                                                </tr></thead>
+                                                <tbody>
+                                                    <% @withdrawals.each do |wd| %>
+                                                        <tr>
+                                                            <th><%= wd.created_at.strftime('%B %-d, %Y') %></th>
+                                                            <td>$<%= number_with_precision(wd.amount, precision: 2) %></td>
+                                                            <td>
+                                                                <% if wd.status == 'Pending' %>
+                                                                    <span class='text-warning'><%= wd.status %></span>
+                                                                <% elsif wd.status == 'Approved' %>
+                                                                    <span class='text-success'><%= wd.status %></span>
+                                                                <% elsif wd.status == 'Denied' %>
+                                                                    <span class='text-danger'><%= wd.status %></span>
+                                                                <% else %>
+                                                                    <span class='text-primary'><%= wd.status %></span>
+                                                                <% end %>
+                                                            </td>
+                                                        </tr>
+                                                    <% end %>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -149,7 +170,7 @@
                         </div>
                     </div>
                 </div>
-                <%= render 'sales_reps/partials/transactions_details_modal' %>
+                <%= render 'admins/partials/transactions_details_modal' %>
                 <script type="text/javascript">
                     $('#transactions_link').addClass('active')
                     $.ajax({
@@ -252,6 +273,7 @@
                             e.preventDefault();
                         }
                     });
+                    $('#wd_table').dataTable();
                 </script>
             </div>
             <div class='col-sm-12'>

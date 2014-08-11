@@ -1,4 +1,5 @@
-<% content_for :title, 'Customer Management' %>
+<% content_for :top_level, 'Clients' %>
+<% content_for :low_levels, YAML.dump([]) %>
 <div id="left-scroll" class="nano">
     <div class="nano-content">
 
@@ -8,296 +9,42 @@
                     <div class="col-sm-6">
                         Client List
                     </div>
-                    <div class="col-sm-6 text-right">
-                        <div class="panel-control">
-                            <button type="button" class="close"><span class="times">&times;</span></button>
-                            <button type="button" class="close"><span class="fa fa-angle-down"></span></button>
-                            <button type="button" class="close"><span class="fa fa-cog"></span></button>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="panel-body plr20">
-            	<div class="row">
-                	<div class="col-sm-6">
-                        <div class="form-group has-feedback feedback-wt">
-                            <input type="text" class="form-control input-md" id="" placeholder="Search by Name, Email, or ID">
-                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <select class="form-control input-md">
-                            	<option>Plan</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <select class="form-control input-md">
-                            	<option>Date</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                    	<button type="button" class="btn btn-default btn-md btn-block">Filter Orders</button>
-                    </div>
-                </div>
-                <div class="table-responsive">
-                <table class="table table-list fz11-5">
-                	<thead>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                        <td>Order Number
-                        	<span class="sort">
-                            	<span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td>Client
-                        	<span class="sort">
-                            	<span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td>Plan
-                        	<span class="sort">
-                            	<span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td>Adden On
-                        	<span class="sort">
-                            	<span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td>Status
-                        	<span class="sort">
-                            	<span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td></td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                   	<tr>
-                    	<td colspan="7" class="title fz12-5">Today</td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
-                        </td>
-                    </tr>
-                   	<tr>
-                    	<td colspan="7" class="title fz12-5">Yesterday</td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
-                        </td>
-                    </tr>
-                   	<tr>
-                    	<td colspan="7" class="title fz12-5">This Week</td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                    	<td><input type="checkbox"></td>
-                    	<td class="text-bold">#72edfg45</td>
-                    	<td>Victor Tacitus</td>
-                    	<td>6 Months</td>
-                    	<td>July 25, 2014 at 02:55</td>
-                    	<td>Pay at: July 25, 2014 at 02:55</td>
-                        <td>
-                        	<button type="button" class="close"><span class="fa fa-times fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-check fz11-5"></span></button>
-                        	<button type="button" class="close mr7"><span class="fa fa-dollar fz11-5"></span></button>
-                        </td>
-                    </tr>
-                    </tbody>
+                <table class='table table-hover table-bordered' id='user_table'>
+                    <thead><tr>
+                        <th>Account #</th>
+                        <th>Last Name</th>
+                        <th>First Name</th>
+                        <th>Email</th>
+                        <th>Membership</th>
+                        <th>Member Since</th>
+                        <th>Registered Devices</th>
+                    </tr></thead>
+                    <% @users.each do |user| %>
+                        <tr style='cursor:pointer' onclick='window.location = "<%= view_user_path(id: user.id) %>"'>
+                            <th><%= user.id %></th>
+                            <td><%= user.last_name %></td>
+                            <td><%= user.first_name %></td>
+                            <td><%= user.email %></td>
+                            <% if user.expiry.nil? || user.expiry < Date.today %>
+                                <td>Free</td>
+                            <% else %>
+                                <td>Premium</td>
+                            <% end %>
+                            <td><%= user.created_at.strftime('%Y/%m/%d') %></td>
+                            <td><%= Device.where(user_id: user.id).count %></td>
+                        </tr>
+                    <% end %>
                 </table>
-                </div>
-                <div class="row">
-                	<div class="col-sm-6 fz11-5">
-                    	<span class="text-bold">18 Records Found</span>, Showing 1 to 15 of 18.
-                    </div>
-                    <div class="col-sm-6 text-right">
-                        <select class="form-control input-sm mw-170">
-                        	<option>Delete Selected</option>
-                        </select>
-                        &nbsp;&nbsp;
-                        <a href="#"><span class="fa fa-angle-left"></span></a> &nbsp;&nbsp;
-                        <a href="#"><span class="fa fa-angle-right"></span></a>
-                    </div>
-                </div>
             </div>
         </div>
 
 	</div>
-	</div>
+</div>
+
+<script>
+    $('#user_table').dataTable()
+    $('#all_users').addClass('active')
+</script>

@@ -13,13 +13,13 @@
  *= require bootstrap
  *= require nanoscroller
  *= require new_admin_style
+ *= require dataTables_bootstrap
  *= require_self
  *= require support_styles
  *= require transaction_styles
  *= require video_cms
  *= require animate
  *= require notifications
- *= require dataTables_bootstrap
  */
 .sidebar .nav{
     max-height: calc(100% - 51px);
@@ -104,4 +104,184 @@
 }
 .upload-bottom .progress {
     margin: 0;
+}
+
+
+
+
+.transaction_details_wrapper {
+    position: relative;
+    height: 600px;
+    width: 100%;
+}
+
+.transaction_details_wrapper .details_wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 250px;
+    border-right: 1px solid #ddd;
+    background-color: #eaeaea;
+}
+.transaction_details_wrapper .details_wrapper .scroller {
+    position: absolute;
+    top:0;
+    width: 100%;
+    height: calc(100% - 50px);
+    overflow-y: scroll;
+    left: 0;
+    padding: 5px;
+}
+.transaction_details_wrapper .details_wrapper .invoice {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 50px;
+    background-color: #fff;
+    line-height: 50px;
+    padding: 0 10px;
+    width: 100%;
+    border-top: 1px solid #ddd;
+}
+
+.transaction_details_wrapper .details_wrapper .tx_detail {
+    background-color: #fff;
+    border-radius: 3px;
+    margin-bottom: 5px;
+}
+.transaction_details_wrapper .details_wrapper .tx_detail .tx_detail_title {
+    font-size: 120%;
+    padding: 3px 5px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+.transaction_details_wrapper .details_wrapper .tx_detail .tx_detail_info {
+    font-size: 150%;
+    padding: 3px 5px;
+    text-align: center;
+}
+
+.transaction_details_wrapper .time_line_chooser {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: calc(100% - 250px);
+    height: 50px;
+    padding: 4px 5px;
+    border-bottom: 1px solid #ddd;
+}
+.transaction_details_wrapper .chart_wrapper {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    height: 350px;
+    width: calc(100% - 250px);
+}
+
+#loading_chart {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    height: 350px;
+    width: calc(100% - 250px);
+    line-height: 350px;
+    text-align: center;
+    font-size: 400%;
+}
+#loading_chart .fa-exclamation-triangle {
+    font-size: 200%;
+}
+
+.transaction_details_wrapper .table_wrapper {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 200px;
+    border-top: 1px solid #ddd;
+}
+
+#loading_table {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 200px;
+    border-top: 1px solid #ddd;
+    line-height: 200px;
+    text-align: center;
+    font-size: 400%;
+}
+.transaction_details_wrapper table {
+    width: 100%;
+}
+
+.transaction_details_wrapper thead, .transaction_details_wrapper tbody, .transaction_details_wrapper tr, .transaction_details_wrapper td, .transaction_details_wrapper th { display: block; }
+
+.transaction_details_wrapper tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+.transaction_details_wrapper thead th {
+    width: 25%;
+    height: 37px;
+    /*text-align: left;*/
+}
+
+.transaction_details_wrapper tbody {
+    height: 162px;
+    overflow-y: auto;
+}
+
+.transaction_details_wrapper thead {
+    /* fallback */
+}
+
+
+.transaction_details_wrapper tbody td, .transaction_details_wrapper thead th {
+    width: 25%;
+    float: left;
+}
+
+@media (max-width: 992px) {
+    .transaction_details_wrapper .table_wrapper {
+        width: 100%;
+    }
+    #loading_table {
+        width: 100%;
+    }
+    .transaction_details_wrapper .details_wrapper {
+        height: 400px;
+    }
+}
+@media (min-width: 993px) {
+    .transaction_details_wrapper .table_wrapper {
+        width: calc(100% - 250px);
+    }
+    #loading_table {
+        width: calc(100% - 250px);
+    }
+    .transaction_details_wrapper .details_wrapper {
+        height: 100&;
+    }
+}
+.dataTables_filter label {
+    width: 100%;
+    text-align: right;
+}
+.dataTables_filter label .input-sm {
+    width: 75%;
+    margin-left: 6px;
+}
+
+
+.device-preview img {
+    max-height: 100px;
+    max-width: 100%;
+}
+
+.devices {
+    max-height: 250px;
+    overflow-y: scroll;
 }

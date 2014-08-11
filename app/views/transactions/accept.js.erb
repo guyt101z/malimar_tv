@@ -1,5 +1,1 @@
-<% if params[:admin_action] == 'queue' %>
-    $('#tx_<%= @transaction.id %>').remove()
-<% else %>
-    $('#trans_<%= @transaction.id %>').children('.status').removeClass('pending').addClass('paid').html('Paid<br><%= link_to "Refund", refund_payment_path(id: @transaction.id), remote: true %>')
-<% end %>
+window.location = '<%= view_tx_path(id: @transaction.id) %>'

@@ -2,8 +2,9 @@ class AdminsController < ApplicationController
 	def index
 		@data = DailyData.where(date: Date.today).last
 		if @data.nil?
-			@data = DailyData.where(date: Date.yesterday).last
+			@data = DailyData.new(date: Date.today, ).last
 		end
+
 	end
 	def new_user
 		unless current_admin.authorized_to?('create_user')
@@ -70,6 +71,16 @@ class AdminsController < ApplicationController
 			@user = User.find(params[:id])
 			@devices = Device.where(user_id: @user.id)
 			@transactions = Transaction.where(user_id: @user.id)
+
+			@total_spent = 0
+			@pending = 0
+			@transactions.each do |tx|
+				if tx.status == 'Pending'
+					@pending += YAML.load(tx.product_details)[:price]
+				elsif tx.status == 'Paid' || tx.status == 'Refunded'
+					@total_spent += YAML.load(tx.product_details)[:price]
+				end
+			end
 			@notes = UserNote.where(user_id: @user.id)
 		else
 			flash[:error] = 'You do not have permission to view that.'
@@ -77,15 +88,86 @@ class AdminsController < ApplicationController
 		end
 	end
 
+	def update_user_profile
+		if current_admin.authorized_to?('manage_user')
+			@user = User.find(params[:id])
+			@user.first_name = params[:first_name]
+			@user.last_name = params[:last_name]
+			@user.email = params[:email]
+			@user.save
+		else
+			render status: 403
+		end
+	end
+
+	def update_user_mailing
+		if current_admin.authorized_to?('manage_user')
+			@user = User.find(params[:id])
+			@user.address_1 = params[:address_1]
+			@user.address_2 = params[:address_2]
+			@user.city = params[:city]
+			@user.state = params[:state]
+			@user.country = params[:country]
+			@user.zip = params[:zip]
+			@user.save
+		else
+			render status: 403
+		end
+	end
+
+	def extend_user_subscription
+		if current_admin.authorized_to?('manage_user')
+			@user = User.find(params[:user_id])
+			if params[:period] == 'days'
+				length = params[:length].to_i.days
+			elsif params[:period] == 'months'
+				length = params[:length].to_i.months
+			elsif params[:period] == 'years'
+				length = params[:length].to_i.years
+			end
+
+			if @user.expiry.nil? || @user.expiry < Date.today
+				@user.expiry = Date.today + length
+			else
+				@user.expiry += length
+			end
+			@user.save
+		else
+			render status: 403
+		end
+	end
+
+	def send_user_password_reset
+
+	end
+
 	def register_device
 		if current_admin.authorized_to?('manage_user')
 			@user = User.find(params[:user_id])
-			@device = Device.new(user_id: @user.id, serial: params[:serial], type: params[:type])
+			@device = Device.new(user_id: @user.id, serial: params[:serial], type: 'Roku', name: params[:name])
 			if @device.save
+				if Rails.env.development?
+					path = "#{Rails.root}/serials/#{@device.serial}"
+				elsif Rails.env.production?
+					path = "/tmp/serials/#{@device.serial}"
+				end
+
+				serial_file = File.open(path,'w+')
+				@device.serial_file = serial_file
+				@device.save
 				update = AdminActivity.create(admin_id: current_admin.id, data: YAML.dump({type: 'Device Registration', message: "#{current_admin.name} registered a device.", user_id: @user.id, device_id: @device.id}))
 			end
 		end
 	end
+
+	def unlink_device
+		if current_admin.authorized_to?('manage_user')
+			@device = Device.find(params[:id])
+			@id = @device.id
+			@device.destroy
+		end
+	end
+
 
 	def sys_log
 		@logs = SystemLog.all.reverse
@@ -156,7 +238,7 @@ class AdminsController < ApplicationController
 	def view_rep
 		if current_admin.authorized_to?('manage_rep')
 			@rep = SalesRepresentative.find(params[:id])
-			@transactions = Transaction.where(sales_rep_id: @rep.id)
+			@withdrawals = Withdrawal.where(sales_rep_id: @rep.id).order(created_at: :asc)
 		else
 			flash[:error] = 'You are not authorized to view that.'
 			redirect_to '/admins'
@@ -239,7 +321,17 @@ class AdminsController < ApplicationController
 		if current_admin.authorized_to?('manage_user')
 			@device = Device.find(params[:id])
 			@device.serial = params[:serial]
-			@device.save
+			if @device.save
+				if Rails.env.development?
+					path = "#{Rails.root}/serials/#{@device.serial}"
+				elsif Rails.env.production?
+					path = "/tmp/serials/#{@device.serial}"
+				end
+
+				serial_file = File.open(path,'w+')
+				@device.serial_file = serial_file
+				@device.save
+			end
 		else
 			render status: 403
 		end

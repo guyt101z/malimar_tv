@@ -17,6 +17,13 @@
                             <%= text_field_tag :serial, '', id: 'device_serial', class: 'form-control' %>
                             <%= hidden_field_tag :id, '', id: 'device_id' %>
                         </div>
+                        <div class='form-group'>
+                            <label>Nickname</label>
+                            <%= text_field_tag :name, '', id: 'device_name', class: 'form-control' %>
+                        </div>
+                        <div class='form-group' id='unlink_btn'>
+                            
+                        </div>
                     </div>
                 </div>
                 <% end %>

@@ -526,6 +526,7 @@ class UsersController < ApplicationController
 					transaction.user_id = @user.id
 					transaction.status = 'Paid'
 					transaction.product_details = YAML.dump({name: 'Free Trial', price: 0, duration: length})
+					transaction.customer_paid = DateTime.now
 					transaction.payment_type = 'N/A'
 					transaction.save
 					flash[:success] = 'Your free trial has started. It will end on '+@user.expiry.strftime('%B %-d, %Y')+'.'

@@ -1,0 +1,29 @@
+<div class="col-sm-6" onclick='viewDevice(<%= @device.id %>)' id='device_<%= @device.id %>'>
+    <div class="form-group">
+        <label for="">&nbsp;</label>
+        <div class="device-preview">
+            <%= image_tag @device.type.downcase+'_large.png' %>
+        </div>
+    </div>
+    <div class="fz12-5">
+        <div class="text-semi text-dark">
+            <% if @device.name.blank? %>
+                <%= @device.humanized_type %>
+            <% else %>
+                <%= @device.nickname(true) %>
+            <% end %>
+        </div>
+        <div class="text-grey text-light">
+            <% if @device.type == 'Roku' %>
+                <strong>Serial:</strong> <%= @device.serial %>
+            <% else %>
+                <strong>Token:</strong> <%= @device.serial %>
+            <% end %>
+        </div>
+        <% if @device.expiry.nil? || @device.expiry >= Date.today %>
+            <div><span class="fa fa-check text-success"></span> <span class="text-grey text-light">Status</span> <span class="text-success">Available</span></div>
+        <% else %>
+            <div><span class="fa fa-minus text-error"></span> <span class="text-grey text-light">Status</span> <span class="text-success">Expired Token</span></div>
+        <% end %>
+    </div>
+</div>

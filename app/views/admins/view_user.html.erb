@@ -1,0 +1,347 @@
+<% content_for :top_level, 'Clients' %>
+<% content_for :low_levels, YAML.dump([@user.name]) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='row'>
+            <div class='col-xs-12'>
+                <div class="panel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='user_balance'>$<%= number_with_precision(@user.balance, precision: 2) %></div>
+                                    Account Balance
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number">$<%= number_with_precision(@pending, precision: 2) %></div>
+                                    Pending Payments
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number"><%= @devices.count %></div>
+                                    Devices
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='membership_1'><% if @user.expiry.nil? || @user.expiry < Date.today %>Free<% else %>Premium<% end %></div>
+                                    Membership
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6'>
+                <%= form_tag admin_update_user_profile_path, remote: true do %>
+                <%= hidden_field_tag :id, @user.id %>
+                <div class='panel panel-default'>
+                    <div class='panel-heading' style='position: relative'>
+                        <h3 class='panel-title'>Profile</h3>
+                        <div class='upload_image_heading'>
+                            <%= submit_tag 'Update Profile', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+                        </div>
+                    </div>
+                    <div class='panel-body'>
+                        <div class='row'>
+                            <div class='col-lg-6 form-group'>
+                                <label>First Name</label>
+                                <%= text_field_tag :first_name, @user.first_name, class: 'form-control' %>
+                            </div>
+                            <div class='col-lg-6 form-group'>
+                                <label>Last Name</label>
+                                <%= text_field_tag :last_name, @user.last_name, class: 'form-control' %>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-lg-12 form-group'>
+                                <label>Email Address</label>
+                                <%= text_field_tag :email, @user.email, class: 'form-control' %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% end %>
+
+                <%= form_tag admin_update_user_mailing_path, remote: true do %>
+                <%= hidden_field_tag :id, @user.id %>
+                <div class='panel panel-default'>
+                    <div class='panel-heading' style='position: relative'>
+                        <h3 class='panel-title'>Mailing Address</h3>
+                        <div class='upload_image_heading'>
+                            <%= submit_tag 'Update Address', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+                        </div>
+                    </div>
+                    <div class='panel-body'>
+                        <div class='row'>
+                            <div class='col-lg-6 form-group'>
+                                <label>Street Address</label>
+                                <%= text_field_tag :address_1, @user.address_1, class: 'form-control' %>
+                            </div>
+                            <div class='col-lg-6 form-group'>
+                                <label>Address Line 2</label>
+                                <%= text_field_tag :address_2, @user.address_2, class: 'form-control', placeholder: 'Optional' %>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-lg-6 form-group'>
+                                <label>City</label>
+                                <%= text_field_tag :city, @user.city, class: 'form-control' %>
+                            </div>
+                            <div class='col-lg-6 form-group'>
+                                <label>State</label>
+                                <%= text_field_tag :state, @user.state, class: 'form-control' %>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-lg-6 form-group'>
+                                <label>Country</label>
+                                <%= text_field_tag :country, @user.country, class: 'form-control' %>
+                            </div>
+                            <div class='col-lg-6 form-group'>
+                                <label>Zip/Postal Code</label>
+                                <%= text_field_tag :zip, @user.zip, class: 'form-control' %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% end %>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>User Transactions</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <div id='user_transactions'>
+                            <%= render 'admins/partials/user_transactions' %>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-md-6'>
+                        <%= form_tag extend_user_subscription_path, remote: true do %>
+                        <div class='panel panel-default'>
+                            <div class='panel-heading' style='position: relative'>
+                                <h3 class='panel-title'>Subscription</h3>
+                            </div>
+                            <div class='panel-body'>
+                                <% if @user.expiry.nil? || @user.expiry < Date.today %>
+                                    <div class='stat-number'><div class="number">N/A</div></div>
+                                <% else %>
+                                    <div class='stat-number' id='membership_2'><div class="number"><%= @user.expiry.strftime('%Y/%m/%d') %></div><%= distance_of_time_in_words(Date.today, @user.expiry) %></div>
+                                <% end %>
+                                <hr>
+                                <div class='row'>
+                                    <div class='col-md-4 form-group'>
+                                        <label>Add Time</label>
+                                        <%= hidden_field_tag :user_id, @user.id %>
+                                        <%= text_field_tag :length, '', class: 'form-control' %>
+                                    </div>
+                                    <div class='col-md-8 form-group'>
+                                        <label>&nbsp;</label>
+                                        <%= select_tag :period, options_for_select(['days','months','years']), class: 'form-control' %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='panel-footer'>
+                                <%= submit_tag 'Update Subscription', class: 'btn btn-primary', style: 'width: 100%', data: {disable_with: 'Updating...'} %>
+                            </div>
+                        </div>
+                        <% end %>
+                    </div>
+                    <div class='col-md-6'>
+                        <%= form_tag update_user_balance_path, remote: true do %>
+                        <div class='panel panel-default'>
+                            <div class='panel-heading' style='position: relative'>
+                                <h3 class='panel-title'>Balance</h3>
+                            </div>
+                            <div class='panel-body'>
+                                <div class='stat-number'><div class="number" id='balance_2'>$<%= number_with_precision(@user.balance, precision: 2) %></div>USD</div>
+                                <hr>
+                                <div class='form-group'>
+                                    <label>Add Money</label>
+                                    <%= hidden_field_tag :user_id, @user.id %>
+                                    <%= text_field_tag :add_balance, '', class: 'form-control' %>
+                                </div>
+                            </div>
+                            <div class='panel-footer'>
+                                <%= submit_tag 'Update Balance', class: 'btn btn-primary', style: 'width: 100%', data: {disable_with: 'Updating...'} %>
+                            </div>
+                        </div>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6 col-sm-12'>
+                <%= form_tag admin_register_device_path, remote: true do %>
+                <div class='panel panel-default'>
+                    <%= hidden_field_tag :user_id, @user.id %>
+                    <div class='panel-heading' style='position: relative'>
+                        <h3 class='panel-title'>Register New Device</h3>
+                        <div class='upload_image_heading'>
+                            <%= submit_tag 'Register Device', class: 'btn btn-primary btn-sm', data: {disable_with: 'Registering...'} %>
+                        </div>
+                    </div>
+                    <div class='panel-body'>
+                        <div class='row'>
+                            <div class='col-md-6'>
+                                <div class='form-group'>
+                                    <%= text_field_tag :name, '', class: 'form-control', placeholder: 'Nickname' %>
+                                </div>
+                            </div>
+                            <div class='col-md-6'>
+                                <div class='form-group'>
+                                    <%= text_field_tag :serial, '', class: 'form-control', placeholder: 'Serial Number' %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% end %>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>User Devices</h3>
+                    </div>
+                    <div class='panel-body devices' id='device-list'>
+
+
+                        <% @devices.each do |device| %>
+                            <% @device = device %>
+                            <%= render 'admins/partials/device' %>
+                        <% end %>
+                    </div>
+                </div>
+                <%= form_tag add_note_to_user_path, remote: true do %>
+                    <%= hidden_field_tag :user_id, @user.id %>
+                    <%= hidden_field_tag :new_note_id %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>User Notes</h3>
+                        </div>
+                        <div class='panel-body note-images' id='new_note_images'>
+                            <div class='row' id='img-list'>
+                                <div class='col-md-4 col-sm-6' id='template-add'>
+                                    <div class='note-image' id='add_image'>
+                                        <div class='note-image-wrapper'>
+                                            <i class='fa fa-plus'></i>
+                                        </div>
+                                        <div class='note-image-name'>Add An Image</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='panel-body'>
+                            <%= text_field_tag :title, @user.note, class: 'form-control', placeholder: 'Add title' %>
+                            <%= text_area_tag :note, @user.note, class: 'form-control', rows: 4, placeholder: 'Add note', style: 'resize: verticle' %>
+                        </div>
+                        <div class='panel-body' id='note-reglist' style='display:none'></div>
+                        <div class='panel-body' id='note-checklist' style='display:none'></div>
+                        <div class='panel-footer'>
+                            <div class='pull-left'>
+                                <a onclick='addChecklistNew()' class='btn btn-success'><i class='fa fa-check-square-o fa-fw'></i></a>
+                                <a onclick='addReglistNew()' class='btn btn-success'><i class='fa fa-list fa-fw'></i></a>
+                                <a onclick='$("#new_note_images").show()' class='btn btn-success'><i class='fa fa-file fa-fw'></i></a>
+                            </div>
+                            <%= submit_tag 'Save Note', class: 'btn btn-primary pull-right' %>
+                            <div class='clearfix'></div>
+                        </div>
+                    </div>
+                <% end %>
+                <%= form_tag add_image_to_note_path, remote: true, style: 'display:none' do %>
+                    <%= file_field_tag :image %>
+                    <%= hidden_field_tag :note_id_for_image %>
+                <% end %>
+                <script>
+                    function addChecklistNew(){
+                        $('#note-checklist').show()
+                        $('#note-checklist').append('<%= escape_javascript(render("users/partials/checklist_item")) %>')
+                    }
+                    function addReglistNew(){
+                        $('#note-reglist').show()
+                        $('#note-reglist').append('<%= escape_javascript(render("users/partials/reglist_item")) %>')
+                    }
+                    $('#add_image').click(function() {
+                        $('#image').click();
+                    });
+                    $('#image').fileupload({
+                        dataType: "script",
+                        dropZone: document.getElementById('add_image'),
+                        add: function(e, data) {
+                            data.context = $(tmpl("template-upload", data.files[0]));
+                            $('#add_image').hide()
+                            $('#template_add').append(data.context);
+                            return data.submit();
+                        },
+                        progress: function(e, data) {
+                            var progress;
+                            if (data.context) {
+                                progress = parseInt(data.loaded / data.total * 100, 10);
+                                return data.context.find('.upload-percentage').html(progress+'%');
+                            }
+                        },
+                        fail: function(e,data) {
+                            if (data.context) {
+                                data.context.remove()
+                                $('#add_image').show()
+                                var notification = new NotificationFx({
+                                    message : '<p>There was an error uploading the file. Please ensure that it is a jpg/jpeg, png, or gif.</p>',
+                                    layout : 'growl',
+                                    effect : 'jelly',
+                                    type : 'danger', // notice, warning, error or success
+                                    num: Math.floor((Math.random() * 10000) + 1)
+                                });
+
+                                return notification.show()
+                            }
+                        },
+                        done: function(e,data) {
+                            if (data.context) {
+                                data.context.remove()
+                                $('#add_image').show()
+                                var notification = new NotificationFx({
+                                    message : '<p>File uploaded!</p>',
+                                    layout : 'growl',
+                                    effect : 'jelly',
+                                    type : 'success', // notice, warning, error or success
+                                    num: Math.floor((Math.random() * 10000) + 1)
+                                });
+
+                                return notification.show()
+                            }
+                        }
+                    });
+                </script>
+                <div id='notes_list'>
+                    <% @notes.each do |note| %>
+                        <div id='note_<%= note.id %>'>
+                            <% @note = note %>
+                            <% @note_files = NoteFile.where(note_id: note.id) %>
+                            <%= render('users/partials/note') %>
+                        </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%= render 'admins/partials/view_device_modal' %>
+<script>
+var current_uploaded_image = 0
+function viewDevice(id) {
+    $.ajax({
+        url: '/admin_view_device/'+id
+    })
+}
+function deleteImage(id){
+    $.ajax({
+        url: '/delete_note_file?id='+id
+    })
+}
+$(window).bind('beforeunload', function(){
+    $.ajax({
+        url: '/delete_unsaved_note?id='+$('#new_note_id').val()
+    })
+});
+</script>

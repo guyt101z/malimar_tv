@@ -1,4 +1,5 @@
-<% content_for :title, 'New Sales Representative' %>
+<% content_for :top_level, 'Sales Representatives' %>
+<% content_for :low_levels, YAML.dump(['New Rep']) %>
 <%= form_tag admin_create_sales_rep_path, remote: true do %>
 <div class='container'>
 	<div class='row'>
@@ -102,4 +103,5 @@
             e.preventDefault();
         }
     });
+	$('#new_rep').addClass('active')
 </script>

@@ -1,3 +1,5 @@
+<% content_for :top_level, 'Utilities' %>
+<% content_for :low_levels, YAML.dump(['System Log']) %>
 <div class='container'>
     <% @logs.each do |log| %>
         <% if log.error == true %>

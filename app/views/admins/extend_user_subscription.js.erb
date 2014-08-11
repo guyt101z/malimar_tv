@@ -8,15 +8,16 @@
     });
     notification.show()
 <% else %>
-    $('#user_balance').html('$<%= number_with_precision(@user.balance, precision: 2) %>')
-    $('#balance_2').html('$<%= number_with_precision(@user.balance, precision: 2) %>')
+    $('#membership_1').html('Premium')
+    $('#membership_2').html('<div class="number"><%= @user.expiry.strftime("%Y/%m/%d") %></div><%= distance_of_time_in_words(Date.today, @user.expiry) %>')
     var notification = new NotificationFx({
-        message : '<p>Balance updated.</p>',
+        message : '<p>Subscription updated.</p>',
         layout : 'growl',
         effect : 'jelly',
         type : 'success', // notice, warning, error or success
         num: <%= (100 + rand(10000)).to_s %>
     });
     notification.show()
-    $('#add_balance').val('')
+    $('#length').val('')
+    $('#period').val('days')
 <% end %>

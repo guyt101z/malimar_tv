@@ -12,6 +12,15 @@
 
 		<% elsif params[:action] == 'manage_admins' || params[:action] == 'new_admin' || params[:action] == 'view_admin' %>
 			<%= render 'admins/nav/sidenavs/admins' %>
+
+		<% elsif params[:action] == 'sales_reps' || params[:action] == 'view_rep' || params[:action] == 'new_sales_rep' %>
+			<%= render 'admins/nav/sidenavs/sales_reps' %>
+
+		<% elsif params[:action] == 'users' || params[:action] == 'view_user' || params[:action] == 'new_user' %>
+			<%= render 'admins/nav/sidenavs/users' %>
+
+		<% elsif params[:controller] == 'transactions' %>
+			<%= render 'admins/nav/sidenavs/transactions' %>
 		<% end %>
     </ul>
     <div class="sign-out">

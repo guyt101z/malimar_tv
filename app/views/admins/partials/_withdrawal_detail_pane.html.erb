@@ -1,17 +1,40 @@
-<p><strong>Range Withdrawals:</strong><br>
-    <%= @range_withdrawals.count %></p>
-<% if @detail == 'total_payout' %>
-<p><strong>Range Approved Funds:</strong><br>
-<% else %>
-<p><strong>Range Requested Funds:</strong><br>
-<% end %>
-    $<%= number_with_precision(@range_balance, precision: 2) %></p>
+<div class='scroller'>
 
-<p><strong>Total Withdrawals:</strong><br>
-    <%= @withdrawals.count %></p>
-<% if @detail == 'total_payout' %>
-<p><strong>Total Approved Funds:</strong><br>
-<% else %>
-<p><strong>Total Requested Funds:</strong><br>
-<% end %>
-    $<%= number_with_precision(@total_balance, precision: 2) %></p>
+    <div class='tx_detail'>
+        <div class='tx_detail_title'>Withdrawals</div>
+        <div class='tx_detail_info'><%= @range_withdrawals.count %></div>
+    </div>
+
+    <div class='tx_detail'>
+        <div class='tx_detail_title'>
+        <% if @detail == 'total_payout' %>
+            Approved Funds
+        <% else %>
+            Requested Funds
+        <% end %>
+        </div>
+        <div class='tx_detail_info'>$<%= number_with_precision(@range_balance, precision: 2) %></div>
+    </div>
+
+    <div class='tx_detail'>
+        <div class='tx_detail_title'>Total Withdrawals</div>
+        <div class='tx_detail_info'><%= @withdrawals.count %></div>
+    </div>
+
+    <div class='tx_detail'>
+        <div class='tx_detail_title'>
+            <% if @detail == 'total_payout' %>
+                Total Approved Funds
+            <% else %>
+                Total Requested Funds
+            <% end %>
+        </div>
+        <div class='tx_detail_info'>$<%= number_with_precision(@total_balance, precision: 2) %></div>
+    </div>
+</div>
+<div class='invoice'>
+    <%= link_to 'View Invoice', admin_rep_tx_invoice_path(status: @status, id: @rep.id,
+                                                          start_day: params[:start_day], start_month: params[:start_month], start_year: params[:start_year],
+                                                          end_day: params[:end_day], end_month: params[:end_month], end_year: params[:end_year]),
+                                                          class: 'btn btn-success', target: '_blank', style: 'width: 100%' %>
+</div>

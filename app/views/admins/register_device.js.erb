@@ -10,7 +10,8 @@ $('#serial').removeClass('has-error')
 		$('#type').addClass('has-error').after('<span class="text-danger" id="type-error">Device <%= @device.errors[:type].join(", ") %>')
 	<% end %>
 <% else %>
-	$('#device-list').prepend('<div class="device" onclick="viewDevice(<%= @device.id %>)" id="device_<%= @device.id %>"><div class="image_wrapper"><%= image_tag "roku.png" %></div><p class="type">Roku</p><p class="serial"><%= @device.serial %></p></div>')
+	$('#device-list').prepend('<%= escape_javascript(render "admins/partials/device") %>')
 	$('#serial').val('')
 	$('#type').val('')
 <% end %>
+$('#device_count').html('<%= Device.where(user_id: @device.user_id).count %>')

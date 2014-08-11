@@ -63,6 +63,8 @@ class Transaction < ActiveRecord::Base
 		end
 	end
 
+	
+
 	def invoice
 		user = User.find(user_id)
 		tx_details = YAML.load(product_details)
@@ -81,7 +83,7 @@ class Transaction < ActiveRecord::Base
 			else
 				invoice = Payday::Invoice.new(invoice_number: id, bill_to: "#{user.name}\n#{user.address_1}\n#{user.address_2}\n#{user.city}, #{user.state}\n#{user.country}\n#{user.zip}")
 			end
-		else
+		elsif status == 'Paid'
 			if user.address_2.blank? && user.state.blank?
 				invoice = Payday::Invoice.new(invoice_number: id, bill_to: "#{user.name}\n#{user.address_1}\n#{user.city}\n#{user.country}\n#{user.zip}", paid_at: customer_paid.strftime('%B %-d, %Y'))
 			elsif user.state.blank?
@@ -91,9 +93,23 @@ class Transaction < ActiveRecord::Base
 			else
 				invoice = Payday::Invoice.new(invoice_number: id, bill_to: "#{user.name}\n#{user.address_1}\n#{user.address_2}\n#{user.city}, #{user.state}\n#{user.country}\n#{user.zip}", paid_at: customer_paid.strftime('%B %-d, %Y'))
 			end
+		elsif status == 'Refunded'
+			if user.address_2.blank? && user.state.blank?
+				invoice = Payday::Invoice.new(invoice_number: id, bill_to: "#{user.name}\n#{user.address_1}\n#{user.city}\n#{user.country}\n#{user.zip}", paid_at: customer_paid.strftime('%B %-d, %Y'), refunded_at: customer_refunded.strftime('%B %-d, %Y'))
+			elsif user.state.blank?
+				invoice = Payday::Invoice.new(invoice_number: id, bill_to: "#{user.name}\n#{user.address_1}\n#{user.address_2}\n#{user.city}\n#{user.country}\n#{user.zip}", paid_at: customer_paid.strftime('%B %-d, %Y'), refunded_at: customer_refunded.strftime('%B %-d, %Y'))
+			elsif user.address_2.blank?
+				invoice = Payday::Invoice.new(invoice_number: id, bill_to: "#{user.name}\n#{user.address_1}\n#{user.city}, #{user.state}\n#{user.country}\n#{user.zip}", paid_at: customer_paid.strftime('%B %-d, %Y'), refunded_at: customer_refunded.strftime('%B %-d, %Y'))
+			else
+				invoice = Payday::Invoice.new(invoice_number: id, bill_to: "#{user.name}\n#{user.address_1}\n#{user.address_2}\n#{user.city}, #{user.state}\n#{user.country}\n#{user.zip}", paid_at: customer_paid.strftime('%B %-d, %Y'), refunded_at: customer_refunded.strftime('%B %-d, %Y'))
+			end
 		end
 		invoice.line_items << Payday::LineItem.new(price: tx_details[:price]*100, description: "#{tx_details[:name]} – #{tx_details[:duration]} Month(s)", display_quantity: 1)
-		invoice.line_items << Payday::LineItem.new(price: balance_used * -100, description: 'Previous balance used', display_quantity: 1)
+		if balance_used.nil?
+			invoice.line_items << Payday::LineItem.new(price: 0 * -100, description: 'Previous balance used', display_quantity: 1)
+		else
+			invoice.line_items << Payday::LineItem.new(price: balance_used * -100, description: 'Previous balance used', display_quantity: 1)
+		end
 
 		return invoice.render_pdf
 	end

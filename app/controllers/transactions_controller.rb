@@ -26,6 +26,7 @@ class TransactionsController < ApplicationController
 										price: details[:price]
 									}
 								}))
+			flash[:success] = "Order \##{@transaction.id} has been accepted."
 		end
 	end
 
@@ -49,6 +50,7 @@ class TransactionsController < ApplicationController
 										price: details[:price]
 									}
 								}))
+			flash[:success] = "Order \##{@transaction.id} has been cancelled."
 		end
 	end
 
@@ -76,6 +78,7 @@ class TransactionsController < ApplicationController
 											price: details[:price]
 										}
 									}))
+				flash[:success] = "Order \##{@transaction.id} has been refunded."
 			end
 		else
 			@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
@@ -105,6 +108,7 @@ class TransactionsController < ApplicationController
 											price: details[:price]
 										}
 									}))
+				flash[:success] = "Order \##{@transaction.id} has been refunded."
 			else
 				@success = false
 				@message = 'There was an error refunding this transaction.'
@@ -113,20 +117,71 @@ class TransactionsController < ApplicationController
 	end
 
 	# TODO
-	# User view invoice
 	# User view all
 
-	# TODO
-	# Admin view invoice w/permission
 
 	def view_invoice
 		transaction = Transaction.find(params[:id])
 
+		if admin_signed_in? || (user_signed_in? && current_user.id == transaction.user_id)
+			send_data transaction.invoice, filename: "Invoice \##{transaction.id} - #{transaction.created_at.strftime('%d/%M/%Y')}", :type => "application/pdf", :disposition => "inline"
+		else
+			redirect_to '/'
+		end
+	end
 
+	def index
+		search_hash = Hash.new
+		if params[:search].present? || params[:payment_type].present? || params[:status].present?
+			@transactions = Array.new
+			if params[:search].present?
+				begin
+					order_number = Integer(params[:search])
+					@transactions = Transaction.where(id: order_number)
+				rescue => e
+					users = User.all
+					if params[:payment_type].present?
+						search_hash[:payment_type] = params[:payment_type]
+					end
+					if params[:status].present?
+						search_hash[:status] = params[:status]
+					end
 
+					users.each do |user|
+						if user.matches?(params[:search])
+							search_hash[:user_id] = user.id
+							txs = Transaction.where(search_hash)
+							txs.each do |tx|
+								@transactions.push(tx)
+							end
+						end
+					end
+				end
+			else
+				if params[:payment_type].present?
+					search_hash[:payment_type] = params[:payment_type]
+				end
+				if params[:status].present?
+					search_hash[:status] = params[:status]
+				end
 
-		send_data transaction.invoice.render_pdf, filename: "Invoice \##{transaction.id} - #{transaction.created_at.strftime('%d/%M/%Y')}", :type => "application/pdf", :disposition => "inline"
+				txs = Transaction.where(search_hash)
+				txs.each do |tx|
+					@transactions.push(tx)
+				end
+			end
+		else
+			@transactions = Transaction.all
+		end
+	end
 
+	def show
+		@transaction = Transaction.find(params[:id])
+		@data = YAML.load(@transaction.product_details)
+		if @transaction.sales_rep_id.present?
+			@rep = SalesRepresentative.where(id: @transaction.sales_rep_id).first
+		end
+		@user = User.where(id: @transaction.user_id).first
 	end
 
 	def view_all

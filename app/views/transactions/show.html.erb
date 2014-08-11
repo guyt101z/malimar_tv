@@ -1,0 +1,162 @@
+<% content_for :top_level, 'Orders/Transactions' %>
+<% content_for :low_levels, YAML.dump(["Order #{@transaction.id}"]) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='row'>
+            <div class='col-xs-12'>
+                <div class="panel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <% name = @data[:name].gsub('REFUNDED: ','').gsub('PAID: ','').gsub('CANCELLED: ','') %>
+                                    <div class="number"><%= name %></div>
+                                    Plan
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='user_balance'>$<%= number_with_precision(@data[:price], precision: 2) %></div>
+                                    Order Amount
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number"><%= @data[:duration] %></div>
+                                    <% if name == 'Free Trial' %>
+                                        Days
+                                    <% else %>
+                                        Months
+                                    <% end %>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number <%= @transaction.status.downcase %>"><%= @transaction.status %></div>
+                                    Status
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-md-6'>
+                <div class="panel">
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Transaction Details</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <% if @user.nil? %>
+                            <div class="stat-number">
+                                <div class="number">User Not Found</div>
+                            </div>
+                        <% else %>
+                            <div class='row'>
+                                <div class='col-lg-4 col-sm-6'>
+                                    <p><strong style='font-size: 105%'>Client Name:</strong><br/><%= @user.name %></p>
+                                </div>
+                                <div class='col-lg-4 col-sm-6'>
+                                    <p><strong style='font-size: 105%'>Client Email:</strong><br/><%= @user.email %></p>
+                                </div>
+                                <div class='col-lg-4 col-sm-6'>
+                                    <p><strong style='font-size: 105%'>Client Membership:</strong><br/><% if @user.expiry.nil? || @user.expiry < Date.today %>Free<% else %>Premium<% end %></p>
+                                </div>
+                            </div>
+                        <% end %>
+                        <div class='row'>
+                            <div class='col-lg-4 col-sm-6'>
+                                <p><strong style='font-size: 105%'>Order Date:</strong><br/><%= @transaction.created_at.strftime('%Y/%m/%d') %></p>
+                            </div>
+                            <div class='col-lg-4 col-sm-6'>
+                                <p><strong style='font-size: 105%'>Paid Date:</strong><br/>
+                                    <% if @transaction.customer_paid.present? %>
+                                        <%= @transaction.customer_paid.strftime('%Y/%m/%d') %>
+                                    <% else %>
+                                        N/A
+                                    <% end %>
+                                </p>
+                            </div>
+                            <div class='col-lg-4 col-sm-6'>
+                                <p><strong style='font-size: 105%'>Refund Date:</strong><br/>
+                                    <% if @transaction.customer_refunded.present? %>
+                                        <%= @transaction.customer_refunded.strftime('%Y/%m/%d') %>
+                                    <% else %>
+                                        N/A
+                                    <% end %>
+                                </p>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-lg-4 col-sm-6'>
+                                <p><strong style='font-size: 105%'>Payment Method:</strong><br/><%= @transaction.payment_type %></p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class='panel-footer'>
+                        <%= link_to 'View PDF Invoice', view_invoice_path(id: @transaction.id), class: 'btn btn-primary', style: 'width: 100%', target: '_blank' %>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6'>
+                <% if @transaction.status == 'Pending' || @transaction.status == 'Paid' %>
+                    <div class="panel">
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>Actions</h3>
+                        </div>
+                        <div class='panel-body'>
+                            <% if @transaction.status == 'Pending' %>
+                                <div class='col-sm-6'>
+                                    <%= link_to 'Accept Payment', accept_payment_path(id: @transaction.id), class: 'btn btn-success', style: 'width: 100%', data: {disable_with: 'Processing...'}, remote: true %>
+                                </div>
+                                <div class='col-sm-6'>
+                                    <%= link_to 'Cancel Payment', cancel_payment_path(id: @transaction.id), class: 'btn btn-danger', style: 'width: 100%', data: {disable_with: 'Processing...'}, remote: true %>
+                                </div>
+                            <% elsif @transaction.status == 'Paid' %>
+                                <div class='col-sm-6 col-centered'>
+                                    <%= link_to 'Refund Payment', refund_payment_path(id: @transaction.id), class: 'btn btn-info', style: 'width: 100%', data: {disable_with: 'Processing...'}, remote: true %>
+                                </div>
+                            <% end %>
+                        </div>
+                    </div>
+                <% end %>
+                <div class="panel">
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Sales Representative Details</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <% if @rep.nil? %>
+                            <div class="stat-number">
+                                <div class="number">No Representative Attached</div>
+                            </div>
+                        <% else %>
+                            <div class='row'>
+                                <div class='col-lg-4 col-sm-6'>
+                                    <p><strong style='font-size: 105%'>Rep Name:</strong><br/><%= @rep.name %></p>
+                                </div>
+                                <div class='col-lg-4 col-sm-6'>
+                                    <p><strong style='font-size: 105%'>Rep Email:</strong><br/><%= @rep.email %></p>
+                                </div>
+                                <div class='col-lg-4 col-sm-6'>
+                                    <p><strong style='font-size: 105%'>Rep Company:</strong><br/><%= @rep.company %></p>
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-lg-4 col-sm-6'>
+                                    <p><strong style='font-size: 105%'>Commission Rate:</strong><br/><%= @data[:commission_rate] %>%</p>
+                                </div>
+                                <div class='col-lg-4 col-sm-6'>
+                                    <p><strong style='font-size: 105%'>Commission Amount:</strong><br/>
+                                        $<%= number_with_precision(@data[:commission_rate].to_f/100 * @data[:price], precision: 2) %>
+                                    </p>
+                                </div>
+                            </div>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
