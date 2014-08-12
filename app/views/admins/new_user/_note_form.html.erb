@@ -1,0 +1,21 @@
+<h4 class="title"><span class="icon-circle-doc mr7"></span> Client Notes <span class="fa fa-question-circle"></span></h4>
+<div class="form-editor expand"id='note_form' style='display:none; margin-bottom: 10px'>
+    <%= hidden_field_tag :note_to_add, false %>
+    <input type="text" class="form-control input-md input-title" placeholder="Title">
+    <textarea class="form-control" placeholder="Add a note"></textarea>
+</div>
+<button type="button" id='note_toggle' class="btn btn-default btn-w170 btn-sm">Add a Note</button>
+<script>
+    $('#note_toggle').click(function showDeviceForm(){
+        if ($('#note_to_add').val() == 'true'){
+            $('#note_form').hide()
+            $('#note_to_add').val(false)
+            $('#note_toggle').html('Add a Note')
+        }
+        else {
+            $('#note_form').show()
+            $('#note_to_add').val(true)
+            $('#note_toggle').html('Cancel')
+        }
+    })
+</script>

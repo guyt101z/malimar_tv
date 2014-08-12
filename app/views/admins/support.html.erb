@@ -1,91 +1,144 @@
-<% content_for :title, 'Support | My Tickets' %>
-<div class='col-xs-12 ticket_nav'>
-	<%= link_to 'My Tickets', admin_support_path, class: 'active' %>
-	<%= link_to 'New Tickets', admin_new_tickets_path, class: '' %>
-	<%= link_to 'Archive', admin_archived_tickets_path, class: '' %>
-</div>
-<div class='container' style='margin-top: 60px;'>
-	<div class='row'>
-		<div class='col-md-6'>
-			<div class='panel panel-info'>
-				<div class='panel-heading'>
-					<h3 class='panel-title'>Open Tickets</h3>
-				</div>
-				<div class='panel-body' style='padding:0'>
-					<div class='tickets' id='open_tickets'>
-						<% @open_cases.each do |ticket| %>
-						<div id='ticket_<%= ticket.id %>' class='ticket' onclick='viewTicket(<%= ticket.id %>)'>
-							<p class='title'><%= ticket.title %></p>
-							<p class='timestamp'><%= custom_time_ago(ticket.created_at) %></p>
-							<p><%= ticket.issue_description.truncate(80) %></p>
-							<div class='row' style='margin:0'>
-								<div class='col-sm-6' style='padding-left:0'>
-									<p class='detail'>
-										<% priorities = ['Low',     'Medium',  'High'] %>
-	                                	<% classes =    ['success', 'warning', 'danger'] %>
-										<strong>Priority:</strong><br>
-										<span class='text-<%= classes[ticket.priority] %>'><%= priorities[ticket.priority] %></span>
-									</p>
-								</div>
-								<div class='col-sm-6' style='padding-right:0'>
-									<p class='detail'>
-										<strong>Category:</strong><br>
-										<%= ticket.category %>
-									</p>
-								</div>
-							</div>
-						</div>
-						<% end %>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class='col-md-6'>
-			<div class='panel panel-success'>
-				<div class='panel-heading'>
-					<h3 class='panel-title'>Closed Tickets</h3>
-				</div>
-				<div class='panel-body' style='padding:0'>
-					<div class='tickets' id='closed_tickets'>
-						<% @closed_cases.each do |ticket| %>
-						<div id='ticket_<%= ticket.id %>' class='ticket' onclick='viewTicket(<%= ticket.id %>)'>
-							<p class='title'><%= ticket.title %></p>
-							<p class='timestamp'><%= custom_time_ago(ticket.created_at) %></p>
-							<p><%= ticket.issue_description.truncate(80) %></p>
-							<div class='row' style='margin:0'>
-								<div class='col-sm-6' style='padding-left:0'>
-									<p class='detail'>
-										<% priorities = ['Low',     'Medium',  'High'] %>
-	                                	<% classes =    ['success', 'warning', 'danger'] %>
-										<strong>Priority:</strong><br>
-										<span class='text-<%= classes[ticket.priority] %>'><%= priorities[ticket.priority] %></span>
-									</p>
-								</div>
-								<div class='col-sm-6' style='padding-right:0'>
-									<p class='detail'>
-										<strong>Category:</strong><br>
-										<%= ticket.category %>
-									</p>
-								</div>
-							</div>
-						</div>
-						<% end %>
-					</div>
-				</div>
-			</div>
-		</div>
+<% content_for :top_level, 'Support' %>
+<% content_for :low_levels, YAML.dump(['Dashboard']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+
+        <div class="panel">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-sm-6">
+                       	<span class="fz16">Support Dashboard</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body plr20">
+            	<div class="row">
+                	<div class="col-sm-6 col-md-3">
+                    	<div class="stat-number">
+                        	<div class="number"><%= SupportCase.where(status: 'Pending').count %></div>
+                            New Tickets
+                        </div>
+                    </div>
+                	<div class="col-sm-6 col-md-3">
+                    	<div class="stat-number">
+                        	<div class="number"><%= SupportCase.where(status: 'Open').count %></div>
+                            Open Tickets
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                    	<div class="stat-number">
+                        	<div class="number"><%= SupportCase.where(status: ['Open','Pending'], priority: 2).count %></div>
+                            Priority Tickets
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                    	<div class="stat-number">
+                        	<div class="number"><%= SupportCase.where(status: 'Archived').count %></div>
+                            Archived Tickets
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-heading ptb5">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mt5"><span class="icon-graph mr7"></span>Tickets</div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body" id='reports' style='height:300px;'>
+				<%= render 'admins/reports/support_tickets' %>
+            </div>
+        </div>
+
+        <div class="row row5">
+            <div class="col-sm-6">
+                <div class="panel">
+                    <div class="panel-heading ptb5">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mt5"><span class="icon-ticket mr7"></span> New Tickets</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="nano" style="height:200px;">
+                            <div class="nano-content">
+                                <table class="table fz12-5 table-nb1 table-hover">
+                                    <tbody>
+                                    <% SupportCase.where(status: 'Pending').order(created_at: :desc).limit(6).each do |ticket| %>
+                                    <tr onclick='window.location = "<%= admin_view_ticket_path(id: ticket.id) %>"' style='cursor: pointer'>
+                                        <td>Ticket <span class="text-semi">#<%= ticket.id %></span>: <%= ticket.title %></td>
+                                        <td class="text-grey text-right"><%= ticket.created_at.strftime('%Y/%m/%d %H:%M') %></td>
+                                    </tr>
+                                    <% end %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+            	<div class="panel">
+                    <div class="panel-heading ptb5">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mt5"><span class="icon-bell mr7"></span> Notifications</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div id="notif-today" class="collapse in">
+                            <div class="nano" style="height:200px;">
+                                <div class="nano-content">
+                                    <table class="table fz12-5 table-nb1 table-hover">
+                                        <tbody>
+                                            <% @notifs.each do |notif| %>
+                                                <tr onclick='window.location = "<%= notif.link %>"' style='cursor: pointer'>
+                                                    <td><%= notif.message %></td>
+                                                    <td class="text-grey text-right"><%= notif.created_at.strftime('%Y/%m/%d %H:%M') %></td>
+                                                </tr>
+                                            <% end %>
+
+                                        <tr>
+                                            <td>Ticket <span class="text-semi">#15789e</span> has been created by <span class="text-semi">Victor Tacitus</span></td>
+                                            <td class="text-grey">23:50</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ticket <span class="text-semi">#157sd7</span> has been archive.</td>
+                                            <td class="text-grey">23:50</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ticket <span class="text-semi">#15d8w8</span> has deleted.</td>
+                                            <td class="text-grey">23:50</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 	</div>
-</div>
+	</div>
 
 <%= render('support/partials/support_modal_admin') %>
 
 <script type="text/javascript">
 function viewTicket(id) {
 	$.ajax({
-		url: '<%= admin_view_ticket_path %>?id='+id
+		url: '/admins/support/ticket/'+id
 
 	})
 }
+$('#home').addClass('active')
 <% if params[:id].present? %>
 $('#ticket_<%= params[:id] %>').click()
 <% end %>

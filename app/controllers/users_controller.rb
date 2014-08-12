@@ -475,8 +475,11 @@ class UsersController < ApplicationController
 		if params[:mailchimp].present?
 			@user.mailchimp = true
 		end
-
-
+		code = SecureRandom.hex(5).upcase
+		until User.where(refer_code: code).any? == false
+			code = SecureRandom.hex(5).upcase
+		end
+		@user.refer_code = code
 
 		if @user.valid?
 			if @user.mailchimp == true

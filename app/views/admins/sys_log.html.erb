@@ -1,19 +1,21 @@
 <% content_for :top_level, 'Utilities' %>
 <% content_for :low_levels, YAML.dump(['System Log']) %>
-<div class='container'>
-    <% @logs.each do |log| %>
-        <% if log.error == true %>
-            <div class='panel panel-danger'>
-        <% else %>
-            <div class='panel panel-success'>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <% @logs.each do |log| %>
+            <% if log.error == true %>
+                <div class='panel panel-danger'>
+            <% else %>
+                <div class='panel panel-success'>
+            <% end %>
+                <div class='panel-heading'>
+                <span class='pull-right'><%= log.created_at.strftime('%Y-%m-%d at %l:%M %p') %></span>
+                    <h3 class='panel-title'><%= log.title %></h3>
+                </div>
+                <div class='panel-body'>
+                    <%= log.message %>
+                </div>
+            </div>
         <% end %>
-            <div class='panel-heading'>
-            <span class='pull-right'><%= log.created_at.strftime('%Y-%m-%d at %l:%M %p') %></span>
-                <h3 class='panel-title'><%= log.title %></h3>
-            </div>
-            <div class='panel-body'>
-                <%= log.message %>
-            </div>
-        </div>
-    <% end %>
+    </div>
 </div>

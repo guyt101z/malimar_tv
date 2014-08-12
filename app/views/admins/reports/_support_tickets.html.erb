@@ -1,0 +1,42 @@
+<%
+    i = 30
+    data_array = Array.new
+
+    until i < 0
+        data = DailyData.where(date: Date.today - i.days).last
+        if data.nil?
+            data = DailyData.new(date: Date.today - i.days, opened_tickets: 0, closed_tickets: 0, archived_tickets: 0, new_tickets: 0)
+        end
+
+        data_array.push(data)
+
+        i -= 1
+    end
+%>
+<script>
+    var chart = Morris.Line({
+        element: 'reports',
+        data: [
+            <% data_array.each_with_index do |data, i| %>
+                <% days = 30 - i %>
+                {
+                    y: '<%= (Date.today - days.days).strftime("%Y-%m-%d") %>',
+                    a: <% unless data.new_tickets.nil? %><%= data.new_tickets %><% else %>0<% end %>,
+                    b: <% unless data.opened_tickets.nil? %><%= data.opened_tickets %><% else %>0<% end %>,
+                    c: <% unless data.closed_tickets.nil? %><%= data.closed_tickets %><% else %>0<% end %>,
+                    d: <% unless data.archived_tickets.nil? %><%= data.archived_tickets %><% else %>0<% end %>
+                }
+                <% unless i == 30 %>,<% end %>
+            <% end %>
+        ],
+        xkey: 'y',
+        ykeys: ['a','b','c','d'],
+        labels: ['New Tickets', 'Accepted Tickets', 'Closed Tickets', 'Archived Tickets'],
+        lineColors: ['#73DEA9', '#428bca', '#a94442', '#D8DB00'],
+        resize: true,
+        hideHover: true,
+        pointSize: 0,
+        smooth: false,
+        lineWidth: 2
+      });
+</script>

@@ -1,0 +1,176 @@
+<% content_for :top_level, 'Support' %>
+<% content_for :low_levels, YAML.dump(['Ticket '+ @case.id.to_s]) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+
+        <div class="panel">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-sm-6">
+                       	<span class="fz16">Support Ticket #72edfg45</span>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <div class="panel-control">
+                            <button type="button" class="close"><span class="times">&times;</span></button>
+                            <button type="button" class="close"><span class="fa fa-angle-down"></span></button>
+                            <button type="button" class="close"><span class="fa fa-cog"></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body plr20">
+            	<div class="row">
+                	<div class="col-sm-3">
+                    	<div class="media">
+                        	<div class="pull-left"><span class="icon-circle-user"></span></div>
+                            <div class="media-body">
+                            	<div class="text-bold"><%= @case.user_name %></div>
+								<div class="fz12-5">
+                                    <% if @case.user_id.present? %>
+                                        <%= link_to 'View Account', view_user_path(id: @case.user_id) %>
+                                    <% else %>
+                                        <%= link_to 'View Account', view_rep_path(id: @case.sales_representative_id) %>
+                                    <% end %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                	<div class="col-sm-4">
+                    	<div class="fz12-5">Created: <%= @case.created_at.strftime('%B %-d, %Y at %H:%M') %><br>
+						Updated: <%= @case.created_at.strftime('%B %-d, %Y at %H:%M') %></div>
+                    </div>
+                	<div class="col-sm-3">
+                    	<div class="fz12-5">
+                        	Department: <%= @case.category %><br>
+							Subject: <%= @case.title %>
+                        </div>
+                    </div>
+                	<div class="col-sm-2">
+                        <% priorities = ['Low','Medium','High'] %>
+                    	<div class="fz12-5">
+                        	<span class="fa fa-stop color-<%= @case.priority %>"></span> <%= priorities[@case.priority] %><br>
+                            Moves: <%= @case.moves %>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <%= form_tag update_ticket_status_path, remote: true do %>
+                <div class="row">
+                	<div class="col-sm-20">
+                        <%= hidden_field_tag :id, @case.id %>
+                        <%= select_tag :priority, options_for_select([['Low Priority',0],['Medium Priority',1],['High Priority',2]], @case.priority), class: 'form-control' %>
+                    </div>
+                	<div class="col-sm-20">
+                        <%= select_tag :category, options_for_select(['Billing','Technical Support','Bug Report'], @case.category), class: 'form-control' %>
+                    </div>
+                	<div class="col-sm-20">
+                    	<%= select_tag :status, options_for_select([['New Ticket/Pending','Pending'],['Open Ticket','Open'],['Closed Ticket','Closed'],'Archived'], @case.status), class: 'form-control' %>
+                    </div>
+                	<div class="col-sm-20">
+                        <%= submit_tag 'Update Ticket', class: "btn btn-default btn-block" %>
+                    </div>
+                	<div class="col-sm-20">
+                        <%= link_to 'Delete Ticket', delete_ticket_path(id: @case.id), data: {confirm: 'Are you sure you want to delete this ticket?'}, class: 'btn btn-danger btn-block' %>
+                    </div>
+                </div>
+                <% end %>
+                <br>
+                <div class="message current">
+                	<div class="row mb10">
+                    	<div class="col-sm-6">
+                        	<div class="fz12-5">Issue/Description</div>
+                        </div>
+                    </div>
+                    <%= simple_format(@case.issue_description) %>
+                </div>
+                <div class='row'>
+                    <div class='col-lg-8 col-md-7 col-sm-6'>
+                        <div class='message current' style='height: 80px; padding: 0;'>
+                            <div class='message_wrapper'>
+                                <div class='attach_file' onclick='$("#file").click()' id='file_area'>
+                                    <i class='fa fa-upload'></i>
+                                </div>
+                                <div class='text_message'>
+                                <%= form_tag admin_send_message_on_ticket_path, id: 'messages-form', remote: true do %>
+                                    <%= text_area_tag :message, '', placeholder: 'Enter your message here' %>
+                                    <%= submit_tag 'Send', style: 'display:none' %>
+                                    <%= hidden_field_tag :case_id, @case.id %>
+                                <% end %>
+                                <a onclick='$("#messages-form").trigger("submit.rails")'>Send</a>
+                                </div>
+                            </div>
+                            <%= form_tag admin_attach_file_to_ticket_path, remote: true do %>
+                                <%= file_field_tag :file, style: 'display:none' %>
+                                <%= hidden_field_tag :file_case_id, @case.id %>
+                            <% end %>
+                            <script type="text/javascript">
+                            $('#file').fileupload({
+                                    dataType: "script",
+                                    add: function(e, data) {
+                                        data.context = $(tmpl("template-upload", data.files[0]));
+                                        $('#upload-progress').remove()
+                                        $('#file_area').append(data.context);
+                                        return data.submit();
+                                    },
+                                    progress: function(e, data) {
+                                        var progress;
+                                        if (data.context) {
+                                            progress = parseInt(data.loaded / data.total * 100, 10);
+                                            return data.context.find('.progress-bar').attr('aria-valuenow', progress).css('width', progress+'%');
+                                        }
+                                    },
+                                    fail: function(e,data) {
+                                        if (data.context) {
+                                            $
+                                            return data.context.find('.progress-bar').css('width','100%').removeClass('progress-bar-info').addClass('progress-bar-danger')
+                                        }
+                                    },
+                                    done: function(e,data) {
+                                        if (data.context) {
+                                            return data.context.find('.progress-bar').css('width','100%').removeClass('progress-bar-info').addClass('progress-bar-success')
+                                        }
+                                    }
+                                });
+                            </script>
+                        </div>
+                        <div id='ticket_messages'>
+
+                        </div>
+                    </div>
+                    <div class='col-lg-4 col-md-5 col-sm-6' style='border: 0'>
+                        <% if @case.transaction_id.present? %>
+                            <% transaction = Transaction.find(@case.transaction_id) %>
+                            <% if transaction.status == 'Paid' %>
+                                <div class='message current text-center' style='height: 80px; padding: 0; margin-left: -10px;' id='refund'><%= link_to "Issue Refund", issue_refund_path(id: @case.id), class: "btn btn-info", remote: true %></div>
+                            <% elsif transaction.status == 'Refunded' %>
+                                <div class='message current text-center' style='height: 80px; padding: 0; margin-left: -10px;' id='refund'><%= link_to "Refund Issued", "#", class: "btn btn-info", remote: true, disabled: "disabled" %></div>
+                            <% end %>
+                        <% end %>
+                        <div class='message' style='border:0;'>
+                            <div class="fz12-5 text-semi">Ticket Attachments:</div>
+                            <div class='row' style='height:300px; overflow-y:scroll' id='ticket_attachments'>
+                                <% @attachments.each do |att| %>
+                                    <div class='col-xs-6 support_image_wrapper'>
+                                        <%= link_to image_tag(att.file_url), att.file_url, target: "new" %>
+                                    </div>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+	</div>
+	</div>
+
+<% count = @messages.count %>
+<% @messages.each do |message| %>
+<script>
+    var count = <%= count %>
+    var message = Autolinker.link('<%= message.message.squish %>')
+    $('#ticket_messages').append('<div class="message"><div class="row mb10"><div class="col-sm-6"><div class="fz12-5"><span class="nmb"><%= count %></span> <%= message.user_name %>:</div></div><div class="col-sm-6"><div class="fz11-5 text-right"><%= message.created_at.strftime('%B %-d, %Y at %H:%M') %></div></div></div><p>'+message+'</p></div>')
+</script>
+<% count -= 1 %>
+<% end %>

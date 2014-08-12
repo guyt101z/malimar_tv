@@ -13,11 +13,16 @@
 		<% elsif params[:action] == 'manage_admins' || params[:action] == 'new_admin' || params[:action] == 'view_admin' %>
 			<%= render 'admins/nav/sidenavs/admins' %>
 
-		<% elsif params[:action] == 'sales_reps' || params[:action] == 'view_rep' || params[:action] == 'new_sales_rep' %>
+		<% elsif params[:action] == 'sales_reps' || params[:action] == 'view_rep' || params[:action] == 'new_sales_rep' ||
+		 		 params[:action] == 'payment_requests' || params[:action] == 'view_request' %>
 			<%= render 'admins/nav/sidenavs/sales_reps' %>
 
 		<% elsif params[:action] == 'users' || params[:action] == 'view_user' || params[:action] == 'new_user' %>
 			<%= render 'admins/nav/sidenavs/users' %>
+
+		<% elsif params[:action] == 'support' || params[:action] == 'new_tickets' || params[:action] == 'admin_view_ticket'||
+		params[:action] == 'open_tickets' || params[:action] == 'closed_tickets' || params[:action] == 'archived_tickets' %>
+			<%= render 'admins/nav/sidenavs/support' %>
 
 		<% elsif params[:controller] == 'transactions' %>
 			<%= render 'admins/nav/sidenavs/transactions' %>

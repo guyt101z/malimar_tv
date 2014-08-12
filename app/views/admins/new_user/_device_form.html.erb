@@ -1,0 +1,29 @@
+<h4 class="title"><span class="icon-circle-bookmark mr7"></span> User Devices <span class="fa fa-question-circle"></span></h4>
+
+<div class='row' id='device_form' style='display:none'>
+    <%= hidden_field_tag :device_to_add, false %>
+    <div class='col-xs-6 form-group'>
+        <label for="">Roku Serial <span class="text-danger">*</span></label>
+        <%= text_field_tag :serial, '', class: 'form-control input-md' %>
+    </div>
+    <div class='col-xs-6 form-group'>
+        <label for="">Nickname <span class="text-muted"><em>(Optional)</em></span></label>
+        <%= text_field_tag :name, '', class: 'form-control input-md' %>
+    </div>
+</div>
+<button type="button" id='device_toggle' class="btn btn-default btn-w170 btn-sm">Register Device</button>
+
+<script>
+    $('#device_toggle').click(function showDeviceForm(){
+        if ($('#device_to_add').val() == 'true'){
+            $('#device_form').hide()
+            $('#device_to_add').val(false)
+            $('#device_toggle').html('Register Device')
+        }
+        else {
+            $('#device_form').show()
+            $('#device_to_add').val(true)
+            $('#device_toggle').html('Cancel')
+        }
+    })
+</script>

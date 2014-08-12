@@ -1,0 +1,104 @@
+<h4 class="title"><span class="icon-circle-dollar mr7"></span> Client Transactions <span class="fa fa-question-circle"></span></h4>
+
+<div class='row' id='tx_form' style='display:none'>
+    <%= hidden_field_tag :tx_to_process, false %>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="">Plan <span class="text-danger">*</span></label>
+            <%
+            plans = [['Free Trial',nil]]
+            Plan.all.each do |plan|
+                plans.push(["#{plan.name} - #{pluralize(plan.months, 'month')} (#{number_with_precision(plan.price, precision: 2)})", plan.id])
+            end
+            %>
+            <%= select_tag :plan_id, options_for_select(plans), class: 'form-control input-md' %>
+        </div>
+        <div class="form-group" id='payment_form' style='display:none'>
+            <label for="">&nbsp;</label>
+            <div class="well well-sm">
+                <div class="form-group">
+                    <label for="">Payment Method <span class="text-danger">*</span></label>
+                    <%= select_tag :payment_type, options_for_select([['Choose Method',nil],'Credit Card','Bank Transfer','Money Order','Cheque']), class: 'form-control input-md' %>
+                </div>
+                <div id='credit_form' style='display:none'>
+                <div class="form-group">
+                    <label for="">Card Holder’s Name <span class="text-danger">*</span></label>
+                    <%= text_field_tag :serial, '', class: 'form-control input-md' %>
+                </div>
+                <div class="form-group">
+                    <label for="">Credit Card Number <span class="text-danger">*</span></label>
+                    <%= text_field_tag :serial, '', class: 'form-control input-md' %>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="">Month<span class="text-danger">*</span></label>
+                            <%= select_tag :card_month, options_for_select([['Expiry Month', nil],
+                                                                            ['Jan (01)',1],
+                                                                            ['Feb (02)',2],
+                                                                            ['Mar (03)',3],
+                                                                            ['Apr (04)',4],
+                                                                            ['May (05)',5],
+                                                                            ['Jun (06)',6],
+                                                                            ['Jul (07)',7],
+                                                                            ['Aug (08)',8],
+                                                                            ['Sep (09)',9],
+                                                                            ['Oct (10)',10],
+                                                                            ['Nov (11)',11],
+                                                                            ['Dec (12)',12]]), class: 'form-control' %>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Year<span class="text-danger">*</span></label>
+                            <% years = [['Expiry Year', nil]] %>
+                            <% this_year = (Date.today.strftime('%Y')).to_i %>
+                            <% end_year = ((Date.today+15.years).strftime('%Y')).to_i %>
+                            <% for i in this_year..end_year %>
+                               <% years.push(i) %>
+                            <% end %>
+                            <%= select_tag :card_year, options_for_select(years), class: 'form-control' %>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="">CVV <span class="text-danger">*</span></label>
+                            <%= text_field_tag :ccv, '', class: 'form-control input-md' %>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<button type="button" id='tx_toggle' class="btn btn-default btn-w170 btn-sm">Register Transaction</button>
+
+<script>
+    $('#tx_toggle').click(function showDeviceForm(){
+        if ($('#tx_to_process').val() == 'true'){
+            $('#tx_form').hide()
+            $('#tx_to_process').val(false)
+            $('#tx_toggle').html('Register Device')
+        }
+        else {
+            $('#tx_form').show()
+            $('#tx_to_process').val(true)
+            $('#tx_toggle').html('Cancel')
+        }
+    })
+    $('#payment_type').change(function(){
+        if ($('#payment_type').val() == 'Credit Card'){
+            $('#credit_form').show()
+        }
+        else {
+            $('#credit_form').hide()
+        }
+    })
+    $('#plan_id').change(function(){
+        if ($('#plan_id').val() != '') {
+            $('#payment_form').show()
+        }
+        else {
+            $('#payment_form').hide()
+        }
+    })
+</script>

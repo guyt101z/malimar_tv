@@ -82,7 +82,7 @@ $('#serial').parent().removeClass('has-error')
     <% if @user.errors[:password_confirmation].present? %>
         $('#password_confirmation').parent().addClass('has-error has-feedback').append('<span id="password_confirmation-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="password_confirmation-error" class="fz15">Password confirmation <%= @user.errors[:password_confirmation].join(", ") %></div>')
     <% end %>
-
+alert('<%= @user.errors.full_messages.join(" | ") %>')
     <% if @device != nil %>
         <% if @device.errors[:serial].present? %>
             $('#serial').parent().addClass('has-error has-feedback').append('<span id="serial-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="serial-error" class="fz15">Serial number <%= @device.errors[:serial].join(", ") %></div>')

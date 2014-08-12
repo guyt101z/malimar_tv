@@ -8,6 +8,7 @@ class AdminsController < ApplicationController
 	end
 	def new_user
 		unless current_admin.authorized_to?('create_user')
+			
 			flash[:error] = 'You are not authorized to view that.'
 			redirect_to '/admins'
 		end
@@ -34,6 +35,139 @@ class AdminsController < ApplicationController
 			render status: 403
 		end
 	end
+
+	def create_user
+		@user = User.new
+		@user.first_name = params[:first_name]
+		@user.last_name = params[:last_name]
+		@user.email = params[:email]
+		@user.phone = params[:phone]
+		@user.address_1 = params[:address_1]
+		@user.address_2 = params[:address_2]
+		@user.country = params[:country]
+		@user.state = params[:state]
+		@user.city = params[:city]
+		@user.zip = params[:zip]
+
+		@user.password = params[:password]
+
+		if @user.save?
+			if params[:device_to_add] == true
+				@device = Device.new
+				@device.serial = params[:serial]
+				@device.name = params[:name]
+				@device.user_id = @user.id
+				if @device.save?
+					if Rails.env.development?
+						path = "#{Rails.root}/serials/#{@device.serial}"
+					elsif Rails.env.production?
+						path = "/tmp/serials/#{@device.serial}"
+					end
+
+					serial_file = File.open(path,'w+')
+					@device.serial_file = serial_file
+					@device.save
+					@device_errors = false
+				else
+					@device_errors = true
+				end
+			else
+				@device_errors = false
+			end
+
+			if params[:note_to_add] == true && @device_errors == false
+
+			else
+				@note_errors = false
+			end
+
+			if params[:tx_to_process] == true && @device_errors == false && @note_errors == false
+				plan = Plan.find(params[:plan_id])
+				if params[:payment_type] == 'Credit Card'
+					# Send requests to the gateway's test servers
+					ActiveMerchant::Billing::Base.mode = :test
+
+					# Create a new credit card object
+					credit_card = ActiveMerchant::Billing::CreditCard.new(
+						:number     => params[:card],
+						:month      => params[:card_month],
+						:year       => params[:card_year],
+						:first_name => params[:card_first_name],
+						:last_name  => params[:card_last_name],
+						:verification_value  => params[:ccv]
+					)
+
+					if credit_card.valid?
+						@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
+						gateway = ActiveMerchant::Billing::PaypalGateway.new(
+							login:    	@paypal[:login],
+							password: 	@paypal[:password],
+							signature: 	@paypal[:signature]
+						)
+
+						response = gateway.purchase((plan.price*100).to_i, credit_card, ip: request.remote_ip)
+
+						if response.success?
+							@user.expiry += @plan.months.months
+							@user.save
+							transaction = Transaction.new
+							transaction.user_id = @user.id
+							transaction.payment_type = 'Credit Card'
+							transaction.paypal_id = response.params['transaction_id']
+							transaction.status = 'Paid'
+							transaction.customer_paid = DateTime.now
+							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+
+
+							transaction.balance_used = 0
+							transaction.save
+							@tx_errors = false
+						else
+							@tx_errors = true
+							@tx_error = response.message
+						end
+					else
+						@tx_errors = true
+						@tx_error = 'This credit card is not valid'
+					end
+				elsif params[:payment_type].present?
+					transaction = Transaction.new
+					transaction.user_id = @user.id
+					transaction.payment_type = params[:payment_type]
+					transaction.status = 'Pending'
+					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+					transaction.balance_used = 0
+					transaction.save
+					@tx_errors = false
+				else
+					@tx_errors = true
+					@tx_error = 'You must choose a payment type.'
+				end
+			else
+				tx_errors = false
+				length = Setting.where(name: 'Free Trial Length').first.data
+				@user.expiry = Date.today + length.to_i.days
+				@user.save
+			end
+		else
+			@success = false
+		end
+
+		if @device_errors == true || @note_errors == true || @tx_errors == true
+			@user.destroy
+		else
+			TransactionalMailer.admin_register_customer(@user, params[:password]).deliver
+			update = AdminActivity.create(admin_id: current_admin.id, data: YAML.dump({type: 'User Registration', message: "#{current_admin.name} registered a new user.", user_id: @user.id}))
+			Resque.enqueue(AdminNotifier, 0, 'system', "#{@user.name} has joined.", view_user_path(id: @user.id))
+
+			if transaction.payment_type == 'Credit Card'
+				TransactionalMailer.order_paid(transaction, @user).deliver
+			else
+				TransactionalMailer.order_created(transaction, @user).deliver
+			end
+		end
+	end
+
 
 	def users
 		if current_admin.authorized_to?('manage_user')
@@ -297,8 +431,7 @@ class AdminsController < ApplicationController
 
 	def support
 		if current_admin.authorized_to?('manage_support_tickets')
-			@open_cases = SupportCase.where(status: 'Open', admin_id: current_admin.id)
-			@closed_cases = SupportCase.where(status: 'Closed', admin_id: current_admin.id)
+			@notifs = AdminNotification.where(admin_id: current_admin.id, notif_type: 'ticket').order(created_at: :desc)
 		else
 			flash[:error] = 'You are not allowed to view that.'
 			redirect_to '/admins' and return
@@ -306,7 +439,237 @@ class AdminsController < ApplicationController
 	end
 
 	def new_tickets
-		@cases = SupportCase.where(status: 'Pending')
+		search_hash = Hash.new
+		search_hash[:status] = 'Pending'
+		if params[:search].present? || params[:category].present? || params[:priority].present?
+			@cases = Array.new
+			if params[:search].present?
+				begin
+					ticket_number = Integer(params[:search])
+					@cases = SupportCase.where(id: ticket_number)
+				rescue => e
+					users = User.all
+					reps = SalesRepresentative.all
+					if params[:category].present?
+						search_hash[:category] = params[:category]
+					end
+					if params[:priority].present?
+						search_hash[:priority] = params[:priority]
+					end
+
+					users.each do |user|
+						if user.matches?(params[:search])
+							search_hash[:user_id] = user.id
+							user_cases = SupportCase.where(search_hash)
+							user_cases.each do |user_case|
+								@cases.push(user_case)
+							end
+						end
+					end
+					search_hash = search_hash.except(:user_id)
+
+					reps.each do |rep|
+						if rep.matches?(params[:search])
+							search_hash[:sales_representative_id] = rep.id
+							rep_cases = SupportCase.where(search_hash)
+							rep_cases.each do |rep_case|
+								@cases.push(rep_case)
+							end
+						end
+					end
+				end
+			else
+				if params[:category].present?
+					search_hash[:category] = params[:category]
+				end
+				if params[:priority].present?
+					search_hash[:priority] = params[:priority]
+				end
+
+				cases = SupportCase.where(search_hash)
+				cases.each do |search_case|
+					@cases.push(search_case)
+				end
+			end
+		else
+			@cases = SupportCase.where(search_hash)
+		end
+	end
+
+	def open_tickets
+		search_hash = Hash.new
+		search_hash[:status] = 'Open'
+		if params[:search].present? || params[:category].present? || params[:priority].present?
+			@cases = Array.new
+			if params[:search].present?
+				begin
+					ticket_number = Integer(params[:search])
+					@cases = SupportCase.where(id: ticket_number)
+				rescue => e
+					users = User.all
+					reps = SalesRepresentative.all
+					if params[:category].present?
+						search_hash[:category] = params[:category]
+					end
+					if params[:priority].present?
+						search_hash[:priority] = params[:priority]
+					end
+
+					users.each do |user|
+						if user.matches?(params[:search])
+							search_hash[:user_id] = user.id
+							user_cases = SupportCase.where(search_hash)
+							user_cases.each do |user_case|
+								@cases.push(user_case)
+							end
+						end
+					end
+					search_hash = search_hash.except(:user_id)
+
+					reps.each do |rep|
+						if rep.matches?(params[:search])
+							search_hash[:sales_representative_id] = rep.id
+							rep_cases = SupportCase.where(search_hash)
+							rep_cases.each do |rep_case|
+								@cases.push(rep_case)
+							end
+						end
+					end
+				end
+			else
+				if params[:category].present?
+					search_hash[:category] = params[:category]
+				end
+				if params[:priority].present?
+					search_hash[:priority] = params[:priority]
+				end
+
+				cases = SupportCase.where(search_hash)
+				cases.each do |search_case|
+					@cases.push(search_case)
+				end
+			end
+		else
+			@cases = SupportCase.where(search_hash)
+		end
+	end
+
+	def closed_tickets
+		search_hash = Hash.new
+		search_hash[:status] = 'Closed'
+		if params[:search].present? || params[:category].present? || params[:priority].present?
+			@cases = Array.new
+			if params[:search].present?
+				begin
+					ticket_number = Integer(params[:search])
+					@cases = SupportCase.where(id: ticket_number)
+				rescue => e
+					users = User.all
+					reps = SalesRepresentative.all
+					if params[:category].present?
+						search_hash[:category] = params[:category]
+					end
+					if params[:priority].present?
+						search_hash[:priority] = params[:priority]
+					end
+
+					users.each do |user|
+						if user.matches?(params[:search])
+							search_hash[:user_id] = user.id
+							user_cases = SupportCase.where(search_hash)
+							user_cases.each do |user_case|
+								@cases.push(user_case)
+							end
+						end
+					end
+					search_hash = search_hash.except(:user_id)
+
+					reps.each do |rep|
+						if rep.matches?(params[:search])
+							search_hash[:sales_representative_id] = rep.id
+							rep_cases = SupportCase.where(search_hash)
+							rep_cases.each do |rep_case|
+								@cases.push(rep_case)
+							end
+						end
+					end
+				end
+			else
+				if params[:category].present?
+					search_hash[:category] = params[:category]
+				end
+				if params[:priority].present?
+					search_hash[:priority] = params[:priority]
+				end
+
+				cases = SupportCase.where(search_hash)
+				cases.each do |search_case|
+					@cases.push(search_case)
+				end
+			end
+		else
+			@cases = SupportCase.where(search_hash)
+		end
+	end
+
+
+
+	def archived_tickets
+		search_hash = Hash.new
+		search_hash[:status] = 'Archived'
+		if params[:search].present? || params[:category].present? || params[:priority].present?
+			@cases = Array.new
+			if params[:search].present?
+				begin
+					ticket_number = Integer(params[:search])
+					@cases = SupportCase.where(id: ticket_number)
+				rescue => e
+					users = User.all
+					reps = SalesRepresentative.all
+					if params[:category].present?
+						search_hash[:category] = params[:category]
+					end
+					if params[:priority].present?
+						search_hash[:priority] = params[:priority]
+					end
+
+					users.each do |user|
+						if user.matches?(params[:search])
+							search_hash[:user_id] = user.id
+							user_cases = SupportCase.where(search_hash)
+							user_cases.each do |user_case|
+								@cases.push(user_case)
+							end
+						end
+					end
+					search_hash = search_hash.except(:user_id)
+
+					reps.each do |rep|
+						if rep.matches?(params[:search])
+							search_hash[:sales_representative_id] = rep.id
+							rep_cases = SupportCase.where(search_hash)
+							rep_cases.each do |rep_case|
+								@cases.push(rep_case)
+							end
+						end
+					end
+				end
+			else
+				if params[:category].present?
+					search_hash[:category] = params[:category]
+				end
+				if params[:priority].present?
+					search_hash[:priority] = params[:priority]
+				end
+
+				cases = SupportCase.where(search_hash)
+				cases.each do |search_case|
+					@cases.push(search_case)
+				end
+			end
+		else
+			@cases = SupportCase.where(search_hash)
+		end
 	end
 
 	def view_device
@@ -348,7 +711,7 @@ class AdminsController < ApplicationController
 
 	def payment_requests
 		if current_admin.authorized_to?('authorize_withdrawal')
-			@withdrawals = Withdrawal.where(status: ['Pending','In Progress', 'Reviewed'])
+			@withdrawals = Withdrawal.all
 		else
 			flash[:error] = 'You are not authorized to view that.'
 			redirect_to '/admins'
@@ -358,8 +721,10 @@ class AdminsController < ApplicationController
 	def view_request
 		if current_admin.authorized_to?('authorize_withdrawal')
 			@withdrawal = Withdrawal.find(params[:id])
-			@withdrawal.status = 'Reviewed'
-			@withdrawal.save
+			if @withdrawal.status == 'Pending'
+				@withdrawal.status = 'Reviewed'
+				@withdrawal.save
+			end
 			@rep = SalesRepresentative.find(@withdrawal.sales_rep_id)
 		else
 			render status: 403
@@ -371,10 +736,9 @@ class AdminsController < ApplicationController
 			@withdrawal = Withdrawal.find(params[:id])
 			@withdrawal.status = 'Approved'
 			@withdrawal.approved = DateTime.now
-			@withdrawal.admin_id = current_admin.id
 			@withdrawal.note = params[:note]
 			if @withdrawal.save
-
+				flash[:success] = 'Withdrawal Approved! '+@withdrawal.status
 				TransactionalMailer.withdrawal_approved(@withdrawal).deliver
 				AdminActivity.create(admin_id: current_admin.id,
 									data: YAML.dump({
@@ -385,6 +749,7 @@ class AdminsController < ApplicationController
 									}))
 			end
 		else
+			flash[:success] = 'Withdrawal fail!'
 			render status: 403
 		end
 	end
@@ -394,7 +759,6 @@ class AdminsController < ApplicationController
 			@withdrawal = Withdrawal.find(params[:id])
 			@withdrawal.status = 'Denied'
 			@withdrawal.approved = DateTime.now
-			@withdrawal.admin_id = current_admin.id
 			@withdrawal.note = params[:note]
 			if @withdrawal.save
 

@@ -19,7 +19,7 @@ class TransactionalMailer < ActionMailer::Base
 
     		mail(to: admin.email, subject: @template.subject)
         rescue=> e
-            SystemLog.create(error: true, true: 'Admin Register Admin', message: e.message)
+            SystemLog.create(error: true, title: 'Admin Register Admin', message: e.message)
         end
 	end
 
@@ -41,7 +41,7 @@ class TransactionalMailer < ActionMailer::Base
 
             mail(to: user.email, subject: @template.subject)
         rescue=> e
-            SystemLog.create(error: true, true: 'Admin Register Customer', message: e.message)
+            SystemLog.create(error: true, title: 'Admin Register Customer', message: e.message)
         end
 	end
 
@@ -63,7 +63,7 @@ class TransactionalMailer < ActionMailer::Base
 
             mail(to: rep.email, subject: @template.subject)
         rescue=> e
-            SystemLog.create(error: true, true: 'Admin Register Sales Representative', message: e.message)
+            SystemLog.create(error: true, title: 'Admin Register Sales Representative', message: e.message)
         end
     end
 
@@ -92,7 +92,7 @@ class TransactionalMailer < ActionMailer::Base
 
             mail(to: user.email, subject: @template.subject)
         rescue=> e
-            SystemLog.create(error: true, true: 'Order Created', message: e.message)
+            SystemLog.create(error: true, title: 'Order Created', message: e.message)
         end
     end
 
@@ -122,7 +122,7 @@ class TransactionalMailer < ActionMailer::Base
 
             mail(to: user.email, subject: @template.subject)
         rescue=> e
-            SystemLog.create(error: true, true: 'Order Paid', message: e.message)
+            SystemLog.create(error: true, title: 'Order Paid', message: e.message)
         end
     end
 
@@ -146,7 +146,7 @@ class TransactionalMailer < ActionMailer::Base
 
             mail(to: user.email, subject: @template.subject)
         rescue=> e
-            SystemLog.create(error: true, true: 'Sales Rep Register Customer', message: e.message)
+            SystemLog.create(error: true, title: 'Sales Rep Register Customer', message: e.message)
         end
     end
 
@@ -167,7 +167,7 @@ class TransactionalMailer < ActionMailer::Base
 
             mail(to: user.email, subject: @template.subject)
         rescue=> e
-            SystemLog.create(error: true, true: 'Self Sign Up', message: e.message)
+            SystemLog.create(error: true, title: 'Self Sign Up', message: e.message)
         end
     end
 
@@ -189,7 +189,7 @@ class TransactionalMailer < ActionMailer::Base
 
             mail(to: user.email, subject: @template.subject)
         rescue=> e
-            SystemLog.create(error: true, true: 'Subscription Reminder', message: e.message)
+            SystemLog.create(error: true, title: 'Subscription Reminder', message: e.message)
         end
     end
 
@@ -213,7 +213,7 @@ class TransactionalMailer < ActionMailer::Base
 
             mail(to: rep.email, subject: @template.subject)
         rescue=> e
-            SystemLog.create(error: true, true: 'Withdrawal Created', message: e.message)
+            SystemLog.create(error: true, title: 'Withdrawal Created', message: e.message)
         end
     end
 
@@ -239,7 +239,7 @@ class TransactionalMailer < ActionMailer::Base
 
             mail(to: rep.email, subject: @template.subject)
         rescue=> e
-            SystemLog.create(error: true, true: 'Withdrawal Denied', message: e.message)
+            SystemLog.create(error: true, title: 'Withdrawal Denied', message: e.message)
         end
     end
 
@@ -265,7 +265,7 @@ class TransactionalMailer < ActionMailer::Base
 
             mail(to: rep.email, subject: @template.subject)
         rescue=> e
-            SystemLog.create(error: true, true: 'Withdrawal Approved', message: e.message)
+            SystemLog.create(error: true, title: 'Withdrawal Approved', message: e.message)
         end
     end
 end

@@ -1,0 +1,5 @@
+<li id='home'><%= link_to 'Support Dashboard', admin_support_path %></li>
+<li id='new_support'><%= link_to raw("New Tickets <span class='count'>#{SupportCase.where(status: 'Pending').count}</span></a>"), admin_new_tickets_path %></li>
+<li id='open'><%= link_to raw("Open Tickets <span class='count'>#{SupportCase.where(status: 'Open').count}</span></a>"), admin_open_tickets_path %></li>
+<li id='closed'><%= link_to raw("Closed Tickets <span class='count'>#{SupportCase.where(status: 'Closed').count}</span></a>"), admin_closed_tickets_path %></li>
+<li id='archived'><%= link_to 'Archive', admin_archived_tickets_path %></li>

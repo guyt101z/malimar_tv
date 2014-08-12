@@ -128,9 +128,9 @@ class Admin < ActiveRecord::Base
 
     def system_notifications
         if role_id == 0
-            return AdminNotification.where(admin_id: id, notif_type: ['system','root_only']).reverse
+            return AdminNotification.where(admin_id: id, notif_type: ['system','root_only']).order(created_at: :desc).limit(6)
         else
-            return AdminNotification.where(admin_id: id, notif_type: 'system').reverse
+            return AdminNotification.where(admin_id: id, notif_type: 'system').order(created_at: :desc).limit(6)
         end
     end
 
@@ -139,6 +139,6 @@ class Admin < ActiveRecord::Base
     end
 
     def ticket_notifications
-        return AdminNotification.where(admin_id: id, notif_type: 'ticket').reverse
+        return AdminNotification.where(admin_id: id, notif_type: 'ticket').order(created_at: :desc).limit(6)
     end
 end

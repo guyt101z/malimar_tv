@@ -49,6 +49,7 @@ Rails.application.routes.draw do
 
         get '/admins/notifications' => 'admin_notifications#my_notifications', as: 'my_admin_notifications'
         get '/admins/notifications/view/:id' => 'admin_notifications#notification_redirect', as: 'admin_view_notification'
+        get 'clear_notifs' => 'admin_notifications#clear'
 
   	  	get '/admins' => 'admins#index', as: 'admins'
 
@@ -199,7 +200,7 @@ Rails.application.routes.draw do
 
         # Sales Rep Withdrawals
         get '/admins/sales_reps/payment_requests' => 'admins#payment_requests', as: 'sales_payment_requests'
-        get 'view_request' => 'admins#view_request'
+        get '/admins/sales_reps/payment_requests/:id' => 'admins#view_request', as: 'view_request'
         get 'approve_request' => 'admins#approve_request'
         get 'deny_request' => 'admins#deny_request'
 
@@ -211,12 +212,16 @@ Rails.application.routes.draw do
         # Support
         get '/admins/support' => 'admins#support', as: 'admin_support'
         get '/admins/support/new' => 'admins#new_tickets', as: 'admin_new_tickets'
+        get '/admins/support/closed' => 'admins#closed_tickets', as: 'admin_closed_tickets'
+        get '/admins/support/open' => 'admins#open_tickets', as: 'admin_open_tickets'
         get '/admins/support/archived' => 'admins#archived_tickets', as: 'admin_archived_tickets'
 
-        get 'admin_view_ticket' => 'support#admin_view_ticket'
+        get '/admins/support/ticket/:id' => 'support#admin_view_ticket', as: 'admin_view_ticket'
         get 'accept_ticket' => 'support#accept_ticket'
         get 'close_ticket' => 'support#close_ticket'
         get 'reopen_ticket' => 'support#reopen_ticket'
+        post 'update_ticket_status' => 'support#update_ticket_status'
+        get 'delete_ticket' => 'support#delete_ticket'
 
         post 'admin_send_message_on_ticket' => 'support#admin_send_message'
         post 'admin_attach_file_to_ticket' => 'support#admin_attach_file'

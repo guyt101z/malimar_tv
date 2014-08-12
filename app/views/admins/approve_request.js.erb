@@ -1,3 +1,1 @@
-$('#request_<%= @withdrawal.id %>').remove()
-$('#request_details').html("<div class='panel-heading'><h3 class='panel-title'>Withdrawals</h3></div>")
-window.location = "<%= admin_view_withdrawal_invoice_path(id: @withdrawal.id) %>"
+window.location = "<%= view_request_path(id: @withdrawal.id) %>"

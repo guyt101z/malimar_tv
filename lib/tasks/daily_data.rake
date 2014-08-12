@@ -9,6 +9,7 @@ task :daily_update => :environment do
         User.update_daily_data(today)
         Transaction.update_daily_data(today)
         Withdrawal.update_daily_data(today)
+        SupportCase.update_daily_data(today)
 
         SystemLog.create(error: false, title: 'Daily Data Update', message: 'Finished successfully')
 

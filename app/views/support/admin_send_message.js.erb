@@ -7,8 +7,9 @@
 		num: <%= (100 + rand(10000)).to_s %>
 	});
 <% else %>
+	<% count = SupportMessage.where(support_case_id: @message.support_case_id).count %>
 	var message = Autolinker.link('<%= @message.message.squish %>')
-	$('#ticket_messages').prepend("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em class='timeago' title='<%= @message.created_at %>'></em></p><p>"+message+"</p></div></div>")
+	$('#ticket_messages').prepend('<div class="message"><div class="row mb10"><div class="col-sm-6"><div class="fz12-5"><span class="nmb"><%= count %></span> <%= @message.user_name %>:</div></div><div class="col-sm-6"><div class="fz11-5 text-right"><%= @message.created_at.strftime('%B %-d, %Y at %H:%M') %></div></div></div><p>'+message+'</div>')
 	$('#message').val('')
 <% end %>
 $('.timeago').timeago()

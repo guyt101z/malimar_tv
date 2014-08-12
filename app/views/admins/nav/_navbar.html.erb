@@ -15,7 +15,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     <% if current_admin.authorized_to?('manage_user') %><li><%= link_to 'Clients', search_users_path %></li><% end %>
                     <li><%= link_to 'Orders', all_tx_path %></li>
-                    <li><a href="#">Support</a></li>
+                    <li><%= link_to 'Support', admin_support_path %></li>
                     <li><%= link_to 'Sales Reps', search_reps_main_path %></li>
                     <li>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Utilities</a>
@@ -41,117 +41,39 @@
                         </ul>
                     </li>
                     <li class="menu-icon dropdown">
-                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-tags fa-flip-horizontal"></span><span class="count">2</span></a>
-                    	<ul class="dropdown-menu w265">
-                        	<li class="bb0"><span><i class="icon-tags"></i> Recent Orders</span></li>
-                            <li>
-                            	<table class="table fz12-5">
-                                	<tbody>
-                                    <tr>
-                                    	<td class="text-grey">23:50</td>
-                                    	<td>#72edfg45</td>
-                                    	<td><span class="icon-user-sm"></span> Victor Tacitus</td>
-                                    </tr>
-                                    <tr>
-                                    	<td class="text-grey">23:10</td>
-                                    	<td>#qwedcs2</td>
-                                    	<td><span class="icon-user-sm"></span> Yun Ragna</td>
-                                    </tr>
-                                    <tr>
-                                    	<td class="text-grey">22:15</td>
-                                    	<td>#qwe34gv</td>
-                                    	<td><span class="icon-user-sm"></span> Olayin Kristin</td>
-                                    </tr>
-                                    <tr>
-                                    	<td class="text-grey">20:40</td>
-                                    	<td>#wqecds5</td>
-                                    	<td><span class="icon-user-sm"></span> Danko Nikodim</td>
-                                    </tr>
-                                    <tr>
-                                    	<td class="text-grey">13:12</td>
-                                    	<td>#587kjmfg</td>
-                                    	<td><span class="icon-user-sm"></span> Elvire Maya</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </li>
-                        	<li class="dropdown-footer"><a href="#">See All Orders</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-icon dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ticket"></i><span class="count">18</span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ticket"></i><span class="count"><%= current_admin.missed_ticket_notifications %></span></a>
                         <ul class="dropdown-menu w265">
                             <li class="bb0"><span><span class="icon-ticket"></span> Recent Support Tickets</span></li>
                             <li>
                                 <table class="table fz12-5">
                                     <tbody>
+                                    <% current_admin.ticket_notifications.each do |notif| %>
                                     <tr>
-                                        <td class="text-grey">23:50</td>
-                                        <td>#72edfg45</td>
-                                        <td><span class="icon-user-sm"></span> Victor Tacitus</td>
+                                        <td onclick='window.location = "<%= admin_view_notification_path(id: notif.id) %>"' style='cursor: pointer'><%= notif.message %></td>
                                     </tr>
-                                    <tr>
-                                        <td class="text-grey">23:10</td>
-                                        <td>#qwedcs2</td>
-                                        <td><span class="icon-user-sm"></span> Yun Ragna</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-grey">22:15</td>
-                                        <td>#qwe34gv</td>
-                                        <td><span class="icon-user-sm"></span> Olayin Kristin</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-grey">20:40</td>
-                                        <td>#wqecds5</td>
-                                        <td><span class="icon-user-sm"></span> Danko Nikodim</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-grey">13:12</td>
-                                        <td>#587kjmfg</td>
-                                        <td><span class="icon-user-sm"></span> Elvire Maya</td>
-                                    </tr>
+                                    <% end %>
                                     </tbody>
                                 </table>
                             </li>
-                            <li class="dropdown-footer"><a href="#">See All Tickets</a></li>
+                            <li class="dropdown-footer"><a href="/admins/support">Support Dashboard</a></li>
                         </ul>
                     </li>
                     <li class="menu-icon dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i><span class="count">18</span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i><span class="count"><%= current_admin.missed_system_notifications %></span></a>
                         <ul class="dropdown-menu w265">
                             <li class="bb0"><span><i class="fa fa-bell"></i> Notifications</span></li>
                             <li>
                                 <table class="table fz12-5">
                                     <tbody>
+                                    <% current_admin.system_notifications.each do |notif| %>
                                     <tr>
-                                        <td class="text-grey">23:50</td>
-                                        <td>#72edfg45</td>
-                                        <td><span class="icon-user-sm"></span> Victor Tacitus</td>
+                                        <td onclick='window.location = "<%= admin_view_notification_path(id: notif.id) %>"' style='cursor: pointer'><%= notif.message %></td>
                                     </tr>
-                                    <tr>
-                                        <td class="text-grey">23:10</td>
-                                        <td>#qwedcs2</td>
-                                        <td><span class="icon-user-sm"></span> Yun Ragna</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-grey">22:15</td>
-                                        <td>#qwe34gv</td>
-                                        <td><span class="icon-user-sm"></span> Olayin Kristin</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-grey">20:40</td>
-                                        <td>#wqecds5</td>
-                                        <td><span class="icon-user-sm"></span> Danko Nikodim</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-grey">13:12</td>
-                                        <td>#587kjmfg</td>
-                                        <td><span class="icon-user-sm"></span> Elvire Maya</td>
-                                    </tr>
+                                    <% end %>
                                     </tbody>
                                 </table>
                             </li>
-                            <li class="dropdown-footer"><a href="#">See All Tickets</a></li>
+                            <li class="dropdown-footer"><a href="/clear_notifs">Clear Notifications</a></li>
                         </ul>
                     </li>
                     <li><div class="sep"></div></li>

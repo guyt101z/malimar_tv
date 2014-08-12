@@ -58,6 +58,31 @@ class SupportController < ApplicationController
 			render status: 403
 		end
 	end
+	def update_ticket_status
+		@case = SupportCase.find(params[:id])
+		@case.priority = params[:priority]
+		@case.category = params[:category]
+
+		if @case.status != params[:status]
+			@case.status = params[:status]
+			if @case.status == 'Open'
+				@case.opened = Date.today
+			elsif @case.status == 'Closed'
+				@case.closed = Date.today
+			elsif @case.status == 'Archived'
+				@case.archived = Date.today
+			end
+		end
+		@case.admin_id = current_admin.id
+		@case.save
+	end
+
+	def delete_ticket
+		ticket = SupportCase.find(params[:id])
+		ticket.destroy
+		flash[:success] = 'Ticket deleted.'
+		redirect_to '/admins/support'
+	end
 
 	def accept_ticket
 		if current_admin.authorized_to?('manage_support_tickets')

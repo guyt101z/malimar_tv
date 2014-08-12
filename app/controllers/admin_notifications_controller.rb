@@ -22,4 +22,10 @@ class AdminNotificationsController < ApplicationController
             notif.save
         end
     end
+
+    def clear
+        AdminNotification.where(admin_id: current_admin.id).destroy_all
+        flash[:success] = 'Notifications Cleared'
+        redirect_to '/admins'
+    end
 end

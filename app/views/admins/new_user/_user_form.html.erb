@@ -1,0 +1,90 @@
+<h4 class="title"><span class="icon-circle-user mr7"></span> Personal Information</h4>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="">First Name <span class="text-danger">*</span></label>
+            <%= text_field_tag :first_name, '', class: 'form-control input-md' %>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="">Last Name <span class="text-danger">*</span></label>
+            <%= text_field_tag :last_name, '', class: 'form-control input-md' %>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="">Email Address <span class="text-danger">*</span></label>
+            <%= email_field_tag :email, '', class: 'form-control input-md' %>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="">Phone Number <span class="text-danger">*</span></label>
+            <%= text_field_tag :phone, '', class: 'form-control input-md' %>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="">Street Address <span class="text-danger">*</span></label>
+            <%= text_field_tag :address_1, '', class: 'form-control input-md' %>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="">Street Address 2 <span class="text-muted"><em>(Optional)</em></span></label>
+            <%= text_field_tag :address_2, '', class: 'form-control input-md' %>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6 col-md-3">
+        <div class="form-group">
+            <label for="">Country <span class="text-danger">*</span></label>
+            <%= text_field_tag :country, '', class: 'form-control input-md' %>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="form-group">
+            <label for="">State <span class="text-danger">*</span></label>
+            <%= text_field_tag :state, '', class: 'form-control input-md' %>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="form-group">
+            <label for="">City <span class="text-danger">*</span></label>
+            <%= text_field_tag :city, '', class: 'form-control input-md' %>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="form-group">
+            <label for="">Zip Code <span class="text-danger">*</span></label>
+            <%= text_field_tag :zip, '', class: 'form-control input-md' %>
+        </div>
+    </div>
+</div>
+<div class="line"></div>
+<h4 class="title"><span class="icon-circle-key mr7"></span> Account Information</h4>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="">Password <span class="text-danger">*</span></label>
+            <input type="password" class="form-control input-md" id="" placeholder="">
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="">&nbsp;</label>
+            <div class="media mt0">
+                <div class="pull-left"><span class="fa fa-question-circle"></span></div>
+                <div class="media-body fz12-5">
+                    It will be automatically sent to the client by Email.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
