@@ -128,7 +128,7 @@
                             </div>
                             <div class='panel-body'>
                                 <% if @user.expiry.nil? || @user.expiry < Date.today %>
-                                    <div class='stat-number'><div class="number">N/A</div></div>
+                                    <div class='stat-number' id='membership_2'><div class="number">N/A</div></div>
                                 <% else %>
                                     <div class='stat-number' id='membership_2'><div class="number"><%= @user.expiry.strftime('%Y/%m/%d') %></div><%= distance_of_time_in_words(Date.today, @user.expiry) %></div>
                                 <% end %>
