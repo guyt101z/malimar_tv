@@ -76,7 +76,7 @@ Rails.application.routes.draw do
   		# Manage Users
   		get '/admins/users' => 'admins#users', as: 'search_users'
   		get 'search_users' => 'admins#search_users'
-  		get 'view_user' => 'admins#view_user'
+  		get '/admins/users/:id' => 'admins#view_user', as: 'view_user'
 
         post 'admin_update_user_profile' => 'admins#update_user_profile'
         post 'admin_update_user_mailing' => 'admins#update_user_mailing'

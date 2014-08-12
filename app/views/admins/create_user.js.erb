@@ -50,5 +50,5 @@ $('#zip').removeClass('has-error')
 		$('#zip').addClass('has-error').after('<span class="text-danger" id="zip-error">Zip code <%= @user.errors[:zip].join(", ") %>')
 	<% end %>
 <% else %>
-	window.location = '/admins/users?id=<%= @user.id %>'
+	window.location = '<%= view_user_path(id: @user.id) %>'
 <% end %>
