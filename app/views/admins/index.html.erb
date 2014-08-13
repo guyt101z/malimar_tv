@@ -5,18 +5,7 @@
     	<div id="left-scroll" class="nano">
         	<div class="nano-content">
             <div class="panel">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-sm-6">Welcome back, Gordon</div>
-                        <div class="col-sm-6 text-right">Your Last Login: 23/07/2014 02:55 from IP 65.196.146.140</div>
-                    </div>
-                </div>
                 <div class="panel-body">
-                    <div class="alert alert-danger fade in text-center" role="alert">
-                        <button data-dismiss="alert" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                        <strong class="text-danger"> <span class=" glyphicon glyphicon-exclamation-sign fz16"></span> Attention Items:</strong>  18 Ticket(s) Awaiting Reply  -  0 Pending Cancellation(s)   -  0 To-Do Item(s)
-                    </div>
-                    <div class="line"></div>
                     <div class="row">
 						<div class="col-sm-6 col-md-3">
 							<div class="stat-number">
@@ -66,56 +55,19 @@
                 <div class="col-sm-6">
                     <div class="panel">
                         <div class="panel-heading">
-                            <span class="icon-tags1 mr7"></span> New Orders
+                            <span class="icon-ticket mr7"></span> Support Updates
                         </div>
                         <div class="panel-body">
                             <div class="nano" style="height:310px;">
                                 <div class="nano-content">
-                                    <div>Today</div>
-                                    <table class="table fz12-5 table-nb1">
+                                    <table class="table fz12-5 table-nb1 table-hover">
                                         <tbody>
-                                        <tr>
-                                            <td class="text-semi"><input type="checkbox"> #72edfg45</td>
-                                            <td>Victor Tacitus</td>
-                                            <td class="fz11-5">12 months Plan</td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-semi"><input type="checkbox"> #7de89d7</td>
-                                            <td>Sebastian Niklas</td>
-                                            <td class="fz11-5">6 months Plan</td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-semi"><input type="checkbox"> #72edfg45</td>
-                                            <td>Victor Tacitus</td>
-                                            <td class="fz11-5">Free Plan</td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <div class="line mb20"></div>
-                                    <div>Yesterday</div>
-                                    <table class="table fz12-5 table-nb1">
-                                        <tbody>
-                                        <tr>
-                                            <td class="text-semi"><input type="checkbox"> #72edfg45</td>
-                                            <td>Victor Tacitus</td>
-                                            <td class="fz11-5">12 months Plan</td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-semi"><input type="checkbox"> #7de89d7</td>
-                                            <td>Sebastian Niklas</td>
-                                            <td class="fz11-5">6 months Plan</td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-semi"><input type="checkbox"> #72edfg45</td>
-                                            <td>Victor Tacitus</td>
-                                            <td class="fz11-5">Free Plan</td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
+                                        	<% current_admin.all_ticket_notifications.each do |notif| %>
+											<tr onclick='window.location="<%= admin_view_notification_path(id: notif.id) %>"' style='cursor:pointer'>
+												<td><span class="text-semi"><%= notif.message %></span></td>
+												<td class="text-grey text-right"><%= notif.created_at.strftime('%Y/%m/%d at %H:%M') %></td>
+											</tr>
+											<% end %>
                                         </tbody>
                                     </table>
                             	</div>
@@ -132,100 +84,14 @@
                             <div class="nano" style="height:310px;">
                                 <div class="nano-content">
 									<div>Today</div>
-                                    <table class="table fz12-5 table-nb1">
+                                    <table class="table fz12-5 table-nb1 table-hover">
                                         <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="media">
-                                                    <div class="pull-left"><span class="icon-circle-user"></span></div>
-                                                    <div class="media-body">
-                                                        <span class="text-semi">Yun Ragna</span> has created a new account
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="media">
-                                                    <div class="pull-left"><span class="icon-circle-ticket"></span></div>
-                                                    <div class="media-body">
-                                                        Support Ticket <span class="text-semi">#15789e</span> has been created by <span class="text-semi">Victor Tacitus</span>
-                                                </div>
-                                            </td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="media">
-                                                    <div class="pull-left"><span class="icon-circle-user"></span></div>
-                                                    <div class="media-body">
-                                                        <span class="text-semi">Mariya Hadya</span> has created a new account
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="media">
-                                                    <div class="pull-left"><span class="icon-circle-dollar"></span></div>
-                                                    <div class="media-body">
-                                                        Order <span class="text-semi">#72edfg45</span> has been crated by <span class="text-semi">Victor Tacitus</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <div class="line mb20"></div>
-                                    <div>Yesterday</div>
-                                    <table class="table fz12-5 table-nb1">
-                                        <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="media">
-                                                    <div class="pull-left"><span class="icon-circle-user"></span></div>
-                                                    <div class="media-body">
-                                                        <span class="text-semi">Yun Ragna</span> has created a new account
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="media">
-                                                    <div class="pull-left"><span class="icon-circle-ticket"></span></div>
-                                                    <div class="media-body">
-                                                        Support Ticket <span class="text-semi">#15789e</span> has been created by <span class="text-semi">Victor Tacitus</span>
-                                                </div>
-                                            </td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="media">
-                                                    <div class="pull-left"><span class="icon-circle-user"></span></div>
-                                                    <div class="media-body">
-                                                        <span class="text-semi">Mariya Hadya</span> has created a new account
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="media">
-                                                    <div class="pull-left"><span class="icon-circle-dollar"></span></div>
-                                                    <div class="media-body">
-                                                        Order <span class="text-semi">#72edfg45</span> has been crated by <span class="text-semi">Victor Tacitus</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-grey">23:50</td>
-                                        </tr>
+                                        <% current_admin.all_system_notifications.each do |notif| %>
+										<tr onclick='window.location="<%= admin_view_notification_path(id: notif.id) %>"' style='cursor:pointer'>
+											<td><span class="text-semi"><%= notif.message %></span></td>
+											<td class="text-grey text-right"><%= notif.created_at.strftime('%Y/%m/%d at %H:%M') %></td>
+										</tr>
+										<% end %>
                                         </tbody>
                                     </table>
                             	</div>

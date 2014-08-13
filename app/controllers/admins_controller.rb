@@ -8,7 +8,7 @@ class AdminsController < ApplicationController
 	end
 	def new_user
 		unless current_admin.authorized_to?('create_user')
-			
+
 			flash[:error] = 'You are not authorized to view that.'
 			redirect_to '/admins'
 		end
@@ -37,7 +37,11 @@ class AdminsController < ApplicationController
 	end
 
 	def create_user
-		@user = User.new
+		@user = User.where(id: params[:user_id]).first
+
+		if @user.nil?
+			@user = User.new
+		end
 		@user.first_name = params[:first_name]
 		@user.last_name = params[:last_name]
 		@user.email = params[:email]
@@ -49,15 +53,28 @@ class AdminsController < ApplicationController
 		@user.city = params[:city]
 		@user.zip = params[:zip]
 
+
+		code = SecureRandom.hex(5).upcase
+		until User.where(refer_code: code).count < 1
+			code = SecureRandom.hex(5).upcase
+		end
+
+		@user.refer_code = code
+
 		@user.password = params[:password]
 
-		if @user.save?
-			if params[:device_to_add] == true
-				@device = Device.new
+		if @user.save
+			@user_errors = false
+			if params[:device_to_add] == 'true'
+				@device = Device.where(id: params[:device_id]).first
+				if @device.nil?
+					@device = Device.new
+				end
 				@device.serial = params[:serial]
 				@device.name = params[:name]
 				@device.user_id = @user.id
-				if @device.save?
+				@device.type = 'Roku'
+				if @device.save
 					if Rails.env.development?
 						path = "#{Rails.root}/serials/#{@device.serial}"
 					elsif Rails.env.production?
@@ -74,26 +91,82 @@ class AdminsController < ApplicationController
 			else
 				@device_errors = false
 			end
+			if params[:note_to_add] == 'true' && @device_errors == false
+				@note = UserNote.where(id: params[:note_id]).first
+				if @note.nil?
+					@note = UserNote.new
+				end
+				@note.user_id = @user.id
+				@note.title = params[:note_title]
+				@note.note = params[:note]
+				@note.note_colour = params[:color]
+				if params[:check_item].present?
+					checklist = Array.new
+					params[:check_item].each_with_index do |item, i|
+						array = Array.new
+						if item.blank?
+							array.push(nil)
+						else
+							array.push(item)
+						end
+						checklist.push(array)
+					end
+					params[:check_status].each_with_index do |status, i|
+						checklist[i].push(status)
+					end
 
-			if params[:note_to_add] == true && @device_errors == false
+					checklist.delete([nil,'complete'])
+					checklist.delete([nil,'incomplete'])
 
+				else
+					checklist = Array.new
+				end
+
+				if params[:list_item].present?
+					reglist = Array.new
+					params[:list_item].each_with_index do |item, i|
+						array = Array.new
+						if item.blank?
+							reglist.push(nil)
+						else
+							reglist.push(item)
+						end
+					end
+
+					reglist.delete(nil)
+				else
+					reglist = Array.new
+				end
+
+				@note.checklist = YAML.dump({checklist: checklist, reglist: reglist})
+
+				if @note.save
+					@note_errors = false
+				else
+					@note_errors = true
+				end
 			else
 				@note_errors = false
 			end
 
-			if params[:tx_to_process] == true && @device_errors == false && @note_errors == false
-				plan = Plan.find(params[:plan_id])
+			if params[:tx_to_process] == 'true' && @device_errors == false && @note_errors == false && params[:plan_id].present?
+				@test1 = 'filter'
+				@plan = Plan.find(params[:plan_id])
 				if params[:payment_type] == 'Credit Card'
+
+					@test2 = 'credit card'
 					# Send requests to the gateway's test servers
 					ActiveMerchant::Billing::Base.mode = :test
 
 					# Create a new credit card object
+
+					names = params[:card_name].split(' ', 2)
 					credit_card = ActiveMerchant::Billing::CreditCard.new(
-						:number     => params[:card],
+						:number     => params[:card_number],
 						:month      => params[:card_month],
 						:year       => params[:card_year],
-						:first_name => params[:card_first_name],
-						:last_name  => params[:card_last_name],
+						:first_name => names[0],
+						:last_name  => names[1],
 						:verification_value  => params[:ccv]
 					)
 
@@ -105,10 +178,10 @@ class AdminsController < ApplicationController
 							signature: 	@paypal[:signature]
 						)
 
-						response = gateway.purchase((plan.price*100).to_i, credit_card, ip: request.remote_ip)
+						response = gateway.purchase((@plan.price*100).to_i, credit_card, ip: request.remote_ip)
 
 						if response.success?
-							@user.expiry += @plan.months.months
+							@user.expiry = Date.today + @plan.months.months
 							@user.save
 							transaction = Transaction.new
 							transaction.user_id = @user.id
@@ -131,6 +204,7 @@ class AdminsController < ApplicationController
 						@tx_error = 'This credit card is not valid'
 					end
 				elsif params[:payment_type].present?
+					@test2 = 'non credit card'
 					transaction = Transaction.new
 					transaction.user_id = @user.id
 					transaction.payment_type = params[:payment_type]
@@ -140,22 +214,31 @@ class AdminsController < ApplicationController
 					transaction.save
 					@tx_errors = false
 				else
+					@test2 = 'no payment type'
 					@tx_errors = true
+					@test3 = @tx_errors
 					@tx_error = 'You must choose a payment type.'
 				end
-			else
-				tx_errors = false
+			elsif @device_errors == false && @note_errors == false
+				@tx_errors = false
 				length = Setting.where(name: 'Free Trial Length').first.data
 				@user.expiry = Date.today + length.to_i.days
 				@user.save
+				transaction = Transaction.new
+				transaction.user_id = @user.id
+				transaction.payment_type = params[:payment_type]
+				transaction.status = 'Paid'
+				transaction.customer_paid = DateTime.now
+				transaction.product_details = YAML.dump({name: 'Free Trial', duration: length, price: 0})
+				transaction.balance_used = 0
+				transaction.save
+			else
+				@tx_errors = false
 			end
 		else
-			@success = false
+			@user_errors = true
 		end
-
-		if @device_errors == true || @note_errors == true || @tx_errors == true
-			@user.destroy
-		else
+		if @user_errors == false && @device_errors == false && @note_errors == false && @tx_errors == false
 			TransactionalMailer.admin_register_customer(@user, params[:password]).deliver
 			update = AdminActivity.create(admin_id: current_admin.id, data: YAML.dump({type: 'User Registration', message: "#{current_admin.name} registered a new user.", user_id: @user.id}))
 			Resque.enqueue(AdminNotifier, 0, 'system', "#{@user.name} has joined.", view_user_path(id: @user.id))
@@ -179,7 +262,7 @@ class AdminsController < ApplicationController
 	end
 
 	def search_users
-		if current_admin.authorized?('manage_user')
+		if current_admin.authorized_to?('manage_user')
 			all_users = User.all.order(first_name: :desc)
 			@matched_users = Array.new
 
@@ -215,7 +298,7 @@ class AdminsController < ApplicationController
 					@total_spent += YAML.load(tx.product_details)[:price]
 				end
 			end
-			@notes = UserNote.where(user_id: @user.id)
+			@notes = UserNote.where(user_id: @user.id).order(updated_at: :desc)
 		else
 			flash[:error] = 'You do not have permission to view that.'
 			redirect_to '/admins'
@@ -228,6 +311,7 @@ class AdminsController < ApplicationController
 			@user.first_name = params[:first_name]
 			@user.last_name = params[:last_name]
 			@user.email = params[:email]
+			@user.adult = params[:adult]
 			@user.save
 		else
 			render status: 403
@@ -271,8 +355,26 @@ class AdminsController < ApplicationController
 		end
 	end
 
-	def send_user_password_reset
+	def reset_user_password
+		user = User.find(params[:id])
+		user.send_reset_password_instructions
+	end
 
+	def manual_reset_user_password
+		@user = User.find(params[:id])
+		@user.password = params[:password]
+		@user.save
+	end
+
+	def reset_rep_password
+		rep = SalesRepresentative.find(params[:id])
+		rep.send_reset_password_instructions
+	end
+
+	def manual_reset_rep_password
+		@rep = SalesRepresentative.find(params[:id])
+		@rep.password = params[:password]
+		@rep.save
 	end
 
 	def register_device
@@ -683,7 +785,8 @@ class AdminsController < ApplicationController
 	def update_device_serial
 		if current_admin.authorized_to?('manage_user')
 			@device = Device.find(params[:id])
-			@device.serial = params[:serial]
+			@device.serial = params[:device_serial]
+			@device.name = params[:device_name]
 			if @device.save
 				if Rails.env.development?
 					path = "#{Rails.root}/serials/#{@device.serial}"
@@ -1795,5 +1898,11 @@ class AdminsController < ApplicationController
 									new_balance: @user.balance
 								}))
 		end
+	end
+
+	def cancel_user_subscription
+		@user = User.find(params[:id])
+		@user.expiry = nil
+		@user.save
 	end
 end

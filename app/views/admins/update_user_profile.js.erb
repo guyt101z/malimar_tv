@@ -24,6 +24,7 @@ $('#email-error').remove()
 
     notification.show()
 <% else %>
+    $('#reset_email').val('<%= @user.email %>')
     var notification = new NotificationFx({
         message : '<p>The account has been updated!</p>',
         layout : 'growl',

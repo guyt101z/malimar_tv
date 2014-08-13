@@ -26,6 +26,9 @@
 
 		<% elsif params[:controller] == 'transactions' %>
 			<%= render 'admins/nav/sidenavs/transactions' %>
+
+		<% elsif params[:controller] == 'admins' && params[:action] == 'index' %>
+			<%= render 'admins/nav/sidenavs/index' %>
 		<% end %>
     </ul>
     <div class="sign-out">

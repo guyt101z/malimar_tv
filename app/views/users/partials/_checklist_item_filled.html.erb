@@ -1,5 +1,5 @@
-<div class='row'>
-    <div class='col-xs-2 text-center'>
+<div class='checklist'>
+    <div class='text-center checklist-box'>
         <% if @list_item[1] == 'incomplete' %>
             <%= text_field_tag 'check_status[]', 'incomplete', style:'display:none' %>
             <i class='fa fa-check-square' style='display:none' onclick='$(this).parent().children("input").val("incomplete"); $(this).hide(); $(this).parent().children(".fa-square-o").show();'></i>
@@ -10,10 +10,10 @@
             <i class='fa fa-square-o' style='display:none' onclick='$(this).parent().children("input").val("complete"); $(this).hide(); $(this).parent().children(".fa-check-square").show();'></i>
         <% end %>
     </div>
-    <div class='col-xs-8'>
+    <div class='checklist-item'>
         <%= text_field_tag 'check_item[]', @list_item[0], class: 'form-control' %>
     </div>
-    <div class='col-xs-2'>
+    <div class='checklist-delete'>
         <i class='fa fa-times' onclick='$(this).parent().parent().remove()'></i>
     </div>
 </div>

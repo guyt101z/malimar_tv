@@ -46,8 +46,6 @@ Rails.application.routes.draw do
   	# Admin Methods
     authenticate :admin do
         mount ResqueWeb::Engine => "/resque_web"
-
-        get '/admins/notifications' => 'admin_notifications#my_notifications', as: 'my_admin_notifications'
         get '/admins/notifications/view/:id' => 'admin_notifications#notification_redirect', as: 'admin_view_notification'
         get 'clear_notifs' => 'admin_notifications#clear'
 
@@ -76,12 +74,16 @@ Rails.application.routes.draw do
 
   		# Manage Users
   		get '/admins/users' => 'admins#users', as: 'search_users'
-  		get 'search_users' => 'admins#search_users'
+  		get 'side_search_users' => 'admins#search_users'
   		get '/admins/users/:id' => 'admins#view_user', as: 'view_user'
+
+        get 'reset_user_password' => 'admins#reset_user_password'
+        post 'manual_reset_user_password' => 'admins#manual_reset_user_password'
 
         post 'admin_update_user_profile' => 'admins#update_user_profile'
         post 'admin_update_user_mailing' => 'admins#update_user_mailing'
         post 'extend_user_subscription' => 'admins#extend_user_subscription'
+        get 'cancel_user_subscription' => 'admins#cancel_user_subscription'
         post 'update_user_balance' => 'admins#update_user_balance'
         post 'admin_create_transaction' => 'admins#create_transaction'
         post 'admin_register_device' => 'admins#register_device'
@@ -169,6 +171,9 @@ Rails.application.routes.draw do
       	get '/admins/sales_reps/view/:id' => 'admins#view_rep', as: 'view_rep'
       	get '/admins/new_sales_rep' => 'admins#new_sales_rep', as: 'new_rep'
       	post 'admin_create_sales_rep' => 'admins#create_sales_rep'
+
+        get 'reset_rep_password' => 'admins#reset_rep_password'
+        post 'manual_reset_rep_password' => 'admins#manual_reset_rep_password'
 
         post 'admin_update_rep_profile' => 'admins#update_rep_profile'
         post 'admin_update_rep_mailing' => 'admins#update_rep_mailing'

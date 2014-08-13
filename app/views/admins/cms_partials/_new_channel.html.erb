@@ -27,6 +27,10 @@
                         <label>RTMP URL</label>
                         <%= text_field_tag :new_rtmp_url, '', class: 'form-control' %>
                     </div>
+                    <div class='col-sm-4 form-group'>
+                        <label>Adult Content</label>
+                        <%= select_tag :new_adult, options_for_select([['No',false],['Yes',true]]), class: 'form-control' %>
+                    </div>
                 </div>
                 <div class='row'>
                     <div class='col-md-3 col-xs-6 form-group'>

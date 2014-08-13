@@ -36,24 +36,7 @@
                         </div>
                     </div>
                     <div class='row'>
-                        <div class='col-md-4 col-sm-5'>
-                            <%= form_tag admin_update_rep_commission_path, remote: true do %>
-                            <%= hidden_field_tag :id, @rep.id %>
-                            <div class='panel panel-default' id=''>
-                                <div class='panel-heading' style='position: relative'>
-                                    <h3 class='panel-title'>Commission Rate: <span id='rep_rate'><%= @rep.commission_rate %>%</span></h3>
-                                    <div class='upload_image_heading'>
-                                        <%= submit_tag 'Update Rate', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
-                                    </div>
-                                </div>
-                                <div class='panel-body'>
-                                    <div class='form-group'>
-                                        <label>New Rate</label>
-                                        <%= text_field_tag :new_rate, '', class: 'form-control', style: 'margin:0' %>
-                                    </div>
-                                </div>
-                            </div>
-                            <% end %>
+                        <div class='col-md-6'>
 
                             <%= form_tag admin_update_rep_profile_path, remote: true do %>
                             <%= hidden_field_tag :id, @rep.id %>
@@ -128,8 +111,58 @@
                                 </div>
                             </div>
                             <% end %>
+
+                            <div class='row'>
+                                <div class='col-xs-6'>
+                                    <div class='panel panel-default'>
+                                        <div class='panel-heading'>
+                                            <h3 class='panel-title'>Send Password Reset</h3>
+                                        </div>
+                                        <div class='panel-body'>
+                                            <%= text_field_tag :reset_email, @rep.email, class: 'form-control', disabled: 'disabled', style: 'background-color: #fff' %>
+                                        </div>
+                                        <div class='panel-footer'>
+                                            <%= link_to 'Send Reset Email', reset_rep_password_path(id: @rep.id), class: 'btn btn-primary', style: 'width: 100%', data: {disable_with: 'Sending...'}, remote: true %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-xs-6'>
+                                    <%= form_tag manual_reset_rep_password_path(id: @rep.id), remote: true do %>
+                                    <div class='panel panel-default'>
+                                        <div class='panel-heading'>
+                                            <h3 class='panel-title'>Manual Password Reset</h3>
+                                        </div>
+                                        <div class='panel-body'>
+                                            <div>
+                                                <%= text_field_tag :password, '', class: 'form-control' %>
+                                            </div>
+                                        </div>
+                                        <div class='panel-footer'>
+                                            <%= submit_tag 'Reset Password', class: 'btn btn-primary', style: 'width: 100%', data: {disable_with: 'Updating...'} %>
+                                        </div>
+                                    </div>
+                                    <% end %>
+                                </div>
+                            </div>
                         </div>
-                        <div class='col-md-8 col-sm-7' id='transaction_area'>
+                        <div class='col-md-6' id='transaction_area'>
+                            <%= form_tag admin_update_rep_commission_path, remote: true do %>
+                            <%= hidden_field_tag :id, @rep.id %>
+                            <div class='panel panel-default' id=''>
+                                <div class='panel-heading' style='position: relative'>
+                                    <h3 class='panel-title'>Commission Rate: <span id='rep_rate'><%= @rep.commission_rate %>%</span></h3>
+                                    <div class='upload_image_heading'>
+                                        <%= submit_tag 'Update Rate', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+                                    </div>
+                                </div>
+                                <div class='panel-body'>
+                                    <div class='form-group'>
+                                        <label>New Rate</label>
+                                        <%= text_field_tag :new_rate, '', class: 'form-control', style: 'margin:0' %>
+                                    </div>
+                                </div>
+                            </div>
+                            <% end %>
                             <div class='row'>
                                 <div class='col-xs-12'>
                                     <div class='panel panel-default' id=''>
@@ -145,7 +178,7 @@
                                                 </tr></thead>
                                                 <tbody>
                                                     <% @withdrawals.each do |wd| %>
-                                                        <tr>
+                                                        <tr onclick='window.location = "<%= view_request_path(id: wd.id) %>"' style='cursor: pointer'>
                                                             <th><%= wd.created_at.strftime('%B %-d, %Y') %></th>
                                                             <td>$<%= number_with_precision(wd.amount, precision: 2) %></td>
                                                             <td>

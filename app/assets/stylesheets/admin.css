@@ -375,11 +375,46 @@
 }
 .message .btn {
     margin-top: 5px;
-    
+
     max-width: 200px;
     width: calc(100% - 80px);
     height: 70px;
     line-height: 68px;
     padding-top: 0;
     padding-bottom: 0;
+}
+.checklist {
+    position: relative;
+    max-width: 400px;
+    height: 34px;
+    margin-bottom: 1px;
+}
+.checklist-box {
+    width: 15px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    line-height: 34px;
+}
+.checklist-delete {
+    width: 15px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    line-height: 34px;
+    cursor: pointer;
+    color: #f00;
+}
+.checklist-item {
+    width: calc(100% - 30px);
+    position: absolute;
+    top: 0;
+    left: 15px;
+    line-height: 34px;
+}
+.delete_note {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
 }

@@ -30,6 +30,7 @@ class VideosController < ApplicationController
 			@channel.genres = params[:new_genres]
 			@channel.actors = params[:new_actors]
 			@channel.stream_name = params[:new_stream_name]
+			@channel.adult = params[:new_adult]
 			if @channel.save
 				Channel.reindex
 				AdminActivity.create(admin_id: current_admin.id,
@@ -63,6 +64,7 @@ class VideosController < ApplicationController
 			@channel.actors = params[:actors]
 			@channel.stream_name = params[:stream_name]
 			@channel.front_page = params[:front_page]
+			@channel.adult = params[:adult]
 			if @channel.save
 				Channel.reindex
 				AdminActivity.create(admin_id: current_admin.id,
@@ -161,6 +163,7 @@ class VideosController < ApplicationController
 			@movie.actors = params[:new_actors]
 			@movie.length = params[:new_length]
 			@movie.release_date = params[:new_release_date]
+			@movie.adult = params[:new_adult]
 			if @movie.save
 				Movie.reindex
 				AdminActivity.create(admin_id: current_admin.id,
@@ -194,6 +197,7 @@ class VideosController < ApplicationController
 			@movie.length = params[:length]
 			@movie.release_date = params[:release_date]
 			@movie.front_page = params[:front_page]
+			@movie.adult = params[:adult]
 			if @movie.save
 				Movie.reindex
 				AdminActivity.create(admin_id: current_admin.id,
@@ -290,6 +294,7 @@ class VideosController < ApplicationController
 			@show.synopsis = params[:new_synopsis]
 			@show.genres = params[:new_genres]
 			@show.actors = params[:new_actors]
+			@show.adult = params[:new_adult]
 			if @show.save
 				Show.reindex
 				AdminActivity.create(admin_id: current_admin.id,
@@ -320,6 +325,7 @@ class VideosController < ApplicationController
 			@show.genres = params[:genres]
 			@show.actors = params[:actors]
 			@show.front_page = params[:front_page]
+			@show.adult = params[:adult]
 			if @show.save
 				Show.reindex
 				AdminActivity.create(admin_id: current_admin.id,

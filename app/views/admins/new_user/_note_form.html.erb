@@ -1,8 +1,33 @@
 <h4 class="title"><span class="icon-circle-doc mr7"></span> Client Notes <span class="fa fa-question-circle"></span></h4>
-<div class="form-editor expand"id='note_form' style='display:none; margin-bottom: 10px'>
+<div class="form-editor expand bgcolor-1" id='note_form' style='display:none; margin-bottom: 10px'>
     <%= hidden_field_tag :note_to_add, false %>
-    <input type="text" class="form-control input-md input-title" placeholder="Title">
-    <textarea class="form-control" placeholder="Add a note"></textarea>
+    <%= hidden_field_tag :note_id %>
+    <%= text_field_tag :note_title, '', class: 'form-control input-md input-title', placeholder: 'Title' %>
+    <%= text_area_tag :note, '', class: 'form-control', placeholder: 'Add a note...' %>
+    <div class='note-reglist' id='note-reglist' style='display:none; margin-bottom: 3px'></div>
+    <div class='note-checklist' id='note-checklist' style='display:none; margin-bottom: 3px'></div>
+    <div class="icon-editor">
+    	<div class="row">
+            <%= hidden_field_tag :color, nil %>
+        	<div class="col-sm-6">
+                <div class="btn-group">
+                	<button type="button" class="btn-icon" data-toggle="dropdown"><span class="fa fa-square-o"></span></button>
+                    <div class="dropdown-menu dropdown-border" role="menu" id='color-picker'>
+                    	<a id='bgcolor-1' class="sqcolor-1 selected"><span class="fa fa-check"></span></a>
+                    	<a id='bgcolor-2' class="sqcolor-2"><span class="fa fa-check"></span></a>
+                    	<a id='bgcolor-3' class="sqcolor-3"><span class="fa fa-check"></span></a>
+                    	<a id='bgcolor-4' class="sqcolor-4"><span class="fa fa-check"></span></a>
+                    	<a id='bgcolor-5' class="sqcolor-5"><span class="fa fa-check"></span></a>
+                    	<a id='bgcolor-6' class="sqcolor-6"><span class="fa fa-check"></span></a>
+                    	<a id='bgcolor-7' class="sqcolor-7"><span class="fa fa-check"></span></a>
+                    	<a id='bgcolor-8' class="sqcolor-8"><span class="fa fa-check"></span></a>
+                  	</div>
+                </div>
+                <button type="button" onclick='addChecklistNew()' class='btn btn-icon'><i class='fa fa-check-square-o'></i></button>
+                <button type="button" onclick='addReglistNew()' class='btn btn-icon'><i class='fa fa-list'></i></button>
+            </div>
+        </div>
+    </div>
 </div>
 <button type="button" id='note_toggle' class="btn btn-default btn-w170 btn-sm">Add a Note</button>
 <script>
@@ -17,5 +42,21 @@
             $('#note_to_add').val(true)
             $('#note_toggle').html('Cancel')
         }
+    })
+    function addChecklistNew(){
+        $('#note-checklist').show()
+        $('#note-checklist').append('<%= escape_javascript(render("users/partials/checklist_item")) %>')
+    }
+    function addReglistNew(){
+        $('#note-reglist').show()
+        $('#note-reglist').append('<%= escape_javascript(render("users/partials/reglist_item")) %>')
+    }
+
+    $('#color-picker a').click(function(){
+        $('#color-picker a').removeClass('selected')
+        $(this).addClass('selected')
+        $('#note_form').removeClass('bgcolor-8 bgcolor-7 bgcolor-6 bgcolor-5 bgcolor-4 bgcolor-3 bgcolor-2 bgcolor-1')
+        $('#note_form').addClass($(this).attr('id'))
+        $('#color').val($(this).attr('id'))
     })
 </script>

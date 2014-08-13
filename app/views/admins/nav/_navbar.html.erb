@@ -77,14 +77,12 @@
                         </ul>
                     </li>
                     <li><div class="sep"></div></li>
-                    <li class="user dropdown">
-                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="img/avatar.png"> <%= current_admin.name %> <span class="caret"></span></a>
+                    <li class="text-semi dropdown">
+                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_admin.name %> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                        	<li><span>Gordon Shumway <span class="online"></span></span></li>
-                        	<li><a href="#"><span class="icon-user-circle"></span> Admin Profile</a></li>
-                        	<li><a href="#"><span class="icon-cog"></span> Preferences</a></li>
-                        	<li><a href="#"><span class="icon-key"></span> Password</a></li>
-                        	<li class="dropdown-footer"><a href="#"><span class="glyphicon glyphicon-lock"></span> Sign Out</a></li>
+                        	<li><span><%= current_admin.name %></span></li>
+                        	<li><%= link_to raw('<span class="icon-user-circle"></span> Admin Profile'), view_admin_path(id: current_admin.id) %></li>
+                        	<li class="dropdown-footer"><%= link_to raw('<span class="glyphicon glyphicon-lock"></span> Sign Out'), destroy_admin_session_path, method: :delete %></li>
                         </ul>
                     </li>
                 </ul>
@@ -102,10 +100,6 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <form class="form-search">
-                    	<input type="text" class="form-control" placeholder="Quick Search">
-                        <span class="glyphicon glyphicon-search"></span>
-                    </form>
                 </div>
                 <div class="subnav-right">
                 	<ol class="breadcrumb">

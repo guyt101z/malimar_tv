@@ -1,4 +1,5 @@
 <h4 class="title"><span class="icon-circle-user mr7"></span> Personal Information</h4>
+<%= hidden_field_tag :user_id %>
 <div class="row">
     <div class="col-sm-6">
         <div class="form-group">
@@ -73,7 +74,7 @@
     <div class="col-sm-6">
         <div class="form-group">
             <label for="">Password <span class="text-danger">*</span></label>
-            <input type="password" class="form-control input-md" id="" placeholder="">
+            <%= password_field_tag :password, '', class: 'form-control input-md' %>
         </div>
     </div>
     <div class="col-sm-6">

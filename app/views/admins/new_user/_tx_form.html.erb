@@ -23,11 +23,11 @@
                 <div id='credit_form' style='display:none'>
                 <div class="form-group">
                     <label for="">Card Holder’s Name <span class="text-danger">*</span></label>
-                    <%= text_field_tag :serial, '', class: 'form-control input-md' %>
+                    <%= text_field_tag :card_name, '', class: 'form-control input-md' %>
                 </div>
                 <div class="form-group">
                     <label for="">Credit Card Number <span class="text-danger">*</span></label>
-                    <%= text_field_tag :serial, '', class: 'form-control input-md' %>
+                    <%= text_field_tag :card_number, '', class: 'form-control input-md' %>
                 </div>
                 <div class="row">
                     <div class="col-sm-3">
@@ -47,6 +47,8 @@
                                                                             ['Nov (11)',11],
                                                                             ['Dec (12)',12]]), class: 'form-control' %>
                         </div>
+                    </div>
+                    <div class="col-sm-3">
                         <div class="form-group">
                             <label for="">Year<span class="text-danger">*</span></label>
                             <% years = [['Expiry Year', nil]] %>
@@ -77,7 +79,7 @@
         if ($('#tx_to_process').val() == 'true'){
             $('#tx_form').hide()
             $('#tx_to_process').val(false)
-            $('#tx_toggle').html('Register Device')
+            $('#tx_toggle').html('Register Transaction')
         }
         else {
             $('#tx_form').show()

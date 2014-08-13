@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140812141111) do
+ActiveRecord::Schema.define(version: 20140813191840) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -137,6 +137,7 @@ ActiveRecord::Schema.define(version: 20140812141111) do
     t.string   "rtmp_url"
     t.boolean  "front_page"
     t.string   "banner"
+    t.boolean  "adult"
   end
 
   create_table "daily_data", force: true do |t|
@@ -269,6 +270,7 @@ ActiveRecord::Schema.define(version: 20140812141111) do
     t.integer  "length"
     t.boolean  "front_page"
     t.string   "banner"
+    t.boolean  "adult"
   end
 
   create_table "note_files", force: true do |t|
@@ -355,6 +357,7 @@ ActiveRecord::Schema.define(version: 20140812141111) do
     t.text     "synopsis"
     t.boolean  "front_page"
     t.string   "banner"
+    t.boolean  "adult"
   end
 
   create_table "support_attachments", force: true do |t|
@@ -466,6 +469,7 @@ ActiveRecord::Schema.define(version: 20140812141111) do
     t.string   "refer_code"
     t.float    "balance"
     t.boolean  "mailchimp"
+    t.boolean  "adult"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

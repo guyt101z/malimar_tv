@@ -3,14 +3,14 @@
     <div class="panel">
         <div class="panel-heading ptb0">
             <form class="form-search1">
-                <input type="text" placeholder="Quick Search" class="form-control">
+                <%= text_field_tag :user_search, '', placeholder: 'Quick Search', class: 'form-control', autocomplete: 'off' %>
                 <span class="glyphicon glyphicon-search"></span>
             </form>
         </div>
         <div class="panel-body plr0">
             <div id="right-scroll" class="nano">
                 <div class="nano-content">
-                    <ul class="nav list-user">
+                    <ul class="nav list-user" id='user_full_list'>
                         <% users.each do |user| %>
                         <li>
                             <a data-container="body" data-toggle="popover" data-placement="left" data-html="true" data-title="<div class='text-bold'><%= user.name %></div> <%= user.area %>" data-content="Client: #25477931AE<br><% if user.expiry.nil? || user.expiry < Date.today %>Free Member<% else %>Premium: <%= distance_of_time_in_words_to_now(user.expiry) %><% end %><br><% if user.last_seen.nil? || user.last_seen < 5.minutes.ago %><span class='online'></span> Active<% end %>  <a href='#' class='popover-footer'>Manage Client</a>"><span class="icon-circle-user"></span> <%= user.name %></a>
@@ -18,15 +18,32 @@
                         </li>
                         <% end %>
                     </ul>
+                    <ul class="nav list-user" style='display:none' id='user_search_list'>
+                    </ul>
                 </div>
             </div>
             <div class="btn-wrap">
-                <a href="#" class="btn btn-default btn-sm btn-block">New Client</a>
+                <%= link_to 'New Client', new_user_path, class: 'btn btn-default btn-sm btn-block' %>
             </div>
             <div class="stat-number">
-                <div class="number">28</div>
+                <div class="number"><%= @data.new_sign_ups %></div>
                 New Members Today
             </div>
         </div>
     </div>
 </div><!--right-side-->
+<script>
+    $('#user_search').keyup(function(){
+        if ($('#user_search').val() == '') {
+            $('#user_search_list').hide();
+            $('#user_full_list').show();
+        }
+        else {
+            $('#user_search_list').show();
+            $('#user_full_list').hide();
+            $.ajax({
+                url: '/side_search_users?search='+$('#user_search').val()
+            })
+        }
+    })
+</script>

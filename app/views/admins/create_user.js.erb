@@ -18,7 +18,16 @@ $('#city-error').remove()
 $('#city').removeClass('has-error')
 $('#zip-error').remove()
 $('#zip').removeClass('has-error')
-<% if @user.errors.any? %>
+$('#password-error').remove()
+$('#password').removeClass('has-error')
+
+$('#serial-error').remove()
+$('#serial').removeClass('has-error')
+
+<% unless @user.id.nil? %>
+	$('#user_id').val(<%= @user.id %>)
+<% end %>
+<% if @user_errors == true || @device_errors == true || @note_errors == true || @tx_errors == true %>
 	<% if @user.errors[:first_name].present? %>
 		$('#first_name').addClass('has-error').after('<span class="text-danger" id="first_name-error">First name <%= @user.errors[:first_name].join(", ") %>')
 	<% end %>
@@ -49,6 +58,35 @@ $('#zip').removeClass('has-error')
 	<% if @user.errors[:zip].present? %>
 		$('#zip').addClass('has-error').after('<span class="text-danger" id="zip-error">Zip code <%= @user.errors[:zip].join(", ") %>')
 	<% end %>
+	<% if @user.errors[:password].present? %>
+		$('#password').addClass('has-error').after('<span class="text-danger" id="password-error">Password <%= @user.errors[:password].join(", ") %>')
+	<% end %>
+
+	<% if @device != nil %>
+		<% unless @device.id.nil? %>
+			$('#device_id').val(<%= @device.id %>)
+		<% end %>
+		<% if @device.errors[:serial].present? %>
+			$('#serial').addClass('has-error').after('<span class="text-danger" id="serial-error">Serial <%= @device.errors[:serial].join(", ") %>')
+		<% end %>
+	<% end %>
+
+	<% if @note != nil %>
+		<% unless @note.id.nil? %>
+			$('#note_id').val(<%= @note.id %>)
+		<% end %>
+		<% if @note.errors[:serial].present? %>
+			$('#note_title').addClass('has-error').after('<span class="text-danger" id="note_title-error">Note title <%= @note.errors[:title].join(", ") %>')
+		<% end %>
+		<% if @note.errors[:serial].present? %>
+			$('#note').addClass('has-error').after('<span class="text-danger" id="serial-error">Note <%= @note.errors[:note].join(", ") %>')
+		<% end %>
+	<% end %>
+
+	<% if @tx_error != nil %>
+		$('#plan_id').addClass('has-error').after('<span class="text-danger" id="serial-error"><%= @tx_error %>')
+	<% end %>
+
 <% else %>
 	window.location = '<%= view_user_path(id: @user.id) %>'
 <% end %>

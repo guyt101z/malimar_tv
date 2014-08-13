@@ -134,11 +134,23 @@ class Admin < ActiveRecord::Base
         end
     end
 
+    def all_system_notifications
+        if role_id == 0
+            return AdminNotification.where(admin_id: id, notif_type: ['system','root_only']).order(created_at: :desc)
+        else
+            return AdminNotification.where(admin_id: id, notif_type: 'system').order(created_at: :desc)
+        end
+    end
+
     def missed_ticket_notifications
         return AdminNotification.where(admin_id: id, viewed: false, notif_type: 'ticket').count
     end
 
     def ticket_notifications
         return AdminNotification.where(admin_id: id, notif_type: 'ticket').order(created_at: :desc).limit(6)
+    end
+
+    def all_ticket_notifications
+        return AdminNotification.where(admin_id: id, notif_type: 'ticket').order(created_at: :desc)
     end
 end

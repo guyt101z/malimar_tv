@@ -1,122 +1,74 @@
 <%= form_tag update_note_path, remote: true do %>
-    <%= hidden_field_tag :user_id, @user.id %>
+    <%= hidden_field_tag :user_id, @note.user_id %>
     <%= hidden_field_tag :note_id, @note.id %>
-    <div class='panel panel-default'>
-        <div class='panel-heading'>
-            <h3 class='panel-title'>User Notes</h3>
+    <% if @note.note_colour.nil? %>
+        <div class="form-editor expand bgcolor-1" id='note_form-<%= @note.id %>' style='margin-bottom: 10px'>
+    <% else %>
+        <div class="form-editor expand <%= @note.note_colour %>" id='note_form-<%= @note.id %>' style='margin-bottom: 10px'>
+    <% end %>
+        <div class='delete_note'><%= link_to raw("<i class='fa fa-times'></i>"), delete_note_path(id: @note.id), class: 'btn btn-icon', remote: true %></div>
+        <%= text_field_tag :note_title, @note.title, class: 'form-control input-md input-title', placeholder: 'Title' %>
+        <%= text_area_tag :note, @note.note, class: 'form-control', placeholder: 'Add a note...' %>
+        <% lists = YAML.load(@note.checklist) %>
+        <div class='' id='note-reglist' style='margin-bottom: 3px'>
+            <% lists[:reglist].each do |list_item| %>
+                <% @list_item = list_item %>
+                <%= render 'users/partials/reglist_item_filled' %>
+            <% end %>
         </div>
-        <div class='panel-body note-images' id='note_images_<%= @note.id %>'>
-            <div class='row' id='img-list_<%= @note.id %>'>
-                <div class='col-md-4 col-sm-6' id='template-add_<%= @note.id %>'>
-                    <div class='note-image' id='add_image_<%= @note.id %>'>
-                        <div class='note-image-wrapper'>
-                            <i class='fa fa-plus'></i>
-                        </div>
-                        <div class='note-image-name'>Add An Image</div>
+        <div class='' id='note-checklist' style='margin-bottom: 3px'>
+            <% lists[:checklist].each do |list_item| %>
+                <% @list_item = list_item %>
+                <%= render 'users/partials/checklist_item_filled' %>
+            <% end %>
+        </div>
+        <div class="icon-editor">
+            <div class="row">
+                <%= hidden_field_tag :color, @note.note_colour %>
+                <div class="col-sm-6">
+                    <div class="btn-group">
+                        <button type="button" class="btn-icon" data-toggle="dropdown"><span class="fa fa-square-o"></span></button>
+                        <div class="dropdown-menu dropdown-border" role="menu" id='color-picker-<%= @note.id %>'>
+                            <a id='bgcolor-1 ' class="sqcolor-1"><%= hidden_field_tag :color_pick, 'bgcolor-1' %><span class="fa fa-check"></span></a>
+                            <a id='bgcolor-2' class="sqcolor-2"><%= hidden_field_tag :color_pick, 'bgcolor-2' %><span class="fa fa-check"></span></a>
+                            <a id='bgcolor-3' class="sqcolor-3"><%= hidden_field_tag :color_pick, 'bgcolor-3' %><span class="fa fa-check"></span></a>
+                            <a id='bgcolor-4' class="sqcolor-4"><%= hidden_field_tag :color_pick, 'bgcolor-4' %><span class="fa fa-check"></span></a>
+                            <a id='bgcolor-5' class="sqcolor-5"><%= hidden_field_tag :color_pick, 'bgcolor-5' %><span class="fa fa-check"></span></a>
+                            <a id='bgcolor-6' class="sqcolor-6"><%= hidden_field_tag :color_pick, 'bgcolor-6' %><span class="fa fa-check"></span></a>
+                            <a id='bgcolor-7' class="sqcolor-7"><%= hidden_field_tag :color_pick, 'bgcolor-7' %><span class="fa fa-check"></span></a>
+                            <a id='bgcolor-8' class="sqcolor-8"><%= hidden_field_tag :color_pick, 'bgcolor-8' %><span class="fa fa-check"></span></a>
+                          </div>
                     </div>
+                    <button type="button" id='add_check-<%= @note.id %>' class='btn btn-icon'><i class='fa fa-check-square-o'></i></button>
+                    <button type="button" id='add_reg-<%= @note.id %>' class='btn btn-icon'><i class='fa fa-list'></i></button>
                 </div>
-                <% @note_files.each do |file| %>
-                    <div class="col-md-4 col-sm-6" id='file-wrapper_<%= file.id %>'>
-                        <div class="note-image" id="add_image">
-                            <div class='del-note-image-wrapper' onclick='deleteImage(<%= file.id %>)'>
-                                <i class='fa fa-times'></i>
-                            </div>
-                            <div class="note-image-wrapper">
-                                <%= image_tag file.file_url(:preview) %>
-                            </div>
-                            <div class="note-image-name">
-                                <%= File.basename(file.file.path) %>
-                            </div>
-                        </div>
-                    </div>
-                <% end %>
+                <div class="col-sm-6 text-right save">
+                    <div class="fz12-5" id='save_btn'><%= submit_tag 'Save Note', class: 'btn btn-icon', data: {disable_with: 'Saving...'} %></div>
+                </div>
             </div>
-        </div>
-        <div class='panel-body'>
-            <%= text_field_tag :title, @note.title, class: 'form-control', placeholder: 'Add title' %>
-            <%= text_area_tag :note, @note.note, class: 'form-control', rows: 4, placeholder: 'Add note', style: 'resize: verticle' %>
-        </div>
-        <div class='panel-body' id='note-reglist_<%= @note.id %>' style='display:none'>
-            <% list_data = YAML.load(@note.checklist) %>
-            <% list_data[:reglist].each do |item| %>
-                <% @list_item = item %>
-                <%= render "users/partials/reglist_item_filled" %>
-            <% end %>
-        </div>
-        <div class='panel-body' id='note-checklist_<%= @note.id %>' style='display:none'>
-            <% list_data[:checklist].each do |item| %>
-                <% @list_item = item %>
-                <%= render "users/partials/checklist_item_filled" %>
-            <% end %>
-        </div>
-        <div class='panel-footer'>
-            <div class='pull-left'>
-                <a onclick='addChecklist(<%= @note.id %>)' class='btn btn-success'><i class='fa fa-check-square-o fa-fw'></i></a>
-                <a onclick='addReglist(<%= @note.id %>)' class='btn btn-success'><i class='fa fa-list fa-fw'></i></a>
-                <a onclick='$("#note_images_<%= @note.id %>").show()' class='btn btn-success'><i class='fa fa-file fa-fw'></i></a>
-            </div>
-            <div class='pull-right'>
-                <%= link_to 'Delete Note', delete_note_path(id: @note.id), class: 'btn btn-danger', remote: true, data: {disable_with: 'Deleting...', confirm: 'Are you sure you want to delete this note?'} %>
-                <%= submit_tag 'Save Note', class: 'btn btn-primary' %>
-            </div>
-            <div class='clearfix'></div>
         </div>
     </div>
 <% end %>
-<%= form_tag add_image_to_existing_note_path, remote: true, style: 'display:none' do %>
-    <%= file_field_tag :image, id: 'image_'+@note.id.to_s %>
-    <%= hidden_field_tag :note_id_for_image, @note.id %>
-<% end %>
 <script>
-
-    $('#add_image_<%= @note.id %>').click(function() {
-        $('#image_<%= @note.id %>').click();
+    $('#color-picker-<%= @note.id %> a').click(function(){
+        $('#color-picker-<%= @note.id %> a').removeClass('selected');
+        $(this).addClass('selected');
+        $('#note_form-<%= @note.id %>').removeClass('bgcolor-8 bgcolor-7 bgcolor-6 bgcolor-5 bgcolor-4 bgcolor-3 bgcolor-2 bgcolor-1');
+        $('#note_form-<%= @note.id %>').addClass($(this).attr('id'));
+        $('#note_form-<%= @note.id %>').children('.icon-editor').children('.row').children('#color').val($(this).attr('id'));
     });
-    $('#image_<%= @note.id %>').fileupload({
-        dataType: "script",
-        dropZone: document.getElementById('add_image'),
-        add: function(e, data) {
-            data.context = $(tmpl("template-upload", data.files[0]));
-            $('#add_image_<%= @note.id %>').hide()
-            $('#template_add_<%= @note.id %>').append(data.context);
-            return data.submit();
-        },
-        progress: function(e, data) {
-            var progress;
-            if (data.context) {
-                progress = parseInt(data.loaded / data.total * 100, 10);
-                return data.context.find('.upload-percentage').html(progress+'%');
-            }
-        },
-        fail: function(e,data) {
-            if (data.context) {
-                data.context.remove()
-                $('#add_image_<%= @note.id %>').show()
-                var notification = new NotificationFx({
-                    message : '<p>There was an error uploading the file. Please ensure that it is a jpg/jpeg, png, or gif.</p>',
-                    layout : 'growl',
-                    effect : 'jelly',
-                    type : 'danger', // notice, warning, error or success
-                    num: Math.floor((Math.random() * 10000) + 1)
-                });
+    <% if @note.note_colour.present? %>
+        $('#color-picker-<%= @note.id %> a#<%= @note.note_colour %>').addClass('selected')
+    <% else %>
+        $('#color-picker-<%= @note.id %> a#bgcolor-1').addClass('selected')
+    <% end %>
 
-                return notification.show()
-            }
-        },
-        done: function(e,data) {
-            if (data.context) {
-                data.context.remove()
-                $('#add_image_<%= @note.id %>').show()
-                var notification = new NotificationFx({
-                    message : '<p>File uploaded!</p>',
-                    layout : 'growl',
-                    effect : 'jelly',
-                    type : 'success', // notice, warning, error or success
-                    num: Math.floor((Math.random() * 10000) + 1)
-                });
-
-                return notification.show()
-            }
-        }
-    });
+    $('#add_check-<%= @note.id %>').click(function(){
+        $('#note_form-<%= @note.id %>').children('#note-checklist').show()
+        $('#note_form-<%= @note.id %>').children('#note-checklist').show().append('<%= escape_javascript(render("users/partials/checklist_item")) %>')
+    })
+    $('#add_reg-<%= @note.id %>').click(function(){
+        $('#note_form-<%= @note.id %>').children('#note-reglist').show()
+        $('#note_form-<%= @note.id %>').children('#note-reglist').show().append('<%= escape_javascript(render("users/partials/reglist_item")) %>')
+    })
 </script>

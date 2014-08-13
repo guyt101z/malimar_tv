@@ -252,8 +252,9 @@ class UsersController < ApplicationController
 		end
 
 		@note.user_id = params[:user_id]
-		@note.title = params[:title]
+		@note.title = params[:note_title]
 		@note.note = params[:note]
+		@note.note_colour = params[:color]
 
 		if params[:check_item].present?
 			checklist = Array.new
@@ -297,8 +298,9 @@ class UsersController < ApplicationController
 
 	def update_note
 		@note = UserNote.find(params[:note_id])
-		@note.title = params[:title]
+		@note.title = params[:note_title]
 		@note.note = params[:note]
+		@note.note_colour = params[:color]
 
 		if params[:check_item].present?
 			checklist = Array.new
@@ -322,7 +324,6 @@ class UsersController < ApplicationController
 			checklist = Array.new
 		end
 
-		# TODO List items
 		if params[:list_item].present?
 			reglist = Array.new
 			params[:list_item].each_with_index do |item, i|

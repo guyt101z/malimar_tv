@@ -22,7 +22,7 @@
                 <%= render 'admins/new_user/note_form' %>
                 <div class="line"></div>
                 <div class="text-right">
-					<%= submit_tag 'Register Client', class: 'btn btn-primary btn-w170 btn-sm' %>
+					<%= submit_tag 'Register Client', class: 'btn btn-primary btn-w170 btn-sm', data: {disable_with: 'Registering...'} %>
                 </div>
             </div>
         </div>
@@ -30,3 +30,6 @@
 	</div>
 	</div>
 <% end %>
+<script>
+    $('#new_user').addClass('active')
+</script>

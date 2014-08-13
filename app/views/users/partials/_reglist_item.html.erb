@@ -1,8 +1,8 @@
-<div class='row'>
-    <div class='col-xs-10'>
-        <%= text_field_tag 'list_item[]', '', class: 'form-control' %>
+<div class='checklist'>
+    <div class='checklist-item'>
+        <%= text_field_tag 'list_item[]', '', class: 'form-control', placeholder: 'List item...' %>
     </div>
-    <div class='col-xs-2'>
+    <div class='checklist-delete'>
         <i class='fa fa-times' onclick='$(this).parent().parent().remove()'></i>
     </div>
 </div>

@@ -40,6 +40,10 @@
                             <label>Length</label>
                             <%= text_field_tag :length,  @movie.length, class: 'form-control' %>
                         </div>
+                        <div class='col-md-4 form-group'>
+                            <label class='unedited'>Adult Content</label>
+                            <%= select_tag :adult, options_for_select([['No',false],['Yes',true]],@movie.adult), class: 'form-control edit_channel' %>
+                        </div>
                     </div>
                     <label class='unedited' id='checkbox_label'>Available on:</label>
                     <div class='row'>

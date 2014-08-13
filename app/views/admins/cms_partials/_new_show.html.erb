@@ -51,6 +51,10 @@
                         <label>Membership Level</label>
                         <%= select_tag :new_free, options_for_select([['',nil],['Free', 1],['Premium', 0]]), class: 'form-control' %>
                     </div>
+                    <div class='col-sm-4 form-group'>
+                        <label>Adult Content</label>
+                        <%= select_tag :new_adult, options_for_select([['No',false],['Yes',true]]), class: 'form-control' %>
+                    </div>
                 </div>
                 <div class='row'>
                     <div class='col-sm-6 form-group'>
