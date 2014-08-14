@@ -1,0 +1,14 @@
+<div class="sidebar">
+    <ul class="nav">
+        <% if params[:controller] == 'support' || params[:action].include?('support') || params[:action].include?('ticket') %>
+            <%= render 'sales_reps/nav/sidenavs/support' %>
+
+        <% elsif params[:action] == 'transactions' || params[:action] == 'view_withdrawal' %>
+            <%= render 'sales_reps/nav/sidenavs/withdrawals' %>
+
+        <% end %>
+    </ul>
+    <div class="sign-out">
+        <a href="#" class="btn btn-inverse btn-sm btn-block"><span class="glyphicon glyphicon-lock"></span> Sign Out</a>
+    </div>
+</div><!--sidebar-->

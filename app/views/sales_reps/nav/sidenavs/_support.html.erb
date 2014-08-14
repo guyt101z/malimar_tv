@@ -1,0 +1,4 @@
+<li id='new_ticket'><%= link_to 'New Ticket', sales_rep_new_ticket_path %></li>
+<li id='open_tickets'><%= link_to raw("Open Tickets <span class='count'>#{SupportCase.where(status: ['Open','Pending'], sales_representative_id: current_sales_representative.id).count}</span></a>"), sales_rep_support_path %></li>
+<li id='closed_tickets'><%= link_to raw("Closed Tickets <span class='count'>#{SupportCase.where(status: 'Closed', sales_representative_id: current_sales_representative.id).count}</span></a>"), sales_rep_closed_tickets_path %></li>
+<li id='archived_tickets'><%= link_to 'Archive', sales_rep_archived_tickets_path %></li>

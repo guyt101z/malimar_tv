@@ -17,5 +17,5 @@ $('#issue_description-error').remove()
 	<% end %>
 <% else %>
 	<% flash[:success] = 'Your ticket has been submitted. We will be in touch with you soon.' %>
-	window.location = '/sales_reps/support?id=<%= @case.id %>'
+	window.location = '<%= sales_rep_view_ticket_path(id: @case.id) %>'
 <% end %>

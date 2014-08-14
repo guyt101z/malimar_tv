@@ -322,11 +322,12 @@
 
 .grid_body {
     height: 250px;
-    overflow-x: auto;
+    padding: 5px 0;
+    position: relative
 }
 .movie_wrapper {
     height: 220px;
-    width: 100%;
+    width: 160px;
     border: 1px solid #ccc;
     position: relative;
     display: inline-block;

@@ -286,6 +286,10 @@ class AdminsController < ApplicationController
 	def view_user
 		if current_admin.authorized_to?('manage_user')
 			@user = User.find(params[:id])
+			if @user.balance.nil?
+				@user.balance = 0
+				@user.save
+			end
 			@devices = Device.where(user_id: @user.id)
 			@transactions = Transaction.where(user_id: @user.id)
 
@@ -302,6 +306,144 @@ class AdminsController < ApplicationController
 		else
 			flash[:error] = 'You do not have permission to view that.'
 			redirect_to '/admins'
+		end
+	end
+
+	def add_subscription
+		@user = User.find(params[:user_id])
+		@plan = Plan.find(params[:plan_id])
+
+		unless @user.balance.nil?
+			total = @plan.price - @user.balance
+		else
+			total = @plan.price
+		end
+
+		if params[:payment_type].present?
+			if total > 0
+				@test1 = '> 0'
+				if params[:payment_type] == 'Credit Card'
+					ActiveMerchant::Billing::Base.mode = :test
+
+					# Create a new credit card object
+					names = params[:card_name].split(' ', 2)
+					credit_card = ActiveMerchant::Billing::CreditCard.new(
+						:number     => params[:card_number],
+						:month      => params[:card_month],
+						:year       => params[:card_year],
+						:first_name => names[0],
+						:last_name  => names[1],
+						:verification_value  => params[:ccv]
+					)
+
+					if credit_card.valid?
+						@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
+						gateway = ActiveMerchant::Billing::PaypalGateway.new(
+							login:    	@paypal[:login],
+							password: 	@paypal[:password],
+							signature: 	@paypal[:signature]
+						)
+
+						response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
+
+						if response.success?
+							transaction = Transaction.new
+							transaction.user_id = @user.id
+							transaction.payment_type = 'Credit Card'
+							transaction.paypal_id = response.params['transaction_id']
+							transaction.status = 'Paid'
+							transaction.customer_paid = DateTime.now
+							transaction.balance_used = @user.balance
+							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+							transaction.save
+
+							if @user.expiry.nil? || @user.expiry < Date.today
+								@user.expiry = Date.today + @plan.months.months
+							else
+								@user.expiry += @plan.months.months
+							end
+							@user.balance = 0
+							@user.save
+							TransactionalMailer.order_paid(transaction, @user).deliver
+							@success = true
+						else
+							@test2 = 'paypal error'
+							@success = false
+							@credit = response.message
+						end
+					else
+						@test2 = 'invalid card'
+						@success = false
+						@credit = 'This card is not valid'
+					end
+				else
+					transaction = Transaction.new
+					transaction.user_id = @user.id
+					transaction.payment_type = params[:payment_type]
+					transaction.status = 'Pending'
+					transaction.balance_used = @user.balance
+					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+					transaction.save
+
+					if @user.expiry.nil? || @user.expiry < Date.today
+						@user.expiry = Date.today + @plan.months.months
+					else
+						@user.expiry += @plan.months.months
+					end
+					@user.balance = 0
+					@user.save
+					TransactionalMailer.order_created(transaction, @user).deliver
+					@success = true
+				end
+			elsif total <= 0
+				@test1 = '< 0'
+				@user.balance = @user.balance - @plan.price
+				if @user.expiry.nil? || @user.expiry < Date.today
+					@user.expiry = Date.today + @plan.months.months
+				else
+					@user.expiry += @plan.months.months
+				end
+				@user.save
+
+				transaction = Transaction.new
+				transaction.user_id = @user.id
+				transaction.payment_type = 'Previous Balance'
+				transaction.payment_type = params[:payment_type]
+				transaction.status = 'Paid'
+				transaction.customer_paid = DateTime.now
+				transaction.balance_used = @plan.price
+				transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+				transaction.save
+				TransactionalMailer.order_paid(transaction, @user).deliver
+				@success = true
+			end
+		else
+			@test2 = 'no type chosen'
+			@success = false
+			@payment_type = 'You must choose a payment method'
+		end
+
+		if @success == true
+			@transactions = Transaction.where(user_id: @user.id)
+			@pending = 0
+			@transactions.each do |tx|
+				if tx.status == 'Pending'
+					@pending += YAML.load(tx.product_details)[:price]
+				end
+			end
+		end
+	end
+
+	def choose_plan
+		@user = User.find(params[:user_id])
+		@plan = Plan.find(params[:plan_id])
+
+		unless @user.balance.nil?
+			@total = @plan.price - @user.balance
+		else
+			@total = @plan.price
+			@user.balance = 0
+			@user.save
 		end
 	end
 
@@ -1564,187 +1706,7 @@ class AdminsController < ApplicationController
 		end
 	end
 
-	def add_subscription
-		@plan = Plan.find(params[:plan_id])
 
-		if params[:serial].present?
-			@device = Roku.new
-			@device.user_id = current_user.id
-			@device.serial = params[:serial]
-
-			if @device.valid? && current_user.max_devices?
-				@device_errors = true
-				@device.errors.add(:base, 'You have reached the maximum number of devices allowed.')
-			elsif @device.valid?
-				@device_errors = false
-			else
-				@device_errors = true
-			end
-		else
-			@device = nil
-			@device_errors = false
-		end
-
-		if @device_errors == false
-			if params[:refer_code].present?
-				friend = User.where(refer_code: params[:refer_code]).first
-				if friend.nil? || friend.id == current_user.id
-					@referral_errors = true
-					@referral_message = 'This referral code is not valid.'
-				else
-					@referral_errors = false
-				end
-			else
-				friend = nil
-				@referral_errors = false
-			end
-		end
-
-		if @device_errors == false && @referral_errors == false
-			total = @plan.price - current_user.balance
-
-			if total > 0 && params[:payment_type].present?
-				if params[:payment_type] == 'Credit Card'
-					# Send requests to the gateway's test servers
-					ActiveMerchant::Billing::Base.mode = :test
-
-					# Create a new credit card object
-					credit_card = ActiveMerchant::Billing::CreditCard.new(
-						:number     => params[:card],
-						:month      => params[:card_month],
-						:year       => params[:card_year],
-						:first_name => params[:card_first_name],
-						:last_name  => params[:card_last_name],
-						:verification_value  => params[:ccv]
-					)
-
-					if credit_card.valid?
-						@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
-						gateway = ActiveMerchant::Billing::PaypalGateway.new(
-							login:    	@paypal[:login],
-							password: 	@paypal[:password],
-							signature: 	@paypal[:signature]
-						)
-
-
-
-
-
-						response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
-
-						if response.success?
-							user = current_user
-							user.balance = 0
-							if user.expiry.nil? || user.expiry < Date.today
-								user.expiry = Date.today + @plan.months.months
-							else
-								user.expiry += @plan.months.months
-							end
-							user.save
-							transaction = Transaction.new
-							transaction.user_id = user.id
-							transaction.payment_type = 'Credit Card'
-							transaction.paypal_id = response.params['transaction_id']
-							transaction.status = 'Paid'
-							transaction.customer_paid = DateTime.now
-							unless friend.nil?
-								transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
-								@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)
-								if @referral_bonus[:method] == 'Lump Sum'
-									friend.balance += @referral_bonus[:rate]
-								else
-									new_balance = (@referral_bonus[:rate]/100) * @plan.price
-									friend.balance += (new_balance * 100).round / 100
-								end
-								friend.save
-							else
-								transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
-							end
-							unless @device.nil?
-								transaction.roku_id = @device.id
-								@device.save
-							end
-							transaction.balance_used = @plan.price - total
-							transaction.save
-							@success = true
-							flash[:success] = 'Your subscription has been successfully processed.'
-							TransactionalMailer.order_paid(transaction)
-						else
-							@payment_errors = true
-							@payment_message = response.message
-						end
-					else
-						@payment_errors = true
-						@payment_message = 'This credit card is not valid.'
-					end
-				else
-					user = current_user
-					user.balance = 0
-					if user.expiry.nil? || user.expiry < Date.today
-						user.expiry = Date.today + @plan.months.months
-					else
-						user.expiry += @plan.months.months
-					end
-					user.save
-					transaction = Transaction.new
-					transaction.payment_type = params[:payment_type]
-					transaction.status = 'Pending'
-					unless friend.nil?
-						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
-						@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)
-						if @referral_bonus[:method] == 'Lump Sum'
-							friend.balance += @referral_bonus[:rate]
-						else
-							new_balance = (@referral_bonus[:rate]/100) * @plan.price
-							friend.balance += (new_balance * 100).round / 100
-						end
-						friend.save
-					else
-						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
-					end
-					transaction.balance_used = @plan.price - total
-					transaction.save
-					flash[:success] = 'Your order has been processed. Please send your payment to activate your subscription.'
-					TransactionalMailer.order_completed(transaction)
-				end
-			elsif total <= 0
-				user = current_user
-				user.balance = user.balance - @plan.price
-				if user.expiry.nil? || user.expiry < Date.today
-					user.expiry = Date.today + @plan.months.months
-				else
-					user.expiry += @plan.months.months
-				end
-				user.save
-				transaction = Transaction.new
-				transaction.user_id = user.id
-				transaction.payment_type = 'Previous Balance'
-				transaction.status = 'Paid'
-				transaction.balance_used = @plan.price
-				unless friend.nil?
-					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
-					@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)
-					if @referral_bonus[:method] == 'Lump Sum'
-						friend.balance += @referral_bonus[:rate]
-					else
-						new_balance = (@referral_bonus[:rate]/100) * @plan.price
-						friend.balance += (new_balance * 100).round / 100
-					end
-					friend.save
-				else
-					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
-				end
-				unless @device.nil?
-					transaction.roku_id = @device.id
-					@device.save
-				end
-				transaction.save
-			else
-				@payment_errors = true
-				@payment_message = 'You must select a payment type.'
-			end
-		end
-	end
 
 	def general_settings
 		unless current_admin.authorized_to?('edit_general_settings')

@@ -22,12 +22,12 @@
                             </div>
                             <div class="col-sm-6 col-md-3">
                                 <div class="stat-number">
-                                    <div class="number"><%= @data[:duration] %></div>
-                                    <% if name == 'Free Trial' %>
-                                        Days
+                                    <% if @transaction.balance_used.nil? %>
+                                        <div class="number">$<%= number_with_precision(@data[:price], precision: 2) %></div>
                                     <% else %>
-                                        Months
+                                        <div class="number">$<%= number_with_precision(@data[:price] - @transaction.balance_used, precision: 2) %></div>
                                     <% end %>
+                                    Amount Owing
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-3">

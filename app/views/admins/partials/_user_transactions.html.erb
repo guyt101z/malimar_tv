@@ -6,6 +6,7 @@
         <th>Status</th>
     </tr></thead>
     <tbody>
+        <% @transactions = Transaction.where(user_id: @user.id) %>
         <% @transactions.each do |transaction| %>
             <% details = YAML.load(transaction.product_details) %>
             <tr onclick='window.location = "<%= view_tx_path(id: transaction.id) %>"'>

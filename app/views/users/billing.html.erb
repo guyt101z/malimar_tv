@@ -1,0 +1,74 @@
+<div class="splash">
+    <div class="container">
+        <div class='pull-right profile_nav hidden-xs'>
+            <%= render 'users/partials/subnav' %>
+        </div>
+        <h3 class="name">My Billing</h3>
+        <div class='text-center profile_nav_xs visible-xs'>
+            <%= render 'users/partials/subnav' %>
+        </div>
+    </div>
+</div><!--splash-->
+
+<div class="content">
+    <div class="container">
+        <div class="mlr90">
+            <div class='row'>
+                <div class='col-sm-4'>
+                    <div class="box-white">
+                        <div class="row">
+                            <div class="col-md-5 col-sm-4">
+                                <h4 class="title4">Membership</h4>
+                            </div>
+                            <% if current_user.expiry.nil? || current_user.expiry < Date.today %>
+                                <div class="col-md-7 col-sm-8 text-right">
+                                    <a href='/subscribe' class="btn btn-primary btn-w180">Upgrade Now</a>
+                                </div>
+                            <% end %>
+                        </div>
+                        <div class="table-responsive">
+                            <% if current_user.expiry.nil? || current_user.expiry < Date.today %>
+                                <h4 class="name">Free</h4>
+                            <% else %>
+                                <h4 class="name">Premium<br/></h4>
+                                <%= @user.expiry.strftime('%B %-d, %Y') %> (<%= distance_of_time_in_words(Date.today, @user.expiry) %>)
+                            <% end %>
+                        </div>
+                    </div>
+                </div>
+                <div class='col-sm-8'>
+                    <div class="box-white">
+                        <div class="row">
+                            <div class="col-md-8 col-sm-7">
+                                <h4 class="title4">All Subscriptions</h4>
+                                <p class="fz12">* Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod.</p>
+                            </div>
+                            <div class="col-md-4 col-sm-5 text-right">
+                                <a href='/subscribe' class="btn btn-primary btn-w180">Add Subscription</a>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <div class='panel-scroll transactions'>
+                                <% @transactions.each do |transaction| %>
+                                <% details = YAML.load(transaction.product_details) %>
+                                <% name = details[:name].gsub('REFUNDED: ','').gsub('PAID: ','').gsub('CANCELLED: ','') %>
+                                    <div class='transaction' onclick='window.open("<%= view_invoice_path(id: transaction.id) %>")'>
+                                        <% if name == 'Free Trial' %>
+                                            <p class='plan'>#<%= transaction.id %>: <%= name %> – <%= pluralize(details[:duration], 'day') %></p>
+                                        <% else %>
+                                            <p class='plan'>#<%= transaction.id %>: <%= name %> – <%= pluralize(details[:duration], 'month') %></p>
+                                        <% end %>
+                                        <p class='timestamp'><%= transaction.created_at.strftime('%d/%m/%Y') %></p>
+                                        <p class='status'><%= transaction.status %></p>
+                                        <p class='amount'>$<%= number_with_precision(details[:price], precision: 2) %></p>
+                                    </div>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div><!--content-->

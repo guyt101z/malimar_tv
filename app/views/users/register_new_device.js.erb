@@ -8,8 +8,7 @@ $('#limit_error').remove()
         $('#new_device_serial').after('<div class="text-danger" id="limit_error"><%= @device.errors[:base].join(", ") %></div>')
     <% end %>
 <% else %>
-    $('#new_device_success').show()
-    $('#new_submit').hide()
-    $('#new_device_form').hide()
-    $('#devices').prepend('<div class="device" onclick="viewDevice(<%= @device.id %>)" id="device_<%= @device.id %>"><div class="image_wrapper"><%= image_tag "roku.png" %></div><p class="type">Roku</p><p class="serial"><%= @device.serial %></p</div>')
+    $('#new_device_modal').modal('hide')
+    $('#new_device_serial').val('')
+    $('#devices').prepend('<tr id="device_<%= @device.id %>"><td class="text-center"><div class="image_wrapper"><%= image_tag 'roku.png' %></div></td><td><div class="device-name"><% if @device.name.present? %><%= @device.nickname(true) %><% else %><%= @device.humanized_type %><% end %></div><div><span class="fz12 text-success glyphicon glyphicon-ok"></span> Status <span class="text-success text-sans-semi fz12-5">Available</span></div></td><td><div class="fz12-5">Serial: <%= @device.serial %></div></td><td class="w180 text-center"><button onclick="viewDevice(<%= @device.id %>)" type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></button> <%= link_to raw('<span class="glyphicon glyphicon-remove"></span>'), unlink_device_path(id: @device.id), class: "btn btn-default", data: {disable_with: '...', confirm: 'Are you sure you want to unlink this device?'}, remote: true %></td></tr>')
 <% end %>

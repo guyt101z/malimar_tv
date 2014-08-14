@@ -7,11 +7,13 @@
 		num: <%= (100 + rand(10000)).to_s %>
 	});
 <% else %>
-	$('#ticket_attachments').prepend('<div class="col-md-3 col-sm-4 col-xs-6 support_image_wrapper"><%= link_to image_tag(@attachment.file_url), @attachment.file_url, target: "new" %></div>')
-	$('#ticket_messages').prepend("<div class='message animated fadeIn'><div class='sent_message'><p class='title'>You said:</p><p class='timestamp'><em title='<%= (@message.created_at) %>' class='timeago'></em></p><p><%= @message.message %></p></div></div>")
+	<% count = SupportMessage.where(support_case_id: @message.support_case_id).count %>
+	$('#ticket_attachments').prepend('<div class="col-xs-6"><div class="support_image_wrapper"><%= link_to image_tag(@attachment.file_url), @attachment.file_url, target: "new" %></div></div>')
+	$('#ticket_messages').prepend('<div class="message"><div class="row mb10"><div class="col-sm-6"><div class="fz12-5"><span class="nmb"><%= count %></span> <%= @message.user_name %>:</div></div><div class="col-sm-6"><div class="fz11-5 text-right"><%= @message.created_at.strftime('%B %-d, %Y at %H:%M') %></div></div></div><p><%= @message.message %></p></div>')
 	$('#message').val('')
+
 	var notification = new NotificationFx({
-		message : '<p>File has been uploaded</p>',
+		message : '<p>Your file has been uploaded</p>',
 		layout : 'growl',
 		effect : 'jelly',
 		type : 'success', // notice, warning, error or success

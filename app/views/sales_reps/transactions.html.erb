@@ -1,182 +1,238 @@
-<div class='container'>
-	<div class='row'>
-		<div class='col-md-6 col-sm-8'>
-			<%= form_tag update_sales_rep_address_path, remote: true do %>
-			<div class='panel panel-default'>
-				<div class='panel-heading' style='position: relative'>
-					<h3 class='panel-title'>Mailing Address</h3>
-					<div class='upload_image_heading'>
-						<%= submit_tag 'Update Address', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
-					</div>
-				</div>
-				<div class='panel-body'>
-					<div class='row'>
-						<div class='col-lg-6 form-group'>
-							<label>Street Address</label>
-							<%= text_field_tag :address_1, current_sales_representative.address_1, class: 'form-control' %>
-						</div>
-						<div class='col-lg-6 form-group'>
-							<label>Address Line 2</label>
-							<%= text_field_tag :address_2, current_sales_representative.address_2, class: 'form-control', placeholder: 'Optional' %>
-						</div>
-					</div>
-					<div class='row'>
-						<div class='col-lg-6 form-group'>
-							<label>City</label>
-							<%= text_field_tag :city, current_sales_representative.city, class: 'form-control' %>
-						</div>
-						<div class='col-lg-6 form-group'>
-							<label>State</label>
-							<%= text_field_tag :state, current_sales_representative.state, class: 'form-control' %>
-						</div>
-					</div>
-					<div class='row'>
-						<div class='col-lg-6 form-group'>
-							<label>Country</label>
-							<%= select_tag :country, options_for_select([['Country', nil], 'Canada', 'United States', ['This will be configurable', nil]], current_sales_representative.country), class: 'form-control' %>
-						</div>
-						<div class='col-lg-6 form-group'>
-							<label>Zip/Postal Code</label>
-							<%= text_field_tag :zip, current_sales_representative.zip, class: 'form-control' %>
+<% content_for :top_level, 'Withdrawals' %>
+<% content_for :low_levels, YAML.dump([]) %>
+<div id="left-scroll" class="nano">
+	<div class="nano-content">
+		<div class='row'>
+			<div class='col-sm-9'>
+				<div class="panel">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="stat-number" id='current_balance'>
+									<div class="number"><i class='fa fa-refresh fa-spin'></i></div>
+									Current Balance
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="stat-number" id='pending_withdrawals'>
+									<div class="number"><i class='fa fa-refresh fa-spin'></i></div>
+									Pending Withdrawals
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="stat-number" id='total_payout'>
+									<div class="number"><i class='fa fa-refresh fa-spin'></i></div>
+									Total Payout
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<% end %>
+
+			<div class='col-sm-3'>
+				<div class="panel">
+					<div class="panel-body text-center">
+						<% min = YAML.load(Setting.where(name: 'Withdrawal Limits').first.data)[:min].to_f %>
+						<p style='margin-bottom: 11px; margin-top: 10px;'>Minimum: $<%= number_with_precision(min, precision: 2) %></p>
+						<% unless current_sales_representative.meets_min_limit? %>
+							<%= link_to 'Submit Withdrawal', '#', class: 'btn btn-primary btn-block', disabled: 'disabled' %>
+						<% else %>
+							<%= link_to 'Submit Withdrawal', rep_new_withdrawal_path, class: 'btn btn-primary btn-block' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+			<div class='col-xs-12'>
+				<div class="panel">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-sm-6">
+								Withdrawals
+							</div>
+						</div>
+					</div>
+					<div class="panel-body plr20">
+						<div class="table-responsive">
+						<table class="table table-list fz11-5 table-hover" id='wd_table'>
+							<thead>
+							<tr>
+								<td>Withdrawal #
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Rep Name
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Email
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Amount
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Date Created
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Status
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Action Date
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+							</tr>
+							</thead>
+							<tbody>
+							<% @withdrawals.each do |withdrawal| %>
+							<tr onclick='window.location = "<%= rep_view_request_path(id: withdrawal.id) %>"' style='cursor:pointer'>
+								<td class="text-bold">#<%= withdrawal.id %></td>
+								<% rep = SalesRepresentative.where(id: withdrawal.sales_rep_id).first %>
+								<% if rep.nil? %>
+									<td>Rep not found</td>
+								<% else %>
+									<td><%= rep.name %></td>
+								<% end %>
+								<td><%= rep.email %></td>
+								<td><%= number_with_precision(withdrawal.amount, precision: 2) %></td>
+								<td><%= rep.created_at.strftime('%Y/%m/%-d') %></td>
+								<td><%= withdrawal.status %></td>
+								<% if withdrawal.approved.present? %>
+									<td><%= withdrawal.approved.strftime('%Y/%m/%-d')  %></td>
+								<% else %>
+									<td>N/A</td>
+								<% end %>
+							</tr>
+							<% end %>
+							</tbody>
+						</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<%= render 'admins/partials/transactions_details_modal' %>
+			<script type="text/javascript">
+			$('#all_wd').addClass('active')
+				$.ajax({
+					url: '/rep_pending_balance'
+				})
+				$.ajax({
+					url: '/rep_current_balance'
+				})
+				$.ajax({
+					url: '/rep_pending_withdrawals'
+				})
+				$.ajax({
+					url: '/rep_total_payout'
+				})
+				if($(window).width() > 991){
+					var screen_size = 'large'
+				}
+				else {
+					var screen_size = 'small'
+				}
+
+				$(window).resize(function(){
+
+					if($('#transactions').width() <= 398 && screen_size == 'large') {
+						waitForFinalEvent(function(){
+							chart.redraw()
+						},500,makeid())
+
+						screen_size = 'small'
+					}
+					else if ($('#transactions').width() > 397 && screen_size == 'small') {
+						waitForFinalEvent(function(){
+							chart.redraw()
+						},500,makeid())
+						screen_size = 'large'
+					}
+				})
+				var waitForFinalEvent = (function () {
+					var timers = {};
+					return function (callback, ms, uniqueId) {
+						if (!uniqueId) {
+							uniqueId = "Don't call this twice without a uniqueId";
+						}
+						if (timers[uniqueId]) {
+							clearTimeout (timers[uniqueId]);
+						}
+						timers[uniqueId] = setTimeout(callback, ms);
+					};
+				})();
+				function makeid() {
+					var text = "";
+					var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+					for( var i=0; i < 5; i++ )
+						text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+					return text;
+				}
+				$('svg').css('overflow','visible')
+
+				function updateChartDetails(){
+					loadDetails($('#hidden_tag').val(), $('#start_month').val(), $('#start_day').val(), $('#start_year').val(), $('#end_month').val(), $('#end_day').val(), $('#end_year').val())
+				}
+
+				function loadDetails(detail, start_month, start_day, start_year, end_month, end_day, end_year) {
+					$('#loading_chart').html('<i class="fa fa-refresh fa-spin"></i>')
+					$('#loading_table').css('line-height','200px').html('<i class="fa fa-refresh fa-spin"></i>')
+					$('#loading_chart').show()
+					$('#loading_table').show()
+					$('#transactions').html('')
+					$('#transaction_table').html('')
+					$('#details_pane').html('')
+
+					$('#start_month').val(start_month)
+					$('#start_day').val(start_day)
+					$('#start_year').val(start_year)
+					$('#end_month').val(end_month)
+					$('#end_day').val(end_day)
+					$('#end_year').val(end_year)
+					$('#transactions_details_modal').modal('show');
+					$.ajax({
+						url: '/view_'+detail+'_details?start_month='+start_month+'&start_day='+start_day+'&start_year='+start_year+'&end_month='+end_month+'&end_day='+end_day+'&end_year='+end_year
+					})
+				}
+				$("#new_rate").keydown(function (e) {
+					// Allow: backspace, delete, tab, escape, enter and .
+					if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+						// Allow: Ctrl+A
+						(e.keyCode == 65 && e.ctrlKey === true) ||
+						// Allow: home, end, left, right
+						(e.keyCode >= 35 && e.keyCode <= 39)) {
+							// let it happen, don't do anything
+							return;
+					}
+					// Ensure that it is a number and stop the keypress
+					if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+						e.preventDefault();
+					}
+				});
+				$('#wd_table').dataTable();
+			</script>
 		</div>
-		<div class='col-md-6 col-sm-4' id='transaction_area'>
-			<div class='row'>
-				<div class='col-md-6 col-sm-12'>
-					<div class='panel panel-default' id='current_balance'>
-						<div class='panel-heading'>
-							<h3 class='panel-title'>Current Balance</h3>
-						</div>
-						<div class='panel-body text-center balance'>
-							<i class='fa fa-refresh fa-spin'></i>
-						</div>
-					</div>
-				</div>
-				<div class='col-md-6 col-sm-12'>
-					<div class='panel panel-default' id='pending_balance'>
-						<div class='panel-heading'>
-							<h3 class='panel-title'>Pending Balance</h3>
-						</div>
-						<div class='panel-body text-center balance'>
-							<i class='fa fa-refresh fa-spin text-warning'></i>
-						</div>
-					</div>
-				</div>
-				<div class='col-md-6 col-sm-12'>
-					<div class='panel panel-default' id='pending_withdrawals'>
-						<div class='panel-heading'>
-							<h3 class='panel-title'>Pending Withdrawals</h3>
-						</div>
-						<div class='panel-body text-center balance'>
-							<i class='fa fa-refresh fa-spin text-primary'></i>
-						</div>
-					</div>
-				</div>
-				<div class='col-md-6 col-sm-12'>
-					<div class='panel panel-default' id='total_payout'>
-						<div class='panel-heading'>
-							<h3 class='panel-title'>Total Payout</h3>
-						</div>
-						<div class='panel-body text-center balance'>
-							<i class='fa fa-refresh fa-spin text-success'></i>
-						</div>
-					</div>
-				</div>
-			</div>
+		<div class='col-sm-12'>
+
 		</div>
 	</div>
 </div>
-<%= render 'sales_reps/partials/transactions_details_modal' %>
-<script type="text/javascript">
-	$('#transactions_link').addClass('active')
-	$.ajax({
-		url: '/rep_pending_balance'
-	})
-	$.ajax({
-		url: '/rep_current_balance'
-	})
-	$.ajax({
-		url: '/rep_pending_withdrawals'
-	})
-	$.ajax({
-		url: '/rep_total_payout'
-	})
-	$.ajax({
-		url: '/rep_meets_limit'
-	})
-	if($(window).width() > 991){
-		var screen_size = 'large'
-	}
-	else {
-		var screen_size = 'small'
-	}
-
-	$(window).resize(function(){
-
-		if($('#transactions').width() <= 398 && screen_size == 'large') {
-			waitForFinalEvent(function(){
-				chart.redraw()
-			},500,makeid())
-
-			screen_size = 'small'
-		}
-		else if ($('#transactions').width() > 397 && screen_size == 'small') {
-			waitForFinalEvent(function(){
-				chart.redraw()
-			},500,makeid())
-			screen_size = 'large'
-		}
-	})
-	var waitForFinalEvent = (function () {
-		var timers = {};
-		return function (callback, ms, uniqueId) {
-			if (!uniqueId) {
-				uniqueId = "Don't call this twice without a uniqueId";
-			}
-			if (timers[uniqueId]) {
-				clearTimeout (timers[uniqueId]);
-			}
-			timers[uniqueId] = setTimeout(callback, ms);
-		};
-	})();
-	function makeid() {
-		var text = "";
-		var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-		for( var i=0; i < 5; i++ )
-			text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-		return text;
-	}
-	$('svg').css('overflow','visible')
-
-	function updateChartDetails(){
-		loadDetails($('#hidden_tag').val(), $('#start_month').val(), $('#start_day').val(), $('#start_year').val(), $('#end_month').val(), $('#end_day').val(), $('#end_year').val())
-	}
-
-	function loadDetails(detail, start_month, start_day, start_year, end_month, end_day, end_year) {
-		$('#loading_chart').html('<i class="fa fa-refresh fa-spin"></i>')
-		$('#loading_table').css('line-height','200px').html('<i class="fa fa-refresh fa-spin"></i>')
-		$('#loading_chart').show()
-		$('#loading_table').show()
-		$('#transactions').html('')
-		$('#transaction_table').html('')
-		$('#details_pane').html('')
-
-		$('#start_month').val(start_month)
-		$('#start_day').val(start_day)
-		$('#start_year').val(start_year)
-		$('#end_month').val(end_month)
-		$('#end_day').val(end_day)
-		$('#end_year').val(end_year)
-		$('#transactions_details_modal').modal('show');
-		$.ajax({
-			url: '/view_'+detail+'_details?start_month='+start_month+'&start_day='+start_day+'&start_year='+start_year+'&end_month='+end_month+'&end_day='+end_day+'&end_year='+end_year
-		})
-	}
-
-</script>

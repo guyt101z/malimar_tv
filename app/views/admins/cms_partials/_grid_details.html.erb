@@ -11,7 +11,13 @@ end
 filter_params[:free] = @category.free
 
 if @category.item_type == 'shows'
-    all_items = Show.where(filter_params).order(name: :asc)
+    if @category.sort.nil? || @category.sort == 'Alphabetical'
+        all_items = Show.where(filter_params).order(name: :asc)
+    elsif @category.sort == 'New Arrivals/Episodes'
+        all_items = Show.where(filter_params).order(release_date: :desc)
+    elsif @category.sort == 'Random'
+        all_items = Show.where(filter_params).order('rand()')
+    end
     filtered_items = Array.new
 
     unless @category.genre.blank?
@@ -22,7 +28,13 @@ if @category.item_type == 'shows'
         filtered_items = all_items
     end
 elsif @category.item_type == 'movies'
-    all_items = Movie.where(filter_params.except(:content_type)).order(name: :asc)
+    if @category.sort.nil? || @category.sort == 'Alphabetical'
+        all_items = Movie.where(filter_params.except(:content_type)).order(name: :asc)
+    elsif @category.sort == 'New Arrivals/Episodes'
+        all_items = Movie.where(filter_params.except(:content_type)).order(release_date: :desc)
+    elsif @category.sort == 'Random'
+        all_items = Movie.where(filter_params.except(:content_type)).order('rand()')
+    end
     filtered_items = Array.new
 
     unless @category.genre.blank?
@@ -33,7 +45,13 @@ elsif @category.item_type == 'movies'
         filtered_items = all_items
     end
 else
-    all_items = Channel.where(filter_params).order(name: :asc)
+    if @category.sort.nil? || @category.sort == 'Alphabetical'
+        all_items = Channel.where(filter_params).order(name: :asc)
+    elsif @category.sort == 'New Arrivals/Episodes'
+        all_items = Channel.where(filter_params).order(created_at: :desc)
+    elsif @category.sort == 'Random'
+        all_items = Channel.where(filter_params).order('rand()')
+    end
     filtered_items = Array.new
 
     unless @category.genre.blank?

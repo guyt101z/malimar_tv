@@ -1,0 +1,80 @@
+<% content_for :top_level, 'Withdrawals' %>
+<% content_for :low_levels, YAML.dump(['Request '+@withdrawal.id.to_s]) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='row'>
+            <div class='col-md-6'>
+                <div class="panel">
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Transaction Details</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <% if @rep.nil? %>
+                            <div class="stat-number">
+                                <div class="number">User Not Found</div>
+                            </div>
+                        <% else %>
+                            <div class='row'>
+                                <div class='col-lg-4 col-sm-6'>
+                                    <p><strong style='font-size: 105%'>Rep Name:</strong><br/><%= @rep.name %></p>
+                                </div>
+                                <div class='col-lg-4 col-sm-6'>
+                                    <p><strong style='font-size: 105%'>Rep Email:</strong><br/><%= @rep.email %></p>
+                                </div>
+                                <div class='col-lg-4 col-sm-6'>
+                                    <p><strong style='font-size: 105%'>Rep Company:</strong><br/><%= @rep.company %></p>
+                                </div>
+                            </div>
+                        <% end %>
+                        <div class='row'>
+                            <div class='col-lg-4 col-sm-6'>
+                                <p><strong style='font-size: 105%'>Created:</strong><br/><%= @withdrawal.created_at.strftime('%Y/%m/%d') %></p>
+                            </div>
+                            <div class='col-lg-4 col-sm-6'>
+                                <p><strong style='font-size: 105%'>Status:</strong><br/>
+                                <%= @withdrawal.status %></p>
+                            </div>
+                            <div class='col-lg-4 col-sm-6'>
+                                <p><strong style='font-size: 105%'>Action Date:</strong><br/>
+                                <% if @withdrawal.approved.present? %>
+                                    <%= @withdrawal.created_at.strftime('%Y/%m/%d') %>
+                                <% end %>
+                                </p>
+                            </div>
+                        </div>
+                        <div class='row'>
+                        </div>
+
+                    </div>
+                    <div class='panel-footer'>
+                        <%= link_to 'View PDF Invoice', rep_view_withdrawal_invoice_path(id: @withdrawal.id), class: 'btn btn-primary', style: 'width: 100%', target: '_blank' %>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6'>
+                <div class="panel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="stat-number">
+                                    <div class="number">$<%= number_with_precision(@withdrawal.amount, precision: 2) %></div>
+                                    Request Amount
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="stat-number">
+                                    <div class="number" id='user_balance'>$<%= number_with_precision(@rep.current_balance_wo_pending_withdrawals, precision: 2) %></div>
+                                    Current Balance
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$('#withdrawals').addClass('active')
+</script>

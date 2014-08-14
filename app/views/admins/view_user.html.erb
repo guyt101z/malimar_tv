@@ -15,7 +15,7 @@
                             </div>
                             <div class="col-sm-6 col-md-3">
                                 <div class="stat-number">
-                                    <div class="number">$<%= number_with_precision(@pending, precision: 2) %></div>
+                                    <div class="number" id='pending_tx'>$<%= number_with_precision(@pending, precision: 2) %></div>
                                     Pending Payments
                                 </div>
                             </div>
@@ -113,38 +113,7 @@
                     </div>
                 </div>
                 <% end %>
-                <div class='row'>
-                    <div class='col-xs-6'>
-                        <div class='panel panel-default'>
-                            <div class='panel-heading'>
-                                <h3 class='panel-title'>Send Password Reset</h3>
-                            </div>
-                            <div class='panel-body'>
-                                <%= text_field_tag :reset_email, @user.email, class: 'form-control', disabled: 'disabled', style: 'background-color: #fff' %>
-                            </div>
-                            <div class='panel-footer'>
-                                <%= link_to 'Send Reset Email', reset_user_password_path(id: @user.id), class: 'btn btn-primary', style: 'width: 100%', data: {disable_with: 'Sending...'}, remote: true %>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='col-xs-6'>
-                        <%= form_tag manual_reset_user_password_path(id: @user.id), remote: true do %>
-                        <div class='panel panel-default'>
-                            <div class='panel-heading'>
-                                <h3 class='panel-title'>Manual Password Reset</h3>
-                            </div>
-                            <div class='panel-body'>
-                                <div>
-                                    <%= text_field_tag :password, '', class: 'form-control' %>
-                                </div>
-                            </div>
-                            <div class='panel-footer'>
-                                <%= submit_tag 'Reset Password', class: 'btn btn-primary', style: 'width: 100%', data: {disable_with: 'Updating...'} %>
-                            </div>
-                        </div>
-                        <% end %>
-                    </div>
-                </div>
+                <%= render 'admins/partials/user_transaction' %>
                 <div class='panel panel-default'>
                     <div class='panel-heading'>
                         <h3 class='panel-title'>Client Transactions</h3>
@@ -214,6 +183,38 @@
                 </div>
             </div>
             <div class='col-md-6 col-sm-12'>
+                <div class='row'>
+                    <div class='col-xs-6'>
+                        <div class='panel panel-default'>
+                            <div class='panel-heading'>
+                                <h3 class='panel-title'>Send Password Reset</h3>
+                            </div>
+                            <div class='panel-body'>
+                                <%= text_field_tag :reset_email, @user.email, class: 'form-control', disabled: 'disabled', style: 'background-color: #fff' %>
+                            </div>
+                            <div class='panel-footer'>
+                                <%= link_to 'Send Reset Email', reset_user_password_path(id: @user.id), class: 'btn btn-primary', style: 'width: 100%', data: {disable_with: 'Sending...'}, remote: true %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-xs-6'>
+                        <%= form_tag manual_reset_user_password_path(id: @user.id), remote: true do %>
+                        <div class='panel panel-default'>
+                            <div class='panel-heading'>
+                                <h3 class='panel-title'>Manual Password Reset</h3>
+                            </div>
+                            <div class='panel-body'>
+                                <div>
+                                    <%= text_field_tag :password, '', class: 'form-control' %>
+                                </div>
+                            </div>
+                            <div class='panel-footer'>
+                                <%= submit_tag 'Reset Password', class: 'btn btn-primary', style: 'width: 100%', data: {disable_with: 'Updating...'} %>
+                            </div>
+                        </div>
+                        <% end %>
+                    </div>
+                </div>
                 <%= form_tag admin_register_device_path, remote: true do %>
                 <div class='panel panel-default'>
                     <%= hidden_field_tag :user_id, @user.id %>

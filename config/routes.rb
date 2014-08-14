@@ -8,6 +8,10 @@ Rails.application.routes.draw do
     authenticate :user do
   	  	get 'account' => 'users#account'
 
+        get '/account/devices' => 'users#devices', as: 'my_devices'
+        get '/account/billing' => 'users#billing', as: 'my_billing'
+        get '/account/support' => 'users#support', as: 'my_support'
+
         get '/account/new_ticket' => 'users#new_ticket', as: 'user_new_ticket'
         post 'user_create_ticket' => 'support#user_create_ticket'
         get 'user_view_ticket' => 'support#user_view_ticket'
@@ -97,6 +101,8 @@ Rails.application.routes.draw do
         get 'delete_note' => 'users#delete_note'
         get 'delete_unsaved_note' => 'users#delete_unsaved_note'
 
+        get 'admin_choose_plan' => 'admins#choose_plan'
+        post 'admin_add_subscription' => 'admins#add_subscription'
 
   		get '/admins/new_user' => 'admins#new_user', as: 'new_user'
   		post 'admin_create_user' => 'admins#create_user'
@@ -292,15 +298,17 @@ Rails.application.routes.draw do
     	get 'sales_rep_choose_plan' => 'sales_reps#choose_plan'
     	post 'sales_rep_add_subscription' => 'sales_reps#add_subscription'
 
-    	get '/sales_reps/transactions' => 'sales_reps#transactions'
+    	get '/sales_reps/withdrawals' => 'sales_reps#transactions', as: 'sales_rep_financial'
+        get '/sales_reps/withdrawals/:id' => 'sales_reps#view_withdrawal', as: 'rep_view_request'
 
     	get '/sales_reps/settings' => 'sales_reps#settings'
 
         get '/sales_reps/support' => 'sales_reps#support', as: 'sales_rep_support'
-        get '/sales_reps/archived_tickets' => 'sales_reps#archived_tickets', as: 'sales_rep_archived_tickets'
-        get '/sales_reps/new_ticket' => 'sales_reps#new_ticket', as: 'sales_rep_new_ticket'
+        get '/sales_reps/support/archived_tickets' => 'sales_reps#archived_tickets', as: 'sales_rep_archived_tickets'
+        get '/sales_reps/support/closed_tickets' => 'sales_reps#closed_tickets', as: 'sales_rep_closed_tickets'
+        get '/sales_reps/support/new_ticket' => 'sales_reps#new_ticket', as: 'sales_rep_new_ticket'
+        get '/sales_reps/support/ticket/:id' => 'support#sales_rep_view_ticket', as: 'sales_rep_view_ticket'
         post 'sales_rep_create_ticket' => 'support#sales_rep_create_ticket'
-        get 'sales_rep_view_ticket' => 'support#sales_rep_view_ticket'
 
         post 'sales_rep_send_message_on_ticket' => 'support#sales_rep_send_message'
         post 'sales_rep_attach_file_to_ticket' => 'support#sales_rep_attach_file'
@@ -316,10 +324,10 @@ Rails.application.routes.draw do
         get 'view_pending_withdrawals_details' => 'sales_reps#view_pending_withdrawals_details'
         get 'view_total_payout_details' => 'sales_reps#view_total_payout_details'
 
-        get '/sales_reps/new_withdrawal' => 'sales_reps#new_withdrawal'
+        get '/sales_reps/new_withdrawal' => 'sales_reps#new_withdrawal', as: 'rep_new_withdrawal'
         post 'create_withdrawal' => 'sales_reps#create_withdrawal'
 
-        get '/sales_reps/invoices/withdrawals/:id' => 'sales_reps#view_withdrawal_invoice', as: 'rep_view_invoice'
+        get '/sales_reps/invoices/withdrawals/:id' => 'sales_reps#view_withdrawal_invoice', as: 'rep_view_withdrawal_invoice'
         get '/sales_reps/invoices/transactions' => 'sales_reps#view_transactions_over_period', as: 'rep_tx_invoice'
     end
 

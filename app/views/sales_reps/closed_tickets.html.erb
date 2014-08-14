@@ -1,0 +1,89 @@
+<% content_for :top_level, 'Support' %>
+<% content_for :low_levels, YAML.dump(['Closed Tickets']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+
+        <div class="panel">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span class="fz16">Open Tickets</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body plr20">
+                <div class="table-responsive">
+                <table class="table table-list fz11-5" id='case_table'>
+                    <thead>
+                    <tr>
+                        <td>Ticket Number
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Title
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Department
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Priority
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Moves
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Submitted
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% priorities = ['Low','Medium','High'] %>
+                    <% @cases.each do |support_case| %>
+                    <tr style='cursor:pointer' onclick='viewTicket(<%= support_case.id %>)'>
+                        <td class="text-bold">#<%= support_case.id %></td>
+                        <td><%= support_case.title %></td>
+                        <td><%= support_case.category %></td>
+                        <td><span class="fa fa-stop color-<%= support_case.priority %>"></span> <%= support_case.priority %> (<%= priorities[support_case.priority] %>)</td>
+                        <td><%= support_case.moves %></td>
+                        <td><%= support_case.created_at.strftime('%B %-d, %Y at %H:%M') %></td>
+                    </tr>
+                    <% end %>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<%= render('support/partials/support_modal_sales_rep') %>
+
+<script type="text/javascript">
+$('#case_table').dataTable()
+function viewTicket(id) {
+    window.location = '/sales_reps/support/ticket/'+id
+}
+$('#closed_tickets').addClass('active')
+<% if params[:id].present? %>
+$('#ticket_<%= params[:id] %>').click()
+<% end %>
+</script>

@@ -1,47 +1,89 @@
-<div class='container' style='margin-top: 60px;'>
-	<div class='row'>
-		<div class='col-md-6 col-centered'>
-			<div class='panel panel-warning'>
-				<div class='panel-heading'>
-					<h3 class='panel-title'>Archived Tickets</h3>
-				</div>
-				<div class='panel-body' style='padding:0'>
-					<div class='tickets'>
-						<% @cases.each do |ticket| %>
-						<div id='ticket_<%= ticket.id %>' class='ticket' onclick='viewTicket(<%= ticket.id %>)'>
-							<p class='title'><%= ticket.title %></p>
-							<p class='timestamp'><%= distance_of_time_in_words(ticket.created_at, DateTime.now) %></p>
-							<p><%= ticket.issue_description.truncate(80) %></p>
-							<div class='row' style='margin:0'>
-								<div class='col-sm-6' style='padding-left:0'>
-									<p class='detail'>
-										<% priorities = ['Low',     'Medium',  'High'] %>
-	                                	<% classes =    ['success', 'warning', 'danger'] %>
-										<strong>Priority:</strong><br>
-										<span class='text-<%= classes[ticket.priority] %>'><%= priorities[ticket.priority] %></span>
-									</p>
-								</div>
-								<div class='col-sm-6' style='padding-right:0'>
-									<p class='detail'>
-										<strong>Category:</strong><br>
-										<%= ticket.category %>
-									</p>
-								</div>
-							</div>
-						</div>
-						<% end %>
+<% content_for :top_level, 'Support' %>
+<% content_for :low_levels, YAML.dump(['Archived Tickets']) %>
+<div id="left-scroll" class="nano">
+	<div class="nano-content">
+
+		<div class="panel">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-sm-6">
+						<span class="fz16">Open Tickets</span>
 					</div>
 				</div>
 			</div>
+			<div class="panel-body plr20">
+				<div class="table-responsive">
+				<table class="table table-list fz11-5" id='case_table'>
+					<thead>
+					<tr>
+						<td>Ticket Number
+							<span class="sort">
+								<span class="fa fa-angle-up"></span>
+								<span class="fa fa-angle-down"></span>
+							</span>
+						</td>
+						<td>Title
+							<span class="sort">
+								<span class="fa fa-angle-up"></span>
+								<span class="fa fa-angle-down"></span>
+							</span>
+						</td>
+						<td>Department
+							<span class="sort">
+								<span class="fa fa-angle-up"></span>
+								<span class="fa fa-angle-down"></span>
+							</span>
+						</td>
+						<td>Priority
+							<span class="sort">
+								<span class="fa fa-angle-up"></span>
+								<span class="fa fa-angle-down"></span>
+							</span>
+						</td>
+						<td>Moves
+							<span class="sort">
+								<span class="fa fa-angle-up"></span>
+								<span class="fa fa-angle-down"></span>
+							</span>
+						</td>
+						<td>Submitted
+							<span class="sort">
+								<span class="fa fa-angle-up"></span>
+								<span class="fa fa-angle-down"></span>
+							</span>
+						</td>
+					</tr>
+					</thead>
+					<tbody>
+					<% priorities = ['Low','Medium','High'] %>
+					<% @cases.each do |support_case| %>
+					<tr style='cursor:pointer' onclick='viewTicket(<%= support_case.id %>)'>
+						<td class="text-bold">#<%= support_case.id %></td>
+						<td><%= support_case.title %></td>
+						<td><%= support_case.category %></td>
+						<td><span class="fa fa-stop color-<%= support_case.priority %>"></span> <%= support_case.priority %> (<%= priorities[support_case.priority] %>)</td>
+						<td><%= support_case.moves %></td>
+						<td><%= support_case.created_at.strftime('%B %-d, %Y at %H:%M') %></td>
+					</tr>
+					<% end %>
+					</tbody>
+				</table>
+				</div>
+			</div>
 		</div>
+
 	</div>
 </div>
 
 <%= render('support/partials/support_modal_sales_rep') %>
 
 <script type="text/javascript">
+$('#case_table').dataTable()
 function viewTicket(id) {
-	$.ajax({
-		url: '<%= sales_rep_view_ticket_path %>?id='+id
-	})
+	window.location = '/sales_reps/support/ticket/'+id
+}
+$('#archived_tickets').addClass('active')
+<% if params[:id].present? %>
+$('#ticket_<%= params[:id] %>').click()
+<% end %>
 </script>

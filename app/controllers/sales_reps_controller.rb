@@ -1,6 +1,8 @@
 class SalesRepsController < ApplicationController
 	def index
 		@transactions = Transaction.where(sales_rep_id: current_sales_representative.id)
+		@cases = SupportCase.where(sales_representative_id: current_sales_representative.id, status: ['Pending', 'Open'])
+		@withdrawals = Withdrawal.where(sales_rep_id: current_sales_representative.id)
 	end
 
 	def update_address
@@ -167,7 +169,7 @@ class SalesRepsController < ApplicationController
 	end
 
 	def transactions
-		@transactions = Transaction.where(sales_rep_id: current_sales_representative.id)
+		@withdrawals = Withdrawal.where(sales_rep_id: current_sales_representative.id)
 	end
 
 
@@ -185,6 +187,19 @@ class SalesRepsController < ApplicationController
 	end
 	def meets_limit
 		@status = current_sales_representative.meets_min_limit?
+	end
+
+	def view_withdrawal
+		@withdrawal = Withdrawal.find(params[:id])
+		if @withdrawal.sales_rep_id != current_sales_representative.id
+			redirect_to '/sales_reps'
+		else
+			@rep = current_sales_representative
+			if @withdrawal.status == 'Pending'
+				@withdrawal.status = 'Reviewed'
+				@withdrawal.save
+			end
+		end
 	end
 
 	def view_pending_balance_details
@@ -287,12 +302,16 @@ class SalesRepsController < ApplicationController
 		@cases = SupportCase.where(sales_representative_id: current_sales_representative.id, status: ['Pending', 'Open'])
 	end
 
+	def closed_tickets
+		@cases = SupportCase.where(sales_representative_id: current_sales_representative.id, status: ['Closed'])
+	end
+
 	def create_ticket
 
 	end
 
 	def archived_tickets
-		@cases = SupportCase.where(sales_representative_id: current_sales_representative.id, status: 'Closed')
+		@cases = SupportCase.where(sales_representative_id: current_sales_representative.id, status: 'Archived')
 	end
 
 	def create_withdrawal

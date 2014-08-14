@@ -505,6 +505,7 @@ class VideosController < ApplicationController
 		@category.free = params[:new_free]
 		@category.genre = params[:new_genre]
 		@category.front_page = params[:new_front_page]
+		@category.sort = params[:new_sort]
 		@category.save
 	end
 	def update_grid
@@ -517,6 +518,7 @@ class VideosController < ApplicationController
 		@category.free = params[:free]
 		@category.genre = params[:genre]
 		@category.front_page = params[:front_page]
+		@category.sort = params[:sort]
 		@category.save
 	end
 	def view_grid

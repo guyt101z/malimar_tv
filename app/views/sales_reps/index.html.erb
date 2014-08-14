@@ -1,3 +1,303 @@
+<% content_for :top_level, 'Dashboard' %>
+<% content_for :low_levels, YAML.dump([]) %>
+<div id="left-scroll" class="nano">
+	<div class="nano-content">
+		<div class='row'>
+			<div class='col-sm-12'>
+				<div class="panel">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-6 col-md-3">
+								<div class="stat-number" id='current_balance'>
+									<div class="number"><i class='fa fa-refresh fa-spin'></i></div>
+									Current Balance
+								</div>
+							</div>
+							<div class="col-sm-6 col-md-3">
+								<div class="stat-number" id='pending_balance'>
+									<div class="number"><i class='fa fa-refresh fa-spin'></i></div>
+									Pending Balance
+								</div>
+							</div>
+							<div class="col-sm-6 col-md-3">
+								<div class="stat-number" id='pending_withdrawals'>
+									<div class="number"><i class='fa fa-refresh fa-spin'></i></div>
+									Pending Withdrawals
+								</div>
+							</div>
+							<div class="col-sm-6 col-md-3">
+								<div class="stat-number" id='total_payout'>
+									<div class="number"><i class='fa fa-refresh fa-spin'></i></div>
+									Total Payout
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class='col-sm-12'>
+				<div class="panel">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-sm-6">
+								<span class="fz16">Open Tickets</span>
+							</div>
+						</div>
+					</div>
+					<div class="panel-body plr20">
+						<div class="table-responsive">
+						<table class="table table-list fz11-5" id='case_table'>
+							<thead>
+							<tr>
+								<td>Ticket Number
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Title
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Department
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Priority
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Moves
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Submitted
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+							</tr>
+							</thead>
+							<tbody>
+							<% priorities = ['Low','Medium','High'] %>
+							<% @cases.each do |support_case| %>
+							<tr style='cursor:pointer' onclick='viewTicket(<%= support_case.id %>)'>
+								<td class="text-bold">#<%= support_case.id %></td>
+								<td><%= support_case.title %></td>
+								<td><%= support_case.category %></td>
+								<td><span class="fa fa-stop color-<%= support_case.priority %>"></span> <%= support_case.priority %> (<%= priorities[support_case.priority] %>)</td>
+								<td><%= support_case.moves %></td>
+								<td><%= support_case.created_at.strftime('%B %-d, %Y at %H:%M') %></td>
+							</tr>
+							<% end %>
+							</tbody>
+						</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='col-xs-12'>
+				<div class="panel">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-sm-6">
+								<span class="fz16">Withdrawals</span>
+							</div>
+						</div>
+					</div>
+					<div class="panel-body plr20">
+						<div class="table-responsive">
+						<table class="table table-list fz11-5 table-hover" id='wd_table'>
+							<thead>
+							<tr>
+								<td>Withdrawal #
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Rep Name
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Email
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Amount
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Date Created
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Status
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Action Date
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+							</tr>
+							</thead>
+							<tbody>
+							<% @withdrawals.each do |withdrawal| %>
+							<tr onclick='window.location = "<%= rep_view_request_path(id: withdrawal.id) %>"' style='cursor:pointer'>
+								<td class="text-bold">#<%= withdrawal.id %></td>
+								<% rep = SalesRepresentative.where(id: withdrawal.sales_rep_id).first %>
+								<% if rep.nil? %>
+									<td>Rep not found</td>
+								<% else %>
+									<td><%= rep.name %></td>
+								<% end %>
+								<td><%= rep.email %></td>
+								<td><%= number_with_precision(withdrawal.amount, precision: 2) %></td>
+								<td><%= rep.created_at.strftime('%Y/%m/%-d') %></td>
+								<td><%= withdrawal.status %></td>
+								<% if withdrawal.approved.present? %>
+									<td><%= withdrawal.approved.strftime('%Y/%m/%-d')  %></td>
+								<% else %>
+									<td>N/A</td>
+								<% end %>
+							</tr>
+							<% end %>
+							</tbody>
+						</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'admins/partials/transactions_details_modal' %>
 <script type="text/javascript">
-	$('#home_link').addClass('active')
+$('#case_table').dataTable()
+$('#wd_table').dataTable()
+function viewTicket(id) {
+	window.location = '/sales_reps/support/ticket/'+id
+}
+	$('#transactions_link').addClass('active')
+	$.ajax({
+		url: '/rep_pending_balance'
+	})
+	$.ajax({
+		url: '/rep_current_balance'
+	})
+	$.ajax({
+		url: '/rep_pending_withdrawals'
+	})
+	$.ajax({
+		url: '/rep_total_payout'
+	})
+	if($(window).width() > 991){
+		var screen_size = 'large'
+	}
+	else {
+		var screen_size = 'small'
+	}
+
+	$(window).resize(function(){
+
+		if($('#transactions').width() <= 398 && screen_size == 'large') {
+			waitForFinalEvent(function(){
+				chart.redraw()
+			},500,makeid())
+
+			screen_size = 'small'
+		}
+		else if ($('#transactions').width() > 397 && screen_size == 'small') {
+			waitForFinalEvent(function(){
+				chart.redraw()
+			},500,makeid())
+			screen_size = 'large'
+		}
+	})
+	var waitForFinalEvent = (function () {
+		var timers = {};
+		return function (callback, ms, uniqueId) {
+			if (!uniqueId) {
+				uniqueId = "Don't call this twice without a uniqueId";
+			}
+			if (timers[uniqueId]) {
+				clearTimeout (timers[uniqueId]);
+			}
+			timers[uniqueId] = setTimeout(callback, ms);
+		};
+	})();
+	function makeid() {
+		var text = "";
+		var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+		for( var i=0; i < 5; i++ )
+			text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+		return text;
+	}
+	$('svg').css('overflow','visible')
+
+	function updateChartDetails(){
+		loadDetails($('#hidden_tag').val(), $('#start_month').val(), $('#start_day').val(), $('#start_year').val(), $('#end_month').val(), $('#end_day').val(), $('#end_year').val())
+	}
+
+	function loadDetails(detail, start_month, start_day, start_year, end_month, end_day, end_year) {
+		$('#loading_chart').html('<i class="fa fa-refresh fa-spin"></i>')
+		$('#loading_table').css('line-height','200px').html('<i class="fa fa-refresh fa-spin"></i>')
+		$('#loading_chart').show()
+		$('#loading_table').show()
+		$('#transactions').html('')
+		$('#transaction_table').html('')
+		$('#details_pane').html('')
+
+		$('#start_month').val(start_month)
+		$('#start_day').val(start_day)
+		$('#start_year').val(start_year)
+		$('#end_month').val(end_month)
+		$('#end_day').val(end_day)
+		$('#end_year').val(end_year)
+		$('#transactions_details_modal').modal('show');
+		$.ajax({
+			url: '/view_'+detail+'_details?start_month='+start_month+'&start_day='+start_day+'&start_year='+start_year+'&end_month='+end_month+'&end_day='+end_day+'&end_year='+end_year
+		})
+	}
+	$("#new_rate").keydown(function (e) {
+		// Allow: backspace, delete, tab, escape, enter and .
+		if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+			// Allow: Ctrl+A
+			(e.keyCode == 65 && e.ctrlKey === true) ||
+			// Allow: home, end, left, right
+			(e.keyCode >= 35 && e.keyCode <= 39)) {
+				// let it happen, don't do anything
+				return;
+		}
+		// Ensure that it is a number and stop the keypress
+		if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+			e.preventDefault();
+		}
+	});
+	$('#wd_table').dataTable();
 </script>

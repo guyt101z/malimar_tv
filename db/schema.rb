@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140813191840) do
+ActiveRecord::Schema.define(version: 20140814181945) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -114,6 +114,7 @@ ActiveRecord::Schema.define(version: 20140813191840) do
     t.integer  "rank"
     t.boolean  "free"
     t.boolean  "front_page"
+    t.string   "sort"
   end
 
   create_table "channels", force: true do |t|

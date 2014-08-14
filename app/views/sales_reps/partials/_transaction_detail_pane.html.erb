@@ -1,18 +1,35 @@
-<p><strong>Range Transactions:</strong><br>
-    <%= @range_transactions.count %></p>
-<p><strong>Range Value:</strong><br>
-    $<%= number_with_precision(@range_balance, precision: 2) %></p>
+<div class='scroller'>
+    <% if @detail == 'current_balance' %>
+        <div class='tx_detail'>
+            <div class='tx_detail_title'>Current Balance</div>
+            <div class='tx_detail_info'>$<%= number_with_precision(@total_balance, precision:2) %></div>
+        </div>
+    <% end %>
 
-<p><strong>Total Transactions:</strong><br>
-    <%= @transactions.count %></p>
-<p><strong>Current Balance:</strong><br>
-    $<%= number_with_precision(@total_balance, precision: 2) %></p>
-<% if @detail == 'current_balance' %>
-<p><strong>Total Value:</strong><br>
-    $<%= number_with_precision(@total_tx, precision: 2) %></p>
-<% end %>
+    <div class='tx_detail'>
+        <div class='tx_detail_title'>Transactions</div>
+        <div class='tx_detail_info'><%= @range_transactions.count %></div>
+    </div>
 
-<p><%= link_to 'View Invoice', rep_tx_invoice_path(status: @status,
-                                              start_day: params[:start_day], start_month: params[:start_month], start_year: params[:start_year],
-                                              end_day: params[:end_day], end_month: params[:end_month], end_year: params[:end_year]),
-                                              class: 'btn btn-success', target: '_blank' %>
+    <div class='tx_detail'>
+        <div class='tx_detail_title'>Value</div>
+        <div class='tx_detail_info'>$<%= number_with_precision(@range_balance, precision: 2) %></div>
+    </div>
+
+    <div class='tx_detail'>
+        <div class='tx_detail_title'>Total Transactions</div>
+        <div class='tx_detail_info'><%= @transactions.count %></div>
+    </div>
+
+    <div class='tx_detail'>
+        <% if @total_tx.nil? %><% @total_tx = 0 %><% end %>
+        <div class='tx_detail_title'>Total Value</div>
+        <div class='tx_detail_info'>$<%= number_with_precision(@total_tx, precision: 2) %></div>
+    </div>
+</div>
+<div class='invoice'>
+    <%= link_to 'View Invoice', rep_tx_invoice_path(status: @status,
+                                                          start_day: params[:start_day], start_month: params[:start_month], start_year: params[:start_year],
+                                                          end_day: params[:end_day], end_month: params[:end_month], end_year: params[:end_year]),
+                                                          class: 'btn btn-success', target: '_blank', style: 'width: 100%' %>
+</div>

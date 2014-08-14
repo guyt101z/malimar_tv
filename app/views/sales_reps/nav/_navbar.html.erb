@@ -1,46 +1,58 @@
-<nav class="navbar navbar-default" role="navigation">
-	<div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    	<div class="navbar-header">
-    		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        		<span class="sr-only">Toggle navigation</span>
-        		<span class="icon-bar"></span>
-        		<span class="icon-bar"></span>
-        		<span class="icon-bar"></span>
-    		</button>
-    		<a class="navbar-brand" href="/sales_reps">Malimar TV</a>
-    	</div>
-
-    	<!-- Collect the nav links, forms, and other content for toggling -->
-    	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <% if sales_representative_signed_in? %>
-    		<ul class="nav navbar-nav navbar-right">
-        		<li id='home_link'>
-        			<a href="/sales_reps"><i class='fa fa-home'></i> Home</a>
-        		</li>
-        		<li id='register_link'>
-        			<a href="/sales_reps/register"><i class='fa fa-asterisk'></i> Register Customer</a>
-        		</li>
-        		<li id='transactions_link'>
-        			<a href="/sales_reps/transactions"><i class='fa fa-dollar'></i> Financials</a>
-        		</li>
-	            <li class="dropdown" id='settings_link'>
-	                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-exclamation'></i> Support <b class="caret"></b></a>
-	                <ul class="dropdown-menu">
-                        <li><a href="/sales_reps/support"><i class='fa fa-exclamation fa-fw'></i> Open Tickets</a></li>
-                        <li><a href="/sales_reps/archived_tickets"><i class='fa fa-archive fa-fw'></i> Archived Tickets</a></li>
-                        <li><a href="/sales_reps/new_ticket"><i class='fa fa-asterisk fa-fw'></i> Create Ticket</a></li>
-	                </ul>
-	            </li>
-                <li class="dropdown" id='settings_link'>
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-gears'></i> Settings <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                      <li><a href="/sales_reps/profile"><i class='fa fa-list fa-fw'></i> Manage Account</a></li>
-                      <li><%= link_to raw("<i class='fa fa-sign-out fa-fw'></i> Sign Out"), destroy_sales_representative_session_path, method: :delete %></li>
-                    </ul>
-                </li>
-    		</ul>
-            <% end %>
-    	</div><!-- /.navbar-collapse -->
-	</div><!-- /.container-fluid -->
-</nav>
+<div class="navbar-fixed-top">
+	<nav class="navbar navbar-inverse" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<%= link_to image_tag('admin_logo.png'), '/sales_reps', class: 'navbar-brand' %>
+			</div>
+			<% if admin_signed_in? %>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav navbar-right">
+					<li><%= link_to 'Dashboard', '/sales_reps' %></li>
+					<li><%= link_to 'Register Client', '/sales_reps/register' %></li>
+					<li><%= link_to 'Withdrawals', sales_rep_financial_path %></li>
+					<li><%= link_to 'Support', sales_rep_support_path %></li>
+					<li><div class="sep"></div></li>
+					<li class="text-semi dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_admin.name %> <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><span><%= current_sales_representative.name %></span></li>
+							<li><%= link_to raw('<span class="icon-user-circle"></span> Admin Profile'), view_admin_path(id: current_admin.id) %></li>
+							<li class="dropdown-footer"><%= link_to raw('<span class="glyphicon glyphicon-lock"></span> Sign Out'), destroy_admin_session_path, method: :delete %></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<% end %>
+		</div>
+	</nav>
+	<% if admin_signed_in? %>
+	<div class="subnav">
+		<div class="container-fluid">
+			<div class="clearfix">
+				<div class="subnav-left">
+					<button type="button" class="sidebar-toggle" data-toggle="sidebar">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+				</div>
+				<div class="subnav-right">
+					<ol class="breadcrumb">
+						<li><a href="/admins"><span class="icon-home"></a></li>
+						<li class="active"><span><%= yield(:top_level) %></span></li>
+						<% YAML.load(yield(:low_levels)).each do |level| %>
+							<li class='active'><span><%= level %></span></li>
+						<% end %>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+	<% end %>
+</div>

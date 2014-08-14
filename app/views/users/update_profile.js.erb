@@ -29,8 +29,14 @@ $('#zip-error_icon').remove()
 $('#zip-error').remove()
 $('#zip').parent().removeClass('has-error')
 <% unless @user.errors.any? %>
-    $('#user_profile').html('<%= escape_javascript(render("users/partials/user_profile")) %>')
-    $('#edit_profile_modal').modal('hide')
+    var notification = new NotificationFx({
+        message : '<p>Account information has been updated!</p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'success', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+    notification.show()
 <% else %>
     <% if @user.errors[:first_name].present? %>
         $('#first_name').parent().addClass('has-error has-feedback').append('<span id="first_name-error_icon" class="glyphicon glyphicon-exclamation-sign form-control-feedback t0"></span><div id="first_name-error" class="fz15">First name <%= @user.errors[:first_name].join(", ") %></div>')

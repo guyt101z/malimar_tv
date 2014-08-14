@@ -1,0 +1,76 @@
+<div class="splash">
+    <div class="container">
+        <div class='pull-right profile_nav hidden-xs'>
+            <%= render 'users/partials/subnav' %>
+        </div>
+        <h3 class="name">My Support</h3>
+        <div class='text-center profile_nav_xs visible-xs'>
+            <%= render 'users/partials/subnav' %>
+        </div>
+    </div>
+</div><!--splash-->
+
+<div class="content">
+    <div class="container">
+        <div class="mlr90">
+            <div class='row'>
+                <div class='col-sm-6'>
+                    <div class="box-white">
+                        <div class="row">
+                            <div class="col-md-5 col-sm-4">
+                                <h4 class="title4">Open Tickets</h4>
+                            </div>
+                            <div class="col-md-7 col-sm-8 text-right">
+                                <a href='/account/new_ticket' class="btn btn-primary btn-w180">Open New Ticket</a>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <div class='panel-scroll tickets'>
+                                <% priorities = ['Low',     'Medium',  'High'] %>
+                                <% classes =    ['success', 'warning', 'danger'] %>
+                                <% @open_tickets.each do |ticket| %>
+                                <div class='ticket' id='ticket_<%= ticket.id %>'>
+                                    <p class='title'><a style='cursor:pointer' onclick='viewTicket(<%= ticket.id %>)'><%= ticket.title %></a></p>
+                                    <p class='updated_at'><%= distance_of_time_in_words_to_now(ticket.updated_at) %> ago</p>
+                                    <p class='description'><%= ticket.issue_description %></p>
+                                    <p class='priority'><span class='text-<%= classes[ticket.priority] %>'><%= priorities[ticket.priority] %></span></p>
+                                </div>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='col-sm-6'>
+                    <div class="box-white">
+                        <div class="row">
+                            <div class="col-md-5 col-sm-4">
+                                <h4 class="title4">Closed Tickets</h4>
+                            </div>
+                            <div class="col-md-7 col-sm-8 text-right">
+                                <a href='/account/new_ticket' class="btn btn-primary btn-w180">Open New Ticket</a>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <div class='panel-scroll transactions'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div><!--content-->
+
+<%= render('support/partials/support_modal_user') %>
+
+<script type="text/javascript">
+function viewTicket(id) {
+    $.ajax({
+        url: '<%= user_view_ticket_path %>?id='+id
+    })
+}
+<% if params[:id].present? %>
+$('#ticket_<%= params[:id] %>').click()
+<% end %>
+</script>

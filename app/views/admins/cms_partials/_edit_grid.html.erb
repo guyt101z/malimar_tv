@@ -39,6 +39,10 @@
                         <label>Show on Front Page?</label>
                         <%= select_tag :front_page, options_for_select([['No',false],['Yes', true]]), class: 'form-control' %>
                     </div>
+                    <div class='col-sm-6 form-group'>
+                        <label>Sort Method</label>
+                        <%= select_tag :sort, options_for_select(['Alphabetical','New Arrivals/Episodes','Random']), class: 'form-control' %>
+                    </div>
                 </div>
                 <div class='row'>
                     <div class='col-sm-6 form-group'>

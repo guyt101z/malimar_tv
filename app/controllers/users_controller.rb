@@ -424,14 +424,35 @@ class UsersController < ApplicationController
 	end
 
 	def register_new_device
-		@device = Device.new
-		@device.serial = params[:serial]
+		if params[:serial].present?
+			serial = params[:serial].upcase
+			if serial.include?('O')
+				serial = serial.gsub!('O','0')
+			end
+			@device = Device.new
+			@device.serial = serial
+		else
+			@device = nil
+		end
 		@device.user_id = current_user.id
 		@device.type = 'Roku'
 		if current_user.max_devices?
 			@device.errors.add(:base, 'You have reached the maximum limit for your registered devices.')
 		else
-			@device.save
+			if @device.save
+				@success = true
+				@device_present = true
+
+				if Rails.env.development?
+					path = "#{Rails.root}/serials/#{serial}"
+				elsif Rails.env.production?
+					path = "/tmp/serials/#{serial}"
+				end
+
+				serial_file = File.open(path,'w+')
+				@device.serial_file = serial_file
+				@device.save
+			end
 		end
 	end
 
@@ -445,6 +466,19 @@ class UsersController < ApplicationController
 		if user_signed_in?
 			redirect_to '/account'
 		end
+	end
+
+	def devices
+		@devices = Device.where(user_id: current_user.id)
+	end
+
+	def billing
+		@transactions = Transaction.where(user_id: current_user.id).order(created_at: :desc)
+	end
+
+	def support
+		@open_tickets = SupportCase.where(user_id: current_user.id, status: ['Pending','Open']).order(updated_at: :desc)
+		@closed_tickets = SupportCase.where(user_id: current_user.id, status: ['Closed']).order(updated_at: :desc)
 	end
 
 	def free_trial_1

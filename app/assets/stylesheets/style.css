@@ -85,30 +85,59 @@ box-shadow:0 0 1px rgba(0,0,0,.75), inset 1px 1px 3px rgba(80,80,80,1);-moz-box-
 .icon-user{background:url(/assets/icon-user.png) no-repeat;}
 .icon-signal{background:url(/assets/icon-signal.png) no-repeat;}
 a:hover .icon-user, a:hover .icon-signal{background-position:0 -16px;}
-.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus{background-color:#303030;box-shadow:inset 3px 0 3px -3px rgba(0,0,0,.9),inset -3px 0 3px -3px rgba(0,0,0,.9);-moz-box-shadow:inset 3px 0 3px -3px rgba(0,0,0,.9),inset -3px 0 3px -3px rgba(0,0,0,.9);-webkit-box-shadow:inset 3px 0 3px -3px rgba(0,0,0,.9),inset -3px 0 3px -3px rgba(0,0,0,.9);}
+.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus{background-color:#303030;box-shadow:inset 3px 0 3px -3px rgba(0,0,0,.9),inset -3px 0 3px -3px rgba(0,0,0,.9);
+	-moz-box-shadow:inset 3px 0 3px -3px rgba(0,0,0,.9),inset -3px 0 3px -3px rgba(0,0,0,.9);-webkit-box-shadow:inset 3px 0 3px -3px rgba(0,0,0,.9),inset -3px 0 3px -3px rgba(0,0,0,.9);
+}
 
+.panel.panel-default{
+	border:1px solid #ddd
+}
+.panel.panel-default .panel-heading, .panel.panel-default .panel-footer {
+	background-color: #fff;
+}
 .yamm .nav,
 .yamm .collapse,
 .yamm .dropup,
 .yamm .dropdown {
   position: static;
 }
+.btn-name {
+	font-size:30px;font-family: 'Open Sans', sans-serif;font-weight: 300;color: rgb(25, 182, 234); font-size: 150%;
+	padding: 0 16px;
+}
+.profile_nav {
+	height: 37px;
+	line-height: 37px;
+}
+.profile_nav_xs {
+	margin-top: 6px;
+	height: 37px;
+	line-height: 37px;
+}
 .yamm .container {
   position: relative;
 }
 .yamm .dropdown-menu {
-  left: auto;
+left: auto;
 }
 .yamm .nav.navbar-right .dropdown-menu {
-  left: auto;
-  right: 0;
+left: auto;
+right: 0;
+}
+.yamm .dropdown-menu-1 {
+}
+.yamm .nav.navbar-right .dropdown-menu-1 {
+right: 0;
 }
 .yamm .yamm-content {position:relative;
 }
 .ptb0{padding-top:0;padding-bottom:0;}
 .yamm .dropdown.yamm-fw .dropdown-menu {
-  left: 0;
-  right: 0;
+left: 0;
+right: 0;
+}
+.yamm .dropdown.yamm-fw .dropdown-menu-1 {
+right: 0;
 }
 .bg-f8f8f8{background-color:#f8f8f8;border-right:1px solid #eaeaea;min-height:164px;}
 .caret-right {
@@ -174,6 +203,15 @@ transition: opacity 0.2s ease-out;
 max-width: 100%;height: auto;
 height: 150px;
 width: 199px;}
+.channel {
+	height: 205px;
+	width: 190px;
+	padding-bottom: 20px;
+	float: left;
+}
+.scroller {
+	position: relative;
+}
 .channel a{text-decoration: none;}
 .channel h4{color:#6d7885;font-size: 18px;font-weight: 600;margin:15px 0 20px;
 -webkit-transition: color 0.2s ease-out;

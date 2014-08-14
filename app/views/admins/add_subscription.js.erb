@@ -1,0 +1,51 @@
+$('#credit-error').remove()
+$('#type-error').remove()
+<% if @success == false %>
+    <% if @credit != nil %>
+        $('#card_number').after('<div class="text-danger" id="credit-error"><%= @credit %></div>')
+    <% end %>
+
+    <% if @payment_type != nil %>
+        $('#payment_type').after('<div class="text-danger" id="type-error"><%= @payment_type %></div>')
+    <% end %>
+    var notification = new NotificationFx({
+        message : '<p>Error processing payment.</p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'danger', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+    notification.show()
+<% elsif @success == true %>
+    <% @plan = Plan.all.order(price: :asc).first %>
+    <% @total = @plan.price - @user.balance %>
+    $('#tx_details').html('<%= escape_javascript(render("admins/partials/transaction_details")) %>')
+    $('#user_transactions').html('<%= escape_javascript(render("admins/partials/user_transactions")) %>')
+
+    $('#user_balance').html('$<%= number_with_precision(@user.balance, precision: 2) %>')
+    $('#balance_2').html('$<%= number_with_precision(@user.balance, precision: 2) %>')
+    var notification = new NotificationFx({
+        message : '<p>Payment processed.</p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'success', // notice, warning, error or success
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+
+    $('#plan_id').val(<%= Plan.all.order(price: :asc).first.id %>)
+    $('#payment_type').val('')
+    $('#card_name').val('')
+    $('#card_number').val('')
+    $('#card_month').val('')
+    $('#card_year').val('')
+    $('#credit_form').hide()
+    $('#pending_tx').html('$<%= number_with_precision(@pending, precision: 2) %>')
+    <% if @user.expiry.nil? || @user.expiry < Date.today %>
+        $('#membership_1').html('Free')
+        $('#membership_2').html('<div class="number">N/A</div>No Subscription')
+    <% else %>
+        $('#membership_1').html('Premium')
+        $('#membership_2').html('<div class="number"><%= @user.expiry.strftime('%Y/%m/%d') %></div><%= distance_of_time_in_words(Date.today, @user.expiry) %>')
+    <% end %>
+    notification.show()
+<% end %>

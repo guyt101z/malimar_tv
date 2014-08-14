@@ -1,31 +1,32 @@
+<% content_for :top_level, 'Withdrawals' %>
+<% content_for :low_levels, YAML.dump(['New Withdrawal']) %>
 <div class='container'>
     <div class='row'>
-        <div class='col-md-3 col-sm-1 hidden-xs'></div>
-        <div class='col-md-3 col-sm-5'>
-            <div class='panel panel-default' id='current_balance'>
-                <div class='panel-heading'>
-                    <h3 class='panel-title'>Current Balance</h3>
-                </div>
-                <div class='panel-body text-center balance'>
-                    <i class='fa fa-refresh fa-spin'></i>
+        <div class='col-md-4 col-centered'>
+            <div class='panel panel-default'>
+                <div class='panel-body'>
+                    <div class="stat-number" id='current_balance'>
+                        <div class="number"><i class='fa fa-refresh fa-spin'></i></div>
+                        Current Balance
+                    </div>
                 </div>
             </div>
+            <%= form_tag create_withdrawal_path, remote: true, id: 'request-form' do %>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Your Request</h3>
+                    </div>
+                    <div class='panel-body' style='position: relative'>
+                        <%= text_field_tag :amount, '10.00', class: 'form-control withdrawal-field' %>
+                        <div class='withdrawal-icon'><i class='fa fa-dollar'></i></div>
+                    </div>
+                    <div class='panel-footer'>
+                        <a class='btn btn-primary' style='width: 100%' onclick='submitRequest()' id='submit_button'>Submit Request</a>
+                    </div>
+                </div>
+            <% end %>
         </div>
         <div class='col-md-3 col-sm-5'>
-            <%= form_tag create_withdrawal_path, remote: true, id: 'request-form' do %>
-            <div class='panel panel-default'>
-                <div class='panel-heading'>
-                    <h3 class='panel-title'>Your Request</h3>
-                </div>
-                <div class='panel-body' style='position: relative'>
-                    <%= text_field_tag :amount, '10.00', class: 'form-control withdrawal-field' %>
-                    <div class='withdrawal-icon'><i class='fa fa-dollar'></i></div>
-                </div>
-                <div class='panel-footer'>
-                    <a class='btn btn-primary' style='width: 100%' onclick='submitRequest()' id='submit_button'>Submit Request</a>
-                </div>
-            </div>
-            <% end %>
         </div>
         <div class='col-md-3 col-sm-1 hidden-xs'></div>
     </div>
