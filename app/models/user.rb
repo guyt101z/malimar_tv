@@ -86,4 +86,8 @@ class User < ActiveRecord::Base
             return "#{city}, #{country}"
         end
     end
+
+    def premium?
+        return expiry.nil? == false || expiry >= Date.today
+    end
 end

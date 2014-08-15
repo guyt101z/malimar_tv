@@ -1,183 +1,154 @@
 class ApiController < ApplicationController
     def authenticate
-        unless request.headers['email'].nil? || request.headers['password'].nil?
+        begin
             user = User.authenticate(request.headers['email'], request.headers['password'])
-        else
-            user = nil
-        end
 
-        if user.nil?
-            render json: {code: 207, success: false, message: 'Invalid username or password'}
-        else
-            if request.headers['device'].present?
-                device = Device.where(id: request.headers['device'], user_id: user.id).first
-
-                if device.nil?
-                    code = 102
-                    message = 'New device with token'
-                    device = Device.new(user_id: user.id, serial: SecureRandom.hex(10), type: request.headers['devicetype'].capitalize, expiry: 90.days.from_now)
-                    until device.save
-                        device.serial = SecureRandom.hex(10)
-                    end
-                elsif device.expiry < Date.today
-                    code = 101
-                    message = 'Renewed token'
-                    device.expiry = 90.days.from_now
-                    until device.save
-                        device.serial = SecureRandom.hex(10)
-                    end
-                else
-                    code = 103
-                    message = 'No renewal needed.'
-                end
-                render json: {code: code, success: true, message: message, token: device.serial, device_id: device.id}
+            if user.nil?
+                render json: {code: 207, success: false, message: 'Invalid username or password'}
             else
-                if user.max_devices?
-                    code = 207
-                    message = 'User has met device limit'
-                    success = false
-                    render json: {code: code, success: success, message: message}
-                elsif request.headers['devicetype'].blank? || (['ipad','ipod','iphone','android','roku'].include?(request.headers['devicetype']) == false)
-                    code = 208
-                    message = 'Invalid device type'
-                    success = false
-                    render json: {code: code, success: success, message: message}
-                else
-                    code = 102
-                    message = 'New device with token'
-                    begin
-                        device = Device.new(user_id: user.id, serial: SecureRandom.hex(10), type: request.headers['devicetype'].capitalize, expiry: 90.days.from_now)
-                        until device.save
-                            device.serial = SecureRandom.hex(10)
+                if request.headers['token'].present?
+                    device = Device.where(user_id: user.id, serial: request.headers['token'], type: request.headers['devicetype']).first
+                    if device.nil?
+                        if user.max_devices?
+                            render json: {code: 208, success: false, message: 'New device could not be created: user has reached maximum'}
+                        else
+                            unless request.headers['devicetype'] == 'Roku'
+                                device = Device.new
+                                device.user_id = user.id
+                                device.type = request.headers['devicetype']
+                                device.serial = SecureRandom.hex(10)
+
+                                i = 0
+                                until device.save || i > 50
+                                    device.serial = SecureRandom.hex(10)
+                                    i += 1
+                                end
+
+                                if i > 100
+                                    render json: {code: 211, success: false, message: 'Timeout'}
+                                else
+                                    device.expiry = Date.today + 90.days
+                                    device.save
+                                    render json: {code: 103, success: true, message: 'New device and new token', token: device.serial}
+                                end
+                            else
+                                render json: {code: 210, success: false, message: 'Roku has not been registered'}
+                            end
                         end
-                        render json: {code: code, success: success, message: message, token: device.serial, device_id: device.id}
-                    rescue
-                        render json: {code: 209, success: false, message: 'Unknown error – Device failed to save'}
+                    else
+                        if device.expired?
+                            device.serial = SecureRandom.hex(10)
+
+                            i = 0
+                            until device.save || i > 50
+                                device.serial = SecureRandom.hex(10)
+                                i += 1
+                            end
+
+                            if i > 100
+                                render json: {code: 211, success: false, message: 'Timeout'}
+                            else
+                                device.expiry = Date.today + 90.days
+                                device.save
+                                render json: {code: 102, success: true, message: 'New token', token: device.serial}
+                            end
+                        else
+                            render json: {code: 101, success: true, message: 'No new token needed'}
+                        end
+                    end
+                else
+                    if request.headers['devicetype'].present? && request.headers['devicetype'] != 'Roku'
+                        unless user.max_devices?
+                            device = Device.new
+                            device.user_id = user.id
+                            device.type = request.headers['devicetype']
+                            device.serial = SecureRandom.hex(10)
+
+                            i = 0
+                            until device.save || i > 50
+                                device.serial = SecureRandom.hex(10)
+                                i += 1
+                            end
+
+                            if i > 100
+                                render json: {code: 211, success: false, message: 'Timeout'}
+                            else
+                                device.expiry = Date.today + 90.days
+                                device.save
+                                render json: {code: 103, success: true, message: 'New device and new token', token: device.serial}
+                            end
+                        else
+                            render json: {code: 208, success: false, message: 'New device could not be created: user has reached maximum'}
+                        end
+                    elsif request.headers['devicetype'] == 'Roku'
+                        render json: {code: 210, success: false, message: 'Roku must be registered on Malimar.tv'}
+                    else
+                        render json: {code: 201, success: false, message: 'Invalid/no device type passed'}
                     end
                 end
             end
+        rescue => e
+            render json: {code: 209, success: false, message: 'Unknown error: ' + e.message}
         end
     end
 
     def home_grid
-        auth = authenticate_for_grid(request.headers['token'], request.headers['device'])
-        categories = Category.where(front_page: true).order(rank: :asc)
+        begin
+            auth = authenticate_for_grid(request.headers['token'], request.headers['devicetype'])
 
 
-        data = {
-            item_count: categories.count,
-            items: Array.new
-        }
-
-        categories.each do |grid|
-            filter_params = generate_grid_search_params(grid, params[:device])
-
-            if grid.item_type == 'shows'
-                all_items = Show.where(filter_params).order(name: :asc)
-                filtered_items = Array.new
-
-                unless grid.genre.blank?
-                    all_items.each do |item|
-                        filtered_items.push(item) if item.matches_genre?(grid.genre)
-                    end
-                else
-                    filtered_items = all_items
-                end
-            elsif grid.item_type == 'movies'
-                all_items = Movie.where(filter_params.except(:content_type)).order(name: :asc)
-                filtered_items = Array.new
-
-                unless grid.genre.blank?
-                    all_items.each do |item|
-                        filtered_items.push(item) if item.matches_genre?(grid.genre)
-                    end
-                else
-                    filtered_items = all_items
-                end
+            unless auth[:code] == 100
+                render json: auth
             else
-                all_items = Channel.where(filter_params).order(name: :asc)
-                filtered_items = Array.new
+                feed = {item_count: 0, items: []}
 
-                unless grid.genre.blank?
-                    all_items.each do |item|
-                        filtered_items.push(item) if item.matches_genre?(grid.genre)
-                    end
-                else
-                    filtered_items = all_items
+                user = User.find(Device.where(serial: request.headers['token']).first.user_id)
+                categories = Category.where(front_page: true).order(rank: :asc)
+
+                categories.each do |grid|
+                    items = generate_grid(request.headers['devicetype'], user, grid)
+
+                    feed[:items].push({title_count: items.count, title: grid.name, feed: {url: json_view_grid_url(id: grid.id)}})
                 end
+
+                feed[:item_count] =categories.count
+                auth[:feed] = feed
+                render json: auth
             end
-            data[:items].push({title_count: filtered_items.count, title: grid.name,
-                               feed: {url: json_view_grid_url(id: grid.id, token: params[:token], device: params[:device])}})
-
-        end
-
-        if auth == 100
-            render json: {code: 100, success: true, message: 'Success', feed: data}
-        else
-            render json: {code: 204, success: false, message: 'Device not registered'}
+        rescue => e
+            render json: {code: 209, success: false, message: 'Unknown error: ' + e.message}
         end
     end
 
     def view_grid
-        auth = authenticate_for_grid(request.headers['token'], request.headers['device_id'])
+        begin
+            auth = authenticate_for_grid(request.headers['token'], request.headers['devicetype'])
 
-        if auth == 100
-            grid = Category.where(id: params[:id]).first
 
-            if grid.nil?
-                render json: {code: 204, success: false, message: 'Grid not found'}
+            unless auth[:code] == 100
+                render json: auth
             else
-                filter_params = generate_grid_search_params(grid, params[:device])
-
-                if grid.item_type == 'shows'
-                    all_items = Show.where(filter_params).order(name: :asc)
-                    filtered_items = Array.new
-
-                    unless grid.genre.blank?
-                        all_items.each do |item|
-                            filtered_items.push(item) if item.matches_genre?(grid.genre)
-                        end
-                    else
-                        filtered_items = all_items
-                    end
-                elsif grid.item_type == 'movies'
-                    all_items = Movie.where(filter_params.except(:content_type)).order(name: :asc)
-                    filtered_items = Array.new
-
-                    unless grid.genre.blank?
-                        all_items.each do |item|
-                            filtered_items.push(item) if item.matches_genre?(grid.genre)
-                        end
-                    else
-                        filtered_items = all_items
-                    end
+                grid = Category.where(id: params[:id]).first
+                if grid.nil?
+                    render json: {code: 203, success: false, message: 'Grid not found'}
                 else
-                    all_items = Channel.where(filter_params).order(name: :asc)
-                    filtered_items = Array.new
+                    user = User.find(Device.where(serial: request.headers['token']).first.user_id)
 
-                    unless grid.genre.blank?
-                        all_items.each do |item|
-                            filtered_items.push(item) if item.matches_genre?(grid.genre)
-                        end
-                    else
-                        filtered_items = all_items
+                    items = generate_grid(request.headers['devicetype'], user, grid)
+
+                    feed = {item_count: 0, items: []}
+
+                    items.each do |item|
+                        feed[:items].push({sd_img: root_url[0...-1]+item.image_url(:sd), hd_img: root_url[0...-1]+item.image_url(:hd),
+                                           title: item.name, feed: root_url[0...-1]+item.device_url})
                     end
+
+                    auth[:feed] = feed
+                    render json: auth
                 end
-
-                data = {
-                    item_count: filtered_items.count,
-                    items: Array.new
-                }
-
-                filtered_items.each do |item|
-                    data[:items].push({sd_img: root_url[0...-1]+item.image_url(:sd), hd_img: root_url[0...-1]+item.image_url(:hd),
-                                       title: item.name, feed: root_url[0...-1]+item.device_url})
-                end
-
-                render json: {code: 100, success: true, message: 'Success', feed: data}
             end
-        else
-            render json: {code: auth, success: false, message: 'Grid not found'}
+        rescue => e
+            render json: {code: 209, success: false, message: 'Unknown error: ' + e.message}
         end
     end
 
@@ -185,9 +156,9 @@ class ApiController < ApplicationController
         channel = Channel.where(id: params[:id]).first
 
         if channel.nil?
-            render json: {code: 204, success: false, message: 'Title not found.'}
+            render json: {code: 203, success: false, message: 'Title not found.'}
         else
-            auth = channel.authenticate_for_json(request.headers['token'], request.headers['device'])
+            auth = channel.auth(request.headers['token'], request.headers['devicetype'])
 
             if auth[:code] == 100
                 data = Hash.new
@@ -205,7 +176,8 @@ class ApiController < ApplicationController
                 data[:genres] = channel.genres.split(/\r\n/)
                 data[:synopsis] = channel.synopsis
 
-                render json: {code: 100, success: true, message: 'Success', feed: data}
+                auth[:feed] = data
+                render json: auth
             else
                 render json: auth
             end
@@ -216,9 +188,9 @@ class ApiController < ApplicationController
         show = Show.where(id: params[:id]).first
 
         if show.nil?
-            render json: {code: 204, success: 'false', message: 'Title not found'}
+            render json: {code: 203, success: 'false', message: 'Title not found'}
         else
-            auth = show.authenticate_for_json(request.headers['token'], request.headers['device'])
+            auth = show.auth(request.headers['token'], request.headers['devicetype'])
 
             if auth[:code] == 100
                 data = Array.new
@@ -244,7 +216,8 @@ class ApiController < ApplicationController
                     data.push(item)
                 end
 
-                render json: {code: 100, success: true, message: 'Success', feed: data}
+                auth[:feed] = data
+                render json: auth
             else
                 render json: auth
             end
@@ -257,7 +230,7 @@ class ApiController < ApplicationController
         if movie.nil?
             render json: {code: 204, success: false, message: 'Title not found'}
         else
-            auth = show.authenticate_for_json(request.headers['token'], request.headers['device'])
+            auth = show.auth(request.headers['token'], request.headers['device'])
             if auth[:code] == 100
                 data = Hash.new
 
@@ -274,7 +247,8 @@ class ApiController < ApplicationController
                 data[:genres] = movie.genres.split(/\r\n/)
                 data[:synopsis] = movie.synopsis
 
-                render json: {code: 100, success: true, message: 'Success', feed: data}
+                auth[:feed] = data
+                render json: auth
             else
                 render json: auth
             end
@@ -283,16 +257,97 @@ class ApiController < ApplicationController
 
     private
 
-    def authenticate_for_grid(token, device_id)
-        device = Device.where(id: device_id, serial: token).first
+    def authenticate_for_grid(token, device)
+        if ['Ipad','Iphone','Ipod','Android','Roku'].include? device
+            user_device = Device.where(serial: token, type: device).first
 
-        if device.nil?
-            return 204
-        elsif device_id.expiry < Date.today
-            return 206
+            if device != 'Roku' && user_device.nil?
+                return {code: 200, success: false, message: 'Invalid token'}
+            elsif device != 'Roku' && user_device.expired?
+                return {code: 200, success: false, message: 'Expired token'}
+            else
+                return {code: 100, success: true, message: 'Success'}
+            end
         else
-            return 100
+            return {code: 201, success: false, message: 'Invalid device type'}
         end
+    end
+
+    def generate_grid(device, user, category)
+        if ['Iphone','Ipod','Ipad'].include? device
+            filter_params = {ios: true}
+        else
+            filter_params = {device.to_sym => true}
+        end
+
+        unless user.adult == true
+            filter_params[:adult] = [false,nil]
+        end
+
+        unless category.content_type.blank?
+            filter_params[:content_type] = category.content_type
+        end
+
+        unless category.content_quality.blank?
+            filter_params[:content_quality] = category.content_quality
+        end
+
+        filter_params[:free] = category.free
+
+        if category.item_type == 'shows'
+            if category.sort.nil? || category.sort == 'Alphabetical'
+                all_items = Show.where(filter_params).order(name: :asc)
+            elsif category.sort == 'New Arrivals/Episodes'
+                all_items = Show.where(filter_params).order(release_date: :desc)
+            elsif category.sort == 'Random'
+                all_items = Show.where(filter_params).order('rand()')
+            end
+            filtered_items = Array.new
+
+            unless category.genre.blank?
+                all_items.each do |item|
+                    filtered_items.push(item) if item.matches_genre?(category.genre)
+                end
+            else
+                filtered_items = all_items
+            end
+        elsif category.item_type == 'movies'
+            if category.sort.nil? || category.sort == 'Alphabetical'
+                all_items = Movie.where(filter_params.except(:content_type)).order(name: :asc)
+            elsif category.sort == 'New Arrivals/Episodes'
+                all_items = Movie.where(filter_params.except(:content_type)).order(release_date: :desc)
+            elsif category.sort == 'Random'
+                all_items = Movie.where(filter_params.except(:content_type)).order('rand()')
+            end
+            filtered_items = Array.new
+
+            unless category.genre.blank?
+                all_items.each do |item|
+                    filtered_items.push(item) if item.matches_genre?(category.genre)
+                end
+            else
+                filtered_items = all_items
+            end
+        else
+            if category.sort.nil? || category.sort == 'Alphabetical'
+                all_items = Channel.where(filter_params).order(name: :asc)
+            elsif category.sort == 'New Arrivals/Episodes'
+                all_items = Channel.where(filter_params).order(created_at: :desc)
+            elsif category.sort == 'Random'
+                all_items = Channel.where(filter_params).order('rand()')
+            end
+            filtered_items = Array.new
+
+            unless category.genre.blank?
+                all_items.each do |item|
+                    filtered_items.push(item) if item.matches_genre?(category.genre)
+                end
+            else
+                filtered_items = all_items
+            end
+        end
+
+        return filtered_items
     end
 
     def generate_grid_search_params(grid, device)

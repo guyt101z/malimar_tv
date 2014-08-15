@@ -62,7 +62,8 @@ class Show < ActiveRecord::Base
     end
 
     def available?(device)
-        if (device == 'roku' && roku == true) || (device == 'web' && web == true) || (device == 'android' && android == true) || (device == 'ios' && ios == true)
+        if (device == 'roku' && roku == true) || (device == 'web' && web == true) || (device == 'android' && android == true) ||
+            ((device == 'ipad' || device == 'iphone' || device == 'ipod') && ios == true)
             return true
         else
             return false
@@ -89,91 +90,45 @@ class Show < ActiveRecord::Base
         return "/api/v1/json/show/#{id.to_s}"
     end
 
-    def authenticate(token_serial, device_type)
+    def auth(token,type)
+        if ['Roku','Ipad','Iphone','Ipod','Android'].include? type
+            device = Device.where(serial: token, type: type).first
 
-        if (ios == true && (device_type == 'ipad' || device_type == 'iphone' || device_type == 'ipod')) ||
-           (android == true && device_type == 'android') ||
-           # (xbox == true && device_type == 'xbox') ||
-           # (playstation == true && device_type == 'playstation') ||
-           (roku == true && device_type == 'roku')
-            case device_type
-
-            # iOS devices
-            when 'ipad'
-                device = Ipad.where(serial: token_serial).first
-
-            when 'iphone'
-                device = Iphone.where(serial: token_serial).first
-
-            when 'ipod'
-                device = Ipod.where(serial: token_serial).first
-
-            # Android
-            when 'android'
-                device = Android.where(serial: token_serial).first
-
-            # Xbox
-            when 'xbox'
-                device = Xbox.where(serial: token_serial).first
-
-            # Playstation
-            when 'playstation'
-                device = Playstation.where(serial: token_serial).first
-
-            when 'roku'
-                device = Roku.where(serial: token_serial).first
+            if device.nil?
+                return {success: false, code: 200, message: 'Invalid token'}
+            elsif type != 'Roku' && device.expired?
+                return {success: false, code: 204, message: 'Expired token'}
             else
-                return {code: 205, message: 'Invalid device type', success: false}
-            end
-
-            unless device.nil?
-                if free == false
-                    user = User.where(id: device.user_id).first
-                    unless user.nil?
-                        if user.expiry.nil? || user.expiry < Date.today
-                            return {code: 202, message: 'Account is not premium', success: false}
+                unless available?(type.downcase)
+                    return {success: false, code: 202, message: 'Not available on this device'}
+                else
+                    if free == false
+                        user = User.find(device.user_id)
+                        if user.premium?
+                            if adult == true && user.adult == true
+                                return {success: true, code: 100, message: 'Success'}
+                            elsif adult == true && (user.adult.nil? || user.adult == false)
+                                return {success: false, code: 205, message: 'Account is not permitted to view Adult Content'}
+                            else
+                                return {success: true, code: 100, message: 'Success'}
+                            end
                         else
-                            return {code: 100, message: 'Success', success: true}
+                            return {success: false, code: 206, message: 'Account is not premium'}
                         end
                     else
-                        return {code: 201, message: 'Token/serial not valid', success: false}
+                        user = User.find(device.user_id)
+                        if adult == true && user.adult == true
+                            return {success: true, code: 100, message: 'Success'}
+                        elsif adult == true && (user.adult.nil? || user.adult == false)
+                            return {success: false, code: 205, message: 'Account is not permitted to view Adult Content'}
+                        else
+                            return {success: true, code: 100, message: 'Success'}
+                        end
                     end
-                else
-                    return {code: 100, message: 'Success', success: true}
                 end
-            else
-                return {code: 201, message: 'Token/serial not valid', success: false}
             end
         else
-            return {code: 203, message: 'Title not available on this device', success: false}
-        end
-
-    end
-
-    def authenticate_for_json(token, device_id)
-        device = Device.where(id: device_id, serial: token).first
-
-        if device.nil?
-            return {code: 201, message: 'Token not valid', success: false}
-        elsif device.expiry.nil? || device.expiry < Date.today
-            return {code: 206, message: 'Expired token', success: false}
-        elsif available?(device.type.downcase) == false
-            return {code: 203, message: 'Title not available on this device', success: false}
-        else
-            if free == false
-                user = User.where(id: device.user_id).first
-                unless user.nil?
-                    if user.expiry.nil? || user.expiry < Date.today
-                        return {code: 202, message: 'Account is not premium', success: false}
-                    else
-                        return {code: 100, message: 'Success', success: true}
-                    end
-                else
-                    return {code: 201, message: 'Token/serial not valid', success: false}
-                end
-            else
-                return {code: 100, message: 'Success', success: true}
-            end
+            return {success: false, code: 201, message: 'Invalid device type'}
         end
     end
 
