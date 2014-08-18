@@ -23,7 +23,7 @@
                 	<div class="col-sm-6 col-md-3">
                     	<div class="stat-number">
                         	<div class="number">
-                                <% unless @ration == 'N/A' %>
+                                <% unless @ratio == 'N/A' %>
                                     <% if @ratio > 0 %>
                                         <span class="fa fa-arrow-up fz12 text-green text-middle"></span> <%= number_with_precision(@ratio, precision: 2) %>%
                                     <% elsif @ratio < 0 %>
