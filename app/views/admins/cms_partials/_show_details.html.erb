@@ -166,7 +166,7 @@
                     add: function(e, data) {
                         data.context = $(tmpl("template-upload", data.files[0]));
                         $('#upload-progress').remove()
-                        $('#image-clicker').after(data.context);
+                        $('#banner-clicker').after(data.context);
                         return data.submit();
                     },
                     progress: function(e, data) {

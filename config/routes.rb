@@ -110,11 +110,15 @@ Rails.application.routes.draw do
         get '/admins/users/pending_payments' => 'admins#user_payment_queue'
 
         # Transactions
-        get '/admins/orders/all' => 'transactions#index', as: 'all_tx'
-        post '/admins/orders/all' => 'transactions#index', as: 'all_tx_search'
+        get '/admins/orders' => 'admins#orders', as: 'orders'
+        get '/admins/orders/new' => 'admins#new_transaction', as: 'new_tx'
+        post 'admin_create_transaction' => 'admins#create_transaction'
+        get '/admins/orders/pending' => 'admins#pending_transactions', as: 'pending_tx'
+        get '/admins/orders/paid' => 'admins#paid_transactions', as: 'paid_tx'
+        get '/admins/orders/refunded' => 'admins#refunded_transactions', as: 'refunded_tx'
+        get '/admins/orders/cancelled' => 'admins#cancelled_transactions', as: 'cancelled_tx'
         get '/admins/orders/view/:id' => 'transactions#show', as: 'view_tx'
 
-        get '/admins/orders/new' => 'transactions#new', as: 'new_tx'
         post 'create_tx_standalone' => 'transactions#create_standalone'
 
         post 'create_tx_user' => 'transactions#create_user'
@@ -222,7 +226,11 @@ Rails.application.routes.draw do
 
         # Support
         get '/admins/support' => 'admins#support', as: 'admin_support'
+        get '/admins/support/create' => 'admins#new_ticket', as: 'admin_new_ticket'
+        post 'admin_create_ticket' => 'support#admin_create_ticket'
+        get 'search_users_for_ticket_order' => 'admins#search_users_for_ticket_order'
         get '/admins/support/new' => 'admins#new_tickets', as: 'admin_new_tickets'
+        get '/admins/support/priority' => 'admins#priority_tickets', as: 'admin_priority_tickets'
         get '/admins/support/closed' => 'admins#closed_tickets', as: 'admin_closed_tickets'
         get '/admins/support/open' => 'admins#open_tickets', as: 'admin_open_tickets'
         get '/admins/support/archived' => 'admins#archived_tickets', as: 'admin_archived_tickets'

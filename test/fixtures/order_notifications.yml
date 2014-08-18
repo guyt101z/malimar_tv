@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  message: MyString
+  transaction_id: 1
+  message: MyString
+  link: false
+
+two:
+  message: MyString
+  transaction_id: 1
+  message: MyString
+  link: false

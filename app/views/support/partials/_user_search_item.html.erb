@@ -1,0 +1,20 @@
+<% if params[:selected_user].present? %>
+    <% if params[:selected_user].to_i == @user.id %>
+        <div class="col-sm-6 col-md-3 col-lg-2 active_user user_wrapper" id='user_<%= @user.id %>' onclick='selectUser(<%= @user.id %>)' style='cursor:pointer'>
+    <% else %>
+        <div class="col-sm-6 col-md-3 col-lg-2 disabled user_wrapper" id='user_<%= @user.id %>' onclick='selectUser(<%= @user.id %>)' style='cursor:pointer'>
+    <% end %>
+<% else %>
+    <div class="col-sm-6 col-md-3 col-lg-2 active_user user_wrapper" id='user_<%= @user.id %>' onclick='selectUser(<%= @user.id %>)' style='cursor:pointer'>
+<% end %>
+	<div class="panel-bordered text-center">
+    	<div class="panel-bordered-header">
+        	<div class="text-bold"><%= @user.name %></div>
+			<div class="fz12-5"><%= @user.city_state %></div>
+        </div>
+    	<div class="panel-bordered-body fz12-5">
+        	<% if @user.premium? %>Premium<% else %>Free<% end %> Member<br>
+            <% if @user.premium? %><%= distance_of_time_in_words(Date.today, @user.expiry) %><% else %>N/A<% end %>
+        </div>
+    </div>
+</div>

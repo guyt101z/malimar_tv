@@ -1,0 +1,77 @@
+<%
+today_notifs = OrderNotification.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).order(created_at: :desc)
+yesterday_notifs = OrderNotification.where(created_at: Date.yesterday.beginning_of_day..Date.yesterday.end_of_day).order(created_at: :desc)
+this_week_notifs = OrderNotification.where(created_at: (Date.today - 6.days).beginning_of_day..(Date.today - 2.days).end_of_day).order(created_at: :desc)
+%>
+
+<% if today_notifs.any? %>
+    <a href="#notif-today" data-toggle="collapse" class="collapsed"><span class="fa fa-minus"></span> Today</a>
+    <div id="notif-today" class="collapse">
+        <div class="nano" style="height:140px;">
+            <div class="nano-content">
+                <table class="table fz12-5 table-nb1">
+                    <tbody>
+                    <% today_notifs.each do |notif| %>
+                    <% if notif.link == true %>
+                    <tr onclick='window.location = "<%= view_tx_path(id: notif.transaction_id) %>"' style='cursor:pointer'>
+                    <% else %>
+                    <tr>
+                    <% end %>
+                        <td><%= notif.message %></td>
+                        <td class="text-grey text-right"><%= notif.created_at.strftime('%H:%M') %></td>
+                    </tr>
+                    <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+<div class='line'></div>
+<% end %>
+<% if yesterday_notifs.any? %>
+    <a href="#notif-yesterday" data-toggle="collapse" class="collapsed"><span class="fa fa-minus"></span> Yesterday</a>
+    <div id="notif-yesterday" class="collapse">
+        <div class="nano" style="height:140px;">
+            <div class="nano-content">
+                <table class="table fz12-5 table-nb1">
+                    <tbody>
+                    <% yesterday_notifs.each do |notif| %>
+                    <% if notif.link == true %>
+                    <tr onclick='window.location = "<%= view_tx_path(id: notif.transaction_id) %>"' style='cursor:pointer'>
+                    <% else %>
+                    <tr>
+                    <% end %>
+                        <td><%= notif.message %></td>
+                        <td class="text-grey text-right"><%= notif.created_at.strftime('%H:%M') %></td>
+                    </tr>
+                    <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+<div class='line'></div>
+<% end %>
+<% if this_week_notifs.any? %>
+    <a href="#notif-week" data-toggle="collapse" class="collapsed"><span class="fa fa-minus"></span> This Week</a>
+    <div id="notif-week" class="collapse">
+        <div class="nano" style="height:140px;">
+            <div class="nano-content">
+                <table class="table fz12-5 table-nb1">
+                    <tbody>
+                    <% this_week_notifs.each do |notif| %>
+                    <% if notif.link == true %>
+                    <tr onclick='window.location = "<%= view_tx_path(id: notif.transaction_id) %>"' style='cursor:pointer'>
+                    <% else %>
+                    <tr>
+                    <% end %>
+                        <td><%= notif.message %></td>
+                        <td class="text-grey text-right"><%= notif.created_at.strftime('%a at %H:%M') %></td>
+                    </tr>
+                    <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+<% end %>

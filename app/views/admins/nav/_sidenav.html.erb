@@ -20,11 +20,14 @@
 		<% elsif params[:action] == 'users' || params[:action] == 'view_user' || params[:action] == 'new_user' %>
 			<%= render 'admins/nav/sidenavs/users' %>
 
-		<% elsif params[:action] == 'support' || params[:action] == 'new_tickets' || params[:action] == 'admin_view_ticket'||
-		params[:action] == 'open_tickets' || params[:action] == 'closed_tickets' || params[:action] == 'archived_tickets' %>
+		<% elsif params[:action] == 'support' || params[:action] == 'new_tickets' || params[:action] == 'new_ticket' || params[:action] == 'admin_view_ticket'||
+		params[:action] == 'open_tickets' || params[:action] == 'closed_tickets' || params[:action] == 'archived_tickets' ||
+		params[:action] == 'priority_tickets' %>
 			<%= render 'admins/nav/sidenavs/support' %>
 
-		<% elsif params[:controller] == 'transactions' %>
+		<% elsif params[:controller] == 'transactions' || params[:action] == 'orders' || params[:action] == 'new_transaction' ||
+		params[:action] == 'pending_transactions' || params[:action] == 'paid_transactions' || params[:action] == 'cancelled_transactions' ||
+		params[:action] == 'refunded_transactions' %>
 			<%= render 'admins/nav/sidenavs/transactions' %>
 
 		<% elsif params[:controller] == 'admins' && params[:action] == 'index' %>

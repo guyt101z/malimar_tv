@@ -42,6 +42,10 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    helper_method :notif_icons
+    def notif_icons
+        return {error: 'exclamation-circle', success: 'check-circle', alert: 'info-circle', notice: 'info-circle'}
+    end
 
     helper_method :custom_time_ago
     def custom_time_ago(time_str)

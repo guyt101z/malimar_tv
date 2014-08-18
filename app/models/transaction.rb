@@ -9,7 +9,7 @@ class Transaction < ActiveRecord::Base
 		unless data.nil?
 
 			# Transactions Completed
-			transactions_completed = Transaction.where(created_at: today.beginning_of_day..today.end_of_day, status: ['Pending','Paid','Refunded'])
+			transactions_completed = Transaction.where(created_at: today.beginning_of_day..today.end_of_day)
 
 			# Total
 			data.transactions_completed = transactions_completed.count
@@ -63,7 +63,7 @@ class Transaction < ActiveRecord::Base
 		end
 	end
 
-	
+
 
 	def invoice
 		user = User.find(user_id)

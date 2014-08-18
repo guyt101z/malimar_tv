@@ -135,6 +135,7 @@ class UsersController < ApplicationController
 							else
 								transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 							end
+							transaction.plan_id = @plan.id
 							unless @device.nil?
 								transaction.roku_id = @device.id
 								@device.save
@@ -143,6 +144,7 @@ class UsersController < ApplicationController
 							transaction.save
 							@success = true
 							flash[:success] = 'Your subscription has been successfully processed.'
+							OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
 							TransactionalMailer.order_paid(transaction, user).deliver
 						else
 					    	@payment_errors = true
@@ -178,10 +180,12 @@ class UsersController < ApplicationController
 					else
 						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 					end
+					transaction.plan_id = @plan.id
 					transaction.balance_used = @plan.price - total
 					transaction.save
 					@success = true
 					flash[:success] = 'Your order has been processed. Please send your payment to activate your subscription.'
+					OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
 					TransactionalMailer.order_created(transaction, user).deliver
 				end
 			elsif total <= 0
@@ -211,11 +215,13 @@ class UsersController < ApplicationController
 				else
 					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 				end
+				transaction.plan_id = @plan.id
 				unless @device.nil?
 					transaction.roku_id = @device.id
 					@device.save
 				end
 				transaction.save
+				OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
 			else
 				@payment_errors = true
 				@payment_message = 'You must select a payment type.'

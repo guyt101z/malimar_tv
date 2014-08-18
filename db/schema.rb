@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140814181945) do
+ActiveRecord::Schema.define(version: 20140818135840) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -167,6 +167,10 @@ ActiveRecord::Schema.define(version: 20140814181945) do
     t.integer  "closed_tickets"
     t.integer  "archived_tickets"
     t.integer  "new_tickets"
+    t.integer  "plan_1"
+    t.integer  "plan_2"
+    t.integer  "plan_3"
+    t.integer  "plan_4"
   end
 
   create_table "devices", force: true do |t|
@@ -281,6 +285,14 @@ ActiveRecord::Schema.define(version: 20140814181945) do
     t.datetime "updated_at"
   end
 
+  create_table "order_notifications", force: true do |t|
+    t.string   "message"
+    t.integer  "transaction_id"
+    t.boolean  "link"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "plans", force: true do |t|
     t.string   "name"
     t.text     "features"
@@ -383,6 +395,7 @@ ActiveRecord::Schema.define(version: 20140814181945) do
     t.date     "opened"
     t.date     "closed"
     t.date     "archived"
+    t.boolean  "high_priority"
   end
 
   create_table "support_messages", force: true do |t|
@@ -418,6 +431,7 @@ ActiveRecord::Schema.define(version: 20140814181945) do
     t.datetime "customer_refunded"
     t.float    "balance_used"
     t.string   "paypal_id"
+    t.integer  "plan_id"
   end
 
   create_table "user_notes", force: true do |t|

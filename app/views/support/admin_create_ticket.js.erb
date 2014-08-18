@@ -1,0 +1,26 @@
+$('#user-error').remove()
+$('#title-error').remove()
+$('#category-error').remove()
+$('#priority-error').remove()
+$('#issue_description-error').remove()
+
+<% if @user_errors == true %>
+    $('#user_search').after('<div class="text-danger" id="user-error">You must select a Client or Sales Rep to continue</div>')
+<% else %>
+    <% if @case.errors.any? %>
+        <% if @case.errors[:title].any? %>
+            $('#title').after('<div class="text-danger" id="title-error">Subject <%= @case.errors[:title].join(", ") %></div>')
+        <% end %>
+        <% if @case.errors[:category].any? %>
+            $('#category').after('<div class="text-danger" id="category-error">Department <%= @case.errors[:category].join(", ") %></div>')
+        <% end %>
+        <% if @case.errors[:priority].any? %>
+            $('#priority').after('<div class="text-danger" id="priority-error">Urgency <%= @case.errors[:priority].join(", ") %></div>')
+        <% end %>
+        <% if @case.errors[:issue_description].any? %>
+            $('#issue_description').after('<div class="text-danger" id="issue_description-error">Issue/Description <%= @case.errors[:issue_description].join(", ") %></div>')
+        <% end %>
+    <% else %>
+        window.location = '<%= admin_view_ticket_path(id: @case.id) %>'
+    <% end %>
+<% end %>

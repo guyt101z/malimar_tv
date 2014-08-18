@@ -190,10 +190,12 @@ class AdminsController < ApplicationController
 							transaction.status = 'Paid'
 							transaction.customer_paid = DateTime.now
 							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+							transaction.plan_id = @plan.id
 
 
 							transaction.balance_used = 0
 							transaction.save
+							OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
 							@tx_errors = false
 						else
 							@tx_errors = true
@@ -211,7 +213,9 @@ class AdminsController < ApplicationController
 					transaction.status = 'Pending'
 					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 					transaction.balance_used = 0
+					transaction.plan_id = @plan.id
 					transaction.save
+					OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
 					@tx_errors = false
 				else
 					@test2 = 'no payment type'
@@ -280,6 +284,41 @@ class AdminsController < ApplicationController
 			end
 		else
 			render status: 403
+		end
+	end
+
+	def search_users_for_ticket_order
+		if params[:search_type] == 'user'
+			all_users = User.all.order(first_name: :desc)
+			@matched_users = Array.new
+
+			all_users.each do |user|
+				if user.matches?(params[:search])
+					@matched_users.push(user)
+				end
+			end
+
+			if @matched_users.any?
+				@results = @matched_users.count
+			else
+				@results = 0
+			end
+		else
+			all_users = SalesRepresentative.all.order(first_name: :desc)
+			@matched_users = Array.new
+
+			all_users.each do |user|
+				if user.matches?(params[:search])
+					@matched_users.push(user)
+				end
+			end
+
+			if @matched_users.any?
+				@results = @matched_users.count
+			else
+				@results = 0
+
+			end
 		end
 	end
 
@@ -355,7 +394,9 @@ class AdminsController < ApplicationController
 							transaction.customer_paid = DateTime.now
 							transaction.balance_used = @user.balance
 							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+							transaction.plan_id = @plan.id
 							transaction.save
+							OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
 
 							if @user.expiry.nil? || @user.expiry < Date.today
 								@user.expiry = Date.today + @plan.months.months
@@ -383,7 +424,9 @@ class AdminsController < ApplicationController
 					transaction.status = 'Pending'
 					transaction.balance_used = @user.balance
 					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+					transaction.plan_id = @plan.id
 					transaction.save
+					OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
 
 					if @user.expiry.nil? || @user.expiry < Date.today
 						@user.expiry = Date.today + @plan.months.months
@@ -413,7 +456,9 @@ class AdminsController < ApplicationController
 				transaction.customer_paid = DateTime.now
 				transaction.balance_used = @plan.price
 				transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+				transaction.plan_id = @plan.id
 				transaction.save
+				OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
 				TransactionalMailer.order_paid(transaction, @user).deliver
 				@success = true
 			end
@@ -435,15 +480,23 @@ class AdminsController < ApplicationController
 	end
 
 	def choose_plan
-		@user = User.find(params[:user_id])
-		@plan = Plan.find(params[:plan_id])
+		if params[:user_id].present?
+			@user = User.find(params[:user_id])
+			@plan = Plan.find(params[:plan_id])
 
-		unless @user.balance.nil?
-			@total = @plan.price - @user.balance
+			unless @user.balance.nil?
+				@total = @plan.price - @user.balance
+			else
+				@total = @plan.price
+				@user.balance = 0
+				@user.save
+			end
 		else
-			@total = @plan.price
+			@user = User.new
+			@plan = Plan.find(params[:plan_id])
+
 			@user.balance = 0
-			@user.save
+			@total = @plan.price
 		end
 	end
 
@@ -743,6 +796,65 @@ class AdminsController < ApplicationController
 	def open_tickets
 		search_hash = Hash.new
 		search_hash[:status] = 'Open'
+		if params[:search].present? || params[:category].present? || params[:priority].present?
+			@cases = Array.new
+			if params[:search].present?
+				begin
+					ticket_number = Integer(params[:search])
+					@cases = SupportCase.where(id: ticket_number)
+				rescue => e
+					users = User.all
+					reps = SalesRepresentative.all
+					if params[:category].present?
+						search_hash[:category] = params[:category]
+					end
+					if params[:priority].present?
+						search_hash[:priority] = params[:priority]
+					end
+
+					users.each do |user|
+						if user.matches?(params[:search])
+							search_hash[:user_id] = user.id
+							user_cases = SupportCase.where(search_hash)
+							user_cases.each do |user_case|
+								@cases.push(user_case)
+							end
+						end
+					end
+					search_hash = search_hash.except(:user_id)
+
+					reps.each do |rep|
+						if rep.matches?(params[:search])
+							search_hash[:sales_representative_id] = rep.id
+							rep_cases = SupportCase.where(search_hash)
+							rep_cases.each do |rep_case|
+								@cases.push(rep_case)
+							end
+						end
+					end
+				end
+			else
+				if params[:category].present?
+					search_hash[:category] = params[:category]
+				end
+				if params[:priority].present?
+					search_hash[:priority] = params[:priority]
+				end
+
+				cases = SupportCase.where(search_hash)
+				cases.each do |search_case|
+					@cases.push(search_case)
+				end
+			end
+		else
+			@cases = SupportCase.where(search_hash)
+		end
+	end
+
+	def priority_tickets
+		search_hash = Hash.new
+		search_hash[:status] = 'Open'
+		search_hash[:high_priority] = true
 		if params[:search].present? || params[:category].present? || params[:priority].present?
 			@cases = Array.new
 			if params[:search].present?
@@ -1866,5 +1978,318 @@ class AdminsController < ApplicationController
 		@user = User.find(params[:id])
 		@user.expiry = nil
 		@user.save
+	end
+
+	def orders
+		#order ratio/total today/this month
+		today = Date.today
+		last_month_day = today.beginning_of_month.beginning_of_day - 1.day
+		i = 0
+		@today_tx = Transaction.where(created_at: today.beginning_of_day..today.end_of_day).count
+		@this_month_tx = Transaction.where(created_at: today.beginning_of_month.beginning_of_day..today.end_of_month.end_of_day).count
+		@last_month_tx = Transaction.where(created_at: last_month_day.beginning_of_month.beginning_of_day..last_month_day.end_of_month.end_of_day).count
+
+		ratio = 0
+		days_this_month = (today.end_of_month).day
+		days_this_month_so_far = today.day
+		days_last_month = (today.beginning_of_month.beginning_of_day - 1.day).day
+
+
+		this_month_per_day = (@this_month_tx.to_f/days_this_month.to_f)
+		last_month_per_day = (@last_month_tx.to_f/days_last_month.to_f)
+
+		unless last_month_per_day == 0
+			@ratio = ((this_month_per_day/last_month_per_day) - 1) * 100
+		else
+			@ratio = 'N/A'
+		end
+
+		# plan popularity
+		@plans = Hash.new
+		@plans[:plan_1] = Plan.find(1)
+		@plans[:plan_2] = Plan.find(2)
+		@plans[:plan_3] = Plan.find(3)
+		@plans[:plan_4] = Plan.find(4)
+
+		@plan_totals = Hash.new
+		@plan_totals[:plan_1] = Transaction.where(plan_id: 1).count
+		@plan_totals[:plan_2] = Transaction.where(plan_id: 2).count
+		@plan_totals[:plan_3] = Transaction.where(plan_id: 3).count
+		@plan_totals[:plan_4] = Transaction.where(plan_id: 4).count
+
+		@max = @plan_totals.max_by{|k,v| v}
+		@max_plan = @plans[@max[0]]
+	end
+
+	def create_transaction
+		if params[:user_id].present?
+			@user = User.find(params[:user_id])
+			@plan = Plan.find(params[:plan_id])
+
+			total = @plan.price - @user.balance
+
+			if total > 0 && params[:payment_type].present?
+				if params[:payment_type] == 'Credit Card'
+					# Send requests to the gateway's test servers
+					ActiveMerchant::Billing::Base.mode = :test
+
+					# Create a new credit card object
+
+					names = params[:card_name].split(' ', 2)
+					credit_card = ActiveMerchant::Billing::CreditCard.new(
+						:number     => params[:card_number],
+						:month      => params[:card_month],
+						:year       => params[:card_year],
+						:first_name => names[0],
+						:last_name  => names[1],
+						:verification_value  => params[:ccv]
+					)
+
+					if credit_card.valid?
+						@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
+						gateway = ActiveMerchant::Billing::PaypalGateway.new(
+							login:    	@paypal[:login],
+							password: 	@paypal[:password],
+							signature: 	@paypal[:signature]
+						)
+
+						response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
+
+						if response.success?
+							@user.balance = 0
+							if @user.expiry.nil? || @user.expiry < Date.today
+								@user.expiry = Date.today + @plan.months.months
+							else
+								@user.expiry += @plan.months.months
+							end
+							@user.save
+							transaction = Transaction.new
+							transaction.user_id = @user.id
+							transaction.payment_type = 'Credit Card'
+							transaction.paypal_id = response.params['transaction_id']
+							transaction.status = 'Paid'
+							transaction.customer_paid = DateTime.now
+							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+							transaction.plan_id = @plan.id
+							transaction.balance_used = @plan.price - total
+							transaction.save
+							@tx_id = transaction.id
+							OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
+							TransactionalMailer.order_paid(transaction, @user).deliver
+						else
+							@tx_errors = true
+							@tx_error = response.message
+						end
+					else
+						@tx_errors = true
+						@tx_error = 'This card is not valid'
+					end
+				elsif params[:payment_type].present?
+					@user.balance = 0
+					if @user.expiry.nil? || @user.expiry < Date.today
+						@user.expiry = Date.today + @plan.months.months
+					else
+						@user.expiry += @plan.months.months
+					end
+					@user.save
+					transaction = Transaction.new
+					transaction.user_id = @user.id
+					transaction.payment_type = params[:payment_type]
+					transaction.status = 'Pending'
+					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+					transaction.plan_id = @plan.id
+					transaction.balance_used = @plan.price - total
+					transaction.save
+					OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
+					@tx_id = transaction.id
+					TransactionalMailer.order_created(transaction, @user).deliver
+					@tx_errors = false
+				else
+					@tx_errors = true
+					@tx_error = 'You must choose a payment type.'
+				end
+			elsif total <= 0
+				@user.balance = @user.balance - @plan.price
+				if @user.expiry.nil? || @user.expiry < Date.today
+					@user.expiry = Date.today + @plan.months.months
+				else
+					@user.expiry += @plan.months.months
+				end
+				@user.save
+				transaction = Transaction.new
+				transaction.user_id = @user.id
+				transaction.payment_type = 'Previous Balance'
+				transaction.status = 'Paid'
+				transaction.balance_used = @plan.price
+				transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+				transaction.plan_id = @plan.id
+				transaction.save
+				OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
+				@tx_id = transaction.id
+				TransactionalMailer.order_paid(transaction, @user).deliver
+			end
+		else
+			@user_error = true
+		end
+	end
+
+	def pending_transactions
+		search_hash = Hash.new
+		search_hash[:status] = 'Pending'
+		if params[:search].present? || params[:payment_type].present?
+			@transactions = Array.new
+			if params[:search].present?
+				begin
+					order_number = Integer(params[:search])
+					@transactions = Transaction.where(id: order_number)
+				rescue => e
+					users = User.all
+					if params[:payment_type].present?
+						search_hash[:payment_type] = params[:payment_type]
+					end
+
+					users.each do |user|
+						if user.matches?(params[:search])
+							search_hash[:user_id] = user.id
+							txs = Transaction.where(search_hash)
+							txs.each do |tx|
+								@transactions.push(tx)
+							end
+						end
+					end
+				end
+			else
+				if params[:payment_type].present?
+					search_hash[:payment_type] = params[:payment_type]
+				end
+
+				txs = Transaction.where(search_hash)
+				txs.each do |tx|
+					@transactions.push(tx)
+				end
+			end
+		else
+			@transactions = Transaction.where(status: 'Pending')
+		end
+	end
+
+	def paid_transactions
+		search_hash = Hash.new
+		search_hash[:status] = 'Paid'
+		if params[:search].present? || params[:payment_type].present?
+			@transactions = Array.new
+			if params[:search].present?
+				begin
+					order_number = Integer(params[:search])
+					@transactions = Transaction.where(id: order_number)
+				rescue => e
+					users = User.all
+					if params[:payment_type].present?
+						search_hash[:payment_type] = params[:payment_type]
+					end
+
+					users.each do |user|
+						if user.matches?(params[:search])
+							search_hash[:user_id] = user.id
+							txs = Transaction.where(search_hash)
+							txs.each do |tx|
+								@transactions.push(tx)
+							end
+						end
+					end
+				end
+			else
+				if params[:payment_type].present?
+					search_hash[:payment_type] = params[:payment_type]
+				end
+
+				txs = Transaction.where(search_hash)
+				txs.each do |tx|
+					@transactions.push(tx)
+				end
+			end
+		else
+			@transactions = Transaction.where(status: 'Paid')
+		end
+	end
+
+	def refunded_transactions
+		search_hash = Hash.new
+		search_hash[:status] = 'Refunded'
+		if params[:search].present? || params[:payment_type].present?
+			@transactions = Array.new
+			if params[:search].present?
+				begin
+					order_number = Integer(params[:search])
+					@transactions = Transaction.where(id: order_number)
+				rescue => e
+					users = User.all
+					if params[:payment_type].present?
+						search_hash[:payment_type] = params[:payment_type]
+					end
+
+					users.each do |user|
+						if user.matches?(params[:search])
+							search_hash[:user_id] = user.id
+							txs = Transaction.where(search_hash)
+							txs.each do |tx|
+								@transactions.push(tx)
+							end
+						end
+					end
+				end
+			else
+				if params[:payment_type].present?
+					search_hash[:payment_type] = params[:payment_type]
+				end
+
+				txs = Transaction.where(search_hash)
+				txs.each do |tx|
+					@transactions.push(tx)
+				end
+			end
+		else
+			@transactions = Transaction.where(status: 'Refunded')
+		end
+	end
+
+	def cancelled_transactions
+		search_hash = Hash.new
+		search_hash[:status] = 'Cancelled'
+		if params[:search].present? || params[:payment_type].present?
+			@transactions = Array.new
+			if params[:search].present?
+				begin
+					order_number = Integer(params[:search])
+					@transactions = Transaction.where(id: order_number)
+				rescue => e
+					users = User.all
+					if params[:payment_type].present?
+						search_hash[:payment_type] = params[:payment_type]
+					end
+
+					users.each do |user|
+						if user.matches?(params[:search])
+							search_hash[:user_id] = user.id
+							txs = Transaction.where(search_hash)
+							txs.each do |tx|
+								@transactions.push(tx)
+							end
+						end
+					end
+				end
+			else
+				if params[:payment_type].present?
+					search_hash[:payment_type] = params[:payment_type]
+				end
+
+				txs = Transaction.where(search_hash)
+				txs.each do |tx|
+					@transactions.push(tx)
+				end
+			end
+		else
+			@transactions = Transaction.where(status: 'Cancelled')
+		end
 	end
 end

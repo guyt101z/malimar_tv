@@ -1,0 +1,11 @@
+$('#user_error').remove()
+$('#tx_error').remove()
+<% if @user_error == true %>
+    $('#user_search').after('<div class="text-danger" id="user_error">You must select a client</div>')
+<% else %>
+    <% if @tx_errors == true %>
+        $('#payment_type').after('<div class="text-danger" id="tx_error"><%= @tx_error %></div>')
+    <% else %>
+        window.location = '<%= view_tx_path(id: @tx_id) %>'
+    <% end %>
+<% end %>

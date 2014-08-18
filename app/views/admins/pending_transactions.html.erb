@@ -1,0 +1,109 @@
+<% content_for :top_level, 'Orders' %>
+<% content_for :low_levels, YAML.dump(['Pending Orders']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+
+        <div class="panel">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-sm-6">
+                        Order List
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body plr20">
+                <div class="row">
+                    <%= form_tag pending_tx_path, method: :get do %>
+                    <div class="col-sm-6">
+                        <div class="form-group has-feedback feedback-wt">
+                            <%= text_field_tag :search, params[:search], class: 'form-control input-md', placeholder: "Search by Order# or Client Name and Email" %>
+                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <%= select_tag :payment_type, options_for_select([['Payment Method',nil],'Credit Card','Money Order','Bank Transfer','Cheque'], params[:payment_type]), class: 'form-control input-md' %>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <%= submit_tag 'Filter Orders', class: 'btn btn-default btn-md btn-block' %>
+                    </div>
+                    <% end %>
+                </div>
+                <div class="table-responsive">
+                <table class="table table-list fz11-5 table-hover" id='tx_table'>
+                    <thead>
+                    <tr>
+                        <td>Order Number
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Client
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Payment Method
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Date Created
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Date Paid
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Status
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <% @transactions.each do |tx| %>
+                    <tr onclick='window.location = "<%= view_tx_path(id: tx.id) %>"' style='cursor:pointer'>
+                        <td class="text-bold">#<%= tx.id %></td>
+                        <% user = User.where(id: tx.user_id).first %>
+                        <% if user.nil? %>
+                            <td>User not found</td>
+                        <% else %>
+                            <td><%= user.name %></td>
+                        <% end %>
+                        <td><%= tx.payment_type %></td>
+                        <td><%= tx.created_at.strftime('%Y/%m/%-d') %></td>
+                        <td>
+                            <% if tx.customer_paid.present? %>
+                                <%= tx.customer_paid.strftime('%Y/%m/%-d') %>
+                            <% else %>
+                                N/A
+                            <% end %>
+                        </td>
+                        <td class='<%= tx.status.downcase %>'><%= tx.status %></td>
+                    </tr>
+                    <% end %>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+$('#tx_table').dataTable();
+$('#tx_table_filter').html('<label>Filter Results:<input type="search" class="form-control input-sm" aria-controls="tx_table"></label>')
+$('#pending_tx').addClass('active')
+</script>

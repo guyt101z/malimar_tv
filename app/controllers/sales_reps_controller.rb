@@ -116,6 +116,7 @@ class SalesRepsController < ApplicationController
 							transaction.status = 'Paid'
 							transaction.sales_rep_id = current_sales_representative.id
 							transaction.customer_paid = DateTime.now
+							transaction.plan_id = @plan.id
 
 							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, commission_rate: current_sales_representative.commission_rate})
 
@@ -151,6 +152,7 @@ class SalesRepsController < ApplicationController
 					transaction.sales_rep_id = current_sales_representative.id
 
 					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, commission_rate: current_sales_representative.commission_rate})
+					transaction.plan_id = @plan.id
 
 					transaction.balance_used = @plan.price - total
 					transaction.save

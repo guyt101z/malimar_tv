@@ -11,10 +11,10 @@
             <% else %>
                 Premium: <%= distance_of_time_in_words_to_now(@user.expiry) %>
             <% end %><br>
-            <% if @user.last_seen.nil? || @user.last_seen < 5.minutes.ago %>
+            <% if @user.online? %>
                 <span class='online'></span> Active
             <% end %>
-            <a href='#' class='popover-footer'>Manage Client</a>">
+            <%= link_to 'Manage Client', view_user_path(id: @user.id), class: 'popover-footer' %>">
         <span class="icon-circle-user"></span> <%= @user.name %>
     </a>
 

@@ -1,5 +1,26 @@
 class SupportController < ApplicationController
+	def admin_create_ticket
+		@case = SupportCase.new
+		if params[:user_id].present?
+			@case.user_id = params[:user_id]
+		elsif params[:rep_id].present?
+			@case.sales_representative_id = params[:rep_id]
+		else
+			@user_errors = true
+		end
 
+		unless @user_errors == true
+			@case.admin_id = current_admin.id
+			@case.title = params[:title]
+			@case.category = params[:category]
+			@case.issue_description = params[:issue_description]
+			@case.priority = params[:priority]
+			@case.high_priority = params[:high_priority]
+			@case.status = 'Open'
+
+			@case.save
+		end
+	end
 
 	def sales_rep_create_ticket
 		@case = SupportCase.new(params)
@@ -61,7 +82,7 @@ class SupportController < ApplicationController
 	def update_ticket_status
 		@case = SupportCase.find(params[:id])
 		@case.priority = params[:priority]
-		@case.category = params[:category]
+		@case.high_priority = params[:high_priority]
 
 		if @case.status != params[:status]
 			@case.status = params[:status]

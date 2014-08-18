@@ -1,1 +1,6 @@
-<li id='all_tx'><%= link_to 'Search Orders', all_tx_path %></a></li>
+<li id='index'><%= link_to 'Orders Dashboard', orders_path %></li>
+<li id='new_tx'><%= link_to 'New Order', new_tx_path %></li>
+<li id='pending_tx'><%= link_to raw("Pending Orders <span class='count'>#{Transaction.where(status: 'Pending').count}</span>"), pending_tx_path %></li>
+<li id='paid_tx'><%= link_to raw("Paid Orders"), paid_tx_path %></li>
+<li id='refunded_tx'><%= link_to raw("Refunded Orders"), refunded_tx_path %></li>
+<li id='cancelled_tx'><%= link_to raw("Cancelled Orders"), cancelled_tx_path %></li>

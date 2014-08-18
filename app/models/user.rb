@@ -90,4 +90,16 @@ class User < ActiveRecord::Base
     def premium?
         return expiry.nil? == false || expiry >= Date.today
     end
+
+    def online?
+        return last_seen != nil && last_seen > 5.minutes.ago
+    end
+
+    def city_state
+        if state.present?
+            return "#{city}, #{state}"
+        else
+            return city
+        end
+    end
 end

@@ -1,0 +1,172 @@
+<% content_for :top_level, 'Orders' %>
+<% content_for :low_levels, YAML.dump(['New Order']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+
+        <div class="panel">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-sm-6">
+                           <span class="fz16">New Order</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body plr20">
+                <h4 class="title"><span class="icon-circle-user mr7"></span> Client</h4>
+                <div class="form-group has-feedback">
+                    <label for="">Search by Client</label>
+                    <%= text_field_tag :user_search, '', class: "form-control input-md", placeholder: "Search Client by Name, Surname, ID", autofill: 'off' %>
+                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                    <%= hidden_field_tag :search_type, 'user' %>
+                </div>
+                <div class="row user_search_results" id='user_row'></div>
+                <div class="line"></div>
+                <%= form_tag admin_create_transaction_path, remote: true do %>
+                <%= hidden_field_tag :user_id %>
+                <h4 class="title"><span class="icon-circle-ticket mr7"></span> Ticket Information</h4>
+                <div class='row'>
+                    <div class='col-xs-6'>
+                        <div class="form-group">
+                            <label for="">Plan <span class="text-danger">*</span></label>
+                            <%
+                            plans = Array.new
+                            @plans = Plan.all.order(price: :asc)
+                            @plans.each do |plan|
+                                plans.push(["#{plan.name} - #{pluralize(plan.months, 'month')} (#{number_with_precision(plan.price, precision: 2)})", plan.id])
+                            end
+                            %>
+                            <%= select_tag :plan_id, options_for_select(plans), class: 'form-control input-md' %>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Payment Method <span class="text-danger">*</span></label>
+                            <%= select_tag :payment_type, options_for_select([['Choose Method',nil],'Credit Card','Bank Transfer','Money Order','Cheque']), class: 'form-control input-md' %>
+                        </div>
+                        <div id='credit_form' style='display:none'>
+                            <div class="form-group">
+                                <label for="">Card Holder’s Name <span class="text-danger">*</span></label>
+                                <%= text_field_tag :card_name, '', class: 'form-control input-md' %>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Credit Card Number <span class="text-danger">*</span></label>
+                                <%= text_field_tag :card_number, '', class: 'form-control input-md' %>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Month<span class="text-danger">*</span></label>
+                                        <%= select_tag :card_month, options_for_select([['Expiry Month', nil],
+                                                                                        ['Jan (01)',1],
+                                                                                        ['Feb (02)',2],
+                                                                                        ['Mar (03)',3],
+                                                                                        ['Apr (04)',4],
+                                                                                        ['May (05)',5],
+                                                                                        ['Jun (06)',6],
+                                                                                        ['Jul (07)',7],
+                                                                                        ['Aug (08)',8],
+                                                                                        ['Sep (09)',9],
+                                                                                        ['Oct (10)',10],
+                                                                                        ['Nov (11)',11],
+                                                                                        ['Dec (12)',12]]), class: 'form-control' %>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Year<span class="text-danger">*</span></label>
+                                        <% years = [['Expiry Year', nil]] %>
+                                        <% this_year = (Date.today.strftime('%Y')).to_i %>
+                                        <% end_year = ((Date.today+15.years).strftime('%Y')).to_i %>
+                                        <% for i in this_year..end_year %>
+                                           <% years.push(i) %>
+                                        <% end %>
+                                        <%= select_tag :card_year, options_for_select(years), class: 'form-control' %>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">CVV <span class="text-danger">*</span></label>
+                                        <%= text_field_tag :ccv, '', class: 'form-control input-md' %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-xs-6' id='tx_details'>
+                        <% @plan = @plans.first %>
+                        <% @total = @plan.price - @user.balance %>
+                        <%= render 'admins/partials/transaction_details' %>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <%= submit_tag 'Create Order', class: 'btn btn-primary btn-sm btn-w170', data: {disable_with: 'Creating...'} %>
+                </div>
+                <% end %>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    function selectLevel(id, level){
+        $('#level-0').removeClass('selected')
+        $('#level-1').removeClass('selected')
+        $('#level-2').removeClass('selected')
+        $('#level-'+id).addClass('selected')
+        $('#priority').val(id)
+        $('#level-view').html(level)
+    }
+    $('#user_search').keyup(function(){
+        if ($(this).val() == '') {
+            $('#user_row').html('')
+        }
+        else {
+            if ($('#user_id').val() != ''){
+                $.ajax({
+                    url: '/search_users_for_ticket_order?search='+$(this).val()+'&search_type='+$('#search_type').val()+'&selected_user='+$('#user_id').val()
+                })
+            }
+            else {
+                $.ajax({
+                    url: '/search_users_for_ticket_order?search='+$(this).val()+'&search_type='+$('#search_type').val()
+                })
+            }
+        }
+    })
+
+    function selectUser(id) {
+        $('#user_row .user_wrapper').removeClass('active_user').addClass('disabled')
+        $('#user_'+id).removeClass('disabled')
+        $('#user_id').val(id)
+        $('#rep_id').val('')
+        $('#tx_details').html("<div class='stat-number'><div class='number'><i class='fa fa-refresh fa-spin'></i></div>Loading Details</div>")
+
+        $.ajax({
+            url: '/admin_choose_plan?user_id='+id+'&plan_id='+$('#plan_id').val()
+        })
+    }
+    $('#new_ticket').addClass('active')
+    $('#payment_type').change(function(){
+        if ($('#payment_type').val() == 'Credit Card'){
+            $('#credit_form').show()
+        }
+        else {
+            $('#credit_form').hide()
+        }
+    })
+    $('#plan_id').change(function(){
+        if ($('#user_id').val() == ''){
+            $('#tx_details').html("<div class='stat-number'><div class='number'><i class='fa fa-refresh fa-spin'></i></div>Loading Details</div>")
+
+            $.ajax({
+                url: '/admin_choose_plan?&plan_id='+$(this).val()
+            })
+        }
+        else{
+            $('#tx_details').html("<div class='stat-number'><div class='number'><i class='fa fa-refresh fa-spin'></i></div>Loading Details</div>")
+
+            $.ajax({
+                url: '/admin_choose_plan?user_id='+$('#user_id').val()+'&plan_id='+$(this).val()
+            })
+        }
+    })
+    $('#new_tx').addClass('active')
+</script>

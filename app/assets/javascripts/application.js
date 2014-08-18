@@ -14,8 +14,6 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap
-//= require jquery-fileupload/basic
-//= require jquery-fileupload/vendor/tmpl
 //= require Autolinker
 //= require timeago
 //= require snap_svg-min
@@ -24,7 +22,9 @@
 //= require notificationFx
 //= require dataTables
 //= require dataTables_bootstrap
-//= require_tree .
+//= require jquery-fileupload/basic
+//= require jquery-fileupload/vendor/tmpl
+//= require
 /**
  * Timeago is a jQuery plugin that makes it easy to support automatically
  * updating fuzzy timestamps (e.g. "4 minutes ago" or "about 1 day ago").
@@ -40,6 +40,27 @@
  *
  * Copyright (c) 2008-2013, Ryan McGeary (ryan -[at]- mcgeary [*dot*] org)
  */
+
+function addNotification(type, message, name, icon) {
+//    icons = {error: 'exclamation-circle', success: 'check-circle', alert: 'info-circle', notice: 'info-circle'}
+    $.growl({
+        message: '<div class="notif-left"><i class="fa fa-'+icon+' fa-fw"></i></div><div class="notif-right"><div class="fz16">'+name+'</div><div class="fz12-5">'+message+'</div></div>'
+    },{
+        type: "notif",
+        placement: {
+            from: "bottom",
+            align: "right"
+        },
+        template: '<div data-growl="container" class="alert" role="alert">' +
+            '<button type="button" class="close" data-growl="dismiss">' +
+                '<span aria-hidden="true">×</span>' +
+                '<span class="sr-only">Close</span>' +
+            '</button>' +
+            '<div data-growl="message" class="notif-wrapper"></div>' +
+        '</div>'
+    });
+}
+
 
 (function (factory) {
   if (typeof define === 'function' && define.amd) {

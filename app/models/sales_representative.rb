@@ -125,4 +125,12 @@ class SalesRepresentative < ActiveRecord::Base
 
         return (current_balance >= min_limit)
     end
+
+    def city_state
+        if state.present?
+            return "#{city}, #{state}"
+        else
+            return city
+        end
+    end
 end

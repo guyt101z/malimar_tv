@@ -153,105 +153,117 @@ class ApiController < ApplicationController
     end
 
     def view_channel
-        channel = Channel.where(id: params[:id]).first
+        begin
+            channel = Channel.where(id: params[:id]).first
 
-        if channel.nil?
-            render json: {code: 203, success: false, message: 'Title not found.'}
-        else
-            auth = channel.auth(request.headers['token'], request.headers['devicetype'])
-
-            if auth[:code] == 100
-                data = Hash.new
-
-                data[:id] = "#{channel.name.gsub(' ','_').gsub(/[^a-z0-9]/i,'')}#{channel.created_at.strftime('%-d-%B-%Y')}"
-                data[:title] = channel.name
-                data[:length] = 0
-                data[:content_type] = channel.content_type
-                data[:content_quality] = channel.content_quality
-                data[:stream_format] = 'hls'
-                data[:stream_url] = "#{channel.stream_url}?token=#{generate_token(channel.stream_name)}"
-                data[:bitrate] = channel.bitrate
-
-                data[:actors] = channel.actors.split(/\r\n/)
-                data[:genres] = channel.genres.split(/\r\n/)
-                data[:synopsis] = channel.synopsis
-
-                auth[:feed] = data
-                render json: auth
+            if channel.nil?
+                render json: {code: 203, success: false, message: 'Title not found.'}
             else
-                render json: auth
+                auth = channel.auth(request.headers['token'], request.headers['devicetype'])
+
+                if auth[:code] == 100
+                    data = Hash.new
+
+                    data[:id] = "#{channel.name.gsub(' ','_').gsub(/[^a-z0-9]/i,'')}#{channel.created_at.strftime('%-d-%B-%Y')}"
+                    data[:title] = channel.name
+                    data[:length] = 0
+                    data[:content_type] = channel.content_type
+                    data[:content_quality] = channel.content_quality
+                    data[:stream_format] = 'hls'
+                    data[:stream_url] = "#{channel.stream_url}?token=#{generate_token(channel.stream_name)}"
+                    data[:bitrate] = channel.bitrate
+
+                    data[:actors] = channel.actors.split(/\r\n/)
+                    data[:genres] = channel.genres.split(/\r\n/)
+                    data[:synopsis] = channel.synopsis
+
+                    auth[:feed] = data
+                    render json: auth
+                else
+                    render json: auth
+                end
             end
+        rescue => e
+            render json: {code: 209, success: false, message: 'Unknown error: ' + e.message}
         end
     end
 
     def view_show
-        show = Show.where(id: params[:id]).first
+        begin
+            show = Show.where(id: params[:id]).first
 
-        if show.nil?
-            render json: {code: 203, success: 'false', message: 'Title not found'}
-        else
-            auth = show.auth(request.headers['token'], request.headers['devicetype'])
-
-            if auth[:code] == 100
-                data = Array.new
-                episodes = Episode.where(show_id: show.id).order(episode_number: :desc)
-
-                episodes.each do |episode|
-                    item = Hash.new
-
-                    item[:id] = "#{show.name.gsub(' ','_').gsub(/[^a-z0-9]/i,'')}#{episode.episode_number}#{episode.release_date.strftime('%-d-%B-%Y')}"
-                    item[:title] = episode.title
-                    item[:length] = 0
-                    item[:episode_number] = episode.episode_number
-                    item[:content_type] = show.content_type
-                    item[:content_quality] = show.content_quality
-                    item[:stream_format] = 'hls'
-                    item[:stream_url] = "#{episode.stream_url}"
-                    item[:bitrate] = show.bitrate
-
-                    item[:actors] = show.actors.split(/\r\n/)
-                    item[:genres] = show.genres.split(/\r\n/)
-                    item[:synopsis] = episode.synopsis
-
-                    data.push(item)
-                end
-
-                auth[:feed] = data
-                render json: auth
+            if show.nil?
+                render json: {code: 203, success: 'false', message: 'Title not found'}
             else
-                render json: auth
+                auth = show.auth(request.headers['token'], request.headers['devicetype'])
+
+                if auth[:code] == 100
+                    data = Array.new
+                    episodes = Episode.where(show_id: show.id).order(episode_number: :desc)
+
+                    episodes.each do |episode|
+                        item = Hash.new
+
+                        item[:id] = "#{show.name.gsub(' ','_').gsub(/[^a-z0-9]/i,'')}#{episode.episode_number}#{episode.release_date.strftime('%-d-%B-%Y')}"
+                        item[:title] = episode.title
+                        item[:length] = 0
+                        item[:episode_number] = episode.episode_number
+                        item[:content_type] = show.content_type
+                        item[:content_quality] = show.content_quality
+                        item[:stream_format] = 'hls'
+                        item[:stream_url] = "#{episode.stream_url}"
+                        item[:bitrate] = show.bitrate
+
+                        item[:actors] = show.actors.split(/\r\n/)
+                        item[:genres] = show.genres.split(/\r\n/)
+                        item[:synopsis] = episode.synopsis
+
+                        data.push(item)
+                    end
+
+                    auth[:feed] = data
+                    render json: auth
+                else
+                    render json: auth
+                end
             end
+        rescue => e
+            render json: {code: 209, success: false, message: 'Unknown error: ' + e.message}
         end
     end
 
     def view_movie
-        movie = Movie.where(id: params[:id]).first
+        begin
+            movie = Movie.where(id: params[:id]).first
 
-        if movie.nil?
-            render json: {code: 204, success: false, message: 'Title not found'}
-        else
-            auth = show.auth(request.headers['token'], request.headers['device'])
-            if auth[:code] == 100
-                data = Hash.new
-
-                data[:id] = "#{movie.name.gsub(' ','_').gsub(/[^a-z0-9]/i,'')}#{movie.created_at.strftime('%-d-%B-%Y')}"
-                data[:title] = movie.name
-                # TODO add movie length
-                #data[:length] = 0
-                data[:content_quality] = movie.content_quality
-                data[:stream_format] = 'hls'
-                data[:stream_url] = "#{movie.stream_url}"
-                data[:bitrate] = movie.bitrate
-
-                data[:actors] = movie.actors.split(/\r\n/)
-                data[:genres] = movie.genres.split(/\r\n/)
-                data[:synopsis] = movie.synopsis
-
-                auth[:feed] = data
-                render json: auth
+            if movie.nil?
+                render json: {code: 204, success: false, message: 'Title not found'}
             else
-                render json: auth
+                auth = show.auth(request.headers['token'], request.headers['device'])
+                if auth[:code] == 100
+                    data = Hash.new
+
+                    data[:id] = "#{movie.name.gsub(' ','_').gsub(/[^a-z0-9]/i,'')}#{movie.created_at.strftime('%-d-%B-%Y')}"
+                    data[:title] = movie.name
+                    # TODO add movie length
+                    #data[:length] = 0
+                    data[:content_quality] = movie.content_quality
+                    data[:stream_format] = 'hls'
+                    data[:stream_url] = "#{movie.stream_url}"
+                    data[:bitrate] = movie.bitrate
+
+                    data[:actors] = movie.actors.split(/\r\n/)
+                    data[:genres] = movie.genres.split(/\r\n/)
+                    data[:synopsis] = movie.synopsis
+
+                    auth[:feed] = data
+                    render json: auth
+                else
+                    render json: auth
+                end
             end
+        rescue => e
+            render json: {code: 209, success: false, message: 'Unknown error: ' + e.message}
         end
     end
 

@@ -128,7 +128,7 @@
                     <div class='panel panel-default'>
                         <div class='panel-heading' style='position: relative'>
                             <h3 class='panel-title'>Banner Image</h3>
-                            <a class='upload_image_heading btn btn-success btn-sm' id='banner-clicker'><i class='fa fa-upload fa-fw'></i></a>
+                            <a class='upload_image_heading btn btn-success btn-sm' id='banner-clicker' onclick='$("#banner").click()'><i class='fa fa-upload fa-fw'></i></a>
                         </div>
                         <div class='panel-body image_preview' id='banner_preview'>
                             <%= image_tag @channel.banner_url(:preview) %>
@@ -181,7 +181,7 @@
                     add: function(e, data) {
                         data.context = $(tmpl("template-upload", data.files[0]));
                         $('#upload-progress').remove()
-                        $('#image-clicker').after(data.context);
+                        $('#banner-clicker').after(data.context);
                         return data.submit();
                     },
                     progress: function(e, data) {

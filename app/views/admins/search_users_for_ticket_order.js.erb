@@ -1,0 +1,13 @@
+$('#user_row').html('')
+<% if @matched_users.any? %>
+    <% @matched_users.each do |user| %>
+        <% @user = user %>
+        <% if params[:search_type] == 'user' %>
+            $('#user_row').append('<%= escape_javascript(render("support/partials/user_search_item")) %>')
+        <% else %>
+            $('#user_row').append('<%= escape_javascript(render("support/partials/rep_search_item")) %>')
+        <% end %>
+    <% end %>
+<% else %>
+    $('#user_row').html('<div class="col-sm-6 col-md-3 col-lg-2 active_user user_wrapper"><div class="panel-bordered text-center"><div class="panel-bordered-header">No clients found</div></div></div>')
+<% end %>

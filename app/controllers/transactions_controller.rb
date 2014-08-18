@@ -27,6 +27,7 @@ class TransactionsController < ApplicationController
 									}
 								}))
 			flash[:success] = "Order \##{@transaction.id} has been accepted."
+			OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{@transaction.id} has been accepted.", link: true)
 		end
 	end
 
@@ -51,6 +52,7 @@ class TransactionsController < ApplicationController
 									}
 								}))
 			flash[:success] = "Order \##{@transaction.id} has been cancelled."
+			OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{@transaction.id} has been cancelled.", link: true)
 		end
 	end
 
@@ -79,6 +81,7 @@ class TransactionsController < ApplicationController
 										}
 									}))
 				flash[:success] = "Order \##{@transaction.id} has been refunded."
+				OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{@transaction.id} has been refunded.", link: true)
 			end
 		else
 			@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
@@ -109,6 +112,7 @@ class TransactionsController < ApplicationController
 										}
 									}))
 				flash[:success] = "Order \##{@transaction.id} has been refunded."
+				OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{@transaction.id} has been refunded.", link: true)
 			else
 				@success = false
 				@message = 'There was an error refunding this transaction.'

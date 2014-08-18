@@ -1,0 +1,148 @@
+<% content_for :top_level, 'Orders' %>
+<% content_for :low_levels, YAML.dump([]) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+
+        <div class="panel">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-sm-6">
+                       	<span class="fz16">Orders Dashboard</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body plr20">
+            	<div class="row">
+                	<div class="col-sm-6 col-md-3">
+                    	<div class="stat-number">
+                        	<div class="number"><%= Transaction.all.count %></div>
+                            Total Orders
+							<div class="text-semi"><%= @today_tx %> Orders Today</div>
+                        </div>
+                    </div>
+                	<div class="col-sm-6 col-md-3">
+                    	<div class="stat-number">
+                        	<div class="number">
+                                <% unless @ration == 'N/A' %>
+                                    <% if @ratio > 0 %>
+                                        <span class="fa fa-arrow-up fz12 text-green text-middle"></span> <%= number_with_precision(@ratio, precision: 2) %>%
+                                    <% elsif @ratio < 0 %>
+                                        <span class="fa fa-arrow-down fz12 text-danger text-middle"></span> <%= number_with_precision(@ratio, precision: 2) %>%
+                                    <% else %>
+                                        <span class="fa fa-arrow-minus fz12 text-warning text-middle"></span> 0.00%
+                                    <% end %>
+                                <% else %>
+                                    N/A
+                                <% end %>
+                            </div>
+                            Monthly Order Trend
+							<div class="text-semi"><%= @this_month_tx %> Orders This Month</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                    	<div class="stat-number">
+                        	<div class="number"><%= @max_plan.name %></span></div>
+                            Most Ordered Plan <br>(<%= @max[1] %>/<%= Transaction.all.count %> orders)
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                    	<div class="stat-number">
+                        	<div class="number"><%= Transaction.where(status: 'Pending').count %></div>
+                            Pending Orders
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row5">
+            <div class="col-sm-6">
+                <div class="panel">
+                    <div class="panel-heading ptb5">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mt5"><span class="icon-graph mr7"></span> Orders History</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body" id='reports' style='height:300px;'>
+                        <%= render 'admins/reports/orders_sales' %>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+            	<div class="panel">
+                    <div class="panel-heading ptb5">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mt5"><span class="icon-graph mr7"></span> Total Orders by Plan</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body" id='reports_2' style='height:300px;'>
+                        <%= render 'admins/reports/orders_by_plan' %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row5">
+            <div class="col-sm-6">
+                <div class="panel">
+                    <div class="panel-heading ptb5">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mt5"><span class="icon-tags1 mr7"></span> New Orders</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="nano" style="height:130px;">
+                            <div class="nano-content">
+                                <table class="table fz12-5 table-nb1">
+                                    <tbody>
+                                    <% Transaction.where(status: 'Pending').order(created_at: :desc).each do |tx| %>
+                                    <tr onclick='window.location = "<%= view_tx_path(id: tx.id) %>"' style='cursor:pointer'>
+                                        <td class="text-semi">#<%= tx.id %></td>
+                                        <% user = User.where(id: tx.user_id).first %>
+                                        <td>
+                                            <% if user.nil? %>
+                                                User not found
+                                            <% else %>
+                                                <%= user.name %>
+                                            <% end %>
+                                        </td>
+                                        <% data = YAML.load(tx.product_details) %>
+                                        <td class="fz11-5"><%= data[:name] %></td>
+                                        <td class="text-grey text-right"><%= tx.created_at.strftime('%Y/%m/%d at %H:%M') %></td>
+                                    </tr>
+                                    <% end %>
+                                    <tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+            	<div class="panel">
+                    <div class="panel-heading ptb5">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mt5"><span class="icon-bell mr7"></span> Notifications</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <%= render 'admins/partials/order_notifs' %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+	</div>
+</div>
+<script>
+    $('#index').addClass('active')
+</script>

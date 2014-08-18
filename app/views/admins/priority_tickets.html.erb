@@ -1,5 +1,5 @@
 <% content_for :top_level, 'Support' %>
-<% content_for :low_levels, YAML.dump(['Closed Tickets']) %>
+<% content_for :low_levels, YAML.dump(['New Tickets']) %>
 <div id="left-scroll" class="nano">
     <div class="nano-content">
 
@@ -7,12 +7,12 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-6">
-                           <span class="fz16">Closed Tickets</span>
+                           <span class="fz16">Priority Tickets</span>
                     </div>
                 </div>
             </div>
             <div class="panel-body plr20">
-                <%= form_tag admin_new_tickets_path, method: :get do %>
+                <%= form_tag admin_priority_tickets_path, method: :get do %>
                 <div class="form-group has-feedback">
                     <label for="">Search Client/Representative</label>
                     <%= text_field_tag :search, params[:search], class: 'form-control input-md', placeholder: 'Search Ticket # or Client/Rep Name and Email' %>
@@ -99,6 +99,6 @@ function viewTicket(id) {
     window.location = '/admins/support/ticket/'+id
 }
 
-$('#closed').addClass('active')
+$('#priority_support').addClass('active')
 $('#case_table').dataTable();
 </script>
