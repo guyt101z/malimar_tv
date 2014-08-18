@@ -135,4 +135,13 @@ class Show < ActiveRecord::Base
     def roku_url
         return '/api/v1/roku/show/'+id.to_s+'?serial=SERIAL'
     end
+
+    def newest_episode
+        episodes = Episode.where(show_id: id).order(release_date: :desc)
+        if episodes.any?
+            return episodes.first.release_date.to_datetime.to_i
+        else
+            return 0
+        end
+    end
 end

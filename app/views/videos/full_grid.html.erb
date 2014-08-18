@@ -1,45 +1,75 @@
 <%
-filter_params = Hash.new
-unless @category.content_type.blank?
-    filter_params[:content_type] = @category.content_type
+unless current_user.adult == true
+    filter_params[:adult] = [false,nil]
 end
 
-unless @category.content_quality.blank?
-    filter_params[:content_quality] = @category.content_quality
+unless category.content_type.blank?
+    filter_params[:content_type] = category.content_type
 end
 
-filter_params[:free] = @category.free
-filter_params[:web] = true
+unless category.content_quality.blank?
+    filter_params[:content_quality] = category.content_quality
+end
 
-if @category.item_type == 'shows'
-    all_items = Show.where(filter_params).order(name: :asc)
+filter_params[:free] = category.free
+
+if category.item_type == 'shows'
+    if category.sort.nil? || category.sort == 'Alphabetical'
+        all_items = Show.where(filter_params).order(name: :asc)
+    elsif category.sort == 'New Arrivals/Episodes'
+        unsorted_items = Show.where(filter_params)
+        hashed_items = Hash.new
+        unsorted_items.each do |item|
+            hashed_items[item.id] = item.newest_episode.to_datetime.to_i
+        end
+        hashed_items.sort_by {|_key, value| value}
+
+        all_items = Array.new
+        hashed_items.each do |k,v|
+            all_items.push(Show.find(k))
+        end
+    elsif category.sort == 'Random'
+        all_items = Show.where(filter_params).order('rand()')
+    end
     filtered_items = Array.new
 
-    unless @category.genre.blank?
+    unless category.genre.blank?
         all_items.each do |item|
-            filtered_items.push(item) if item.matches_genre?(@category.genre)
+            filtered_items.push(item) if item.matches_genre?(category.genre)
         end
     else
         filtered_items = all_items
     end
-elsif @category.item_type == 'movies'
-    all_items = Movie.where(filter_params.except(:content_type)).order(name: :asc)
+elsif category.item_type == 'movies'
+    if category.sort.nil? || category.sort == 'Alphabetical'
+        all_items = Movie.where(filter_params.except(:content_type)).order(name: :asc)
+    elsif category.sort == 'New Arrivals/Episodes'
+        all_items = Movie.where(filter_params.except(:content_type)).order(release_date: :desc)
+    elsif category.sort == 'Random'
+        all_items = Movie.where(filter_params.except(:content_type)).order('rand()')
+    end
     filtered_items = Array.new
 
-    unless @category.genre.blank?
+    unless category.genre.blank?
         all_items.each do |item|
-            filtered_items.push(item) if item.matches_genre?(@category.genre)
+            filtered_items.push(item) if item.matches_genre?(category.genre)
         end
     else
         filtered_items = all_items
     end
 else
-    all_items = Channel.where(filter_params).order(name: :asc)
+    if category.sort.nil? || category.sort == 'Alphabetical'
+        all_items = Channel.where(filter_params).order(name: :asc)
+    elsif category.sort == 'New Arrivals/Episodes'
+        all_items = Channel.where(filter_params).order(created_at: :desc)
+    elsif category.sort == 'Random'
+        all_items = Channel.where(filter_params).order('rand()')
+    end
     filtered_items = Array.new
 
-    unless @category.genre.blank?
+    unless category.genre.blank?
         all_items.each do |item|
-            filtered_items.push(item) if item.matches_genre?(@category.genre)
+            filtered_items.push(item) if item.matches_genre?(category.genre)
         end
     else
         filtered_items = all_items

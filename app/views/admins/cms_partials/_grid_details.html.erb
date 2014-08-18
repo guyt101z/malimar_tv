@@ -14,7 +14,18 @@ if @category.item_type == 'shows'
     if @category.sort.nil? || @category.sort == 'Alphabetical'
         all_items = Show.where(filter_params).order(name: :asc)
     elsif @category.sort == 'New Arrivals/Episodes'
-        all_items = Show.where(filter_params).order(release_date: :desc)
+        unsorted_items = Show.where(filter_params)
+        hashed_items = Hash.new
+        unsorted_items.each do |item|
+            hashed_items[item.id] = item.newest_episode
+        end
+        hashed_items.sort_by {|_key, value| value}
+
+        all_items = Array.new
+        hashed_items.each do |k,v|
+            all_items.push(Show.find(k))
+        end
+        all_items.reverse!
     elsif @category.sort == 'Random'
         all_items = Show.where(filter_params).order('rand()')
     end
