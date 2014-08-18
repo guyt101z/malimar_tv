@@ -91,6 +91,8 @@
                         </div>
                     </div>
                     <div class='col-xs-6' id='tx_details'>
+                        <% @user = User.new %>
+                        <% @user.balance = 0 %>
                         <% @plan = @plans.first %>
                         <% @total = @plan.price - @user.balance %>
                         <%= render 'admins/partials/transaction_details' %>
