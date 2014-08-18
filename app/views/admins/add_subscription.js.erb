@@ -8,14 +8,7 @@ $('#type-error').remove()
     <% if @payment_type != nil %>
         $('#payment_type').after('<div class="text-danger" id="type-error"><%= @payment_type %></div>')
     <% end %>
-    var notification = new NotificationFx({
-        message : '<p>Error processing payment.</p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'danger', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
-    notification.show()
+    addNotification('error', 'Error processing payment', 'Error', 'exclamation-circle')
 <% elsif @success == true %>
     <% @plan = Plan.all.order(price: :asc).first %>
     <% @total = @plan.price - @user.balance %>
@@ -24,14 +17,7 @@ $('#type-error').remove()
 
     $('#user_balance').html('$<%= number_with_precision(@user.balance, precision: 2) %>')
     $('#balance_2').html('$<%= number_with_precision(@user.balance, precision: 2) %>')
-    var notification = new NotificationFx({
-        message : '<p>Payment processed.</p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'success', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
-
+    addNotification('success', 'Payment processed', 'Success', 'check-circle')
     $('#plan_id').val(<%= Plan.all.order(price: :asc).first.id %>)
     $('#payment_type').val('')
     $('#card_name').val('')
@@ -47,5 +33,4 @@ $('#type-error').remove()
         $('#membership_1').html('Premium')
         $('#membership_2').html('<div class="number"><%= @user.expiry.strftime('%Y/%m/%d') %></div><%= distance_of_time_in_words(Date.today, @user.expiry) %>')
     <% end %>
-    notification.show()
 <% end %>

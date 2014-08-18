@@ -93,14 +93,7 @@
 							}
 						},
 						fail: function(e,data) {
-							var notification = new NotificationFx({
-								message : '<p>There was an error uploading the image.<br/>Please ensure that the file is either a jpg/jpeg, png, or gif.</p>',
-								layout : 'growl',
-								effect : 'jelly',
-								type : 'danger', // notice, warning, error or success
-								num: <%= (100 + rand(10000)).to_s %>
-							});
-							notification.show()
+							addNotification('error', 'There was an error uploading the image.<br/>Please ensure that the file is either a jpg/jpeg, png, or gif', 'Error', 'exclamation-circle')
 							if (data.context) {
 								$
 								return data.context.find('.progress-bar').css('width','100%').removeClass('progress-bar-info').addClass('progress-bar-danger')

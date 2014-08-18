@@ -1,13 +1,5 @@
 <% if @success == true %>
-    var notification = new NotificationFx({
-        message : "<p>The body markup for <%= @template.name %> was updated.</p>",
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'success', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
-
-    notification.show()
+    addNotification('success', 'The body markup for <%= @template.name %> was updated', 'Success', 'check-circle')
 <% else %>
     <% missing_vars = Array.new %>
     <% @variables_present.each do |k,v| %>
@@ -16,14 +8,6 @@
         <% end %>
 
     <% end %>
-    <% missing_list = missing_vars.join('<br/>') %>
-    var notification = new NotificationFx({
-        message : "<p>The body markup for <%= @template.name %> could not be updated.</p><p>You are missing these variables:<br/><%= raw(missing_list) %></p>",
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'danger', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
-
-    notification.show()
+    <% missing_list = missing_vars.join(', ') %>
+    addNotification('error', 'The body markup for <%= @template.name %> could not be updated.</p><p>You are missing these variables: <%= raw(missing_list) %>', 'Error', 'exclamation-circle')
 <% end %>

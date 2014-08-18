@@ -3,15 +3,7 @@ $('#name-error').remove()
     <% if @role.errors[:name].present? %>
         $('#name').after('<div class="text-danger" id="name-error">Name <%= @role.errors[:name].join(", ") %>')
     <% end %>
-
-    var notification = new NotificationFx({
-        message : '<p>Role could not be saved. Please check form for errors and try again.</p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'danger', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
-    notification.show()
+    addNotification('error', 'Role could not be saved, please check form for errors and try again', 'Error', 'exclamation-circle')
 <% else %>
     window.location = '<%= role_url(id: @role.id) %>'
 <% end %>

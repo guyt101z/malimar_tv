@@ -35,6 +35,6 @@
 		<% end %>
     </ul>
     <div class="sign-out">
-    	<a href="#" class="btn btn-inverse btn-sm btn-block"><span class="glyphicon glyphicon-lock"></span> Sign Out</a>
+		<%= link_to raw('<span class="glyphicon glyphicon-lock"></span> Sign Out'), destroy_admin_session_path, method: :delete, class: 'btn btn-inverse btn-sm btn-block' %>
     </div>
 </div><!--sidebar-->

@@ -1,18 +1,5 @@
-<% unless @success == false %>
-    var notification = new NotificationFx({
-        message : '<p><%= raw(@message) %></p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'success', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
+<% unless @success == true %>
+    addNotification('success', '<%= raw(@message) %>', 'Success', 'check-circle')
 <% else %>
-    var notification = new NotificationFx({
-        message : '<p><%= raw(@message) %></p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'danger', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
+    addNotification('error', '<%= raw(@message) %>', 'Error', 'exclamation-circle')
 <% end %>
-notification.show()

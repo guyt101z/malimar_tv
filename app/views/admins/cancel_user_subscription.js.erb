@@ -1,23 +1,9 @@
 <% if @user.errors.any? %>
-    var notification = new NotificationFx({
-        message : '<p>There was an error saving the subscription status.</p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'danger', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
-    notification.show()
+    addNotification('error', 'There was an error saving the subscription status', 'Error', 'exclamation-circle')
 <% else %>
     $('#membership_1').html('Premium')
     $('#membership_2').html('<div class="number">N/A</div>No Subscription')
-    var notification = new NotificationFx({
-        message : '<p>Subscription updated.</p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'success', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
-    notification.show()
+    addNotification('success', 'Subscription updated', 'Success', 'check-circle')
     $('#length').val('')
     $('#period').val('days')
 <% end %>

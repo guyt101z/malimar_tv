@@ -14,24 +14,7 @@ $('#email-error').remove()
         $('#email').after('<div class="text-danger" id="email-error">Email address <%= @user.errors[:email].join(", ") %></div>')
     <% end %>
 
-    var notification = new NotificationFx({
-        message : '<p>The account could not be updated.</p><p>Please see form for further information.</p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'danger', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
-
-    notification.show()
+    addNotification('error', 'The account could not be updated, please see form for further information', 'Error', 'exclamation-circle')
 <% else %>
-    $('#reset_email').val('<%= @user.email %>')
-    var notification = new NotificationFx({
-        message : '<p>The account has been updated!</p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'success', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
-
-    notification.show()
+    addNotification('success', 'The account has been updated', 'Success', 'check-circle')
 <% end %>

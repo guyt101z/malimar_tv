@@ -1,11 +1,5 @@
 <% if @message.errors.any? %>
-	var notification = new NotificationFx({
-		message : '<p>You must enter text to send a message</p>',
-		layout : 'growl',
-		effect : 'jelly',
-		type : 'danger', // notice, warning, error or success
-		num: <%= (100 + rand(10000)).to_s %>
-	});
+	addNotification('error', 'You must enter text to send a message', 'Error', 'exclamation-circle')
 <% else %>
 	<% count = SupportMessage.where(support_case_id: @message.support_case_id).count %>
 	var message = Autolinker.link('<%= @message.message.squish %>')
@@ -13,4 +7,3 @@
 	$('#message').val('')
 <% end %>
 $('.timeago').timeago()
-notification.show()

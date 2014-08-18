@@ -1,24 +1,10 @@
 <% if @attachment.errors.any? %>
-	var notification = new NotificationFx({
-		message : '<p>Error uploading file</p>',
-		layout : 'growl',
-		effect : 'jelly',
-		type : 'danger', // notice, warning, error or success
-		num: <%= (100 + rand(10000)).to_s %>
-	});
+	addNotification('success', 'Error uploading file', 'Success', 'check-circle')
 <% else %>
 	<% count = SupportMessage.where(support_case_id: @message.support_case_id).count %>
 	$('#ticket_attachments').prepend('<div class="col-xs-6"><div class="support_image_wrapper"><%= link_to image_tag(@attachment.file_url), @attachment.file_url, target: "new" %></div></div>')
 	$('#ticket_messages').prepend('<div class="message"><div class="row mb10"><div class="col-sm-6"><div class="fz12-5"><span class="nmb"><%= count %></span> <%= @message.user_name %>:</div></div><div class="col-sm-6"><div class="fz11-5 text-right"><%= @message.created_at.strftime('%B %-d, %Y at %H:%M') %></div></div></div><p><%= @message.message %></p></div>')
 	$('#message').val('')
-
-	var notification = new NotificationFx({
-		message : '<p>Your file has been uploaded</p>',
-		layout : 'growl',
-		effect : 'jelly',
-		type : 'success', // notice, warning, error or success
-		num: <%= (100 + rand(10000)).to_s %>
-	});
+	addNotification('success', 'Your file has been uploaded', 'Success', 'check-circle')
 <% end %>
 $('.timeago').timeago()
-notification.show()

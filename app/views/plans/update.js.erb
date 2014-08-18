@@ -1,20 +1,7 @@
 $('#plan-error-<%= @plan.id %>').remove();
 <% if @plan.errors.any? %>
-	var notification = new NotificationFx({
-		message : '<p>The plan could not be updated.</p>',
-		layout : 'growl',
-		effect : 'jelly',
-		type : 'danger', // notice, warning, error or success
-		num: <%= (100 + rand(10000)).to_s %>
-	});
+	addNotification('error', 'The plan could not be updated', 'Error', 'exclamation-circle')
 	$('#plan_<%=@plan.id %>').children('.panel').children('.panel-body').prepend('<div class="alert alert-danger" id="plan-error-<%= @plan.id %>"><%= @plan.errors.full_messages.join(". ") %>.</div>')
 <% else %>
-	var notification = new NotificationFx({
-		message : '<p><%= @plan.name %> has been updated!</p>',
-		layout : 'growl',
-		effect : 'jelly',
-		type : 'success', // notice, warning, error or success
-		num: <%= (100 + rand(10000)).to_s %>
-	});
+	addNotification('success', '<%= @plan.name %> has been updated', 'Success', 'check-circle')
 <% end %>
-notification.show()

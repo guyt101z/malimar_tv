@@ -1,23 +1,9 @@
 <% if @user.errors.any? %>
-    var notification = new NotificationFx({
-        message : '<p>There was an error saving the balance.</p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'danger', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
-    notification.show()
+    addNotification('error', 'There was an error saving the balance', 'Error', 'exclamation-circle')
 <% else %>
     $('#user_balance').html('$<%= number_with_precision(@user.balance, precision: 2) %>')
     $('#balance_2').html('$<%= number_with_precision(@user.balance, precision: 2) %>')
-    var notification = new NotificationFx({
-        message : '<p>Balance updated.</p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'success', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
-    notification.show()
+    addNotification('success', 'Balance updated', 'Success', 'check-circle')
     $('#add_balance').val('')
     $('#tx_details').html("<div class='stat-number'><div class='number'><i class='fa fa-refresh fa-spin'></i></div>Loading Details</div>")
 

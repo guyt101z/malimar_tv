@@ -50,25 +50,8 @@ $('#zip').removeClass('has-error')
 		$('#zip').addClass('has-error').after('<span class="text-danger" id="zip-error">Zip code <%= @user.errors[:zip].join(", ") %>')
 	<% end %>
 
-	var notification = new NotificationFx({
-		message : '<p>You must fill out all required fields.</p>',
-		layout : 'growl',
-		effect : 'jelly',
-		type : 'danger', // notice, warning, error or success
-		num: <%= (100 + rand(10000)).to_s %>
-	});
-
-	notification.show()
-
+	addNotification('error', 'You must fill out all required fields', 'Error', 'exclamation-circle')
 <% else %>
-	var notification = new NotificationFx({
-		message : '<p>Customer successfully registered!</p>',
-		layout : 'growl',
-		effect : 'jelly',
-		type : 'success', // notice, warning, error or success
-		num: <%= (100 + rand(10000)).to_s %>
-	});
-
-	notification.show()
+	addNotification('success', 'Customer successfully registered', 'Success', 'check-circle')
 	$('#register-panel').html('<%= escape_javascript(render("sales_reps/partials/register_step_two")).html_safe %>')
 <% end %>

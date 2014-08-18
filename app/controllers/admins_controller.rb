@@ -1537,6 +1537,7 @@ class AdminsController < ApplicationController
 	def update_role
 		if current_admin.authorized_to?('edit_permissions')
 			@role = AdminRole.find(params[:id])
+			@role.name = params[:name]
 			@role.create_user = params[:create_user]
 			@role.manage_user = params[:manage_user]
 			@role.create_rep = params[:create_rep]
@@ -1552,19 +1553,20 @@ class AdminsController < ApplicationController
 			@role.update_mail_settings = params[:update_mail_settings]
 			@role.manage_support_tickets = params[:manage_support_tickets]
 
-				admins = Admin.where(role_id: params[:id])
+			admins = Admin.where(role_id: params[:id])
 
-				admins.each do |admin|
-					cases = SupportCase.where(admin_id: admin.id)
-					cases.each do |sc|
-						sc.admin_id = nil
-						if sc.status == 'Open'
-							sc.status = 'Pending'
-						end
-						sc.save
+			admins.each do |admin|
+				cases = SupportCase.where(admin_id: admin.id)
+				cases.each do |sc|
+					sc.admin_id = nil
+					if sc.status == 'Open'
+						sc.status = 'Pending'
 					end
-					Resque.enqueue(AdminNotifier, admin.id, 'system', "Your role has been changed. View your account for new permissions details.", '/admins/manage_admins/view/'+admin.id.to_s)
+					sc.save
 				end
+				Resque.enqueue(AdminNotifier, admin.id, 'system', "Your role has been changed. View your account for new permissions details.", '/admins/manage_admins/view/'+admin.id.to_s)
+			end
+			@role.save
 		else
 			render status: 403
 		end

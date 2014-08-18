@@ -1,8 +1,1 @@
-var notification = new NotificationFx({
-    message : '<p>Global CSS has been updated.</p>',
-    layout : 'growl',
-    effect : 'jelly',
-    type : 'success', // notice, warning, error or success
-    num: <%= (100 + rand(10000)).to_s %>
-});
-notification.show()
+addNotification('success', 'Global CSS has been updated', 'Success', 'check-circle')

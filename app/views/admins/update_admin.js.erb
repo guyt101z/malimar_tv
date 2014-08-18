@@ -15,22 +15,8 @@ $('#role-error').remove()
     <% if @admin.errors[:role_id].present? %>
         $('#role_id').after("<div class='text-danger' id='role_id-error'>Role <%= @admin.errors[:role_id].join(', ') %>")
     <% end %>
-    var notification = new NotificationFx({
-        message : '<p>There was an error saving the account. Please see the form for more info.</p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'danger', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
-    notification.show()
+    addNotification('error', 'There was an error saving the account, please see the form for more info', 'Error', 'exclamation-circle')
 <% else %>
-    var notification = new NotificationFx({
-        message : '<p>Account has been updated.</p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'success', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
     $('#admin_permissions').html('<%= escape_javascript(render("admins/partials/reg_account_permissions")) %>')
-    notification.show()
+    addNotification('success', 'Account has been updated', 'Success', 'check-circle')
 <% end %>

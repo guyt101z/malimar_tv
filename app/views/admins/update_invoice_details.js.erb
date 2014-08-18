@@ -1,18 +1,5 @@
 <% if @success == true %>
-    var notification = new NotificationFx({
-        message : '<p>The invoice settings were updated.</p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'success', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
+    addNotification('success', 'The invoice settings were updated', 'Success', 'check-circle')
 <% else %>
-    var notification = new NotificationFx({
-        message : '<p>The invoice settings could not be updated.</p><p>Please ensure all fields are filled out.</p>',
-        layout : 'growl',
-        effect : 'jelly',
-        type : 'danger', // notice, warning, error or success
-        num: <%= (100 + rand(10000)).to_s %>
-    });
+    addNotification('error', 'The invoice settings could not be updated, please ensure all fields are filled out', 'Error', 'exclamation-circle')
 <% end %>
-notification.show()

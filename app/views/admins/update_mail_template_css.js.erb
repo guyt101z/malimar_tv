@@ -1,9 +1,1 @@
-var notification = new NotificationFx({
-    message : "<p>The CSS for <%= @template.name %> was updated.</p>",
-    layout : 'growl',
-    effect : 'jelly',
-    type : 'success', // notice, warning, error or success
-    num: <%= (100 + rand(10000)).to_s %>
-});
-
-notification.show()
+addNotification('success', 'The CSS for <%= @template.name %> was updated', 'Success', 'check-circle')
