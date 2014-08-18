@@ -59,6 +59,20 @@ class AdminNotifier
                     notif.expiry = Date.today + 30.days
                     notif.save
                 end
+            elsif type == 'daily_update'
+                admins = Admin.where(role_id: 0)
+
+                admins.each do |admin|
+                    AdminNotification.where(message: "Today's data has been updated.", admin_id: admin.id).destroy
+                    notif = AdminNotification.new
+                    notif.admin_id = admin.id
+                    notif.message = message
+                    notif.notif_type = 'system'
+                    notif.link = link
+                    notif.viewed = false
+                    notif.expiry = Date.today + 30.days
+                    notif.save
+                end
             end
         else
             notif = AdminNotification.new

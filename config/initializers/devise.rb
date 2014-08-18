@@ -10,7 +10,7 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = 'please-change-me-at-config-initializers-devise@example.com'
+  config.mailer_sender = 'accounts@malimar.tv'
   config.secret_key = '06afb7e9831f3ef8411c319f040ecaa26c47aecd1cae7a10155077e35cb53884d9ef72a951f1df8c95e9b311571f3e648a35340aea4dd638b78cd181e2db784e'
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
@@ -20,7 +20,7 @@ Devise.setup do |config|
   # :mongoid (bson_ext recommended) by default. Other ORMs may be
   # available as additional gems.
   require 'devise/orm/active_record'
-  
+
   # ==> Configuration for any authentication mechanism
   # Configure which keys are used when authenticating a user. The default is
   # just :email. You can configure it to use [:username, :subdomain], so for

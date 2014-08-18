@@ -18,7 +18,7 @@ task :daily_update => :environment do
         task.last_performed = DateTime.now
         task.save
 
-        Resque.enqueue(AdminNotifier, 0, 'root_only', 'Today\'s data has been updated.', '/admins/background_tasks_status')
+        Resque.enqueue(AdminNotifier, 0, 'daily_update', 'Today\'s data has been updated.', '/admins/background_tasks_status')
     rescue => e
         SystemLog.create(error: true, title: 'Daily Data Update', message: e.message)
 
