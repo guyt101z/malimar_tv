@@ -99,12 +99,12 @@
                                 </div>
                                 <div class='row'>
                                     <div class='col-lg-6 form-group'>
-                                        <label>Country</label>
-                                        <%= select_tag :country, options_for_select([['Country', nil], 'Canada', 'United States', ['This will be configurable', nil]], @rep.country), class: 'form-control' %>
-                                    </div>
-                                    <div class='col-lg-6 form-group'>
                                         <label>Zip/Postal Code</label>
                                         <%= text_field_tag :zip, @rep.zip, class: 'form-control' %>
+                                    </div>
+                                    <div class='col-lg-6 form-group'>
+                                        <label>Country</label>
+                                        <%= select_tag :country, options_for_select([['Country', nil], 'Canada', 'United States', ['This will be configurable', nil]], @rep.country), class: 'form-control' %>
                                     </div>
                                 </div>
                             </div>

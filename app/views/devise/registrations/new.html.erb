@@ -57,7 +57,7 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                	<%= select_tag :country, options_for_select([['Select One', nil], 'Canada', 'United States', ['This will be configurable', nil]]), class: 'form-control' %>
+                                    <%= text_field_tag :city, '', class: 'form-control', placeholder: 'City' %>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -71,12 +71,12 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                	<%= text_field_tag :city, '', class: 'form-control', placeholder: 'City' %>
+                                	<%= text_field_tag :zip, '', class: 'form-control', placeholder: 'Zip Code' %>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                	<%= text_field_tag :zip, '', class: 'form-control', placeholder: 'Zip Code' %>
+                                    <%= text_field_tag :country, '' class: 'form-control', placeholder: 'Country' %>
                                 </div>
                             </div>
                         </div>
