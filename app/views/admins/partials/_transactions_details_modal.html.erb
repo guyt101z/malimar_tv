@@ -16,7 +16,7 @@
                         else
                             first_tx_year = Date.today.strftime('%Y').to_i
                         end
-                        if Transaction.all.any?
+                        if Withdrawal.all.any?
                             first_wd_year = Withdrawal.first.created_at.strftime('%Y').to_i
                         else
                             first_wd_year = Date.today.strftime('%Y').to_i
