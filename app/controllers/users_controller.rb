@@ -473,7 +473,23 @@ class UsersController < ApplicationController
 
 	def update_profile
 		@user = current_user
-		@user.update_attributes(params)
+		@user.first_name = params[:first_name]
+		@user.last_name = params[:last_name]
+
+		@user.email = params[:email]
+		@user.address_1 = params[:address_1]
+		@user.address_2 = params[:address_2]
+		@user.city = params[:city]
+		@user.state = params[:state]
+		@user.country = params[:country]
+		@user.zip = params[:zip]
+		@user.phone = params[:phone]
+
+		if params[:timezone].present?
+			@user.timezone = params[:timezone]
+		else
+			user.timezone = nil
+		end
 		@user.save
 	end
 

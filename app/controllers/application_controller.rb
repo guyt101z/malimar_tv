@@ -21,11 +21,11 @@ class ApplicationController < ActionController::Base
 
     helper_method :timezone
     def timezone
-        if admin_signed_in? && current_admin.timezone != nil
+        if admin_signed_in? && current_admin.timezone.blank? == false
             Time.zone = current_admin.timezone
-        elsif sales_representative_signed_in? && current_sales_representative.timezone != nil
+        elsif sales_representative_signed_in? && current_sales_representative.timezone.blank? == false
             Time.zone = current_sales_representative.timezone
-        elsif user_signed_in? && current_user.timezone != nil
+        elsif user_signed_in? && current_user.timezone.blank? == false
             Time.zone = current_user.timezone
         else
             Time.zone = Setting.where(name: 'Default Timezone').first.data
