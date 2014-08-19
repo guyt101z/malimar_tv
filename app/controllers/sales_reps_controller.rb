@@ -52,14 +52,24 @@ class SalesRepsController < ApplicationController
 
 		if params[:serial].present?
 			@device = Roku.new
-			@device.user_id = @user
+			@device.user_id = @user.id
 			@device.serial = params[:serial]
+			@device.type = 'Roku'
 
 			if @device.valid? && @user.max_devices?
 				@device_errors = true
 				@device.errors.add(:base, 'You have reached the maximum number of devices allowed.')
-			elsif @device.valid?
+			elsif @device.save
 				@device_errors = false
+				if Rails.env.development?
+					path = "#{Rails.root}/serials/#{@device.serial}"
+				elsif Rails.env.production?
+					path = "/tmp/serials/#{@device.serial}"
+				end
+
+				serial_file = File.open(path,'w+')
+				@device.serial_file = serial_file
+				@device.save
 			else
 				@device_errors = true
 			end
@@ -162,6 +172,9 @@ class SalesRepsController < ApplicationController
 			else
 				@payment_errors = true
 				@payment_message = 'You must select a payment type.'
+				unless @device.nil? || @device.valid? == false
+					@device.destroy
+				end
 			end
 		end
 	end
