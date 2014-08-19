@@ -20,7 +20,10 @@
            		<div class="box-white">
                 	<div class="data-bb clearfix">
                     	<div class="pull-left">
-                            <div class="fz12-5">Latest episode: <%= @show.latest_episode %></div>
+                            <div class="fz12-5">
+								<% if Episode.where(show_id: @show.id).any? %>
+									Latest episode: <%= @show.latest_episode %></div>
+								<% end %>
                         </div>
                         <div class="pull-right">
                         	<div class="fz12-5"><%= pluralize(@show.episode_count, 'Episode') %></div>
