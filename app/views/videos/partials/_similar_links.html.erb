@@ -2,6 +2,6 @@
     <%= render 'videos/partials/similar/channels' %>
 <% elsif params[:action] == 'watch_movie' %>
     <%= render 'videos/partials/similar/movies' %>
-<% elsif params[:action] == 'watch_episode' %>
+<% elsif params[:action] == 'watch_episode' || params[:action] == 'browse_episodes' %>
     <%= render 'videos/partials/similar/shows' %>
 <% end %>
