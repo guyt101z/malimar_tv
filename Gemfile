@@ -67,3 +67,5 @@ gem 'searchkick'
 gem 'impressionist'
 gem 'whenever', require: false
 gem 'activemerchant'
+
+gem 'faker'

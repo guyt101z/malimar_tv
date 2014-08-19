@@ -26,6 +26,7 @@ device_limit = Setting.create(name: 'Device Limit', data: 5)
 default_timezone = Setting.create(name: 'Default Timezone', data: 'Pacific Time (US & Canada)')
 referral_bonus = Setting.create(name: 'Referral Bonus', data: YAML.dump(method: 'Lump Sum', rate: 5)) # methods are 'Lump Sum' or 'Percentage of Referral Purchase'
 free_trial_length = Setting.create(name: 'Free Trial Length', data: 30)
+payment_methods = Setting.create(name: 'Payout Methods', data: YAML.dump(['Cheque','Bank Transfer','Paypal','Wire Transfer']))
 
 
 
@@ -50,7 +51,9 @@ mail_settings = [
 
 	Setting.create(name: 'Mail Header Markup', data: ''),
 	Setting.create(name: 'Mail Footer Markup', data: ''),
-	Setting.create(name: 'Mail Global CSS', data: '')
+	Setting.create(name: 'Mail Global CSS', data: ''),
+
+	Setting.create(name: 'Contact Email', data: 'contactus@malimar.tv')
 ]
 
 background_tasks = [
@@ -62,3 +65,32 @@ background_tasks = [
 	BackgroundTask.create(name: 'Subscription Reminder'),
 	BackgroundTask.create(name: 'Previous Day\'s Data Update'),
 ]
+
+
+
+# Demo Content
+	Faker::Config.locale = 'en-US'
+	#Clients
+	for i in 0..1000
+		user = User.new
+		user.first_name = Faker::Name.first_name
+		user.last_name = Faker::Name.last_name
+
+		user.email = Faker::Internet.email
+		user.phone = Faker::PhoneNumber.cell_phone
+
+		user.address_1 = Faker::Address.street_address
+		user.city = Faker::Address.city
+		user.state = Faker::Address.state
+		user.country = 'United States'
+		user.zip = Faker::Address.zip_code
+		code = SecureRandom.hex(8).upcase
+		until User.where(refer_code: code).count < 1
+			code = SecureRandom.hex(8).upcase
+		end
+		user.refer_code = code
+		user.password = SecureRandom.hex(5)
+		user.balance = 0
+
+		user.save
+	end

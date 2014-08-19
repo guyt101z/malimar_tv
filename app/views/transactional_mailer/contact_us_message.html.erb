@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        <%= raw(@global_css) %>
+    </style>
+</head>
+<body>
+<%= raw(@header) %>
+<p>You've received a message from: <%= @name %>, (<%= @email %>)</p>
+<%= simple_format(@message) %>
+<%= raw(@footer) %>
+</body>

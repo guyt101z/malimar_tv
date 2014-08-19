@@ -1,0 +1,29 @@
+<% content_for :top_level, 'Utilities' %>
+<% content_for :low_levels, YAML.dump(['General Settings','Contact Email']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='col-md-6 col-sm-9 col-centered'>
+            <div class='row'>
+                <div class='col-sm-6 col-centered'>
+                    <div class='panel panel-default'>
+                    <%= form_tag update_contact_email_path do %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>Contact Email</h3>
+                        </div>
+                        <div class='panel-body'>
+                            <%= text_field_tag :email, @email, class: 'form-control' %>
+                        </div>
+                        <div class='panel-footer'>
+                            <%= submit_tag 'Update', class: 'btn btn-primary', style: 'width: 100%' %>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#contact').addClass('active')
+</script>

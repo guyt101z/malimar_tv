@@ -3,8 +3,8 @@
 <head>
 	<title>Malimar TV</title>
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-	<% if params[:controller] == 'admins' || params[:controller] == 'sales_reps' || params[:controller] == 'feed' || request.original_url.end_with?('admins/sign_in', 'admins/password/new', 'admins/password', 'admins/password/edit', 'sales_representatives/sign_in', 'sales_representatives/password/new', 'sales_representatives/password', 'sales_representatives/password/edit') ||
-		params[:controller] == 'transactions' || params[:controller] == 'support' %>
+	<% if params[:controller] == 'admins' || params[:controller] == 'sales_reps' || params[:controller] == 'feed' || request.original_url.end_with?('admins/sign_in', 'admins/password/new', 'admins/password', 'sales_representatives/sign_in', 'sales_representatives/password/new', 'sales_representatives/password', 'sales_representatives/password/edit') ||
+		request.original_url.include?('admins/password/edit') || request.original_url.include?('sales_representatives/password/edit') || params[:controller] == 'transactions' || params[:controller] == 'support' %>
 		<%= stylesheet_link_tag    'admin', media: 'all', 'data-turbolinks-track' => true %>
 		<%= javascript_include_tag 'admin_rep', 'data-turbolinks-track' => true %>
 	<% else %>
@@ -23,7 +23,8 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:600,400,300,700' rel='stylesheet' type='text/css'>
 	<%= csrf_meta_tags %>
 </head>
-<% if params[:controller] == 'admins' || params[:controller] == 'feed' || request.original_url.end_with?('admins/sign_in', 'admins/password/new', 'admins/password', 'admins/password/edit') || params[:controller] == 'transactions' || (params[:controller] == 'support' && params[:action].include?('admin')) %>
+<% if params[:controller] == 'admins' || params[:controller] == 'feed' || request.original_url.end_with?('admins/sign_in', 'admins/password/new', 'admins/password') || request.original_url.include?('admins/password/edit') ||
+	params[:controller] == 'transactions' || (params[:controller] == 'support' && params[:action].include?('admin')) %>
 <body>
 	<% if admin_signed_in? %><%= render 'admins/nav/navbar' %><% end %>
 
@@ -126,11 +127,11 @@
 			});
         </script>
 </body>
-<% elsif params[:controller] == 'sales_reps' || request.original_url.end_with?('sales_representatives/sign_in', 'sales_representatives/password/new', 'sales_representatives/password', 'sales_representatives/password/edit') || (params[:controller] == 'support' && params[:action].include?('sales_rep')) %>
+<% elsif params[:controller] == 'sales_reps' || request.original_url.end_with?('sales_representatives/sign_in', 'sales_representatives/password/new', 'sales_representatives/password') || request.original_url.include?('sales_representatives/password/edit') || (params[:controller] == 'support' && params[:action].include?('sales_rep')) %>
 <body>
 	<% if sales_representative_signed_in? %><%= render 'sales_reps/nav/navbar' %><% end %>
 
-	<% unless request.original_url.end_with?('sales_representatives/sign_in', 'sales_representatives/password/new', 'sales_representatives/password', 'sales_representatives/password/edit') %>
+	<% unless request.original_url.end_with?('sales_representatives/sign_in', 'sales_representatives/password/new', 'sales_representatives/password') || request.original_url.include?('sales_representatives/password/edit') %>
 		<div class='main'>
 			<div class='container-fluid'>
 				<% if sales_representative_signed_in? %><%= render 'sales_reps/nav/sidenav' %><% end %>

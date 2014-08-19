@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
     validates_uniqueness_of :refer_code
 
   	mount_uploader :photo, ProfileUploader
+    searchkick
 
     def name
       return "#{first_name} #{last_name}"
@@ -88,7 +89,13 @@ class User < ActiveRecord::Base
     end
 
     def premium?
-        return expiry.nil? == false || expiry >= Date.today
+        if expiry.nil?
+            return false
+        elsif expiry < Date.today
+            return false
+        else
+            return true
+        end
     end
 
     def online?

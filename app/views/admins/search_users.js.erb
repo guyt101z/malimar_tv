@@ -1,7 +1,5 @@
 $('#user_search_list').html('')
-<% if @results > 0 %>
-	<% @matched_users.each do |user| %>
-		<% @user = user %>
-		$('#user_search_list').append('<%= escape_javascript(render("admins/partials/user_side")) %>')
-	<% end %>
+<% @matched_users.each do |user| %>
+	<% @user = user %>
+	$('#user_search_list').append('<%= escape_javascript(render("admins/partials/user_side")) %>')
 <% end %>

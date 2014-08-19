@@ -1,7 +1,8 @@
 <div class="sidebar">
 	<ul class="nav">
     	<% if params[:action] == 'general_settings' || params[:action] == 'edit_timezone' ||
-			params[:action] == 'edit_device_limit' || params[:action] == 'edit_free_trial' || params[:action] == 'edit_wd_limits' %>
+			params[:action] == 'edit_device_limit' || params[:action] == 'edit_free_trial' ||
+			params[:action] == 'edit_wd_limits' || params[:action] == 'edit_payouts' || params[:action] == 'edit_contact_email' %>
 			<%= render 'admins/nav/sidenavs/general_settings' %>
 
 		<% elsif params[:action] == 'mail_settings' || params[:action] == 'mail_markup' || params[:action] == 'mail_template' %>
@@ -32,6 +33,10 @@
 
 		<% elsif params[:controller] == 'admins' && params[:action] == 'index' %>
 			<%= render 'admins/nav/sidenavs/index' %>
+
+		<% elsif params[:action] == 'live_channels' || params[:action] == 'movies' || params[:action] == 'shows' ||
+		params[:action] == 'home_grid' %>
+			<%= render 'admins/nav/sidenavs/video' %>
 		<% end %>
     </ul>
     <div class="sign-out">

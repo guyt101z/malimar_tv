@@ -1,4 +1,13 @@
 class UsersController < ApplicationController
+	def send_contact_message
+		if params[:message].present? && params[:first_name].present? && params[:last_name].present? && params[:email].present?
+			TransactionalMailer.contact_us_message(params[:first_name], params[:last_name], params[:email], params[:message]).deliver
+			@success = true
+		else
+			@success = false
+		end
+	end
+
 	def create_new
 		@user = User.new(params)
 		code = SecureRandom.hex(5).upcase

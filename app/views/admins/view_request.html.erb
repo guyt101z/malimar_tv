@@ -43,6 +43,14 @@
                             </div>
                         </div>
                         <div class='row'>
+                            <div class='col-lg-4 col-sm-6'>
+                                <p><strong style='font-size: 105%'>Preferred Payout Method:</strong><br/>
+                                <% unless @withdrawal.payment_method.nil? %>
+                                    <%= @withdrawal.payment_method %></p>
+                                <% else %>
+                                    Not Provided</p>
+                                <% end %>
+                            </div>
                         </div>
 
                     </div>

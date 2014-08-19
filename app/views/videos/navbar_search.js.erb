@@ -1,17 +1,17 @@
-<% if @channels.count > 0 || @movies.count > 0 || @shows.count > 0 %>
+<% if @channels.any? || @movies.any? || @shows.any? %>
     $('#search_placeholder').html('<%= @channels.count + @movies.count + @shows.count %> found')
     $('#search_result_list').html('')
     <% @channels.each do |channel| %>
-        $('#search_result_list').append('<div class="result"><%= link_to channel.name, watch_channel_path(channel_id: channel.id) %></div>')
+        $('#search_result_list').append('<div class="result" onclick="window.location = \'<%= watch_channel_path(channel_id: channel.id) %>\'"><div class="image"><%= image_tag channel.image_url(:preview) %></div><div class="desc"><span class="name"><%= channel.name %></div></div>')
     <% end %>
     <% @movies.each do |movie| %>
-        $('#search_result_list').append('<div class="result"><%= link_to movie.name, watch_movie_path(movie_id: movie.id) %></div>')
+        $('#search_result_list').append('<div class="result" onclick="window.location = \'<%= watch_movie_path(movie_id: movie.id) %>\'"><div class="image"><%= image_tag movie.image_url(:preview) %></div><div class="desc"><span class="name"><%= movie.name %></div></div>')
     <% end %>
     <% @shows.each do |show| %>
-        $('#search_result_list').append('<div class="result"><%= link_to show.name, browse_episodes_path(show_id: show.id) %></div>')
+        $('#search_result_list').append('<div class="result" onclick="window.location = \'<%= browse_episodes_path(show_id: show.id) %>\'"><div class="image"><%= image_tag show.image_url(:preview) %></div><div class="desc"><span class="name"><%= show.name %></span><br/><span class="episodes"><%= pluralize(show.episode_count, "Episode") %></span></div></div>')
     <% end %>
     $('#search_result_list').show()
 <% else %>
-    $('#search_placeholder').html(':( No results found')
+    $('#search_placeholder').html('No Results Found')
     $('#search_result_list').html('')
 <% end %>

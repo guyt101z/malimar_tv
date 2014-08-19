@@ -37,7 +37,7 @@ class SalesRepsController < ApplicationController
 		@user.balance = 0
 		password = SecureRandom.hex(7)
 		@user.password = password
-
+		@user.rep_id = current_sales_representative.id
 		if @user.save
 		 	TransactionalMailer.sales_rep_register_customer(current_sales_representative, @user, password).deliver
 		 	@plans = Plan.all.order(months: :asc)
@@ -197,10 +197,6 @@ class SalesRepsController < ApplicationController
 			redirect_to '/sales_reps'
 		else
 			@rep = current_sales_representative
-			if @withdrawal.status == 'Pending'
-				@withdrawal.status = 'Reviewed'
-				@withdrawal.save
-			end
 		end
 	end
 
@@ -331,6 +327,7 @@ class SalesRepsController < ApplicationController
 				@error = 'You may not withdraw more than your balance.'
 			else
 				@withdrawal = Withdrawal.new
+				@withdrawal.payment_method = params[:payment_method]
 				@withdrawal.amount = amount
 				@withdrawal.sales_rep_id = current_sales_representative.id
 				@withdrawal.status = 'Pending'

@@ -1,0 +1,14 @@
+<% if @success == true %>
+    <% flash[:success] = 'Your message has been sent. We will be in contact as soon as possible.' %>
+    window.location = '/'
+<% else %>
+    var notification = new NotificationFx({
+        message : '<p>Please fill out all fields.</p>',
+        layout : 'growl',
+        effect : 'jelly',
+        type : 'danger',
+        num: <%= (100 + rand(10000)).to_s %>
+    });
+
+    notification.show()
+<% end %>

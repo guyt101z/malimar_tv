@@ -17,6 +17,7 @@ class SalesRepresentative < ActiveRecord::Base
     validates_presence_of :commission_rate
 
   	mount_uploader :photo, ProfileUploader
+    searchkick
 
     def name
         return "#{first_name} #{last_name}"

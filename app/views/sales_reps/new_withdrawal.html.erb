@@ -20,6 +20,10 @@
                         <%= text_field_tag :amount, '10.00', class: 'form-control withdrawal-field' %>
                         <div class='withdrawal-icon'><i class='fa fa-dollar'></i></div>
                     </div>
+                    <div class='panel-body' style='position: relative'>
+                        <label>Preferred Payment Method</label>
+                        <%= select_tag :payment_method, options_for_select(Setting.where(name: 'Payout Methods').first.data.split(/\r\n/)), class: 'form-control' %>
+                    </div>
                     <div class='panel-footer'>
                         <a class='btn btn-primary' style='width: 100%' onclick='submitRequest()' id='submit_button'>Submit Request</a>
                     </div>

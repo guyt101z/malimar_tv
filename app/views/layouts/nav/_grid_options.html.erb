@@ -1,0 +1,42 @@
+<% grids = Category.all.order(rank: :asc) %>
+
+<div class="col-sm-3">
+    <% i = 1 %>
+    <% diff = 2 %>
+    <ul class="nav nav-nobg">
+        <% grids.each do |grid| %>
+            <% if (i + diff) % 3 == 0 %>
+                <li><a href="/watch/grid/<%= grid.id %>"><%= grid.name %></a></li>
+            <% end %>
+            <% i += 1 %>
+        <% end %>
+    </ul>
+</div>
+
+
+<div class="col-sm-3">
+    <% i = 1 %>
+    <% diff = 1 %>
+    <ul class="nav nav-nobg">
+        <% grids.each do |grid| %>
+            <% if (i + diff) % 3 == 0 %>
+                <li><a href="/watch/grid/<%= grid.id %>"><%= grid.name %></a></li>
+            <% end %>
+            <% i += 1 %>
+        <% end %>
+    </ul>
+</div>
+
+
+<div class="col-sm-3">
+    <% i = 1 %>
+    <% diff = 0 %>
+    <ul class="nav nav-nobg">
+        <% grids.each do |grid| %>
+            <% if (i + diff) % 3 == 0 %>
+                <li><a href="/watch/grid/<%= grid.id %>"><%= grid.name %></a></li>
+            <% end %>
+            <% i += 1 %>
+        <% end %>
+    </ul>
+</div>

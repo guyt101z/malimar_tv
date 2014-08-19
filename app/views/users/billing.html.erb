@@ -18,7 +18,7 @@
                     <div class="box-white">
                         <div class="row">
                             <div class="col-md-5 col-sm-4">
-                                <h4 class="title4">Membership</h4>
+                                <h4 class="name">Membership</h4>
                             </div>
                             <% if current_user.expiry.nil? || current_user.expiry < Date.today %>
                                 <div class="col-md-7 col-sm-8 text-right">
@@ -28,11 +28,17 @@
                         </div>
                         <div class="table-responsive">
                             <% if current_user.expiry.nil? || current_user.expiry < Date.today %>
-                                <h4 class="name">Free</h4>
+                                <h4 class="title4">Free</h4>
                             <% else %>
-                                <h4 class="name">Premium<br/></h4>
+                                <h4 class="title4">Premium<br/></h4>
                                 <%= @user.expiry.strftime('%B %-d, %Y') %> (<%= distance_of_time_in_words(Date.today, @user.expiry) %>)
                             <% end %>
+                        </div>
+                    </div>
+                    <div class="box-white">
+                        <h4 class="name">Referral Code</h4>
+                        <div class="table-responsive">
+                            <h4 class="title4"><%= @user.refer_code %></h4>
                         </div>
                     </div>
                 </div>

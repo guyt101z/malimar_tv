@@ -8,6 +8,9 @@
                 <h3 class='panel-title'>Account Info</h3>
                 <div class='upload_image_heading'>
                     <%= submit_tag 'Update Account', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+                    <% if current_admin.role_id == 0 %>
+                        <%= link_to 'Remove Admin', remove_admin_path(id: @admin.id), class: 'btn btn-danger btn-sm' %>
+                    <% end %>
                 </div>
             </div>
             <div class='panel-body'>

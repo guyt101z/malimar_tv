@@ -1,0 +1,60 @@
+<div class="splash">
+    <div class="container">
+        <h3 class="name">Contact Us</h3>
+    </div>
+</div><!--splash-->
+<%= form_tag send_contact_message_path, remote: true do %>
+<div class="content">
+    <div class="container">
+        <div class="mlr90">
+            <div class='row'>
+                <div class='col-md-5 col-xs-11'>
+                    <div class="box-white">
+                        <div class='row'>
+                            <h4 class="name" style='margin: 0 15px 15px'>Lorem Ipsum</h4>
+                            <p style='margin: 0 15px 15px'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec purus in mi varius accumsan. Proin id pellentesque risus, ut ullamcorper dui. Praesent eget ornare lacus. Etiam vitae auctor metus, eu porttitor elit. Quisque elementum dolor sit amet leo lacinia, id dictum dui bibendum. Donec tristique, tellus ut cursus volutpat, mi sapien tempus enim, egestas condimentum turpis tellus ut tellus.</p>
+                            <p style='margin: 0 15px 15px'>Phasellus elementum ante id lacus adipiscing, eu aliquam arcu rhoncus.</p>
+                            <p style='margin: 0 15px 15px'>Donec viverra metus ut sem posuere sollicitudin. Cras dapibus hendrerit est, eget consequat mauris eleifend vitae.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class='col-sm-7 col-xs-11'>
+                    <div class="box-white">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <%= text_field_tag :first_name, '', class: 'form-control', placeholder: 'First Name' %>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <%= text_field_tag :last_name, '', class: 'form-control', placeholder: 'Last Name' %>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <%= text_field_tag :email, '', class: 'form-control', placeholder: 'Email' %>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <%= text_area_tag :message, '', class: 'form-control', placeholder: 'Your message', rows: 6 %>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-xs-12 text-right'>
+                                <%= submit_tag 'Send Message', class: 'btn btn-primary', data: {disable_with: 'Sending...'} %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% end %>

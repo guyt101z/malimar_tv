@@ -3,9 +3,9 @@
         <div class="bg-f8f8f8">
             <ul class="nav">
                 <li class="active"><a href="#watch-submenu" data-toggle="menu-d">Watch <span class="caret-right"></span></a></li>
-                <li><a href="#activateroku-submenu" data-toggle="menu-d">ActivateRoku <span class="caret-right"></span></a></li>
-                <li><a href="#subscription-submenu" data-toggle="menu-d">Subscription <span class="caret-right"></span></a></li>
-                <li><a href="#contactus-submenu" data-toggle="menu-d">Contact Us <span class="caret-right"></span></a></li>
+                <li><a href="/activate_roku">Activate Roku <span class="caret-right"></span></a></li>
+                <li><a href="/subscribe">Subscription <span class="caret-right"></span></a></li>
+                <li><a href="/contact" data-toggle="menu-d">Contact Us <span class="caret-right"></span></a></li>
             </ul>
         </div>
     </div>
@@ -14,19 +14,7 @@
             <div id="watch-submenu" class="menu-dsubmenu" style="display:block;">
                 <h3 class="fz18 text-light mt0 mb0">Watch on Malimar.tv</h3>
                 <div class="row">
-                    <div class="col-sm-3">
-                        <ul class="nav nav-nobg">
-                            <li><a href="/watch/grid/1">Free Live TV Channels</a></li>
-                            <li><a href="/watch/grid/2">Premium TV Channels</a></li>
-                            <li><a href="/watch/grid/3">TV Shows</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-sm-3">
-                        <ul class="nav nav-nobg">
-                            <li><a href="/watch/grid/4">Movies</a></li>
-                            <li><a href="/watch/grid/5">Karaoke</a></li>
-                        </ul>
-                    </div>
+                    <%= render 'layouts/nav/grid_options' %>
                 </div>
             </div>
             <div id="activateroku-submenu" class="menu-dsubmenu" style="display:none;">

@@ -1,0 +1,30 @@
+<% content_for :top_level, 'Utilities' %>
+<% content_for :low_levels, YAML.dump(['General Settings','Payout Methods']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='col-md-6 col-sm-9 col-centered'>
+            <div class='row'>
+                <div class='col-sm-6 col-centered'>
+                    <div class='panel panel-default'>
+                    <%= form_tag update_payout_methods_path do %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>Payment Methods</h3>
+                        </div>
+                        <div class='panel-body'>
+                            <%= text_area_tag :methods, @methods, class: 'form-control', rows: 4 %>
+                            * Separate methods into new lines
+                        </div>
+                        <div class='panel-footer'>
+                            <%= submit_tag 'Update', class: 'btn btn-primary', style: 'width: 100%' %>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#payouts').addClass('active')
+</script>

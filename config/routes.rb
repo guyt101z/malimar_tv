@@ -65,11 +65,17 @@ Rails.application.routes.draw do
         get '/admins/settings/timezone' => 'admins#edit_timezone', as: 'edit_timezone'
         post 'update_default_timezone' => 'admins#update_default_timezone'
 
+        get '/admins/settings/payouts' => 'admins#edit_payouts', as: 'edit_payouts'
+        post 'update_payout_methods' => 'admins#update_payout_methods'
+
         get '/admins/settings/device_limit' => 'admins#edit_device_limit', as: 'edit_device_limit'
         post 'update_device_limit' => 'admins#update_device_limit'
 
         get '/admins/settings/free_trial' => 'admins#edit_free_trial', as: 'edit_free_trial'
         post 'update_free_trial' => 'admins#update_free_trial'
+
+        get '/admins/settings/contact_email' => 'admins#edit_contact_email', as: 'edit_contact_email'
+        post 'update_contact_email' => 'admins#update_contact_email'
 
         get '/admins/settings/wd_limits' => 'admins#edit_wd_limits', as: 'edit_wd_limits'
         post 'update_lower_wd_limit' => 'admins#update_lower_wd_limit'
@@ -267,7 +273,7 @@ Rails.application.routes.draw do
 
         get '/admins/manage_admins/view/:id' => 'admins#view_admin', as: 'view_admin'
         post 'update_admin' => 'admins#update_admin'
-        get 'delete_admin' => 'admins#delete_admin'
+        get 'remove_admin' => 'admins#remove_admin'
         get 'reset_admin_password' => 'admins#send_password_reset'
 
         # Mail Settings
@@ -326,6 +332,7 @@ Rails.application.routes.draw do
         get 'rep_pending_withdrawals' => 'sales_reps#pending_withdrawals'
         get 'rep_total_payout' => 'sales_reps#total_payout'
         get 'rep_meets_limit' => 'sales_reps#meets_limit'
+        get 'rep_view_invoice' => 'sales_reps#view_withdrawal_invoice'
 
         get 'view_pending_balance_details' => 'sales_reps#view_pending_balance_details'
         get 'view_current_balance_details' => 'sales_reps#view_current_balance_details'
@@ -393,6 +400,10 @@ Rails.application.routes.draw do
     get 'view_user_invoice/:id' => 'transactions#view_all', as: 'view_user_invoice'
 
     get 'search_suggestions' => 'videos#search_suggestions'
+
+    get 'activate_roku' => 'users#roku_demo'
+    get 'contact' => 'users#contact'
+    post 'send_contact_message' => 'users#send_contact_message'
 
   root :to => 'videos#landing'
 

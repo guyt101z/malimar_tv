@@ -9,8 +9,8 @@
 <% end %>
 	<div class="panel-bordered text-center">
     	<div class="panel-bordered-header">
-        	<div class="text-bold"><%= @user.name %></div>
-			<div class="fz12-5"><%= @user.city_state %></div>
+        	<div class="text-bold search_name"><%= @user.name %></div>
+			<div class="fz12-5 city_state"><%= @user.city_state %></div>
         </div>
     	<div class="panel-bordered-body fz12-5">
         	<% if @user.premium? %>Premium<% else %>Free<% end %> Member<br>

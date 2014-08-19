@@ -36,6 +36,16 @@ class AdminsController < ApplicationController
 		end
 	end
 
+	def remove_admin
+		if current_admin.role_id == 0
+			Admin.where(id: params[:id]).first.destroy
+			flash[:success] = 'Admin has been deleted.'
+			redirect_to '/admins/manage_admins'
+		else
+			render status: 403
+		end
+	end
+
 	def create_user
 		@user = User.where(id: params[:user_id]).first
 
@@ -268,20 +278,7 @@ class AdminsController < ApplicationController
 	def search_users
 		if current_admin.authorized_to?('manage_user')
 			all_users = User.all.order(first_name: :desc)
-			@matched_users = Array.new
-
-			all_users.each do |user|
-				if user.matches?(params[:search])
-					@matched_users.push(user)
-				end
-			end
-
-			if @matched_users.any?
-				@results = @matched_users.count
-			else
-				@results = 0
-
-			end
+			@matched_users = User.search(params[:search])
 		else
 			render status: 403
 		end
@@ -290,35 +287,10 @@ class AdminsController < ApplicationController
 	def search_users_for_ticket_order
 		if params[:search_type] == 'user'
 			all_users = User.all.order(first_name: :desc)
-			@matched_users = Array.new
-
-			all_users.each do |user|
-				if user.matches?(params[:search])
-					@matched_users.push(user)
-				end
-			end
-
-			if @matched_users.any?
-				@results = @matched_users.count
-			else
-				@results = 0
-			end
+			@matched_users = User.search(params[:search])
 		else
 			all_users = SalesRepresentative.all.order(first_name: :desc)
-			@matched_users = Array.new
-
-			all_users.each do |user|
-				if user.matches?(params[:search])
-					@matched_users.push(user)
-				end
-			end
-
-			if @matched_users.any?
-				@results = @matched_users.count
-			else
-				@results = 0
-
-			end
+			@matched_users = SalesRepresentative.search(params[:search])
 		end
 	end
 
@@ -670,6 +642,7 @@ class AdminsController < ApplicationController
 		if current_admin.authorized_to?('manage_rep')
 			@rep = SalesRepresentative.find(params[:id])
 			@withdrawals = Withdrawal.where(sales_rep_id: @rep.id).order(created_at: :asc)
+			@users = User.where(rep_id: @rep.id)
 		else
 			flash[:error] = 'You are not authorized to view that.'
 			redirect_to '/admins'
@@ -1827,6 +1800,50 @@ class AdminsController < ApplicationController
 			flash[:error] = 'You are not allowed to view that.'
 			redirect_to '/admins'
 		end
+	end
+
+	def edit_payouts
+		unless current_admin.authorized_to?('edit_general_settings')
+			flash[:error] = 'You are not allowed to view that.'
+			redirect_to '/admins'
+		end
+		@methods = Setting.where(name: 'Payout Methods').first.data
+	end
+
+	def update_payout_methods
+		unless current_admin.authorized_to?('edit_general_settings')
+			render status: 403
+		end
+		@methods = Setting.where(name: 'Payout Methods').first
+		@methods.data = params[:methods]
+		if @methods.save
+			flash[:success] = 'Payout Methods updated'
+		else
+			flash[:error] = 'An error occurred while performing the update'
+		end
+		redirect_to edit_payouts_path
+	end
+
+	def edit_contact_email
+		unless current_admin.authorized_to?('edit_general_settings')
+			flash[:error] = 'You are not allowed to view that.'
+			redirect_to '/admins'
+		end
+		@email = Setting.where(name: 'Contact Email').first.data
+	end
+
+	def update_contact_email
+		unless current_admin.authorized_to?('edit_general_settings')
+			render status: 403
+		end
+		@email = Setting.where(name: 'Contact Email').first
+		@email.data = params[:email]
+		if @email.save
+			flash[:success] = 'Contact Email updated'
+		else
+			flash[:error] = 'An error occurred while performing the update'
+		end
+		redirect_to edit_payouts_path
 	end
 
 	def edit_timezone

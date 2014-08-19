@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140818135840) do
+ActiveRecord::Schema.define(version: 20140819183915) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -485,6 +485,7 @@ ActiveRecord::Schema.define(version: 20140818135840) do
     t.float    "balance"
     t.boolean  "mailchimp"
     t.boolean  "adult"
+    t.integer  "rep_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
@@ -499,6 +500,7 @@ ActiveRecord::Schema.define(version: 20140818135840) do
     t.datetime "updated_at"
     t.datetime "approved"
     t.text     "note"
+    t.string   "payment_method"
   end
 
 end

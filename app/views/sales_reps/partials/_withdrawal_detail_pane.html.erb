@@ -32,9 +32,3 @@
         <div class='tx_detail_info'>$<%= number_with_precision(@total_balance, precision: 2) %></div>
     </div>
 </div>
-<div class='invoice'>
-    <%= link_to 'View Invoice', rep_tx_invoice_path(status: @status,
-                                                          start_day: params[:start_day], start_month: params[:start_month], start_year: params[:start_year],
-                                                          end_day: params[:end_day], end_month: params[:end_month], end_year: params[:end_year]),
-                                                          class: 'btn btn-success', target: '_blank', style: 'width: 100%' %>
-</div>

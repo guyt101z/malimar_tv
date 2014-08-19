@@ -13,7 +13,8 @@
             <% if admin_signed_in? %>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <% if current_admin.authorized_to?('manage_user') %><li><%= link_to 'Clients', search_users_path %></li><% end %>
+                    <li><%= link_to 'Dashboard', '/admins' %></li>
+                    <li><%= link_to 'Clients', search_users_path %></li>
                     <li><%= link_to 'Orders', orders_path %></li>
                     <li><%= link_to 'Support', admin_support_path %></li>
                     <li><%= link_to 'Sales Reps', search_reps_main_path %></li>

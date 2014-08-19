@@ -1,6 +1,6 @@
 <% if @error.nil? %>
     <% flash[:success] = 'Your request has been submitted.' %>
-    window.location = '/sales_reps/transactions'
+    window.location = '/sales_reps/withdrawals'
 <% else %>
     addNotification('error', '<%= raw(@error) %>', 'Error', 'exclamation-circle')
     $('#submit_button').html('Submit Request').removeAttr('disabled');

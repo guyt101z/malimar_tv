@@ -268,4 +268,16 @@ class TransactionalMailer < ActionMailer::Base
             SystemLog.create(error: true, title: 'Withdrawal Approved', message: e.message)
         end
     end
+
+    def contact_us_message(first_name, last_name, email, message)
+        @message = message
+        @name = "#{first_name} #{last_name}"
+        @email = email
+
+        @global_css = Setting.where(name: 'Mail Global CSS').first.data
+        @header = Setting.where(name: 'Mail Header Markup').first.data
+        @footer = Setting.where(name: 'Mail Footer Markup').first.data
+
+        mail(to: Setting.where(name: 'Contact Email').first.data, subject: "New message from #{first_name} #{last_name}", reply_to: email)
+    end
 end
