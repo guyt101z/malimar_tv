@@ -104,7 +104,21 @@ class Transaction < ActiveRecord::Base
 				invoice = Payday::Invoice.new(invoice_number: id, bill_to: "#{user.name}\n#{user.address_1}\n#{user.address_2}\n#{user.city}, #{user.state}\n#{user.country}\n#{user.zip}", paid_at: customer_paid.strftime('%B %-d, %Y'), refunded_at: customer_refunded.strftime('%B %-d, %Y'))
 			end
 		end
-		invoice.line_items << Payday::LineItem.new(price: tx_details[:price]*100, description: "#{tx_details[:name]} – #{tx_details[:duration]} Month(s)", display_quantity: 1)
+		if roku_id.present?
+			device = Roku.where(id: roku_id).first
+			if device.nil?
+				roku = 'Device not found''Device not found'
+			else
+				if device.name.present?
+					roku = "#{device.nickname} - #{device.serial}"
+				else
+					roku = "Roku - #{device.serial}"
+				end
+			end
+		else
+			roku = 'Device not found'
+		end
+		invoice.line_items << Payday::LineItem.new(price: tx_details[:price]*100, description: "#{tx_details[:name]} – #{tx_details[:duration]} Month(s) - #{roku}", display_quantity: 1)
 		if balance_used.nil?
 			invoice.line_items << Payday::LineItem.new(price: 0 * -100, description: 'Previous balance used', display_quantity: 1)
 		else

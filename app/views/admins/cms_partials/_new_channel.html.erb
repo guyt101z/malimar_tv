@@ -31,6 +31,17 @@
                         <label>Adult Content</label>
                         <%= select_tag :new_adult, options_for_select([['No',false],['Yes',true]]), class: 'form-control' %>
                     </div>
+                    <div class='col-md-12 form-group'>
+                        <%
+                            grid_options = [['Choose a grid',nil]]
+                            grids = Grid.where(class_type: 'Channel')
+                            grids.each do |grid|
+                                grid_options.push([grid.name, grid.id])
+                            end
+                        %>
+                        <label class='unedited'>Grid</label>
+                        <%= select_tag :new_grid_id, options_for_select(grid_options), class: 'form-control edit_channel' %>
+                    </div>
                 </div>
                 <div class='row'>
                     <div class='col-md-3 col-xs-6 form-group'>

@@ -1,0 +1,7 @@
+<% unless @grid.errors.any? %>
+    $('#grid_image img').remove()
+    $('#grid_image').prepend('<%= image_tag @grid.image %>')
+<% else %>
+    $('#upload-progress-bar').removeClass('progress-bar-success progress-bar-info').addClass('progress-bar-danger')
+    addNotification('error','Could not upload file','Error', 'exclamation-circle')
+<% end %>

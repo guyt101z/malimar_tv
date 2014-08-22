@@ -11,11 +11,23 @@
         		<h4 style='margin-top:0;'>Roku Details</h4>
         		<div class='row'>
         			<div class='col-sm-6'>
-        				<div class='form-group'>
-        					<div class='form-group'>
-                                <%= text_field_tag :serial, '', class: 'form-control', placeholder: 'Serial Number (Optional)' %>
-                            </div>
-        				</div>
+                        <div class='form-group'>
+                            <% rokus = Roku.where(user_id: current_user.id) %>
+                            <%
+                                options = [['Register new Roku',nil]]
+                                rokus.each do |roku|
+                                    if roku.name.present?
+                                        options.push(["#{roku.nickname(true)} - #{roku.serial}", roku.id])
+                                    else
+                                        options.push(["Roku - #{roku.serial}", roku.id])
+                                    end
+                                end
+                            %>
+                            <%= select_tag :serial, options_for_select(options), class: 'form-control', placeholder: 'Serial Number (Optional)' %>
+                        </div>
+                        <div class='form-group'>
+                            <%= text_field_tag :new_serial, '', class: 'form-control', placeholder: 'Serial Number' %>
+                        </div>
                         <hr>
                         <h4 style='margin-top:0;'>Payment Details</h4>
                         <% if Transaction.where(user_id: current_user.id).count == 0 %>
@@ -151,4 +163,14 @@
             $('#credit_card').hide()
 		}
 	})
+    $('#serial').change(function(){
+        if ($(this).val() == '') {
+            $('#new_serial').show()
+            $('#new_serial').val('')
+        }
+        else {
+            $('#new_serial').hide()
+            $('#new_serial').val('')
+        }
+    })
 </script>

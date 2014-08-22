@@ -1,19 +1,21 @@
-$('#credit-error').remove()
-$('#type-error').remove()
-<% if @success == false %>
-    <% if @credit != nil %>
-        $('#card_number').after('<div class="text-danger" id="credit-error"><%= @credit %></div>')
+$('#tx-error').remove()
+$('#device-error').remove()
+<% if @tx_errors == true || @device_errors == true %>
+
+    <% if @tx_errors == true %>
+        $('#payment_type').after('<div class="text-danger" id="tx-error"><%= @tx_error %></div>')
     <% end %>
 
-    <% if @payment_type != nil %>
-        $('#payment_type').after('<div class="text-danger" id="type-error"><%= @payment_type %></div>')
+    <% if @device_errors == true %>
+        $('#tx_serial').after('<div class="text-danger" id="device-error"><%= @device_error %></div>')
     <% end %>
     addNotification('error', 'Error processing payment', 'Error', 'exclamation-circle')
-<% elsif @success == true %>
+<% else %>
     <% @plan = Plan.all.order(price: :asc).first %>
     <% @total = @plan.price - @user.balance %>
     $('#tx_details').html('<%= escape_javascript(render("admins/partials/transaction_details")) %>')
     $('#user_transactions').html('<%= escape_javascript(render("admins/partials/user_transactions")) %>')
+    $('#device-list').html('<%= escape_javascript(render("admins/partials/device_list")) %>')
 
     $('#user_balance').html('$<%= number_with_precision(@user.balance, precision: 2) %>')
     $('#balance_2').html('$<%= number_with_precision(@user.balance, precision: 2) %>')

@@ -1,0 +1,73 @@
+<% content_for :top_level, 'Video CMS' %>
+<% content_for :low_levels, YAML.dump(['Grid Management','New Grid']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='row'>
+            <div class='col-lg-9 col-md-8 col-sm-7 col-centered'>
+            <%= form_tag admin_create_grid_path, remote: true do %>
+            <div class='panel panel-default'>
+                <div class='panel-heading' style='position:relative'>
+                    <h3 class='panel-title'>New Grid</h3>
+                </div>
+                <div class='panel-body'>
+                    <div class='form-group'>
+                        <label>Grid Name</label>
+                        <%= text_field_tag :name, '', class: 'form-control' %>
+                    </div>
+                    <div class='form-group'>
+                        <label>Grid Type</label>
+                        <%= select_tag :class_type, options_for_select(['Channel','Show','Movie']), class: 'form-control' %>
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-6'>
+                            <div class='form-group'>
+                                <label>Homepage?</label>
+                                <%= select_tag :home_page, options_for_select([['Yes',true],['No',false]]), class: 'form-control' %>
+                            </div>
+                        </div>
+                        <div class='col-sm-6'>
+                            <div class='form-group'>
+                                <label>Menu?</label>
+                                <%= select_tag :title_bar, options_for_select([['Yes',true],['No',false]]), class: 'form-control' %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-6'>
+                            <div class='form-group'>
+                                <label>Content Sort</label>
+                                <%= select_tag :sort, options_for_select(['Alphabetical','New Arrivals/Episodes','Random']), class: 'form-control' %>
+                            </div>
+                        </div>
+                        <div class='col-sm-6'>
+                            <div class='form-group'>
+                                <label>Grid Sort Weight</label>
+                                <%= text_field_tag :weight, '', class: 'form-control' %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-6'>
+                            <div class='form-group'>
+                                <label>Adult Content?</label>
+                                <%= select_tag :home_page, options_for_select([['No',false],['Yes',true]]), class: 'form-control' %>
+                            </div>
+                        </div>
+                        <div class='col-sm-6'>
+                            <div class='form-group'>
+                                <label>Membership</label>
+                                <%= select_tag :free, options_for_select([['Free',true],['Premium',false]]), class: 'form-control' %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='panel-footer text-right'>
+                    <%= submit_tag 'Save Grid',  class: 'btn btn-primary', data: {disable_with: 'Saving...'} %>
+                </div>
+            </div>
+            <% end %>
+        </div>
+    </div>
+</div>
+<script>
+</script>

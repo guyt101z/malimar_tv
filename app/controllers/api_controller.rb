@@ -102,16 +102,19 @@ class ApiController < ApplicationController
             else
                 feed = {item_count: 0, items: []}
 
-                user = User.find(Device.where(serial: request.headers['token']).first.user_id)
-                categories = Category.where(front_page: true).order(rank: :asc)
+                grids = Grid.where(home_page: true).order(weight: :desc)
+                device = Device.where(serial: request.headers['token']).first
 
-                categories.each do |grid|
-                    items = generate_grid(request.headers['devicetype'], user, grid)
-
-                    feed[:items].push({title_count: items.count, title: grid.name, feed: {url: json_view_grid_url(id: grid.id)}})
+                grids.each do |grid|
+                    if (device.adult == true && grid.adult == true) || (grid.adult.nil? || grid.adult == false)
+                        items = generate_grid(request.headers['devicetype'], device, grid)
+                        count = items[:child_grids].count + items[:items].count
+                        feed[:items].push({type: grid.feed_type, sd_img: root_url[0...-1]+grid.image_url(:sd), hd_img: root_url[0...-1]+grid.image_url(:hd),
+                                           title: grid.name, feed: json_view_grid_url(id: grid.id)})
+                    end
                 end
 
-                feed[:item_count] =categories.count
+                feed[:item_count] = grids.count
                 auth[:feed] = feed
                 render json: auth
             end
@@ -128,7 +131,7 @@ class ApiController < ApplicationController
             unless auth[:code] == 100
                 render json: auth
             else
-                grid = Category.where(id: params[:id]).first
+                grid = Grid.where(id: params[:id]).first
                 if grid.nil?
                     render json: {code: 203, success: false, message: 'Grid not found'}
                 else
@@ -136,10 +139,15 @@ class ApiController < ApplicationController
 
                     items = generate_grid(request.headers['devicetype'], user, grid)
 
-                    feed = {item_count: 0, items: []}
+                    feed = {item_count: items[:child_grids].count + items[:items].count, items: []}
 
-                    items.each do |item|
-                        feed[:items].push({sd_img: root_url[0...-1]+item.image_url(:sd), hd_img: root_url[0...-1]+item.image_url(:hd),
+                    items[:child_grids].each do |item|
+                        feed[:items].push({type: item.feed_type, sd_img: root_url[0...-1]+item.image_url(:sd), hd_img: root_url[0...-1]+item.image_url(:hd),
+                                           title: item.name, feed: json_view_grid_url(id: item.id)})
+                    end
+
+                    items[:items].each do |item|
+                        feed[:items].push({type: item.feed_type, sd_img: root_url[0...-1]+item.image_url(:sd), hd_img: root_url[0...-1]+item.image_url(:hd),
                                            title: item.name, feed: root_url[0...-1]+item.device_url})
                     end
 
@@ -285,92 +293,42 @@ class ApiController < ApplicationController
         end
     end
 
-    def generate_grid(device, user, category)
-        if ['Iphone','Ipod','Ipad'].include? device
+    def generate_grid(devicetype, device, grid)
+        if ['Iphone','Ipod','Ipad'].include? devicetype
             filter_params = {ios: true}
         else
             filter_params = {device.to_sym => true}
         end
-
-        unless user.adult == true
-            filter_params[:adult] = [false,nil]
-        end
-
-        unless category.content_type.blank?
-            filter_params[:content_type] = category.content_type
-        end
-
-        unless category.content_quality.blank?
-            filter_params[:content_quality] = category.content_quality
-        end
-
-        filter_params[:free] = category.free
-
-        if category.item_type == 'shows'
-            if category.sort.nil? || category.sort == 'Alphabetical'
-                all_items = Show.where(filter_params).order(name: :asc)
-            elsif category.sort == 'New Arrivals/Episodes'
-                unsorted_items = Show.where(filter_params)
-                hashed_items = Hash.new
-                unsorted_items.each do |item|
-                    hashed_items[item.id] = item.newest_episode
-                end
-                hashed_items.sort_by {|_key, value| value}
-
-                all_items = Array.new
-                hashed_items.each do |k,v|
-                    all_items.push(Show.find(k))
-                end
-                all_items.reverse!
-            elsif category.sort == 'Random'
-                all_items = Show.where(filter_params).order('rand()')
-            end
-            filtered_items = Array.new
-
-            unless category.genre.blank?
-                all_items.each do |item|
-                    filtered_items.push(item) if item.matches_genre?(category.genre)
-                end
-            else
-                filtered_items = all_items
-            end
-        elsif category.item_type == 'movies'
-            if category.sort.nil? || category.sort == 'Alphabetical'
-                all_items = Movie.where(filter_params.except(:content_type)).order(name: :asc)
-            elsif category.sort == 'New Arrivals/Episodes'
-                all_items = Movie.where(filter_params.except(:content_type)).order(release_date: :desc)
-            elsif category.sort == 'Random'
-                all_items = Movie.where(filter_params.except(:content_type)).order('rand()')
-            end
-            filtered_items = Array.new
-
-            unless category.genre.blank?
-                all_items.each do |item|
-                    filtered_items.push(item) if item.matches_genre?(category.genre)
-                end
-            else
-                filtered_items = all_items
-            end
+        if device.adult == true
+            filter_params[:adult] = true
         else
-            if category.sort.nil? || category.sort == 'Alphabetical'
-                all_items = Channel.where(filter_params).order(name: :asc)
-            elsif category.sort == 'New Arrivals/Episodes'
-                all_items = Channel.where(filter_params).order(created_at: :desc)
-            elsif category.sort == 'Random'
-                all_items = Channel.where(filter_params).order('rand()')
-            end
-            filtered_items = Array.new
+            filter_params[:adult] = false
+        end
+        filter_params[:grid_id] = grid.id
 
-            unless category.genre.blank?
-                all_items.each do |item|
-                    filtered_items.push(item) if item.matches_genre?(category.genre)
-                end
-            else
-                filtered_items = all_items
+        if grid.class_type == 'Show'
+            items = Show.where(filter_params)
+        elsif grid.class_type == 'Channel'
+            if grid.sort == 'Alphabetical'
+                items = Channel.where(filter_params).order(name: :asc)
+            elsif grid.sort == 'Random'
+                items = Channel.where(filter_params).shuffle
+            elsif grid.sort == 'New Arrivals/Episodes'
+                items = Channel.where(filter_params).order(created_at: :desc)
+            end
+        elsif grid.class_type == 'Movie'
+            if grid.sort == 'Alphabetical'
+                items = Movie.where(filter_params).order(name: :asc)
+            elsif grid.sort == 'Random'
+                items = Movie.where(filter_params).shuffle
+            elsif grid.sort == 'New Arrivals/Episodes'
+                items = Movie.where(filter_params).order(created_at: :desc)
             end
         end
 
-        return filtered_items
+        child_grids = Grid.where(filter_params.except(:ios, :android, :roku))
+
+        return {child_grids: child_grids, items: items}
     end
 
     def generate_grid_search_params(grid, device)

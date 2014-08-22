@@ -1,7 +1,7 @@
 class Episode < ActiveRecord::Base
     attr_accessible :show_id, :title, :episode_number, :stream_url, :release_date, :synopsis, :length
 
-    validates_presence_of :show_id, :title, :episode_number, :stream_url, :release_date, :length
+    validates_presence_of :show_id, :episode_number, :stream_url, :release_date, :length
 
     belongs_to :channel
 

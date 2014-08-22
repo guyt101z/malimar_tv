@@ -31,6 +31,7 @@ class VideosController < ApplicationController
 			@channel.actors = params[:new_actors]
 			@channel.stream_name = params[:new_stream_name]
 			@channel.adult = params[:new_adult]
+			@channel.grid_id = params[:new_grid_id]
 			if @channel.save
 				Channel.reindex
 				AdminActivity.create(admin_id: current_admin.id,
@@ -65,6 +66,7 @@ class VideosController < ApplicationController
 			@channel.stream_name = params[:stream_name]
 			@channel.front_page = params[:front_page]
 			@channel.adult = params[:adult]
+			@channel.grid_id = params[:grid_id]
 			if @channel.save
 				Channel.reindex
 				AdminActivity.create(admin_id: current_admin.id,
@@ -164,6 +166,7 @@ class VideosController < ApplicationController
 			@movie.length = params[:new_length]
 			@movie.release_date = params[:new_release_date]
 			@movie.adult = params[:new_adult]
+			@movie.grid_id = params[:new_grid_id]
 			if @movie.save
 				Movie.reindex
 				AdminActivity.create(admin_id: current_admin.id,
@@ -198,6 +201,7 @@ class VideosController < ApplicationController
 			@movie.release_date = params[:release_date]
 			@movie.front_page = params[:front_page]
 			@movie.adult = params[:adult]
+			@movie.grid_id = params[:grid_id]
 			if @movie.save
 				Movie.reindex
 				AdminActivity.create(admin_id: current_admin.id,
@@ -295,6 +299,7 @@ class VideosController < ApplicationController
 			@show.genres = params[:new_genres]
 			@show.actors = params[:new_actors]
 			@show.adult = params[:new_adult]
+			@show.grid_id = params[:new_grid_id]
 			if @show.save
 				Show.reindex
 				AdminActivity.create(admin_id: current_admin.id,
@@ -326,6 +331,7 @@ class VideosController < ApplicationController
 			@show.actors = params[:actors]
 			@show.front_page = params[:front_page]
 			@show.adult = params[:adult]
+			@show.grid_id = params[:grid_id]
 			if @show.save
 				Show.reindex
 				AdminActivity.create(admin_id: current_admin.id,
@@ -531,38 +537,60 @@ class VideosController < ApplicationController
 	# Watch Methods
 	#######################################################################################
 	def watch_channel
-		@channel = Channel.find(params[:channel_id])
-		@token = generate_token(@channel.stream_name)
+		if user_signed_in? || admin_signed_in?
+			@channel = Channel.find(params[:channel_id])
+			@token = generate_token(@channel.stream_name)
 
-		unless @channel.free?
-			premium_wall
+			unless @channel.free? || admin_signed_in?
+				premium_wall
+			end
+		else
+			flash[:notice] = 'You mus sign up or sign in to watch videos'
+			redirect_to '/'
 		end
 	end
 
 	def browse_episodes
-		@show = Show.find(params[:show_id])
-		@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
+		if user_signed_in? || admin_signed_in?
+			@show = Show.find(params[:show_id])
+			@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
+			@episodes = @episodes.paginate(page: params[:page], per_page: 10)
 
-		unless @show.free?
-			premium_wall
+			unless @show.free? || admin_signed_in?
+				premium_wall
+			end
+		else
+			flash[:notice] = 'You mus sign up or sign in to watch videos'
+			redirect_to '/'
 		end
 	end
 	def watch_episode
-		@show = Show.find(params[:show_id])
-		@episode = Episode.where(show_id: @show.id, episode_number: params[:episode_number]).first
-		@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
+		if user_signed_in? || admin_signed_in?
+			@show = Show.find(params[:show_id])
+			@episode = Episode.where(show_id: @show.id, episode_number: params[:episode_number]).first
 
-		unless @show.free?
-			premium_wall
+			@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
+
+			unless @show.free? || admin_signed_in?
+				premium_wall
+			end
+		else
+			flash[:notice] = 'You mus sign up or sign in to watch videos'
+			redirect_to '/'
 		end
 	end
 
 	def watch_movie
-		@movie = Movie.find(params[:movie_id])
-		@token = generate_token(@movie.stream_name)
+		if user_signed_in? || admin_signed_in?
+			@movie = Movie.find(params[:movie_id])
+			@token = generate_token(@movie.stream_name)
 
-		unless @movie.free?
-			premium_wall
+			unless @movie.free? || admin_signed_in?
+				premium_wall
+			end
+		else
+			flash[:notice] = 'You mus sign up or sign in to watch videos'
+			redirect_to '/'
 		end
 	end
 
@@ -577,7 +605,7 @@ class VideosController < ApplicationController
 	end
 
 	def landing
-		@categories = Category.where(front_page: true).order(rank: :asc)
+		@grids = Grid.where(home_page: true).order(weight: :desc)
 
 		@front_page_array = Array.new
 
@@ -601,7 +629,12 @@ class VideosController < ApplicationController
 	end
 
 	def full_grid
-		@category = Category.find(params[:category_id])
+		if user_signed_in? || admin_signed_in?
+			@grid = Grid.find(params[:category_id])
+		else
+			flash[:notice] = 'You mus sign up or sign in to watch videos'
+			redirect_to '/'
+		end
 	end
 
 	private

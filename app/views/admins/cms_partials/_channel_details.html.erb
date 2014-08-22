@@ -1,4 +1,4 @@
-<div class='channel_title'><%= @channel.name %></div>
+<div class='channel_title'><%= @channel.name %> <%= link_to 'View Now', watch_channel_path(channel_id: @channel.id), style: 'margin-top: 4px', class: 'pull-right btn btn-md btn-warning', target: '_blank' %></div>
 <div class='channel_details'>
     <div class='row'>
         <div class=' col-lg-8 col-md-12'>
@@ -39,6 +39,17 @@
                         <div class='col-md-4 form-group'>
                             <label class='unedited'>Adult Content</label>
                             <%= select_tag :adult, options_for_select([['No',false],['Yes',true]],@channel.adult), class: 'form-control edit_channel' %>
+                        </div>
+                        <div class='col-md-12 form-group'>
+                            <%
+                                grid_options = [['Choose a grid',nil]]
+                                grids = Grid.where(class_type: 'Channel')
+                                grids.each do |grid|
+                                    grid_options.push([grid.name, grid.id])
+                                end
+                            %>
+                            <label class='unedited'>Grid</label>
+                            <%= select_tag :grid_id, options_for_select(grid_options,@channel.grid_id), class: 'form-control edit_channel' %>
                         </div>
                     </div>
                     <label class='unedited' id='checkbox_label'>Available on:</label>
@@ -128,7 +139,7 @@
                     <div class='panel panel-default'>
                         <div class='panel-heading' style='position: relative'>
                             <h3 class='panel-title'>Banner Image</h3>
-                            <a class='upload_image_heading btn btn-success btn-sm' id='banner-clicker' onclick='$("#banner").click()'><i class='fa fa-upload fa-fw'></i></a>
+                            <a class='upload_image_heading btn btn-success btn-sm' id='banner-clicker'><i class='fa fa-upload fa-fw'></i></a>
                         </div>
                         <div class='panel-body image_preview' id='banner_preview'>
                             <%= image_tag @channel.banner_url(:preview) %>

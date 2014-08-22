@@ -32,10 +32,10 @@
         </tr>
         <tr>
             <td>Renewal</td>
-            <% if @user.expiry.nil? || @user.expiry < Date.today %>
+            <% if @device.expiry.nil? || @device.expiry < Date.today %>
                 <td colspan='3' style='text-align:right' id='renewal'><%= (Date.today + @plan.months.months).strftime('%Y/%m/%d') %></td>
             <% else %>
-                <td colspan='3' style='text-align:right' id='renewal'><%= (@user.expiry + @plan.months.months).strftime('%Y/%m/%d') %></td>
+                <td colspan='3' style='text-align:right' id='renewal'><%= (@device.expiry + @plan.months.months).strftime('%Y/%m/%d') %></td>
             <% end %>
         </tr>
         </tbody>

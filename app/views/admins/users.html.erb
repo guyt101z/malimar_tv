@@ -12,29 +12,74 @@
                 </div>
             </div>
             <div class="panel-body plr20">
-                <table class='table table-hover table-bordered' id='user_table'>
+                <table class='table table-list fz11-5 table-hover' id='user_table'>
                     <thead><tr>
-                        <th>Account #</th>
-                        <th>Last Name</th>
-                        <th>First Name</th>
-                        <th>Email</th>
-                        <th>Membership</th>
-                        <th>Member Since</th>
-                        <th>Registered Devices</th>
+                        <td>Account #
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Last Name
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>First Name
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Email
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>City
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>State
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Zip Code
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Phone
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Mobile
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
                     </tr></thead>
                     <% @users.each do |user| %>
                         <tr style='cursor:pointer' onclick='window.location = "<%= view_user_path(id: user.id) %>"'>
-                            <th><%= user.id %></th>
+                            <td><%= user.id %></td>
                             <td><%= user.last_name %></td>
                             <td><%= user.first_name %></td>
                             <td><%= user.email %></td>
-                            <% if user.expiry.nil? || user.expiry < Date.today %>
-                                <td>Free</td>
-                            <% else %>
-                                <td>Premium</td>
-                            <% end %>
-                            <td><%= user.created_at.strftime('%Y/%m/%d') %></td>
-                            <td><%= Device.where(user_id: user.id).count %></td>
+                            <td><%= user.city %></td>
+                            <td><%= user.state %></td>
+                            <td><%= user.zip %></td>
+                            <td><%= user.phone %></td>
+                            <td><%= user.mobile_phone %></td>
                         </tr>
                     <% end %>
                 </table>

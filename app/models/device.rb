@@ -1,5 +1,5 @@
 class Device < ActiveRecord::Base
-	attr_accessible :serial, :user_id, :type, :name, :expiry, :serial_file
+	attr_accessible :serial, :user_id, :type, :name, :expiry, :serial_file, :adult
 	validates_presence_of :serial, :user_id, :type
 	validates_uniqueness_of :serial, :scope => :type
 

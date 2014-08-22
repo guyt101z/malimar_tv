@@ -4,4 +4,17 @@ $('#serial_message').remove()
 <% else %>
     $('#device_serial').after('<span class="text-success" id="serial_message">Serial updated!</span>')
     $('#device_<%= @device.id %>').children('.serial').html('<%= @device.serial %>')
+    <% rokus = Roku.where(user_id: @device.user_id) %>
+    <%
+        options = []
+        rokus.each do |roku|
+            if roku.name.present?
+                options.push(["#{roku.nickname(false)} - #{roku.serial}", roku.id])
+            else
+                options.push(["Roku - #{roku.serial}", roku.id])
+            end
+        end
+    %>
+    $('#sub_serial_wrapper').html('<%= raw(escape_javascript("<label>Choose a Roku</label>" + select_tag(:sub_serial, options_for_select(options), class: 'form-control', placeholder: 'Serial Number (Optional)'))) %>')
+    $('#tx_serial_wrapper').html('<%= raw(escape_javascript("<label>Choose a Roku</label>" + select_tag(:tx_serial, options_for_select(options), class: 'form-control', placeholder: 'Serial Number (Optional)'))) %>')
 <% end %>

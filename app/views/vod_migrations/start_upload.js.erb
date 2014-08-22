@@ -1,0 +1,9 @@
+<% if @success == true %>
+    window.location = '<%= vod_uploads_path %>'
+<% else %>
+    addNotification('error', 'Could not process file', 'Error', 'exclamation-circle')
+    $('#location_error').html('<%= escape_javascript(@location_error) %>')
+    $('#error').html('<%= escape_javascript(@error) %>')
+    $('#file_div').html('<%= escape_javascript(@migration.file_url) %>')
+    $('#upload-progress-bar').removeClass('progress-bar-success').addClass('progress-bar-danger')
+<% end %>

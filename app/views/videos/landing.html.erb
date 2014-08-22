@@ -37,112 +37,57 @@
 
 <div class="content">
 	<div class="container">
-        <% @categories.each do |category| %>
-            <%
-            filter_params = {web: true}
-            unless category.content_type.blank?
-                filter_params[:content_type] = category.content_type
-            end
-
-            unless category.content_quality.blank?
-                filter_params[:content_quality] = category.content_quality
-            end
-
-            filter_params[:free] = category.free
-
-            if category.item_type == 'shows'
-                if category.sort.nil? || category.sort == 'Alphabetical'
-                    all_items = Show.where(filter_params).order(name: :asc)
-                elsif category.sort == 'New Arrivals/Episodes'
-                    unsorted_items = Show.where(filter_params)
-                    hashed_items = Hash.new
-                    unsorted_items.each do |item|
-                        hashed_items[item.id] = item.newest_episode
+        <% @grids.each do |grid| %>
+            <% if (grid.adult.nil? || grid.adult == false) %>
+                <%
+                @parent_grid = grid.clone
+                @child_grids = Grid.where(grid_id: @parent_grid.id).order(weight: :desc)
+                if @parent_grid.class_type == 'Show'
+                    items = Show.where(grid_id: @parent_grid.id, web: true)
+                elsif @parent_grid.class_type == 'Channel'
+                    if @parent_grid.sort == 'Alphabetical'
+                        items = Channel.where(grid_id: @parent_grid.id, web: true).order(name: :asc)
+                    elsif @parent_grid.sort == 'Random'
+                        items = Channel.where(grid_id: @parent_grid.id, web: true).shuffle
+                    elsif @parent_grid.sort == 'New Arrivals/Episodes'
+                        items = Channel.where(grid_id: @parent_grid.id, web: true).order(created_at: :desc)
                     end
-                    hashed_items.sort_by {|_key, value| value}
-
-                    all_items = Array.new
-                    hashed_items.each do |k,v|
-                        all_items.push(Show.find(k))
+                elsif @parent_grid.class_type == 'Movie'
+                    if @parent_grid.sort == 'Alphabetical'
+                        items = Movie.where(grid_id: @parent_grid.id, web: true).order(name: :asc)
+                    elsif @parent_grid.sort == 'Random'
+                        items = Movie.where(grid_id: @parent_grid.id, web: true).shuffle
+                    elsif @parent_grid.sort == 'New Arrivals/Episodes'
+                        items = Movie.where(grid_id: @parent_grid.id, web: true).order(created_at: :desc)
                     end
-                elsif category.sort == 'Random'
-                    all_items = Show.where(filter_params).order('rand()')
                 end
-                all_items.reverse!
-                filtered_items = Array.new
-
-                unless category.genre.blank?
-                    all_items.each do |item|
-                        filtered_items.push(item) if item.matches_genre?(category.genre)
-                    end
-                else
-                    filtered_items = all_items
-                end
-            elsif category.item_type == 'movies'
-                if category.sort.nil? || category.sort == 'Alphabetical'
-                    all_items = Movie.where(filter_params.except(:content_type)).order(name: :asc)
-                elsif category.sort == 'New Arrivals/Episodes'
-                    all_items = Movie.where(filter_params.except(:content_type)).order(release_date: :desc)
-                elsif category.sort == 'Random'
-                    all_items = Movie.where(filter_params.except(:content_type)).order('rand()')
-                end
-                filtered_items = Array.new
-
-                unless category.genre.blank?
-                    all_items.each do |item|
-                        filtered_items.push(item) if item.matches_genre?(category.genre)
-                    end
-                else
-                    filtered_items = all_items
-                end
-            else
-                if category.sort.nil? || category.sort == 'Alphabetical'
-                    all_items = Channel.where(filter_params).order(name: :asc)
-                elsif category.sort == 'New Arrivals/Episodes'
-                    all_items = Channel.where(filter_params).order(created_at: :desc)
-                elsif category.sort == 'Random'
-                    all_items = Channel.where(filter_params).order('rand()')
-                end
-                filtered_items = Array.new
-
-                unless category.genre.blank?
-                    all_items.each do |item|
-                        filtered_items.push(item) if item.matches_genre?(category.genre)
-                    end
-                else
-                    filtered_items = all_items
-                end
-            end
-            %>
-            <% if filtered_items.any? %>
+                %>
             	<div class="panel panel-custom">
                   	<div class="panel-heading">
                     	<div class="icon-left"><span class="glyphicon glyphicon-heart"></span></div>
-                    	<h3><%= category.name %></h3>
-                        <%= link_to raw('<span class="glyphicon glyphicon-th-large"></span> See All'), full_grid_path(category_id: category.id), class: 'pull-right' %>
+                    	<h3><%= grid.name %></h3>
+                        <%= link_to raw('<span class="glyphicon glyphicon-th-large"></span> See All'), full_grid_path(category_id: grid.id), class: 'pull-right' %>
                     </div>
                   	<div class="panel-body scroller">
-                        <% if user_signed_in? && current_user.adult == true %>
-                            <% filtered_items.each do |item| %>
-                                <div class="channel">
-                                    <a href="<%= item.watch_url %>">
-                                        <% if item.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
-                                        <div class="channel-img"><%= image_tag item.image_url(:front_page), class: "grayscale" %></div>
-                                        <h4><%= item.name %></h4>
-                                    </a>
-                                </div>
+                        <% @child_grids.each do |item| %>
+                            <% unless item.adult == true %>
+                            <div class="channel">
+                                <a href="<%= item.watch_url %>">
+                                    <div class="channel-img"><%= image_tag item.image_url(:front_page), class: "grayscale" %></div>
+                                    <h4><%= item.name %></h4>
+                                </a>
+                            </div>
                             <% end %>
-                        <% else %>
-                            <% filtered_items.each do |item| %>
-                                <% unless item.adult == true %>
-                                <div class="channel">
-                                    <a href="<%= item.watch_url %>">
-                                        <% if item.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
-                                        <div class="channel-img"><%= image_tag item.image_url(:front_page), class: "grayscale" %></div>
-                                        <h4><%= item.name %></h4>
-                                    </a>
-                                </div>
-                                <% end %>
+                        <% end %>
+                        <% items.each do |item| %>
+                            <% unless item.adult == true %>
+                            <div class="channel">
+                                <a href="<%= item.watch_url %>">
+                                    <% if item.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
+                                    <div class="channel-img"><%= image_tag item.image_url(:front_page), class: "grayscale" %></div>
+                                    <h4><%= item.name %></h4>
+                                </a>
+                            </div>
                             <% end %>
                         <% end %>
                   	</div>

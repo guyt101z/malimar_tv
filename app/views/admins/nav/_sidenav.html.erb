@@ -35,8 +35,13 @@
 			<%= render 'admins/nav/sidenavs/index' %>
 
 		<% elsif params[:action] == 'live_channels' || params[:action] == 'movies' || params[:action] == 'shows' ||
-		params[:action] == 'home_grid' %>
+		params[:action] == 'home_grid' || params[:action] == 'all_grids' || params[:action] == 'view_grid' ||
+		params[:action] == 'new_grid' %>
 			<%= render 'admins/nav/sidenavs/video' %>
+
+		<% elsif params[:action] == 'new_vod_upload' || params[:action] == 'vod_uploads' || params[:action] == 'view_vod_upload' ||
+		params[:action] == 'new_client_upload' || params[:action] == 'client_uploads' || params[:action] == 'view_client_upload' %>
+			<%= render 'admins/nav/sidenavs/migrations' %>
 		<% end %>
     </ul>
     <div class="sign-out">

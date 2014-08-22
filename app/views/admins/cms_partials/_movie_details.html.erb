@@ -1,4 +1,4 @@
-<div class='channel_title'><%= @movie.name %></div>
+<div class='channel_title'><%= @movie.name %> <%= link_to 'View Now', watch_movie_path(channel_id: @movie.id), style: 'margin-top: 4px', class: 'pull-right btn btn-md btn-warning', target: '_blank' %></div>
 <div class='channel_details'>
     <div class='row'>
         <div class=' col-lg-8 col-md-12'>
@@ -43,6 +43,17 @@
                         <div class='col-md-4 form-group'>
                             <label class='unedited'>Adult Content</label>
                             <%= select_tag :adult, options_for_select([['No',false],['Yes',true]],@movie.adult), class: 'form-control edit_channel' %>
+                        </div>
+                        <div class='col-md-12 form-group'>
+                            <%
+                                grid_options = [['Choose a grid',nil]]
+                                grids = Grid.where(class_type: 'Movie')
+                                grids.each do |grid|
+                                    grid_options.push([grid.name, grid.id])
+                                end
+                            %>
+                            <label class='unedited'>Grid</label>
+                            <%= select_tag :grid_id, options_for_select(grid_options,@movie.grid_id), class: 'form-control edit_channel' %>
                         </div>
                     </div>
                     <label class='unedited' id='checkbox_label'>Available on:</label>

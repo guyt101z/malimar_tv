@@ -10,12 +10,7 @@ $('#payment_type').parent().removeClass('has-error has-feedback')
 	window.location = '/account'
 <% else %>
 	<% if @device_errors == true %>
-		<% if @device.errors[:serial].present? %>
-			$('#serial').parent().addClass('has-error has-feedback').append('<div class="text-danger" id="device_serial-error">Serial <%= @device.errors[:serial].join(", ") %></div>')
-		<% end %>
-		<% if @device.errors[:base].present? %>
-			$('#serial').parent().addClass('has-error has-feedback').append('<div class="text-danger" id="device_limit-error"><%= @device.errors[:base] %></div>')
-		<% end %>
+		$('#serial').parent().addClass('has-error has-feedback').append('<div class="text-danger" id="device_serial-error"><%= @device_error %></div>')
 	<% end %>
 	<% if @referral_errors.present? %>
 		$('#refer_code').parent().addClass('has-error has-feedback').append('<div class="text-danger" id="refer-error"><%= @referral_message %></div>')

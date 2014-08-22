@@ -9,20 +9,60 @@
 						<h3 class='panel-title'>Search Sales Representatives</h3>
 					</div>
 					<div class='panel-body'>
-						<table class='table table-hover table-bordered' id='sales_rep_table'>
+						<table class='table table-list fz11-5 table-hover' id='sales_rep_table'>
 							<thead><tr>
-								<th>ID</th>
-								<th>Last Name</th>
-								<th>First Name</th>
-								<th>Email</th>
-								<th>Country</th>
-								<th>Current Balance</th>
-								<th>Pending Balance</th>
-								<th>Pending Withdrawals</th>
+								<td>ID
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Last Name
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>First Name
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Email
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Country
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Current Balance
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Pending Balance
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
+								<td>Pending Withdrawals
+									<span class="sort">
+										<span class="fa fa-angle-up"></span>
+										<span class="fa fa-angle-down"></span>
+									</span>
+								</td>
 							</tr></thead>
 							<% @reps.each do |rep| %>
 								<tr onclick='window.location = "<%= view_rep_path(id: rep.id) %>"' style='cursor:pointer'>
-									<th><%= rep.id %></th>
+									<td><%= rep.id %></td>
 									<td><%= rep.last_name %></td>
 									<td><%= rep.first_name %></td>
 									<td><%= rep.email %></td>

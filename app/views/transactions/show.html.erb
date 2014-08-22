@@ -61,7 +61,7 @@
                                     <p><strong style='font-size: 105%'>Client Email:</strong><br/><%= @user.email %></p>
                                 </div>
                                 <div class='col-lg-4 col-sm-6'>
-                                    <p><strong style='font-size: 105%'>Client Membership:</strong><br/><% if @user.expiry.nil? || @user.expiry < Date.today %>Free<% else %>Premium<% end %></p>
+                                    <p><strong style='font-size: 105%'>Client Membership:</strong><br/><% if @user.premium? %>Premium<% else %>Free<% end %></p>
                                 </div>
                             </div>
                         <% end %>
@@ -89,6 +89,9 @@
                             </div>
                         </div>
                         <div class='row'>
+                            <div class='col-lg-4 col-sm-6'>
+                                <p><strong style='font-size: 105%'>Roku Serial:</strong><br/><%= @roku.serial %></p>
+                            </div>
                             <div class='col-lg-4 col-sm-6'>
                                 <p><strong style='font-size: 105%'>Payment Method:</strong><br/><%= @transaction.payment_type %></p>
                             </div>

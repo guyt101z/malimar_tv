@@ -1,0 +1,173 @@
+<% content_for :top_level, 'Migrations' %>
+<% content_for :low_levels, YAML.dump(['VOD','New Upload']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='row'>
+            <div class='col-md-8 col-sm-10 col-centered'>
+                <%= form_tag start_vod_upload_path, multipart: true do %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>Start New VOD Grid Upload</h3>
+                        </div>
+                        <div class='panel-body'>
+                            <div class='row'>
+                                <div class='col-sm-6'>
+                                    <div class='form-group'>
+                                        <label>Existing or New?</label>
+                                        <%= select_tag :existing, options_for_select([['New',false],['Existing',true]]), class: "form-control" %>
+                                    </div>
+                                    <div class='form-group' id='type_wrapper'>
+                                        <label>Grid Type</label>
+                                        <%= select_tag :class_type, options_for_select(['Channel','Show','Movie']), class: "form-control" %>
+                                    </div>
+                                    <div class='form-group' id='existing_list' style='display:none'>
+
+                                    </div>
+                                    <div class='form-group' id='new_name'>
+                                        <label>Grid Name</label>
+                                        <%= text_field_tag :name, '', class: "form-control" %>
+                                    </div>
+                                    <div class='form-group' id='all_list'>
+
+                                    </div>
+                                    <div class='form-group'>
+                                        <label>XML Grid File</label>
+                                        <%= file_field_tag :file, class: "form-control" %>
+                                    </div>
+                                </div>
+                                <div class='col-sm-6' id='new_details'>
+                                    <div class='form-group'>
+                                        <label>Grid Sort Weight</label>
+                                        <%= text_field_tag :weight, '', class: "form-control" %>
+                                    </div>
+                                    <div class='form-group'>
+                                        <label>Adult Content</label>
+                                        <%= select_tag :adult, options_for_select([['No',false],['Yes',true]]), class: "form-control" %>
+                                    </div>
+                                    <div class='form-group'>
+                                        <label>Homepage?</label>
+                                        <%= select_tag :home_page, options_for_select([['No',false],['Yes',true]]), class: "form-control" %>
+                                    </div>
+                                    <div class='form-group'>
+                                        <label>Menu</label>
+                                        <%= select_tag :menu, options_for_select([['No',false],['Yes',true]]), class: "form-control" %>
+                                    </div>
+                                    <div class='form-group'>
+                                        <label>Content Sort</label>
+                                        <%= select_tag :sort, options_for_select(['Alphabetical','New Arrivals/Episodes', 'Random']), class: "form-control" %>
+                                    </div>
+                                    <div class='form-group'>
+                                        <label>Membership</label>
+                                        <%= select_tag :free, options_for_select([['Free',true],['Premium',false]]), class: "form-control" %>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class='panel-footer text-right'>
+                            <%= submit_tag 'Submit File', class: 'btn btn-primary', disabled: 'disabled', id: 'submit' %>
+                        </div>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#new_vod').addClass('active')
+    $('#existing').change(function(){
+        if ($(this).val() == 'true') {
+            $('#existing_list').show()
+            $('#existing_list').html('Loading... <i class="fa fa-refresh fa-spin"></i>')
+            $('#new_name').hide()
+            $('#all_list').hide()
+            $('#new_details').hide()
+            $.ajax({
+                url: '/admin_show_existing_grids?class_type=' + $('#class_type').val()
+            })
+        }
+        else {
+            $('#existing_list').hide()
+            $('#existing_list').html('')
+            $('#new_name').show()
+            $('#all_list').show()
+            $('#all_list').html('Loading... <i class="fa fa-refresh fa-spin"></i>')
+            $('#new_details').show()
+            $.ajax({
+                url: '/admin_show_all_grids'
+            })
+        }
+        if ($('#existing').val() == 'false'){
+            if ($('#file').val() != '' && $('#name').val() != '' && $('#weight').val() != '' && isNaN($('#weight').val()) == false) {
+                $('#submit').removeAttr('disabled')
+            }
+            else {
+                $('#submit').attr('disabled','disabled')
+            }
+        }
+        else {
+            if ($('#file').val() != '' && $('#grid_id').val != ''){
+                $('#submit').removeAttr('disabled')
+            }
+            else {
+                $('#submit').attr('disabled','disabled')
+            }
+        }
+    })
+    $('#grid_id').change(function(){
+        if ($('#file').val() != '' && $('#grid_id').val != ''){
+            $('#submit').removeAttr('disabled')
+        }
+        else {
+            $('#submit').attr('disabled','disabled')
+        }
+    })
+    $('#class_type').change(function(){
+        if ($('#existing').val() == 'true') {
+            $('#existing_list').show()
+            $('#existing_list').html('Loading... <i class="fa fa-refresh fa-spin"></i>')
+            $.ajax({
+                url: '/admin_show_existing_grids?class_type=' + $(this).val()
+            })
+        }
+    })
+    $('#file').change(function(){
+        if ($('#existing').val() == 'false'){
+            if ($('#file').val() != '' && $('#name').val() != '' && $('#weight').val() != '' && isNaN($('#weight').val()) == false) {
+                $('#submit').removeAttr('disabled')
+            }
+            else {
+                $('#submit').attr('disabled','disabled')
+            }
+        }
+        else {
+            if ($('#file').val() != '' && $('#grid_id').val != ''){
+                $('#submit').removeAttr('disabled')
+            }
+            else {
+                $('#submit').attr('disabled','disabled')
+            }
+        }
+    })
+    $('#weight').keyup(function(){
+        if ($('#file').val() != '' && $('#name').val() != '' && $('#weight').val() != '' && isNaN($('#weight').val()) == false) {
+            $('#submit').removeAttr('disabled')
+        }
+        else {
+            $('#submit').attr('disabled','disabled')
+        }
+    })
+    $('#name').keyup(function(){
+        if ($('#file').val() != '' && $('#name').val() != '' && $('#weight').val() != '' && isNaN($('#weight').val()) == false) {
+            $('#submit').removeAttr('disabled')
+        }
+        else {
+            $('#submit').attr('disabled','disabled')
+        }
+    })
+    $('#all_list').html('Loading... <i class="fa fa-refresh fa-spin"></i>')
+    $.ajax({
+        url: '/admin_show_all_grids'
+    })
+</script>

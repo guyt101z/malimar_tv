@@ -1,0 +1,13 @@
+<% content_for :top_level, 'Video CMS' %>
+<% content_for :low_levels, YAML.dump(['Grid Management','All Grids']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <% @grids.each do |grid| %>
+            <% @grid = grid %>
+            <%= render 'admins/cms_partials/grid_details' %>
+        <% end %>
+    </div>
+</div>
+<script>
+$('#all_grid').addClass('active')
+</script>

@@ -1,4 +1,4 @@
-<% grids = Category.all.order(rank: :asc) %>
+<% grids = Grid.where(title_bar: true).order(weight: :desc) %>
 
 <div class="col-sm-3">
     <% i = 1 %>

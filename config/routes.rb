@@ -4,6 +4,18 @@ Rails.application.routes.draw do
   devise_for :users
 
         get 'video_search' => 'videos#navbar_search'
+
+
+        get '/watch/grid/:category_id' => 'videos#full_grid', as: 'full_grid'
+
+        get '/grid/:id' => 'videos#grid'
+
+        get '/watch/live/:channel_id' => 'videos#watch_channel', as: 'watch_channel'
+
+        get '/watch/movies/:movie_id' => 'videos#watch_movie', as: 'watch_movie'
+
+        get '/watch/shows/:show_id' => 'videos#browse_episodes', as: 'browse_episodes'
+        get '/watch/shows/:show_id/:episode_number' => 'videos#watch_episode', as: 'watch_episode'
   	# User Methods
     authenticate :user do
   	  	get 'account' => 'users#account'
@@ -26,16 +38,6 @@ Rails.application.routes.draw do
 
         post 'update_profile' => 'users#update_profile'
 
-
-        get 'watch/grid/:category_id' => 'videos#full_grid', as: 'full_grid'
-
-        get '/watch/live/:channel_id' => 'videos#watch_channel', as: 'watch_channel'
-
-        get '/watch/movies/:movie_id' => 'videos#watch_movie', as: 'watch_movie'
-
-        get '/watch/shows/:show_id' => 'videos#browse_episodes', as: 'browse_episodes'
-        get '/watch/shows/:show_id/:episode_number' => 'videos#watch_episode', as: 'watch_episode'
-
         get 'subscribe' => 'users#subscribe'
         get 'view_plan' => 'users#view_plan'
         post 'add_subscription' => "users#add_subscription"
@@ -49,6 +51,19 @@ Rails.application.routes.draw do
 
   	# Admin Methods
     authenticate :admin do
+        get '/admins/migrations/vod/new' => 'vod_migrations#new_vod_upload', as: 'new_vod_upload'
+        post 'start_vod_upload' => 'vod_migrations#start_upload'
+        get '/admins/migrations/vod' => 'admins#vod_uploads', as: 'vod_uploads'
+        get '/admins/migrations/vod/:id' => 'admins#view_vod_upload', as: 'view_vod_upload'
+
+        get '/admins/migrations/client/new' => 'admins#new_client_upload', as: 'new_client_upload'
+        post 'start_client_upload' => 'client_migrations#start_upload'
+        get '/admins/migrations/client' => 'admins#client_uploads', as: 'client_uploads'
+        get '/admins/migrations/client/:id' => 'admins#view_client_upload', as: 'view_client_upload'
+
+
+        get 'admin_show_existing_grids' => 'admins#admin_show_existing_grids'
+
         mount ResqueWeb::Engine => "/resque_web"
         get '/admins/notifications/view/:id' => 'admin_notifications#notification_redirect', as: 'admin_view_notification'
         get 'clear_notifs' => 'admin_notifications#clear'
@@ -173,11 +188,18 @@ Rails.application.routes.draw do
 
         get 'search_movies' => 'videos#search_movies'
 
-        get '/admins/videos/home_grid' => 'admins#home_grid', as: 'admin_home_grid'
+
+        get '/admins/videos/grids/all' => 'admins#all_grids', as: 'admin_all_grids'
+        get '/admins/videos/grids/home' => 'admins#home_grid', as: 'admin_home_grid'
+        get '/admins/videos/grids/view/:id' => 'admins#view_grid', as: 'admin_view_grid'
+        post 'admin_update_grid' => 'admins#update_grid'
+        post 'admin_update_grid_image' => 'admins#update_grid_image'
+        get '/admins/videos/grids/new' => 'admins#new_grid', as: 'admin_new_grid'
+        post 'admin_create_grid' => 'admins#create_grid'
+        get 'delete_grid' => 'admins#delete_grid'
+
         post 'add_grid' => 'videos#add_grid'
         post 'update_grid' => 'videos#update_grid'
-        get 'delete_grid' => 'videos#delete_grid'
-        get 'view_grid' => 'videos#view_grid'
 
         get 'refresh_grid_view' => 'videos#refresh_grid'
 

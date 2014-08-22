@@ -1,3 +1,4 @@
+<%= form_tag admin_update_device_serial_path, remote: true, id: 'update_serial_form' do %>
 <div class="modal fade" id="device_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -6,32 +7,47 @@
                 <h4 class="modal-title" id="myModalLabel">My Device</h4>
             </div>
             <div class="modal-body">
-                <%= form_tag admin_update_device_serial_path, remote: true, id: 'update_serial_form' do %>
                 <div class='row'>
-                    <div class='col-sm-6 hidden-xs'>
-                        <%= image_tag 'roku_large.png', style: 'width:100%;' %>
+                    <div class='col-sm-6 hidden-xs text-center'>
+                        <%= image_tag 'roku_large.png', style: 'max-width:100%; max-height: 250px', id: 'device_image' %>
                     </div>
                     <div class='col-sm-6 hidden-xs'>
-                        <div class='form-group'>
+                        <div class='row'>
+                            <div class='col-sm-6'>
+                                <p><strong>Device Type:</strong></br><span id='device_type'></span></p>
+                            </div>
+                            <div class='col-sm-6'>
+                                <p><strong>Date Linked:</strong></br><span id='device_linked'></span></p>
+                            </div>
+                            <div class='col-xs-12'>
+                                <p><strong>Membership:</strong></br><span id='device_status'></span></p>
+                            </div>
+                        </div>
+                        <div class='form-group' id='serial_wrapper'>
                             <label>Device Serial</label>
-                            <%= text_field_tag :serial, '', id: 'device_serial', class: 'form-control' %>
+                            <%= text_field_tag :device_serial, '', id: 'device_serial', class: 'form-control' %>
                             <%= hidden_field_tag :id, '', id: 'device_id' %>
                         </div>
                         <div class='form-group'>
                             <label>Nickname</label>
-                            <%= text_field_tag :name, '', id: 'device_name', class: 'form-control' %>
+                            <%= text_field_tag :device_name, '', id: 'device_name', class: 'form-control' %>
                         </div>
-                        <div class='form-group' id='unlink_btn'>
-                            
+                        <div class='form-group'>
+                            <label>Adult Content</label>
+                            <%= select_tag :device_adult, options_for_select([['Disabled',false],['Enabled',true]]), id: 'device_adult', class: 'form-control' %>
                         </div>
                     </div>
                 </div>
-                <% end %>
+
             </div>
             <div class="modal-footer">
+                <div class='pull-left' id='unlink_btn'>
+
+                </div>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick='$("#update_serial_form").trigger("submit.rails")'>Save changes</button>
+                <%= submit_tag 'Save Changes', class: 'btn btn-primary', data: {disable_with: 'Saving...'} %>
             </div>
         </div>
     </div>
 </div>
+<% end %>

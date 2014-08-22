@@ -21,10 +21,16 @@
             <%= email_field_tag :email, '', class: 'form-control input-md' %>
         </div>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-3">
         <div class="form-group">
             <label for="">Phone Number <span class="text-danger">*</span></label>
             <%= text_field_tag :phone, '', class: 'form-control input-md' %>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="form-group">
+            <label for="">Mobile Phone Number <span class="text-muted"><em>(Optional)</em></span></label>
+            <%= text_field_tag :mobile_phone, '', class: 'form-control input-md' %>
         </div>
     </div>
 </div>

@@ -47,46 +47,74 @@ class SalesRepsController < ApplicationController
 
 	def add_subscription
 		@user = User.find(params[:user_id])
-		@plan = Plan.find(params[:plan_id])
-
+		if params[:plan_id].to_i == 0
+			@device_required = false
+		else
+			@device_required = true
+		end
 
 		if params[:serial].present?
 			@device = Roku.new
-			@device.user_id = @user.id
-			@device.serial = params[:serial]
-			@device.type = 'Roku'
 
-			if @device.valid? && @user.max_devices?
-				@device_errors = true
-				@device.errors.add(:base, 'You have reached the maximum number of devices allowed.')
-			elsif @device.save
-				@device_errors = false
+			@device.serial = params[:serial].upcase
+			if @device.serial.include?('O')
+				@device.serial = @device.serial.gsub!('O','0')
+			end
+			@device.name = params[:name]
+			@device.user_id = @user.id
+			@device.type = 'Roku'
+			@test1 = 'Roku present'
+			if @device.save
 				if Rails.env.development?
 					path = "#{Rails.root}/serials/#{@device.serial}"
 				elsif Rails.env.production?
 					path = "/tmp/serials/#{@device.serial}"
 				end
-
+				@test2 = 'Saved'
 				serial_file = File.open(path,'w+')
 				@device.serial_file = serial_file
 				@device.save
+				@device_errors = false
 			else
+				@test2 = 'Not saved'
 				@device_errors = true
+				@device_error = 'Serial '+@device.errors[:serial].join(", ")
 			end
 		else
-			@device = nil
-			@device_errors = false
+			if @device_required == true
+				@device_errors = true
+				@device_error = 'You must register a device'
+			else
+				@device_errors = false
+			end
 		end
 
 		if @device_errors == false
-			total = @plan.price - @user.balance
+			if params[:plan_id].to_i == 0
+				@tx_errors = false
+				if params[:serial].present?
+					length = Setting.where(name: 'Free Trial Length').first.data
+					transaction = Transaction.new
+					transaction.user_id = @user.id
+					transaction.payment_type = params[:payment_type]
+					transaction.status = 'Paid'
+					transaction.customer_paid = DateTime.now
+					transaction.product_details = YAML.dump({name: 'Free Trial', duration: length, price: 0})
+					transaction.balance_used = 0
+					transaction.sales_rep_id = current_sales_representative.id
+					transaction.save
+				end
+			else
+				@plan = Plan.find(params[:plan_id])
 
-			if total > 0 && params[:payment_type].present?
 				if params[:payment_type] == 'Credit Card'
+
 					# Send requests to the gateway's test servers
 					ActiveMerchant::Billing::Base.mode = :test
 
 					# Create a new credit card object
+
+
 					credit_card = ActiveMerchant::Billing::CreditCard.new(
 						:number     => params[:card],
 						:month      => params[:card_month],
@@ -104,83 +132,77 @@ class SalesRepsController < ApplicationController
 							signature: 	@paypal[:signature]
 						)
 
-
-
-
-
-						response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
+						response = gateway.purchase((@plan.price*100).to_i, credit_card, ip: request.remote_ip)
 
 						if response.success?
-							user = User.find(params[:user_id])
-							user.balance = 0
-							if user.expiry.nil? || user.expiry < Date.today
-								user.expiry = Date.today + @plan.months.months
-							else
-								user.expiry += @plan.months.months
-							end
-							user.save
+
 							transaction = Transaction.new
-							transaction.user_id = user.id
+							transaction.user_id = @user.id
 							transaction.payment_type = 'Credit Card'
 							transaction.paypal_id = response.params['transaction_id']
 							transaction.status = 'Paid'
-							transaction.sales_rep_id = current_sales_representative.id
-							transaction.customer_paid = DateTime.now
-							transaction.plan_id = @plan.id
-
-							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, commission_rate: current_sales_representative.commission_rate})
-
-							unless @device.nil?
+							unless @device.nil? && @device_errors == false
 								transaction.roku_id = @device.id
+								@device.expiry = Date.today + @plan.months.months
 								@device.save
 							end
-							transaction.balance_used = @plan.price - total
+							transaction.customer_paid = DateTime.now
+							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, commission_rate: current_sales_representative.commission_rate})
+							transaction.plan_id = @plan.id
+							transaction.sales_rep_id = current_sales_representative.id
+
+
+							transaction.balance_used = 0
 							transaction.save
-							@success = true
-							TransactionalMailer.order_paid(transaction,user).deliver
+							OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
+							@tx_errors = false
 						else
-							@payment_errors = true
-							@payment_message = response.message
+							@tx_errors = true
+							@tx_error = response.message
+							unless @device.nil?
+								@device.destroy
+							end
 						end
 					else
-						@payment_errors = true
-						@payment_message = 'This credit card is not valid.'
+						@tx_errors = true
+						@tx_error = 'This credit card is not valid: '+credit_card.errors.inspect
+						unless @device.nil?
+							@device.destroy
+						end
 					end
-				else
-					user = User.find(params[:user_id])
-					user.balance = 0
-					if user.expiry.nil? || user.expiry < Date.today
-						user.expiry = Date.today + @plan.months.months
-					else
-						user.expiry += @plan.months.months
-					end
-					user.save
+				elsif params[:payment_type].present?
 					transaction = Transaction.new
-					transaction.user_id = user.id
+					transaction.user_id = @user.id
 					transaction.payment_type = params[:payment_type]
 					transaction.status = 'Pending'
-					transaction.sales_rep_id = current_sales_representative.id
-
+					unless @device.nil? && @device_errors == false
+						transaction.roku_id = @device.id
+					end
 					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, commission_rate: current_sales_representative.commission_rate})
+					transaction.balance_used = 0
 					transaction.plan_id = @plan.id
-
-					transaction.balance_used = @plan.price - total
+					transaction.sales_rep_id = current_sales_representative.id
 					transaction.save
-					@success = true
-					TransactionalMailer.order_created(transaction,user).deliver
+					OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
+					@tx_errors = false
+				else
+					@tx_errors = true
+					@tx_error = 'You must choose a payment type.'
+					unless @device.nil?
+						@device.destroy
+					end
 				end
-			else
-				@payment_errors = true
-				@payment_message = 'You must select a payment type.'
-				unless @device.nil? || @device.valid? == false
-					@device.destroy
-				end
+
 			end
 		end
 	end
 
 	def choose_plan
-		@plan = Plan.find(params[:plan_id])
+		if params[:plan_id].to_i == 0
+			@plan = nil
+		else
+			@plan = Plan.find(params[:plan_id])
+		end
 	end
 
 	def transactions

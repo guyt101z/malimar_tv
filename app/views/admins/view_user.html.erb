@@ -57,13 +57,9 @@
                             </div>
                         </div>
                         <div class='row'>
-                            <div class='col-md-6 form-group'>
+                            <div class='col-md-12 form-group'>
                                 <label>Email Address</label>
                                 <%= text_field_tag :email, @user.email, class: 'form-control' %>
-                            </div>
-                            <div class='col-md-6 form-group'>
-                                <label>View Adult Content?</label>
-                                <%= select_tag :adult, options_for_select([['No',false],['Yes',true]],@user.adult), class: 'form-control' %>
                             </div>
                         </div>
                     </div>
@@ -80,6 +76,16 @@
                         </div>
                     </div>
                     <div class='panel-body'>
+                        <div class='row'>
+                            <div class='col-lg-6 form-group'>
+                                <label>Phone</label>
+                                <%= text_field_tag :phone, @user.phone, class: 'form-control' %>
+                            </div>
+                            <div class='col-lg-6 form-group'>
+                                <label>Mobile Phone</label>
+                                <%= text_field_tag :mobile_phone, @user.mobile_phone, class: 'form-control', placeholder: 'Optional' %>
+                            </div>
+                        </div>
                         <div class='row'>
                             <div class='col-lg-6 form-group'>
                                 <label>Street Address</label>
@@ -132,16 +138,26 @@
                                 <h3 class='panel-title'>Subscription</h3>
                             </div>
                             <div class='panel-body'>
-                                <% if @user.expiry.nil? || @user.expiry < Date.today %>
-                                    <div class='stat-number' id='membership_2'><div class="number">N/A</div>No Subscription</div>
-                                <% else %>
-                                    <div class='stat-number' id='membership_2'><div class="number"><%= @user.expiry.strftime('%Y/%m/%d') %></div><%= distance_of_time_in_words(Date.today, @user.expiry) %></div>
-                                <% end %>
+                                <% rokus = Roku.where(user_id: @user.id) %>
+                                <%
+                                    options = []
+                                    rokus.each do |roku|
+                                        if roku.name.present?
+                                            options.push(["#{roku.nickname(false)} - #{roku.serial}", roku.id])
+                                        else
+                                            options.push(["Roku - #{roku.serial}", roku.id])
+                                        end
+                                    end
+                                %>
+
+                                <div class='form-group' id='sub_serial_wrapper'>
+                                    <label>Choose a Roku <span class="text-danger">*</span></label>
+                                    <%= select_tag :sub_serial, options_for_select(options), class: 'form-control', placeholder: 'Serial Number (Optional)' %>
+                                </div>
                                 <hr>
                                 <div class='row'>
                                     <div class='col-md-4 form-group'>
                                         <label>Add Time</label>
-                                        <%= hidden_field_tag :user_id, @user.id %>
                                         <%= text_field_tag :length, '', class: 'form-control' %>
                                     </div>
                                     <div class='col-md-8 form-group'>
@@ -152,9 +168,6 @@
                             </div>
                             <div class='panel-footer'>
                                 <%= submit_tag 'Update Subscription', class: 'btn btn-primary', style: 'width: 100%', data: {disable_with: 'Updating...'} %>
-                            </div>
-                            <div class='panel-footer'>
-                                <%= link_to 'Cancel Subscription', cancel_user_subscription_path(id: @user.id), class: 'btn btn-danger', style: 'width: 100%', data: {disable_with: 'Cancelling...', confirm: 'Are you sure you want to cancel this subscription?'}, remote: true %>
                             </div>
                         </div>
                         <% end %>
@@ -244,6 +257,11 @@
                     </div>
                     <div class='panel-body'>
                         <div class='row'>
+                            <div class='col-md-12'>
+                                <div class='form-group'>
+                                    <%= text_field_tag :serial, '', class: 'form-control', placeholder: 'Serial Number' %>
+                                </div>
+                            </div>
                             <div class='col-md-6'>
                                 <div class='form-group'>
                                     <%= text_field_tag :name, '', class: 'form-control', placeholder: 'Nickname' %>
@@ -251,7 +269,7 @@
                             </div>
                             <div class='col-md-6'>
                                 <div class='form-group'>
-                                    <%= text_field_tag :serial, '', class: 'form-control', placeholder: 'Serial Number' %>
+                                    <%= select_tag :adult, options_for_select([['Adult Content Disabled',false],['Adult Content Enabled',true]]), class: 'form-control', placeholder: 'Serial Number' %>
                                 </div>
                             </div>
                         </div>
@@ -263,8 +281,6 @@
                         <h3 class='panel-title'>User Devices</h3>
                     </div>
                     <div class='panel-body devices' id='device-list'>
-
-
                         <% @devices.each do |device| %>
                             <% @device = device %>
                             <%= render 'admins/partials/device' %>

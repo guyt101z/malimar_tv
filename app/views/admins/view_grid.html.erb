@@ -1,0 +1,143 @@
+<% content_for :top_level, 'Video CMS' %>
+<% content_for :low_levels, YAML.dump(['Grid Management',@grid.name]) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='col-xs-12'>
+            <%= form_tag admin_update_grid_path, remote: true do %>
+            <div class='panel panel-default'>
+                <div class='panel-heading' style='position:relative'>
+                    <h3 class='panel-title'><%= @grid.weight %> | <%= @grid.name %></h3>
+                </div>
+                <div class='panel-body'>
+                    <div class='row'>
+                        <div class='col-lg-9 col-md-8 col-sm-7'>
+                            <div class='form-group'>
+                                <%= hidden_field_tag :id, @grid.id %>
+                                <label>Grid Name</label>
+                                <%= text_field_tag :name, @grid.name, class: 'form-control' %>
+                            </div>
+                            <div class='row'>
+                                <div class='col-sm-6'>
+                                    <div class='form-group'>
+                                        <label>Grid Type</label>
+                                        <%= select_tag :class_type, options_for_select(['Channel','Show','Movie'], @grid.class_type), class: 'form-control' %>
+                                    </div>
+                                </div>
+                                <div class='col-sm-6'>
+                                    <%
+                                        grid_options = [['Choose a grid',nil]]
+                                        grids = Grid.all.order(name: :asc)
+                                        grids.each do |grid|
+                                            if grid.id != @grid.id
+                                                grid_options.push([grid.name, grid.id])
+                                            end
+                                        end
+                                    %>
+                                    <div class='form-group'>
+                                        <label>Parent Grid</label>
+                                        <%= select_tag :grid_id, options_for_select(grid_options, @grid.grid_id), class: 'form-control' %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-sm-6'>
+                                    <div class='form-group'>
+                                        <label>Homepage?</label>
+                                        <%= select_tag :home_page, options_for_select([['Yes',true],['No',false]], @grid.home_page), class: 'form-control' %>
+                                    </div>
+                                </div>
+                                <div class='col-sm-6'>
+                                    <div class='form-group'>
+                                        <label>Menu?</label>
+                                        <%= select_tag :title_bar, options_for_select([['Yes',true],['No',false]], @grid.title_bar), class: 'form-control' %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-sm-6'>
+                                    <div class='form-group'>
+                                        <label>Content Sort</label>
+                                        <%= select_tag :sort, options_for_select(['Alphabetical','New Arrivals/Episodes','Random'], @grid.sort), class: 'form-control' %>
+                                    </div>
+                                </div>
+                                <div class='col-sm-6'>
+                                    <div class='form-group'>
+                                        <label>Grid Sort Weight</label>
+                                        <%= text_field_tag :weight, @grid.weight, class: 'form-control' %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-sm-6'>
+                                    <div class='form-group'>
+                                        <label>Adult Content?</label>
+                                        <%= select_tag :adult, options_for_select([['Yes',true],['No',false]], @grid.adult), class: 'form-control' %>
+                                    </div>
+                                </div>
+                                <div class='col-sm-6'>
+                                    <div class='form-group'>
+                                        <label>Membership</label>
+                                        <%= select_tag :free, options_for_select([['Free',true],['Premium',false]], @grid.free), class: 'form-control' %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='col-lg-3 col-md-4 col-sm-5'>
+                            <div class='form-group'>
+                                <a class='btn btn-primary btn-block' id='image-clicker'>Upload New Image</a>
+                            </div>
+                            <div class='grid_photo' id='grid_image'>
+                                <%= image_tag @grid.image_url %>
+                                <div class='upload_div' id='upload-wrapper'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='panel-footer text-right'>
+                    <%= link_to 'Delete Grid', delete_grid_path(id: @grid.id, redirect: true), class: 'btn btn-danger', data: {confirm: 'Are you sure you want to delete this grid?', disable_with: 'Deleting...'}, remote: true %>
+                    <%= submit_tag 'Save Grid',  class: 'btn btn-primary', data: {disable_with: 'Saving...'} %>
+                </div>
+            </div>
+            <% end %>
+            <%= form_tag admin_update_grid_image_path, style: 'display:none', remote: true do %>
+                <%= file_field_tag :image, style: 'display:none' %>
+                <%= hidden_field_tag :id, @grid.id %>
+            <% end %>
+            <%= render 'admins/cms_partials/view_grid_details' %>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $('#image-clicker').click(function() {
+        $('#image').click();
+    });
+    $('#image').fileupload({
+        dataType: "script",
+        add: function(e, data) {
+            data.context = $(tmpl("template-upload", data.files[0]));
+            $('.progress').remove()
+            $('#upload-wrapper').html(data.context);
+            return data.submit();
+        },
+        progress: function(e, data) {
+            var progress;
+            if (data.context) {
+                progress = parseInt(data.loaded / data.total * 100, 10);
+                return data.context.find('.progress-bar').attr('aria-valuenow', progress).css('width', progress+'%');
+            }
+        },
+        fail: function(e,data) {
+            if (data.context) {
+                $
+                return data.context.find('.progress-bar').css('width','100%').removeClass('progress-bar-info').addClass('progress-bar-danger')
+            }
+        },
+        done: function(e,data) {
+            if (data.context) {
+                return data.context.find('.progress-bar').css('width','100%').removeClass('progress-bar-info').addClass('progress-bar-success')
+            }
+        }
+    });
+</script>

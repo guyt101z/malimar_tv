@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140819183915) do
+ActiveRecord::Schema.define(version: 20140822170542) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -139,6 +139,21 @@ ActiveRecord::Schema.define(version: 20140819183915) do
     t.boolean  "front_page"
     t.string   "banner"
     t.boolean  "adult"
+    t.integer  "grid_id"
+  end
+
+  create_table "client_migration_items", force: true do |t|
+    t.string   "error"
+    t.integer  "migration_id"
+    t.boolean  "completed"
+    t.string   "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "client_migrations", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "daily_data", force: true do |t|
@@ -182,6 +197,7 @@ ActiveRecord::Schema.define(version: 20140819183915) do
     t.string   "name"
     t.date     "expiry"
     t.string   "serial_file"
+    t.boolean  "adult"
   end
 
   create_table "episodes", force: true do |t|
@@ -202,6 +218,22 @@ ActiveRecord::Schema.define(version: 20140819183915) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "grids", force: true do |t|
+    t.integer  "grid_id"
+    t.string   "name"
+    t.boolean  "adult"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "title_bar"
+    t.boolean  "home_page"
+    t.integer  "weight"
+    t.string   "sort"
+    t.string   "image"
+    t.string   "class_type"
+    t.boolean  "free"
+    t.string   "file"
   end
 
   create_table "impressions", force: true do |t|
@@ -276,6 +308,7 @@ ActiveRecord::Schema.define(version: 20140819183915) do
     t.boolean  "front_page"
     t.string   "banner"
     t.boolean  "adult"
+    t.integer  "grid_id"
   end
 
   create_table "note_files", force: true do |t|
@@ -371,6 +404,7 @@ ActiveRecord::Schema.define(version: 20140819183915) do
     t.boolean  "front_page"
     t.string   "banner"
     t.boolean  "adult"
+    t.integer  "grid_id"
   end
 
   create_table "support_attachments", force: true do |t|
@@ -479,17 +513,32 @@ ActiveRecord::Schema.define(version: 20140819183915) do
     t.string   "photo"
     t.datetime "last_seen"
     t.text     "note"
-    t.date     "expiry"
     t.string   "timezone"
     t.string   "refer_code"
     t.float    "balance"
     t.boolean  "mailchimp"
     t.boolean  "adult"
     t.integer  "rep_id"
+    t.string   "mobile_phone"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+
+  create_table "vod_migration_items", force: true do |t|
+    t.string   "error"
+    t.integer  "migration_id"
+    t.boolean  "completed"
+    t.string   "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "vod_migrations", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "file"
+  end
 
   create_table "withdrawals", force: true do |t|
     t.integer  "sales_rep_id"

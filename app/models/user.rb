@@ -89,12 +89,30 @@ class User < ActiveRecord::Base
     end
 
     def premium?
-        if expiry.nil?
-            return false
-        elsif expiry < Date.today
-            return false
+        premium_devices = 0
+
+        devices = Roku.where(user_id: id)
+        devices.each do |device|
+            if device.expiry != nil && device.expiry > Date.today
+                premium_devices += 1
+            end
+        end
+
+        return premium_devices > 0
+    end
+
+    def expiry
+        if premium?
+            devices = Roku.where(user_id: id)
+            latest_date = Date.today
+            devices.each do |device|
+                if device.expiry != nil && device.expiry > latest_date
+                    latest_date = device.expiry
+                end
+            end
+            return latest_date.to_date
         else
-            return true
+            return nil
         end
     end
 

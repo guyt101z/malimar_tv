@@ -94,36 +94,62 @@ class Movie < ActiveRecord::Base
 
             if device.nil?
                 return {success: false, code: 200, message: 'Invalid token'}
-            elsif type != 'Roku' && device.expired?
-                return {success: false, code: 204, message: 'Expired token'}
             else
-                unless available?(type.downcase)
-                    return {success: false, code: 202, message: 'Not available on this device'}
-                else
-                    if free == false
-                        user = User.find(device.user_id)
-                        if user.premium?
-                            if adult == true && user.adult == true
+                if type == 'Roku'
+                    unless available?(type.downcase)
+                        return {success: false, code: 202, message: 'Not available on this device'}
+                    else
+                        if free == false
+                            if device.premium?
+                                if adult == true && device.adult == true
+                                    return {success: true, code: 100, message: 'Success'}
+                                elsif adult == true && (device.adult.nil? || device.adult == false)
+                                    return {success: false, code: 205, message: 'Device is not permitted to view Adult Content'}
+                                else
+                                    return {success: true, code: 100, message: 'Success'}
+                                end
+                            else
+                                return {success: false, code: 206, message: 'Device is not premium'}
+                            end
+                        else
+                            if adult == true && device.adult == true
                                 return {success: true, code: 100, message: 'Success'}
-                            elsif adult == true && (user.adult.nil? || user.adult == false)
-                                return {success: false, code: 205, message: 'Account is not permitted to view Adult Content'}
+                            elsif adult == true && (device.adult.nil? || device.adult == false)
+                                return {success: false, code: 205, message: 'Device is not permitted to view Adult Content'}
                             else
                                 return {success: true, code: 100, message: 'Success'}
                             end
-                        else
-                            return {success: false, code: 206, message: 'Account is not premium'}
                         end
+                    end
+                else
+                    user = User.find(device.user_id)
+                    unless available?(type.downcase)
+                        return {success: false, code: 202, message: 'Not available on this device'}
                     else
-                        user = User.find(device.user_id)
-                        if adult == true && user.adult == true
-                            return {success: true, code: 100, message: 'Success'}
-                        elsif adult == true && (user.adult.nil? || user.adult == false)
-                            return {success: false, code: 205, message: 'Account is not permitted to view Adult Content'}
+                        if free == false
+                            if user.premium?
+                                if adult == true && device.adult == true
+                                    return {success: true, code: 100, message: 'Success'}
+                                elsif adult == true && (device.adult.nil? || device.adult == false)
+                                    return {success: false, code: 205, message: 'Device is not permitted to view Adult Content'}
+                                else
+                                    return {success: true, code: 100, message: 'Success'}
+                                end
+                            else
+                                return {success: false, code: 206, message: 'Device is not premium'}
+                            end
                         else
-                            return {success: true, code: 100, message: 'Success'}
+                            if adult == true && device.adult == true
+                                return {success: true, code: 100, message: 'Success'}
+                            elsif adult == true && (device.adult.nil? || device.adult == false)
+                                return {success: false, code: 205, message: 'Device is not permitted to view Adult Content'}
+                            else
+                                return {success: true, code: 100, message: 'Success'}
+                            end
                         end
                     end
                 end
+
             end
         else
             return {success: false, code: 201, message: 'Invalid device type'}
@@ -132,5 +158,9 @@ class Movie < ActiveRecord::Base
 
     def roku_url
         return '/api/v1/roku/movie/'+id.to_s+'?serial=SERIAL'
+    end
+
+    def feed_type
+        return 'Movie'
     end
 end

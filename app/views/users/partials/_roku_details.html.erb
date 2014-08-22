@@ -5,6 +5,9 @@
     <div class='col-sm-6'>
         <p><strong>Date Linked:</strong></br><%= @device.created_at.strftime('%B %-d, %Y') %></p>
     </div>
+    <div class='col-xs-12'>
+        <p><strong>Membership:</strong></br><%= @device.status %></p>
+    </div>
 </div>
 <%= form_tag update_roku_path, remote: true, id: 'update_serial_form' do %>
     <div class='row'>

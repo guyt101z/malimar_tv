@@ -1,9 +1,10 @@
-<% if @user.errors.any? %>
-    addNotification('error', 'There was an error saving the balance', 'Error', 'exclamation-circle')
+<% if @success == false %>
+    addNotification('error', '<%= raw(@message) %>', 'Error', 'exclamation-circle')
 <% else %>
     $('#membership_1').html('Premium')
+    $('#device-list').html('<%= escape_javascript(render("admins/partials/device_list")) %>')
     $('#membership_2').html('<div class="number"><%= @user.expiry.strftime("%Y/%m/%d") %></div><%= distance_of_time_in_words(Date.today, @user.expiry) %>')
-    addNotification('success', 'Subscription updated', 'Success', 'check-circle')
+    addNotification('success', 'Subscription updated: <%= @message %>', 'Success', 'check-circle')
     $('#length').val('')
     $('#period').val('days')
 <% end %>

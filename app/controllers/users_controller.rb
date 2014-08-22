@@ -51,26 +51,47 @@ class UsersController < ApplicationController
 	def add_subscription
 		@plan = Plan.find(params[:plan_id])
 
-		if params[:serial].present?
+		if params[:new_serial].present?
 			@device = Roku.new
 			@device.user_id = current_user.id
-			@device.serial = params[:serial]
+			@device.serial = params[:new_serial].upcase
+			if @device.serial.include?('O')
+				@device.serial = @device.serial.gsub!('O','0')
+			end
 
-			if @device.valid? && current_user.max_devices?
-				@device_errors = true
-				@device.errors.add(:base, 'You have reached the maximum number of devices allowed.')
-			elsif @device.valid?
+			if @device.valid?
 				@device_errors = false
+				@device.type = 'Roku'
+				if @device.save
+					if Rails.env.development?
+						path = "#{Rails.root}/serials/#{@device.serial}"
+					elsif Rails.env.production?
+						path = "/tmp/serials/#{@device.serial}"
+					end
+
+					serial_file = File.open(path,'w+')
+					@device.serial_file = serial_file
+					@device.save
+					@device_errors = false
+				else
+					@device_errors = true
+				end
 			else
 				@device_errors = true
+				@device_error = 'Serial '+ @device.errors[:serial].join(", ")
 			end
+		elsif params[:serial].present?
+			@device = Device.find(params[:serial])
+			@device_errors = false
 		else
 			@device = nil
-			@device_errors = false
+			@device_errors = true
+			@device_error = 'You must choose or register a Roku'
 		end
 
 		if @device_errors == false
 			if params[:refer_code].present?
+				@test1 = 'Test'
 				friend = User.where(refer_code: params[:refer_code]).first
 				if friend.nil? || friend.id == current_user.id
 					@referral_errors = true
@@ -119,18 +140,20 @@ class UsersController < ApplicationController
 						if response.success?
 							user = current_user
 							user.balance = 0
-							if user.expiry.nil? || user.expiry < Date.today
-								user.expiry = Date.today + @plan.months.months
+							if @device.expiry.nil? || @device.expiry < Date.today
+								@device.expiry = Date.today + @plan.months.months
 							else
-								user.expiry += @plan.months.months
+								@device.expiry += @plan.months.months
 							end
 							user.save
+							@device.save
 					    	transaction = Transaction.new
 							transaction.user_id = user.id
 							transaction.payment_type = 'Credit Card'
 							transaction.paypal_id = response.params['transaction_id']
 							transaction.status = 'Paid'
 							transaction.customer_paid = DateTime.now
+							transaction.roku_id = @device.id
 							unless friend.nil?
 								transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
 								@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)
@@ -153,29 +176,31 @@ class UsersController < ApplicationController
 							transaction.save
 							@success = true
 							flash[:success] = 'Your subscription has been successfully processed.'
-							OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
+							OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
 							TransactionalMailer.order_paid(transaction, user).deliver
 						else
 					    	@payment_errors = true
 							@payment_message = response.message
+							if params[:new_serial].present?
+								@device.destroy
+							end
 						end
 					else
 						@payment_errors = true
 						@payment_message = 'This credit card is not valid.'
+						if params[:new_serial].present?
+							@device.destroy
+						end
 					end
 				else
 					user = current_user
 					user.balance = 0
-					if user.expiry.nil? || user.expiry < Date.today
-						user.expiry = Date.today + @plan.months.months
-					else
-						user.expiry += @plan.months.months
-					end
 					user.save
 					transaction = Transaction.new
 					transaction.user_id = user.id
 					transaction.payment_type = params[:payment_type]
 					transaction.status = 'Pending'
+					transaction.roku_id = @device.id
 					unless friend.nil?
 						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
 						@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)
@@ -194,23 +219,25 @@ class UsersController < ApplicationController
 					transaction.save
 					@success = true
 					flash[:success] = 'Your order has been processed. Please send your payment to activate your subscription.'
-					OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
+					OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
 					TransactionalMailer.order_created(transaction, user).deliver
 				end
 			elsif total <= 0
 				user = current_user
 				user.balance = user.balance - @plan.price
-				if user.expiry.nil? || user.expiry < Date.today
-					user.expiry = Date.today + @plan.months.months
+				if @device.expiry.nil? || @device.expiry < Date.today
+					@device.expiry = Date.today + @plan.months.months
 				else
-					user.expiry += @plan.months.months
+					@device.expiry += @plan.months.months
 				end
 				user.save
+				@device.save
 				transaction = Transaction.new
 				transaction.user_id = user.id
 				transaction.payment_type = 'Previous Balance'
 				transaction.status = 'Paid'
 				transaction.balance_used = @plan.price
+				transaction.roku_id = @device.id
 				unless friend.nil?
 					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
 					@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)
@@ -230,33 +257,17 @@ class UsersController < ApplicationController
 					@device.save
 				end
 				transaction.save
-				OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
+				OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
 			else
 				@payment_errors = true
 				@payment_message = 'You must select a payment type.'
+				if params[:new_serial].present?
+					@device.destroy
+				end
 			end
 		end
 
 
-	end
-
-	def start_free_trial
-		user = current_user
-		unless user.expiry.nil?
-			flash[:error] = 'You are not qualified for the free trial.'
-		else
-			length = Setting.where(name: 'Free Trial Length').first.data
-			user.expiry = Date.today + length.to_i.days
-			user.save
-			transaction = Transaction.new
-			transaction.user_id = user.id
-			transaction.status = 'Paid'
-			transaction.product_details = YAML.dump({name: 'Free Trial', price: 0, duration: length})
-			transaction.payment_type = 'N/A'
-			transaction.save
-			flash[:success] = 'Your free trial has started. It will end on '+user.expiry.strftime('%B %-d, %Y')+'.'
-		end
-		redirect_to '/account'
 	end
 
 	def add_note
@@ -426,7 +437,10 @@ class UsersController < ApplicationController
 	def update_roku
 		@device = Device.find(params[:id])
 		if @device.type == 'Roku'
-			@device.serial = params[:serial]
+			@device.serial = params[:serial].upcase
+			if @device.serial.include?('O')
+				@device.serial = @device.serial.gsub!('O','0')
+			end
 		end
 		@device.name = params[:name]
 		@device.save
@@ -484,11 +498,12 @@ class UsersController < ApplicationController
 		@user.country = params[:country]
 		@user.zip = params[:zip]
 		@user.phone = params[:phone]
+		@user.mobile_phone = params[:mobile_phone]
 
 		if params[:timezone].present?
 			@user.timezone = params[:timezone]
 		else
-			user.timezone = nil
+			@user.timezone = nil
 		end
 		@user.save
 	end
@@ -514,100 +529,84 @@ class UsersController < ApplicationController
 
 	def free_trial_1
 		if params[:serial].present?
-			serial = params[:serial].upcase
-			if serial.include?('O')
-				serial = serial.gsub!('O','0')
-			end
 			@device = Device.new
-			@device.serial = serial
 		else
-			@device = nil
+			@device.nil?
+			@device_errors = true
+			@device_error = 'You must register a device'
 		end
 
+		unless @device.nil?
+			@user = User.new
+			@user.first_name = params[:first_name]
+			@user.last_name = params[:last_name]
+			@user.mailchimp = params[:mailchimp]
+			@user.email = params[:email]
+			@user.address_1 = params[:address_1]
+			@user.address_2 = params[:address_2]
+			@user.city = params[:city]
+			@user.state = params[:state]
+			@user.country = params[:country]
+			@user.zip = params[:zip]
+			@user.phone = params[:phone]
+			@user.mobile_phone = params[:mobile_phone]
 
-		@user = User.new
-		@user.first_name = params[:first_name]
-		@user.last_name = params[:last_name]
-		@user.email = params[:email]
-		@user.phone = params[:phone]
-		@user.country = params[:country]
-		@user.state = params[:state]
-		@user.city = params[:city]
-		@user.zip = params[:zip]
-		@user.address_1 = params[:address_1]
-		@user.address_2 = params[:address_2]
-		@user.password = params[:password]
-		@user.password_confirmation = params[:password_confirmation]
-		if params[:mailchimp].present?
-			@user.mailchimp = true
-		end
-		code = SecureRandom.hex(5).upcase
-		until User.where(refer_code: code).any? == false
+			@user.password = params[:password]
+			@user.password_confirmation = params[:password_confirmation]
+
 			code = SecureRandom.hex(5).upcase
-		end
-		@user.refer_code = code
-
-		if @user.valid?
-			if @user.mailchimp == true
-				mailchimp = Mailchimp::API.new(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:api_key])
-				mailchimp.lists.subscribe(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:list_id], { "email" => @user.email})
+			until User.where(refer_code: code).count < 1
+				code = SecureRandom.hex(5).upcase
 			end
-			if @device.nil?
-				@success = true
-				@user.save
-				sign_in(@user)
+			@user.refer_code = code
 
-				length = Setting.where(name: 'Free Trial Length').first.data
-				@user.expiry = Date.today + length.to_i.days
-				@user.save
-				transaction = Transaction.new
-				transaction.user_id = @user.id
-				transaction.status = 'Paid'
-				transaction.product_details = YAML.dump({name: 'Free Trial', price: 0, duration: length})
-				transaction.payment_type = 'N/A'
-				transaction.save
-				flash[:success] = 'Your free trial has started. It will end on '+@user.expiry.strftime('%B %-d, %Y')+'.'
-			else
-				@user.save
+			if @user.save
+				@user_errors = false
 				@device.user_id = @user.id
 				@device.type = 'Roku'
-
+				@device.serial = params[:serial].upcase
+				if @device.serial.include?('O')
+					@device.serial = @device.serial.gsub!('O','0')
+				end
+				@device.name = params[:nickname]
+				@device.expiry = Date.today + Setting.where(name: 'Free Trial Length').first.data.to_i.days
 				if @device.save
-					@success = true
-					@device_present = true
-
 					if Rails.env.development?
-						path = "#{Rails.root}/serials/#{serial}"
+						path = "#{Rails.root}/serials/#{@device.serial}"
 					elsif Rails.env.production?
-						path = "/tmp/serials/#{serial}"
+						path = "/tmp/serials/#{@device.serial}"
 					end
 
 					serial_file = File.open(path,'w+')
 					@device.serial_file = serial_file
 					@device.save
+					@device_errors = false
 
-					sign_in(@user)
-
-					length = Setting.where(name: 'Free Trial Length').first.data
-					@user.expiry = Date.today + length.to_i.days
-					@user.save
 					transaction = Transaction.new
 					transaction.user_id = @user.id
+					transaction.payment_type = params[:payment_type]
 					transaction.status = 'Paid'
-					transaction.product_details = YAML.dump({name: 'Free Trial', price: 0, duration: length})
 					transaction.customer_paid = DateTime.now
-					transaction.payment_type = 'N/A'
+					transaction.product_details = YAML.dump({name: 'Free Trial', duration: Setting.where(name: 'Free Trial Length').first.data.to_i, price: 0})
+					transaction.balance_used = 0
+					transaction.roku_id = @device.id
 					transaction.save
-					flash[:success] = 'Your free trial has started. It will end on '+@user.expiry.strftime('%B %-d, %Y')+'.'
+					begin
+						if @user.mailchimp == true
+							mailchimp = Mailchimp::API.new(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:api_key])
+							mailchimp.lists.subscribe(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:list_id], {'EMAIL' => @user.email})
+						end
+					rescue
+
+					end
 				else
-					@success = false
+					@device_errors = true
+					@device_error = 'Serial ' + @device.errors[:serial].join(', ')
 					@user.destroy
 				end
+			else
+				@user_errors = true
 			end
-		else
-			@success = false
-			@user.destroy
 		end
-
 	end
 end

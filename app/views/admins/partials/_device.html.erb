@@ -1,4 +1,4 @@
-<div class="col-sm-6" onclick='viewDevice(<%= @device.id %>)' id='device_<%= @device.id %>'>
+<div class="col-lg-4 col-md-6" onclick='viewDevice(<%= @device.id %>)' id='device_<%= @device.id %>' style='height: 250px'>
     <div class="form-group">
         <label for="">&nbsp;</label>
         <div class="device-preview">
@@ -17,7 +17,19 @@
             <% if @device.type == 'Roku' %>
                 <strong>Serial:</strong> <%= @device.serial %>
             <% else %>
-                <strong>Token:</strong> <%= @device.serial %>
+                <strong>Serial:</strong> N/A
+            <% end %>
+        </div>
+        <div class="text-grey text-light">
+            <% if @device.type == 'Roku' %>
+                <strong><%= @device.status %></strong>
+            <% else %>
+                <% user = User.find(@device.user_id) %>
+                <% if user.premium? %>
+                    Active
+                <% else %>
+                    Inactive
+                <% end %>
             <% end %>
         </div>
         <% if @device.expiry.nil? || @device.expiry >= Date.today %>

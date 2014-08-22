@@ -41,7 +41,11 @@
 jwplayer("video_wrapper").setup({
     sources: [
         {file: "<%= @movie.rtmp_url %>"},
+        <% if @movie.stream_url.include?('/playlist.m3u8') %>
         {file: "<%= @movie.stream_url %>"}
+        <% else %>
+        {file: "<%= @movie.stream_url %>/playlist.m3u8"}
+        <% end %>
     ],
     image: "<%= @movie.image_url %>",
     title:"<%= @movie.name %>",
@@ -52,7 +56,11 @@ jwplayer("video_wrapper").setup({
 <% else %>
 jwplayer("video_wrapper").setup({
     sources: [
+        <% if @movie.stream_url.include?('/playlist.m3u8') %>
         {file: "<%= @movie.stream_url %>"}
+        <% else %>
+        {file: "<%= @movie.stream_url %>/playlist.m3u8"}
+        <% end %>
     ],
     image: "<%= @movie.image_url %>",
     title:"<%= @movie.name %>",

@@ -323,7 +323,8 @@
 .grid_body {
     height: 250px;
     padding: 5px 0;
-    position: relative
+    position: relative;
+    overflow-y: scroll;
 }
 .movie_wrapper {
     height: 220px;

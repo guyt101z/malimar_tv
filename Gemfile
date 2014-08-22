@@ -61,7 +61,9 @@ gem 'redis'
 gem 'resque'
 gem 'resque-web', require: 'resque_web'
 
+gem 'httparty'
 gem 'nokogiri'
+gem 'crack'
 gem 'searchkick'
 
 gem 'impressionist'

@@ -1,0 +1,7 @@
+<% if @redirect == true %>
+    <% flash[:success] = 'Grid has been deleted' %>
+    window.location = '<%= admin_home_grid_path %>'
+<% else %>
+    $('#grid_<%= @id %>').remove()
+    addNotification('success','Grid has been deleted','Success', 'check-circle')
+<% end %>

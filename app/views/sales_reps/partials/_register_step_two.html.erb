@@ -32,6 +32,11 @@
 			</div>
 			<% end %>
 		</div>
+		<div class='row'>
+			<div class='col-md-6 col-sm-12 col-centered'>
+				<%= link_to 'Free Trial', sales_rep_choose_plan_path(plan_id: 0), class: 'btn btn-lg btn-primary', style: 'width:100%;', disable_with: 'Loading...', remote: true %>
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -55,8 +60,8 @@
 							</div>
 						</div>
 						<hr>
-						<h4 style='margin-top:0;'>Payment Details</h4>
-						<div class='form-group'>
+						<h4 style='margin-top:0;' id='payment-title'>Payment Details</h4>
+						<div class='form-group' id='payment-body'>
 							<%= select_tag :payment_type, options_for_select([['Payment Method', nil],
 																	'Credit Card',
 																	'Cheque',

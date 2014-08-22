@@ -1,0 +1,2 @@
+class ClientMigrationsController < ApplicationController
+end

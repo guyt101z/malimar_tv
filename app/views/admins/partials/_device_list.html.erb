@@ -1,0 +1,5 @@
+<% @devices = Device.where(user_id: @user.id) %>
+<% @devices.each do |device| %>
+    <% @device = device %>
+    <%= render 'admins/partials/device' %>
+<% end %>

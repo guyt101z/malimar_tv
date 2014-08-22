@@ -1,0 +1,13 @@
+$('#name-error').remove()
+$('#weight-error').remove()
+
+<% if @grid.errors.any? %>
+    <% if @grid.errors[:name].any? %>
+        $('#name').after('<div class="text-danger" id="name-error">Name <%= @grid.errors[:name].join(", ") %></div>')
+    <% end %>
+    <% if @grid.errors[:weight].any? %>
+        $('#name').after('<div class="text-danger" id="name-error">Name <%= @grid.errors[:name].join(", ") %></div>')
+    <% end %>
+<% else %>
+    window.location = '<%= admin_view_grid_path(id: @grid.id) %>'
+<% end %>

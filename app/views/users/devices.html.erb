@@ -42,7 +42,7 @@
                                             <% end %></div>
                                             <div><span class="fz12 text-success glyphicon glyphicon-ok"></span> Status <span class="text-success text-sans-semi fz12-5">Available</span></div>
                                         </td>
-                                        <td><div class="fz12-5">Serial: <%= device.serial %></div></td>
+                                        <td><div class="fz12-5">Serial: <%= device.serial %><br/><%= device.status %></div></td>
                                         <td class="w180 text-center">
                                             <button onclick='viewDevice(<%= device.id %>)' type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></button>
                                             <%= link_to raw('<span class="glyphicon glyphicon-remove"></span>'), unlink_device_path(id: device.id), class: "btn btn-default", data: {disable_with: '...', confirm: 'Are you sure you want to unlink this device?'}, remote: true %>

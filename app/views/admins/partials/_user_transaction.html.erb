@@ -6,6 +6,22 @@
                 <h3 class='panel-title'>Add Subscription</h3>
             </div>
             <div class='panel-body'>
+                <% rokus = Roku.where(user_id: @user.id) %>
+                <%
+                    options = []
+                    rokus.each do |roku|
+                        if roku.name.present?
+                            options.push(["#{roku.nickname(false)} - #{roku.serial}", roku.id])
+                        else
+                            options.push(["Roku - #{roku.serial}", roku.id])
+                        end
+                    end
+                %>
+
+                <div class='form-group' id='tx_serial_wrapper'>
+                    <label>Choose a Roku <span class="text-danger">*</span></label>
+                    <%= select_tag :tx_serial, options_for_select(options), class: 'form-control' %>
+                </div>
                 <div class="form-group">
                     <label for="">Plan <span class="text-danger">*</span></label>
                     <%
@@ -24,7 +40,7 @@
                 <div id='credit_form' style='display:none'>
                     <div class="form-group">
                         <label for="">Card Holder’s Name <span class="text-danger">*</span></label>
-                        <%= text_field_tag :card_name, '', class: 'form-control input-md' %>
+                        <%= text_field_tag :card_name, @user.name, class: 'form-control input-md' %>
                     </div>
                     <div class="form-group">
                         <label for="">Credit Card Number <span class="text-danger">*</span></label>
@@ -80,6 +96,11 @@
             <div class='panel-body' id='tx_details'>
                 <% @plan = @plans.first %>
                 <% @total = @plan.price - @user.balance %>
+                <% if rokus.any? %>
+                    <% @device = Roku.find(rokus[0]) %>
+                <% else %>
+                    <% @device = Device.new %>
+                <% end %>
                 <%= render 'admins/partials/transaction_details' %>
             </div>
             <div class='panel-footer'>
@@ -102,7 +123,14 @@
         $('#tx_details').html("<div class='stat-number'><div class='number'><i class='fa fa-refresh fa-spin'></i></div>Loading Details</div>")
 
         $.ajax({
-            url: '/admin_choose_plan?user_id=<%= @user.id %>&plan_id='+$(this).val()
+            url: '/admin_choose_plan?plan_id='+$(this).val()+'&roku_id='+$('#tx_serial').val()
+        })
+    })
+    $('#tx_serial').change(function(){
+        $('#tx_details').html("<div class='stat-number'><div class='number'><i class='fa fa-refresh fa-spin'></i></div>Loading Details</div>")
+
+        $.ajax({
+            url: '/admin_choose_plan?plan_id='+$('#plan_id').val()+'&roku_id='+$(this).val()
         })
     })
 </script>

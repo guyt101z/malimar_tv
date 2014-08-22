@@ -1,17 +1,49 @@
-<table class='table table-hover table-bordered' id='tx_table'>
+<table class='table table-list fz11-5 table-hover' id='tx_table'>
     <thead><tr>
-        <th>ID</th>
-        <th>Date</th>
-        <th>Amount</th>
-        <th>Status</th>
+        <td>ID
+            <span class="sort">
+                <span class="fa fa-angle-up"></span>
+                <span class="fa fa-angle-down"></span>
+            </span>
+        </td>
+        <td>Date
+            <span class="sort">
+                <span class="fa fa-angle-up"></span>
+                <span class="fa fa-angle-down"></span>
+            </span>
+        </td>
+        <td>Roku
+            <span class="sort">
+                <span class="fa fa-angle-up"></span>
+                <span class="fa fa-angle-down"></span>
+            </span>
+        </td>
+        <td>Amount
+            <span class="sort">
+                <span class="fa fa-angle-up"></span>
+                <span class="fa fa-angle-down"></span>
+            </span>
+        </td>
+        <td>Status
+            <span class="sort">
+                <span class="fa fa-angle-up"></span>
+                <span class="fa fa-angle-down"></span>
+            </span>
+        </td>
     </tr></thead>
     <tbody>
         <% @transactions = Transaction.where(user_id: @user.id) %>
         <% @transactions.each do |transaction| %>
+            <% device = Roku.where(id: transaction.roku_id).first %>
             <% details = YAML.load(transaction.product_details) %>
-            <tr onclick='window.location = "<%= view_tx_path(id: transaction.id) %>"'>
-                <th><%= transaction.id %></th>
+            <tr onclick='window.location = "<%= view_tx_path(id: transaction.id) %>"' style='cursor:pointer'>
+                <td><%= transaction.id %></td>
                 <td><%= transaction.created_at.strftime('%Y/%m/%d') %></td>
+                <% unless device.nil? %>
+                    <td><%= device.serial %></td>
+                <% else %>
+                    <td>Device Not Found</td>
+                <% end %>
                 <td>$<%= number_with_precision(details[:price], precision: 2) %></td>
                 <td class='<%= transaction.status.downcase %>'><%= transaction.status %></td>
             </tr>

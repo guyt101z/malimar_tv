@@ -21,8 +21,7 @@ $('#zip').removeClass('has-error')
 $('#password-error').remove()
 $('#password').removeClass('has-error')
 
-$('#serial-error').remove()
-$('#serial').removeClass('has-error')
+$('#device-error').remove()
 
 <% unless @user.id.nil? %>
 	$('#user_id').val(<%= @user.id %>)
@@ -62,13 +61,14 @@ $('#serial').removeClass('has-error')
 		$('#password').addClass('has-error').after('<span class="text-danger" id="password-error">Password <%= @user.errors[:password].join(", ") %>')
 	<% end %>
 
-	<% if @device != nil %>
-		<% unless @device.id.nil? %>
+
+		<% unless @device.nil? %>
 			$('#device_id').val(<%= @device.id %>)
 		<% end %>
-		<% if @device.errors[:serial].present? %>
-			$('#serial').addClass('has-error').after('<span class="text-danger" id="serial-error">Serial <%= @device.errors[:serial].join(", ") %>')
-		<% end %>
+
+
+	<% if @device_errors == true %>
+		$('#device_title').after('<div class="text-danger" id="device-error"><%= @device_error %></div>')
 	<% end %>
 
 	<% if @note != nil %>

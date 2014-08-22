@@ -42,7 +42,7 @@ class SalesRepresentative < ActiveRecord::Base
 
         transactions.each do |transaction|
             details = YAML.load(transaction.product_details)
-            total += details[:price]*(details[:commission_rate]/100) unless transaction.status == 'Cancelled'
+            total += details[:price]*(details[:commission_rate]/100)
         end
 
         return total

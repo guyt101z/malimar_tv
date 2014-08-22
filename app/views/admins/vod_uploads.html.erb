@@ -1,0 +1,65 @@
+<% content_for :top_level, 'Migrations' %>
+<% content_for :low_levels, YAML.dump(['VOD']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='panel panel-default'>
+            <div class='panel-heading'>
+                <h3 class='panel-title'>Migrated Grids</h3>
+            </div>
+            <div class='panel-body'>
+                <table id='migrations' class='table table-list fz11-5 table-hover'>
+                    <thead><tr>
+                        <td>ID
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Grid Name
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Type
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Time Uploaded
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                        <td>Status
+                            <span class="sort">
+                                <span class="fa fa-angle-up"></span>
+                                <span class="fa fa-angle-down"></span>
+                            </span>
+                        </td>
+                    </tr></thead>
+                    <% Grid.where('file IS NOT NULL').each do |migration| %>
+                        <% items = VodMigrationItem.where(migration_id: migration.id) %>
+                        <tr onclick='window.location = "<%= view_vod_upload_path(id: migration.id) %>"' style='cursor:pointer'>
+                            <td><%= migration.id %></td>
+                            <td><%= migration.name %></td>
+                            <td><%= migration.class_type %></td>
+                            <td><%= migration.updated_at %></td>
+                            <% if items.count != 0 %>
+                                <td><%= number_with_precision(items.where(completed: true).count/items.count, precision: 2) %>%</td>
+                            <% else %>
+                                <td>0.00%</td>
+                            <% end %>
+                        </tr>
+                    <% end %>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#all_vod').addClass('active')
+    $('#migrations').dataTable()
+</script>

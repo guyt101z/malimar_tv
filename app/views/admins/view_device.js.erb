@@ -1,6 +1,22 @@
 $('#serial_message').remove()
-$('#device_serial').val('<%= @device.serial %>')
 $('#device_name').val('<%= @device.name %>')
+<% if @device.adult.nil? %>
+    $('#device_adult').val('false')
+<% else %>
+    $('#device_adult').val('<%= @device.adult %>')
+<% end %>
 $('#device_id').val(<%= @device.id %>)
+$('#device_image').attr('src','/assets/<%= @device.type.downcase %>_large.png')
 $('#device_modal').modal('show')
+$('#device_type').html('<%= @device.humanized_type %>')
+$('#device_linked').html('<%= @device.created_at.strftime('%B %-d, %Y') %>')
+<% if @device.type == 'Roku' %>
+    $('#device_status').html('<%= @device.status %>')
+    $('#device_serial').val('<%= @device.serial %>')
+    $('#serial_wrapper').show()
+<% else %>
+    $('#device_status').html('N/A')
+    $('#device_serial').val('N/A')
+    $('#serial_wrapper').hide()
+<% end %>
 $('#unlink_btn').html('<%= link_to "Unlink Device", admin_unlink_device_path(id: @device.id), remote: true, class: "btn btn-danger", style: "width: 100%", data: {confirm: "Are you sure you want to delete this device?"} %>')
