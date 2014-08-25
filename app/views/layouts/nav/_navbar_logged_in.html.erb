@@ -44,7 +44,7 @@
 	<div class="container">
     	<ul class="nav nav-justified">
         	<li id='profile'><%= link_to 'Profile', account_path %></li>
-        	<li id='devices'><%= link_to 'My Devices', my_devices_path %></li>
+        	<li id='devices_nav'><%= link_to 'My Devices', my_devices_path %></li>
         	<li id='billing'><%= link_to 'Billing', my_billing_path %></li>
             <% if current_user.premium? %>
                 <li id='subscription'><%= link_to 'Add Subscription', subscribe_path %></li>
