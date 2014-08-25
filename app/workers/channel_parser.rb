@@ -2,6 +2,7 @@ class ChannelParser
     @queue = :channel_parser
     def self.perform(item, grid_id)
         migration_item = VodMigrationItem.create(status: 'In Progress',completed: false, migration_id: grid_id)
+        begin
             grid = Grid.find(grid_id)
             channel = Channel.new
             channel.grid_id = grid_id
@@ -74,5 +75,11 @@ class ChannelParser
                 migration_item.error = 'Channel could not be saved: Duplicate Entry'
                 migration_item.save
             end
+        rescue => e
+            migration_item.status = 'Error'
+            migration_item.completed = true
+            migration_item.error = 'Exception raised (Channel): '+ e.message
+            migration_item.save
+        end
     end
 end

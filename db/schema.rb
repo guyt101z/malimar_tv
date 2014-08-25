@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140822170542) do
+ActiveRecord::Schema.define(version: 20140825121348) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -154,6 +154,8 @@ ActiveRecord::Schema.define(version: 20140822170542) do
   create_table "client_migrations", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "file"
+    t.boolean  "status"
   end
 
   create_table "daily_data", force: true do |t|
@@ -489,7 +491,7 @@ ActiveRecord::Schema.define(version: 20140822170542) do
   end
 
   create_table "users", force: true do |t|
-    t.string   "email",                  default: "", null: false
+    t.string   "email",                  default: ""
     t.string   "encrypted_password",     default: "", null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
