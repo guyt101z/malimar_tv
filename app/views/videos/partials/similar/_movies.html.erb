@@ -12,11 +12,15 @@
         @movie.name.split(' ').each do |word|
             search.push(word)
         end
-        @movie.genres.split(/\r\n/).each do |genre|
-            search.push(genre)
+        if @movie.genres.present?
+            @movie.genres.split(/\r\n/).each do |genre|
+                search.push(genre)
+            end
         end
-        @movie.actors.split(/\r\n/).each do |actor|
-            search.push(actor)
+        if @movie.actors.present?
+            @movie.actors.split(/\r\n/).each do |actor|
+                search.push(actor)
+            end
         end
 
         show_results = Array.new

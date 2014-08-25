@@ -110,14 +110,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-					<div class='col-sm-3 hidden-xs'></div>
-                	<div class="col-sm-6">
-                    	<div class="bg-blue-light text-center p30">
-                        	<div class="fz18"><%= pluralize(Setting.where(name: 'Free Trial Length').first.data, 'day') %> free plan! <%= link_to 'Start Now', start_free_trial_path %></div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -125,3 +117,8 @@
 
 
 <%= render 'users/partials/subscribe_modal' %>
+
+
+<script>
+	$('#subscription').addClass('active')
+</script>

@@ -1,0 +1,13 @@
+<% @filtered_movies.each do |movie| %>
+    <div id='show_search_<%= movie.id %>' class='channel_list_item' onclick='viewMovie(<%= movie.id %>)'>
+        <div class='image_wrapper'>
+        <%= image_tag movie.image_url(:preview) %>
+        </div>
+        <div class='channel_name'><%= movie.name %></div>
+        <% if movie.free? %>
+            <div class='premium_banner'><span class="label label-success">FREE</span></div>
+        <% else %>
+            <div class='premium_banner'><span class="label label-primary">PREMIUM</span></div>
+        <% end %>
+    </div>
+<% end %>

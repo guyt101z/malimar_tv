@@ -1,62 +1,16 @@
-<div class="footer">
+<div class="footer" id='main-footer'>
 	<div class="footer-top">
         <div class="container">
+			<% @data = YAML.load(Setting.where(name: 'Footer Content').first.data) %>
         	<div class="row">
-            	<div class="col-md-2 col-sm-4">
-                	<h3>Watch</h3>
-                    <ul class="list-unstyled">
-                    	<li><a href="#">Free TV Online</a></li>
-                    	<li><a href="#">Premium TV Online</a></li>
-                    	<li><a href="#">TV Shows</a></li>
-                    	<li><a href="#">Movies</a></li>
-                    </ul>
-                </div>
-            	<div class="col-md-2 col-sm-4">
-                	<h3>Devices</h3>
-                    <ul class="list-unstyled">
-                    	<li><a href="#">Smart TVs</a></li>
-                    	<li><a href="#">Tablets</a></li>
-                    	<li><a href="#">Media Players</a></li>
-                    	<li><a href="#">Computers and Laptops</a></li>
-                    </ul>
-            	</div>
-            	<div class="col-md-2 col-sm-4">
-                	<h3>Help Center</h3>
-                    <ul class="list-unstyled">
-                    	<li><a href="#">FAQs</a></li>
-                    	<li><a href="#">Contact Support</a></li>
-                    	<li><a href="#">Getting Started</a></li>
-                    	<li><a href="#">Hot Topics</a></li>
-                    </ul>
-            	</div>
-            	<div class="col-md-2 col-sm-4">
-                	<h3>About</h3>
-                    <ul class="list-unstyled">
-                    	<li><a href="#">Meet Us</a></li>
-                    	<li><a href="#">Jobs at Mailimar.tv</a></li>
-                    	<li><a href="#">Press Center</a></li>
-                    	<li><a href="#">Blog</a></li>
-                    </ul>
-            	</div>
-            	<div class="col-md-2 col-sm-4">
-                	<h3>Stay Connected</h3>
-                    <ul class="list-unstyled">
-                    	<li><a href="#">Facebook</a></li>
-                    	<li><a href="#">Twitter</a></li>
-                    	<li><a href="#">Google +</a></li>
-                    	<li><a href="#">Youtube</a></li>
-                    </ul>
-            	</div>
-                <div class="col-md-2 col-sm-4">
-                	<h3>Stay up to date</h3>
-                    <p>Enter your email address to stay up to date with the latest news.</p>
-                    <div class="input-group">
-                      	<input type="text" class="form-control input-sm">
-                      	<span class="input-group-btn">
-                        	<button class="btn btn-sm" type="button"><span class="glyphicon glyphicon-chevron-right"></span></button>
-                      	</span>
-                    </div>
-                </div>
+				<% @data.each_with_index do |data, i| %>
+					<% unless i > 5 %>
+	            	<div class="col-md-2 col-sm-4">
+	                	<h3><%= data[:name] %></h3>
+						<%= raw(data[:html]) %>
+	                </div>
+					<% end %>
+				<% end %>
             </div>
         </div>
     </div>
@@ -64,20 +18,7 @@
     	<div class="container">
         	<div class="row">
             	<div class="col-sm-9 col-md-10">
-                	<div>
-                    	<a href="#">Terms of Service</a> | 
-                        <a href="#">Privacy Policy</a> | 
-                        Call anytime (123) 456-7890 | 
-                        <a href="#">Help</a>
-                    </div>
-					<div>&copy; 2014. Malimar TV. All rights reserved. ‘Malimar.tv’ is a trademark of Asean IPTV</div>
-                </div>
-                <div class="col-sm-3 col-md-2">
-                	<div class="relative">
-                        <div class="chat">
-                            <a href="#"><span class="icon-chat"></span> Support Chat</a>
-                        </div>
-                    </div>
+                	<%= raw(@data[6]) %>
                 </div>
             </div>
         </div>

@@ -1,87 +1,75 @@
-<div class="splash">
+<div class="content" style='margin-top: 10px'>
 	<div class="container">
-    	<div class='pull-right profile_nav hidden-xs'>
-         <%= render 'users/partials/subnav' %>
-     </div>
-     <h3 class="name">My Devices</h3>
-     <div class='text-center profile_nav_xs visible-xs'>
-         <%= render 'users/partials/subnav' %>
-     </div>
-    </div>
-</div><!--splash-->
-
-<div class="content">
-	<div class="container">
-        	<div class="mlr90">
-            	<div class="box-white">
-                	<div class="row">
-                    	<div class="col-md-9 col-sm-8">
-                            <h4 class="title4">Devices Configured</h4>
-                            <p class="fz12">* Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod.</p>
-                        </div>
-                        <div class="col-md-3 col-sm-4 text-right">
-                        	<a onclick='newDevice()' class="btn btn-primary btn-w180">Add a Roku</a>
-                        </div>
+    	<div class="mlr90">
+        	<div class="box-white">
+            	<div class="row">
+                	<div class="col-md-9 col-sm-8">
+                        <h4 class="title4">Devices Configured</h4>
+                        <p class="fz12">* Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod.</p>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-devices">
-
-                            <tbody id='devices'>
-                            <% @devices.each do |device| %>
-                                <% case device.type %>
-                                <% when 'Roku' %>
-                                    <tr id='device_<%= device.id %>'>
-                                        <td class="text-center"><div class='image_wrapper'>
-                                            <%= image_tag 'roku.png' %>
-                                        </div></td>
-                                        <td>
-                                            <div class="device-name"><% if device.name.present? %>
-                                                <%= device.nickname(true) %>
-                                            <% else %>
-                                                <%= device.humanized_type %>
-                                            <% end %></div>
-                                            <div><span class="fz12 text-success glyphicon glyphicon-ok"></span> Status <span class="text-success text-sans-semi fz12-5">Available</span></div>
-                                        </td>
-                                        <td><div class="fz12-5">Serial: <%= device.serial %><br/><%= device.status %></div></td>
-                                        <td class="w180 text-center">
-                                            <button onclick='viewDevice(<%= device.id %>)' type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></button>
-                                            <%= link_to raw('<span class="glyphicon glyphicon-remove"></span>'), unlink_device_path(id: device.id), class: "btn btn-default", data: {disable_with: '...', confirm: 'Are you sure you want to unlink this device?'}, remote: true %>
-                                        </td>
-                                    </tr>
-                                <% else %>
-                                    <tr id='device_<%= device.id %>'>
-                                        <td class="text-center"><div class='image_wrapper'>
-                                            <%= image_tag "#{device.type.downcase}_large.png" %>
-                                        </div></td>
-                                        <td>
-                                            <div class="device-name"><% if device.name.present? %>
-                                                <%= device.nickname(true) %>
-                                            <% else %>
-                                                <%= device.humanized_type %>
-                                            <% end %></div>
-                                            <% if device.expired? == false %>
-                                                <div><span class="fz12 text-success glyphicon glyphicon-ok"></span> Status <span class="text-success text-sans-semi fz12-5">Available</span></div>
-                                            <% else %>
-                                                <div><span class="fz12 text-danger glyphicon glyphicon-minus"></span> Status <span class="text-danger text-sans-semi fz12-5">Sync Error</span></div>
-                                            <% end %>
-                                        </td>
-                                        <td><% if device.expired? %>
-                                            <div><span class="text-danger text-sans-semi fz12-5">Sign back into Malimar on this device.</span></div>
-                                        <% end %></td>
-                                        <td class="w180 text-center">
-                                            <button onclick='viewDevice(<%= device.id %>)' type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></button>
-                                            <%= link_to raw('<span class="glyphicon glyphicon-remove"></span>'), unlink_device_path(id: device.id), class: "btn btn-default", data: {disable_with: '...', confirm: 'Are you sure you want to unlink this device?'}, remote: true %>
-                                        </td>
-                                    </tr>
-                                <% end %>
-                            <% end %>
-                            </tbody>
-                        </table>
+                    <div class="col-md-3 col-sm-4 text-right">
+                    	<a onclick='newDevice()' class="btn btn-primary btn-w180">Add a Roku</a>
                     </div>
-                    <div class="fz12-5 text-sans-semi">***Important Minimum Requirements for Malimar TV Network App.*** </div>
-					<div class="fz12-5">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam. Contact +1-877-400-7733 for details. Internet broadband connection speed of 3 Megabits per second is required.</div>
                 </div>
+                <div class="table-responsive">
+                    <table class="table table-devices">
+
+                        <tbody id='devices'>
+                        <% @devices.each do |device| %>
+                            <% case device.type %>
+                            <% when 'Roku' %>
+                                <tr id='device_<%= device.id %>'>
+                                    <td class="text-center"><div class='image_wrapper'>
+                                        <%= image_tag 'roku.png' %>
+                                    </div></td>
+                                    <td>
+                                        <div class="device-name"><% if device.name.present? %>
+                                            <%= device.nickname(true) %>
+                                        <% else %>
+                                            <%= device.humanized_type %>
+                                        <% end %></div>
+                                        <div><span class="fz12 text-success glyphicon glyphicon-ok"></span> Status <span class="text-success text-sans-semi fz12-5">Available</span></div>
+                                    </td>
+                                    <td><div class="fz12-5">Serial: <%= device.serial %><br/><%= device.status %></div></td>
+                                    <td class="w180 text-center">
+                                        <button onclick='viewDevice(<%= device.id %>)' type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></button>
+                                        <%= link_to raw('<span class="glyphicon glyphicon-remove"></span>'), unlink_device_path(id: device.id), class: "btn btn-default", data: {disable_with: '...', confirm: 'Are you sure you want to unlink this device?'}, remote: true %>
+                                    </td>
+                                </tr>
+                            <% else %>
+                                <tr id='device_<%= device.id %>'>
+                                    <td class="text-center"><div class='image_wrapper'>
+                                        <%= image_tag "#{device.type.downcase}_large.png" %>
+                                    </div></td>
+                                    <td>
+                                        <div class="device-name"><% if device.name.present? %>
+                                            <%= device.nickname(true) %>
+                                        <% else %>
+                                            <%= device.humanized_type %>
+                                        <% end %></div>
+                                        <% if device.expired? == false %>
+                                            <div><span class="fz12 text-success glyphicon glyphicon-ok"></span> Status <span class="text-success text-sans-semi fz12-5">Available</span></div>
+                                        <% else %>
+                                            <div><span class="fz12 text-danger glyphicon glyphicon-minus"></span> Status <span class="text-danger text-sans-semi fz12-5">Sync Error</span></div>
+                                        <% end %>
+                                    </td>
+                                    <td><% if device.expired? %>
+                                        <div><span class="text-danger text-sans-semi fz12-5">Sign back into Malimar on this device.</span></div>
+                                    <% end %></td>
+                                    <td class="w180 text-center">
+                                        <button onclick='viewDevice(<%= device.id %>)' type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></button>
+                                        <%= link_to raw('<span class="glyphicon glyphicon-remove"></span>'), unlink_device_path(id: device.id), class: "btn btn-default", data: {disable_with: '...', confirm: 'Are you sure you want to unlink this device?'}, remote: true %>
+                                    </td>
+                                </tr>
+                            <% end %>
+                        <% end %>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fz12-5 text-sans-semi">***Important Minimum Requirements for Malimar TV Network App.*** </div>
+				<div class="fz12-5">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam. Contact +1-877-400-7733 for details. Internet broadband connection speed of 3 Megabits per second is required.</div>
             </div>
+        </div>
     </div>
 </div><!--content-->
 <script>
@@ -99,6 +87,10 @@ function newDevice() {
     $('#new_serial_error').remove()
     $('#new_device_modal').modal('show')
 }
+</script>
+
+<script>
+	$('#devices').addClass('active')
 </script>
 <%= render('users/partials/view_device_modal') %>
 <%= render('users/partials/new_device_modal') %>

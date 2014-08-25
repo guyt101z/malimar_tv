@@ -57,17 +57,17 @@
         $('#channel_placeholder').hide()
     })
     $('#channel_search').keyup(function(){
-        if ($('#channel_search').val() != '') {
-            $('#channel_placeholder').hide()
-            $('#channel_list').hide()
+        if ($('#movie_search').val() != '') {
+            $('#movie_placeholder').hide()
+            $('#movie_list').hide()
             $.ajax({
                 url: '/search_movies?search='+$('#channel_search').val()
             })
         }
         else {
             $('#channel_placeholder').show()
-            $('#channel_list').show()
-            $('#channel_search_list').hide()
+            $('#movie_list').show()
+            $('#movie_search_list').hide()
             $('#count').hide()
         }
     })

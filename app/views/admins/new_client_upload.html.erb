@@ -1,0 +1,28 @@
+<% content_for :top_level, 'Migrations' %>
+<% content_for :low_levels, YAML.dump(['Clients','New Upload']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='col-md-6 col-sm-8 col-centered'>
+            <%= form_tag create_client_upload_path, multipart: true do %>
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            New Client Upload
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body plr20">
+                        <div class='form-group'>
+                            <label>XLSX File</label>
+                            <%= file_field_tag :file, class: 'form-control' %>
+                        </div>
+                </div>
+                <div class='panel-footer text-right'>
+                    <%= submit_tag 'Start Upload', class: 'btn btn-primary' %>
+                </div>
+            </div>
+            <% end %>
+        </div>
+    </div>
+</div>

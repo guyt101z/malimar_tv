@@ -1,0 +1,103 @@
+<% content_for :top_level, 'Utilities' %>
+<% content_for :low_levels, YAML.dump(['General Settings','Footer Content']) %>
+
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <%= form_tag update_footer_content_path, remote: true do %>
+        <div class='panel panel-default'>
+            <div class='panel-heading' style='position: relative'>
+                <h3 class='panel-title'>Footer Content</h3>
+                <div class='upload_image_heading'>
+                    <%= submit_tag 'Update Footer', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
+                </div>
+            </div>
+            <div class='panel-body'>
+                <div class='row'>
+                    <div class='col-md-4 col-sm-6 col-xs-12'>
+                        <div class='form-group'>
+                            <label>Label 1</label>
+                            <%= text_field_tag :name_0, @data[0][:name], class: 'form-control' %>
+                        </div>
+                        <div class='form-group'>
+                            <label>HTML Content 1</label>
+                            <%= text_area_tag :html_0, @data[0][:html], class: 'form-control', style: 'resize:none', rows: 6 %>
+                        </div>
+                    </div>
+                    <div class='col-md-4 col-sm-6 col-xs-12'>
+                        <div class='form-group'>
+                            <label>Label 2</label>
+                            <%= text_field_tag :name_1, @data[1][:name], class: 'form-control' %>
+                        </div>
+                        <div class='form-group'>
+                            <label>HTML Content 2</label>
+                            <%= text_area_tag :html_1, @data[1][:html], class: 'form-control', style: 'resize:none', rows: 6 %>
+                        </div>
+                    </div>
+                    <div class='col-md-4 col-sm-6 col-xs-12'>
+                        <div class='form-group'>
+                            <label>Label 3</label>
+                            <%= text_field_tag :name_2, @data[2][:name], class: 'form-control' %>
+                        </div>
+                        <div class='form-group'>
+                            <label>HTML Content 3</label>
+                            <%= text_area_tag :html_2, @data[2][:html], class: 'form-control', style: 'resize:none', rows: 6 %>
+                        </div>
+                    </div>
+                    <div class='col-md-4 col-sm-6 col-xs-12'>
+                        <div class='form-group'>
+                            <label>Label 4</label>
+                            <%= text_field_tag :name_3, @data[3][:name], class: 'form-control' %>
+                        </div>
+                        <div class='form-group'>
+                            <label>HTML Content 4</label>
+                            <%= text_area_tag :html_3, @data[3][:html], class: 'form-control', style: 'resize:none', rows: 6 %>
+                        </div>
+                    </div>
+                    <div class='col-md-4 col-sm-6 col-xs-12'>
+                        <div class='form-group'>
+                            <label>Label 5</label>
+                            <%= text_field_tag :name_4, @data[4][:name], class: 'form-control' %>
+                        </div>
+                        <div class='form-group'>
+                            <label>HTML Content 5</label>
+                            <%= text_area_tag :html_4, @data[4][:html], class: 'form-control', style: 'resize:none', rows: 6 %>
+                        </div>
+                    </div>
+                    <div class='col-md-4 col-sm-6 col-xs-12'>
+                        <div class='form-group'>
+                            <label>Label 5</label>
+                            <%= text_field_tag :name_5, @data[5][:name], class: 'form-control' %>
+                        </div>
+                        <div class='form-group'>
+                            <label>HTML Content 5</label>
+                            <%= text_area_tag :html_5, @data[5][:html], class: 'form-control', style: 'resize:none', rows: 6 %>
+                        </div>
+                    </div>
+                    <div class='col-md-8 col-sm-6'>
+                        <div class='form-group'>
+                            <label>Bottom Footer Content</label>
+                            <% if @data.count > 6 %>
+                                <%= text_area_tag :bottom_content, @data[6], class: 'form-control', style: 'resize:none', rows: 8 %>
+                            <% else %>
+                                <%= text_area_tag :bottom_content, '', class: 'form-control', style: 'resize:none', rows: 8 %>
+                            <% end %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% end %>
+    </div>
+</div>
+<script>
+    $('#device_limit').addClass('active')
+    function isNumberKey(evt)
+   {
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      if (charCode != 46 && charCode > 31
+        && (charCode < 48 || charCode > 57))
+         return false;
+
+      return true;
+   }
+</script>

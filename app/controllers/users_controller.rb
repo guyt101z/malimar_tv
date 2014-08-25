@@ -23,8 +23,8 @@ class UsersController < ApplicationController
 
 			begin
 				if @user.mailchimp == true
-					mailchimp = Mailchimp::API.new(YAML.load(Setting.where(name: 'MailChimp Credentials').first)[:api_key])
-					mailchimp.lists.subscribe(YAML.load(Setting.where(name: 'MailChimp Credentials').first)[:list_id], {'EMAIL' => @user.email})
+					mailchimp = Mailchimp::API.new(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:api_key])
+					mailchimp.lists.subscribe(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:list_id], {'EMAIL' => @user.email})
 				end
 			rescue
 
@@ -39,6 +39,68 @@ class UsersController < ApplicationController
 	def view_plan
 		@plan = Plan.find(params[:id])
 		@balance = current_user.balance
+		if params[:roku_id].present?
+			@device = Roku.find(params[:roku_id])
+		else
+			@device = Device.new
+		end
+	end
+
+	def settings
+		mailchimp = Mailchimp::API.new(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:api_key])
+		sub_list = mailchimp.lists.members(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:list_id])['data']
+
+		@subscribed = false
+
+		sub_list.each do |user_sub|
+			if user_sub['email'] == current_user.email
+				@subscribed = true
+			end
+		end
+	end
+
+	def subscribe_to_mailchimp
+		mailchimp = Mailchimp::API.new(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:api_key])
+		mailchimp.lists.subscribe(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:list_id], {'email' => current_user.email})
+
+		sub_list = mailchimp.lists.members(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:list_id])['data']
+	end
+
+	def unsubscribe_from_mailchimp
+		mailchimp = Mailchimp::API.new(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:api_key])
+		mailchimp.lists.unsubscribe(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:list_id], {'email' => current_user.email})
+
+		sub_list = mailchimp.lists.members(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:list_id])['data']
+
+		@subscribed = false
+
+		sub_list.each do |user_sub|
+			if user_sub['email'] == current_user.email
+				@subscribed = true
+			end
+		end
+	end
+
+	def reset_password
+		user = User.authenticate(current_user.email, params[:current])
+		if user.nil?
+			@error_type = 'Current'
+			@error = 'Old password is incorrect'
+		else
+			if params[:new] == params[:new_confirmation]
+				user.password = params[:new]
+				if user.save
+					@error = nil
+					sign_in(user, bypass: true)
+				else
+					@error_type = 'Length'
+					@error = 'Password not long enough'
+				end
+			else
+				@error_type = 'Confirmation'
+				@error = 'New password and confirmation do not match'
+			end
+		end
 	end
 
 	def subscribe
@@ -520,6 +582,7 @@ class UsersController < ApplicationController
 
 	def billing
 		@transactions = Transaction.where(user_id: current_user.id).order(created_at: :desc)
+		@transactions = @transactions.paginate(page: params[:page], per_page: 8)
 	end
 
 	def support

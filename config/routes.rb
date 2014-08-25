@@ -42,6 +42,11 @@ Rails.application.routes.draw do
         get 'view_plan' => 'users#view_plan'
         post 'add_subscription' => "users#add_subscription"
 
+        get '/account/settings' => 'users#settings', as: 'user_settings'
+        post 'user_reset_password' => 'users#reset_password'
+        get 'user_subscribe_to_mailchimp' => 'users#subscribe_to_mailchimp'
+        get 'user_unsubscribe_from_mailchimp' => 'users#unsubscribe_from_mailchimp'
+
         get 'start_free_trial' => 'users#start_free_trial'
     end
 
@@ -51,6 +56,13 @@ Rails.application.routes.draw do
 
   	# Admin Methods
     authenticate :admin do
+        get 'admin_load_devices' => 'admins#load_devices'
+
+        get 'delete_user' => 'admins#delete_user'
+        get 'delete_rep' => 'admins#delete_rep'
+
+        post 'create_client_upload' => 'admins#upload_customers'
+
         get '/admins/migrations/vod/new' => 'vod_migrations#new_vod_upload', as: 'new_vod_upload'
         post 'start_vod_upload' => 'vod_migrations#start_upload'
         get '/admins/migrations/vod' => 'admins#vod_uploads', as: 'vod_uploads'
@@ -95,6 +107,9 @@ Rails.application.routes.draw do
         get '/admins/settings/wd_limits' => 'admins#edit_wd_limits', as: 'edit_wd_limits'
         post 'update_lower_wd_limit' => 'admins#update_lower_wd_limit'
         post 'update_upper_wd_limit' => 'admins#update_upper_wd_limit'
+
+        get '/admins/settings/footer' => 'admins#edit_footer_content', as: 'edit_footer_content'
+        post 'update_footer_content' => 'admins#update_footer_content'
 
 
   		# Manage Users

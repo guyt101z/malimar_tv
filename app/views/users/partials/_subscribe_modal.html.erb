@@ -172,5 +172,8 @@
             $('#new_serial').hide()
             $('#new_serial').val('')
         }
+        $.ajax({
+            url: '/view_plan?id='+$('#plan_id').val()+'&roku_id='+$('#serial').val()
+        })
     })
 </script>

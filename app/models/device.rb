@@ -32,6 +32,10 @@ class Device < ActiveRecord::Base
 	end
 
 	def expired?
-		return expiry < Date.today
+		if device.expiry.nil?
+			return true
+		else
+			return expiry < Date.today
+		end
 	end
 end

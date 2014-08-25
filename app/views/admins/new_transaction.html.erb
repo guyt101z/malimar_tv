@@ -23,9 +23,13 @@
                 <div class="line"></div>
                 <%= form_tag admin_create_transaction_path, remote: true do %>
                 <%= hidden_field_tag :user_id %>
-                <h4 class="title"><span class="icon-circle-ticket mr7"></span> Ticket Information</h4>
+                <h4 class="title"><span class="icon-circle-ticket mr7"></span> Order Information</h4>
                 <div class='row'>
                     <div class='col-xs-6'>
+                        <div class="form-group" id='rokus'>
+                            <label for="">Roku <span class="text-danger">*</span></label>
+                            <%= select_tag :device_id, options_for_select([['Choose a client first',nil]]), class: 'form-control input-md' %>
+                        </div>
                         <div class="form-group">
                             <label for="">Plan <span class="text-danger">*</span></label>
                             <%
@@ -95,6 +99,7 @@
                         <% @user.balance = 0 %>
                         <% @plan = @plans.first %>
                         <% @total = @plan.price - @user.balance %>
+                        <% @device = Roku.new %>
                         <%= render 'admins/partials/transaction_details' %>
                     </div>
                 </div>
@@ -144,6 +149,9 @@
         $.ajax({
             url: '/admin_choose_plan?user_id='+id+'&plan_id='+$('#plan_id').val()
         })
+        $.ajax({
+            url: '/admin_load_devices?user_id='+id
+        })
     }
     $('#new_ticket').addClass('active')
     $('#payment_type').change(function(){
@@ -159,14 +167,30 @@
             $('#tx_details').html("<div class='stat-number'><div class='number'><i class='fa fa-refresh fa-spin'></i></div>Loading Details</div>")
 
             $.ajax({
-                url: '/admin_choose_plan?&plan_id='+$(this).val()
+                url: '/admin_choose_plan?&plan_id='+$(this).val()+'&roku_id='+$('#device_id').val()
             })
         }
         else{
             $('#tx_details').html("<div class='stat-number'><div class='number'><i class='fa fa-refresh fa-spin'></i></div>Loading Details</div>")
 
             $.ajax({
-                url: '/admin_choose_plan?user_id='+$('#user_id').val()+'&plan_id='+$(this).val()
+                url: '/admin_choose_plan?user_id='+$('#user_id').val()+'&plan_id='+$(this).val()+'&roku_id='+$('#device_id').val()
+            })
+        }
+    })
+    $('#device_id').change(function(){
+        if ($('#user_id').val() == ''){
+            $('#tx_details').html("<div class='stat-number'><div class='number'><i class='fa fa-refresh fa-spin'></i></div>Loading Details</div>")
+
+            $.ajax({
+                url: '/admin_choose_plan?&plan_id='+$('#plan_id').val()+'&roku_id='+$('#device_id').val()
+            })
+        }
+        else{
+            $('#tx_details').html("<div class='stat-number'><div class='number'><i class='fa fa-refresh fa-spin'></i></div>Loading Details</div>")
+
+            $.ajax({
+                url: '/admin_choose_plan?user_id='+$('#user_id').val()+'&plan_id='+$('#plan_id').val()+'&roku_id='+$('#device_id').val()
             })
         }
     })

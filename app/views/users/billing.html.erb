@@ -1,44 +1,79 @@
-<div class="splash">
-    <div class="container">
-        <div class='pull-right profile_nav hidden-xs'>
-            <%= render 'users/partials/subnav' %>
-        </div>
-        <h3 class="name">My Billing</h3>
-        <div class='text-center profile_nav_xs visible-xs'>
-            <%= render 'users/partials/subnav' %>
-        </div>
-    </div>
-</div><!--splash-->
-
-<div class="content">
+<div class="content" style='margin-top: 10px'>
     <div class="container">
         <div class="mlr90">
             <div class='row'>
                 <div class='col-sm-4'>
                     <div class="box-white">
                         <div class="row">
-                            <div class="col-md-5 col-sm-4">
-                                <h4 class="name">Membership</h4>
-                            </div>
-                            <% if current_user.expiry.nil? || current_user.expiry < Date.today %>
-                                <div class="col-md-7 col-sm-8 text-right">
-                                    <a href='/subscribe' class="btn btn-primary btn-w180">Upgrade Now</a>
+                        	<div class="col-sm-12">
+                                <% if Transaction.where(user_id: current_user.id).any? %>
+                                    <h3 class="mt0 mb0">Premium Membership</h3>
+                                    <% if current_user.premium? %>
+                                        <div>
+                                            <span class="fz12 text-success glyphicon glyphicon-ok"></span> Status
+                                            <span class="text-success text-sans-semi fz12-5">Active</span>
+                                        </div>
+                                    <% else %>
+                                        <div>
+                                            <span class="fz12 text-danger fa fa-exclamation-triangle"></span> Status
+                                            <span class="text-danger text-sans-semi fz12-5">Expired</span>
+                                        </div>
+                                    <% end %>
+                                    <% if current_user.balance.nil? %>
+                                        Balance: $0.00
+                                    <% else %>
+                                        Balance: $<%= number_with_precision(current_user.balance, precision: 2) %>
+                                    <% end %>
+                                <% else %>
+                                    <h3 class="mt0 mb0">Free Membership</h3>
+                                    <div>
+                                        <span class="fz12 text-success glyphicon glyphicon-ok"></span> Status
+                                        <span class="text-success text-sans-semi fz12-5">Active</span>
+                                    </div>
+                                <% end %>
+                                <% devices = Roku.where(user_id: current_user.id) %>
+                                <div  style='max-height: 250px; overflow-y:scroll'>
+                                <% devices.each do |device| %>
+                                    <hr>
+                                    <table class="table table-noborder">
+                                        <tbody>
+                                        <tr>
+                                            <td class="text-sans-semi">Device</td>
+                                            <td colspan='3'>
+                                                <% if device.name.present? %>
+                                                    <%= device.nickname(false) %> - <%= device.serial %>
+                                                <% else %>
+                                                    Roku - <%= device.serial %>
+                                                <% end %>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan='4'>
+                                            <% if Transaction.where(roku_id: device.id).any? %>
+                                                <% if device.expiry != nil || device.expiry > Date.today %>
+                                                    <div>
+                                                        <span class="fz12 text-success glyphicon glyphicon-ok"></span> Status
+                                                        <span class="text-success text-sans-semi fz12-5">Active</span> (Premium)
+                                                    </div>
+                                                <% else %>
+                                                    <div>
+                                                        <span class="fz12 text-danger fa fa-exclamation-triangle"></span> Status
+                                                        <span class="text-danger text-sans-semi fz12-5">Expired</span> (Premium)
+                                                    </div>
+                                                <% end %>
+                                            <% else %>
+                                                <div>
+                                                    <span class="fz12 text-success glyphicon glyphicon-ok"></span> Status
+                                                    <span class="text-success text-sans-semi fz12-5">Active</span> (Free)
+                                                </div>
+                                            <% end %>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                <% end %>
                                 </div>
-                            <% end %>
-                        </div>
-                        <div class="table-responsive">
-                            <% if current_user.expiry.nil? || current_user.expiry < Date.today %>
-                                <h4 class="title4">Free</h4>
-                            <% else %>
-                                <h4 class="title4">Premium<br/></h4>
-                                <%= @user.expiry.strftime('%B %-d, %Y') %> (<%= distance_of_time_in_words(Date.today, @user.expiry) %>)
-                            <% end %>
-                        </div>
-                    </div>
-                    <div class="box-white">
-                        <h4 class="name">Referral Code</h4>
-                        <div class="table-responsive">
-                            <h4 class="title4"><%= @user.refer_code %></h4>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -46,7 +81,7 @@
                     <div class="box-white">
                         <div class="row">
                             <div class="col-md-8 col-sm-7">
-                                <h4 class="title4">All Subscriptions</h4>
+                                <h3 class="mt0 mb0">All Subscriptions</h3>
                                 <p class="fz12">* Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod.</p>
                             </div>
                             <div class="col-md-4 col-sm-5 text-right">
@@ -85,6 +120,9 @@
                                     </div>
                                 <% end %>
                             </div>
+                            <div class='text-center' style='margin-top:5px'>
+                                <%= will_paginate(@transactions) %>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -93,3 +131,7 @@
         </div>
     </div>
 </div><!--content-->
+
+<script>
+    $('#billing').addClass('active')
+</script>

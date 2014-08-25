@@ -1,4 +1,4 @@
-<div class="navbar yamm navbar-inverse navbar-fixed-top">
+<div class="navbar yamm navbar-inverse navbar-fixed-top" id='main-header-1'>
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -36,19 +36,27 @@
                     </div>
                 </div>
             </div>
-            <ul class="nav navbar-nav navbar-right">
-                <li><div class="sep hidden-xs"></div></li>
-                <li><%= link_to 'ACCOUNT', account_path %></li>
-                <li><div class="sep hidden-xs"></div></li>
-                <li><%= link_to 'LOG OUT', destroy_user_session_path, method: :delete %></li>
-                <li><div class="sep hidden-xs"></div></li>
-            </ul>
         </div>
     </div>
 </div><!--navbar-->
-<ul class="nav nav-justified">
 
-</ul>
+<div class="navbar navbar-default hidden-xs navbar-fixed-top" style='top: 50px; z-index: 10;' id='main-header-2'>
+	<div class="container">
+    	<ul class="nav nav-justified">
+        	<li id='profile'><%= link_to 'Profile', account_path %></li>
+        	<li id='devices'><%= link_to 'My Devices', my_devices_path %></li>
+        	<li id='billing'><%= link_to 'Billing', my_billing_path %></li>
+            <% if current_user.premium? %>
+                <li id='subscription'><%= link_to 'Add Subscription', subscribe_path %></li>
+            <% else %>
+                <li id='subscription'><%= link_to 'Upgrade Plan', subscribe_path %></li>
+            <% end %>
+        	<li id='settings'><%= link_to 'Settings', user_settings_path %></li>
+        	<li id='logout'><%= link_to 'Log Out', destroy_user_session_path, method: :delete %></li>
+        </ul>
+    </div>
+</div>
+
 <script>
 $('#video_search').focus(function(){
     $('#search_results').show()

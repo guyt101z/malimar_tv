@@ -29,6 +29,38 @@ class AdminsController < ApplicationController
 		end
 	end
 
+	def delete_user
+		if current_admin.authorized_to?('manage_user')
+			user = User.find(params[:id])
+			devices = Device.where(user_id: user.id)
+
+			user.destroy
+			if devices.any?
+				devices.destroy_all
+			end
+
+			flash[:success] = 'Client has been deleted'
+			redirect_to '/admins/users'
+		else
+
+			flash[:error] = 'You are not authorized to view that.'
+			redirect_to '/admins'
+		end
+	end
+
+	def delete_rep
+		if current_admin.authorized_to?('manage_user')
+			rep = SalesRepresentative.find(params[:id])
+			rep.destroy
+
+			flash[:success] = 'Representative has been deleted'
+			redirect_to '/admins/sales_reps'
+		else
+			flash[:error] = 'You are not authorized to view that.'
+			redirect_to '/admins'
+		end
+	end
+
 	def create_user
 		@user = User.where(id: params[:user_id]).first
 
@@ -231,8 +263,8 @@ class AdminsController < ApplicationController
 			elsif @device_errors == false && @note_errors == false
 				@tx_errors = false
 				length = Setting.where(name: 'Free Trial Length').first.data
-				@user.expiry = Date.today + length.to_i.days
-				@user.save
+				@device.expiry = Date.today + length.to_i.days
+				@device.save
 				transaction = Transaction.new
 				transaction.user_id = @user.id
 				transaction.payment_type = params[:payment_type]
@@ -456,7 +488,7 @@ class AdminsController < ApplicationController
 
 
 	def choose_plan
-		unless params[:roku_id] == 'null'
+		unless params[:roku_id].nil?
 
 			@device = Roku.find(params[:roku_id])
 			@user = User.find(@device.user_id)
@@ -655,8 +687,62 @@ class AdminsController < ApplicationController
 	end
 
 	def home_grid
+		require 'will_paginate/array'
 		if current_admin.authorized_to?('update_videos')
-			@grids = Grid.where(home_page: true).order(weight: :desc)
+			if params[:search].present? || params[:adult].present? || params[:content_type].present?
+				@test = 'Search'
+				if params[:search].present? && params[:adult].present? && params[:content_type].present?
+					@test += ' All 3'
+					@grids = Grid.search(params[:search], where: {adult: params[:adult], class_type: params[:content_type], home_page: true})
+					array = Array.new
+					@grids.each do |grid|
+						array.push(grid)
+					end
+					@grids = array.paginate(page: params[:page], per_page: 10)
+
+				elsif params[:search].present? && params[:adult].present?
+					@test += ' Search + Adult'
+					@grids = Grid.search(params[:search], where: {adult: params[:adult], home_page: true})
+					array = Array.new
+					@grids.each do |grid|
+						array.push(grid)
+					end
+					@grids = array.paginate(page: params[:page], per_page: 10)
+
+				elsif params[:search].present? && params[:content_type].present?
+					@test += ' Search + Content'
+					@grids = Grid.search(params[:search], where: {class_type: params[:content_type], home_page: true})
+					array = Array.new
+					@grids.each do |grid|
+						array.push(grid)
+					end
+					@grids = array.paginate(page: params[:page], per_page: 10)
+
+				elsif params[:search].present?
+					@grids = Grid.search(params[:search], where: {home_page: true})
+					array = Array.new
+					@grids.each do |grid|
+						array.push(grid)
+					end
+					@grids = array.paginate(page: params[:page], per_page: 10)
+				else
+					@test += ' Adult or Content'
+					hash = Hash.new
+					if params[:adult].present?
+						hash[:adult] = params[:adult]
+					end
+					if params[:content_type].present?
+						hash[:content_type] = params[:content_type]
+					end
+					hash[:home_page] = true
+					@grids = Grid.where(hash).order(weight: :desc)
+					@grids = @grids.paginate(page: params[:page], per_page: 10)
+				end
+			else
+				@test = 'No Search'
+				@grids = Grid.where(home_page: true).order(weight: :desc)
+				@grids = @grids.paginate(page: params[:page], per_page: 10)
+			end
 		else
 			flash[:error] = 'You are not authorized to view that'
 		end
@@ -1978,6 +2064,25 @@ class AdminsController < ApplicationController
 		redirect_to edit_payouts_path
 	end
 
+	def edit_footer_content
+		@data = YAML.load(Setting.where(name: 'Footer Content').first.data)
+	end
+
+	def update_footer_content
+		setting = Setting.where(name: 'Footer Content').first
+		@data = YAML.load(setting.data)
+
+		@data.each_with_index do |data, i|
+			@data[i][:name] = params[("name_#{i}").to_sym]
+			@data[i][:html] = params[("html_#{i}").to_sym]
+		end
+
+		@data[6] = params[:bottom_content]
+
+		setting.data = YAML.dump(@data)
+		setting.save
+	end
+
 	def edit_timezone
 		unless current_admin.authorized_to?('edit_general_settings')
 			flash[:error] = 'You are not allowed to view that.'
@@ -2125,12 +2230,6 @@ class AdminsController < ApplicationController
 		end
 	end
 
-	def cancel_user_subscription
-		@user = User.find(params[:id])
-		@user.expiry = nil
-		@user.save
-	end
-
 	def orders
 		#order ratio/total today/this month
 		today = Date.today
@@ -2172,10 +2271,23 @@ class AdminsController < ApplicationController
 		@max_plan = @plans[@max[0]]
 	end
 
+	def load_devices
+		@devices = Roku.where(user_id: params[:user_id])
+		@options = [['Choose a Roku',nil]]
+		@devices.each do |device|
+			if device.name.present?
+				@options.push(["#{device.nickname(false)} - #{device.serial}", device.id])
+			else
+				@options.push(["#{device.serial}", device.id])
+			end
+		end
+	end
+
 	def create_transaction
-		if params[:user_id].present?
+		if params[:user_id].present? && params[:device_id].present?
 			@user = User.find(params[:user_id])
 			@plan = Plan.find(params[:plan_id])
+			@device = Roku.find(params[:device_id])
 
 			total = @plan.price - @user.balance
 
@@ -2208,14 +2320,16 @@ class AdminsController < ApplicationController
 
 						if response.success?
 							@user.balance = 0
-							if @user.expiry.nil? || @user.expiry < Date.today
-								@user.expiry = Date.today + @plan.months.months
-							else
-								@user.expiry += @plan.months.months
-							end
 							@user.save
+							if @device.expiry.nil? || @device.expiry < Date.today
+								@device.expiry = Date.today + @plan.months.months
+							else
+								@device.expiry += @plan.months.months
+							end
+							@device.save
 							transaction = Transaction.new
 							transaction.user_id = @user.id
+							transaction.roku_id = @device.id
 							transaction.payment_type = 'Credit Card'
 							transaction.paypal_id = response.params['transaction_id']
 							transaction.status = 'Paid'
@@ -2236,13 +2350,6 @@ class AdminsController < ApplicationController
 						@tx_error = 'This card is not valid'
 					end
 				elsif params[:payment_type].present?
-					@user.balance = 0
-					if @user.expiry.nil? || @user.expiry < Date.today
-						@user.expiry = Date.today + @plan.months.months
-					else
-						@user.expiry += @plan.months.months
-					end
-					@user.save
 					transaction = Transaction.new
 					transaction.user_id = @user.id
 					transaction.payment_type = params[:payment_type]
@@ -2250,6 +2357,7 @@ class AdminsController < ApplicationController
 					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 					transaction.plan_id = @plan.id
 					transaction.balance_used = @plan.price - total
+					transaction.roku_id = @device.id
 					transaction.save
 					OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
 					@tx_id = transaction.id
@@ -2261,12 +2369,13 @@ class AdminsController < ApplicationController
 				end
 			elsif total <= 0
 				@user.balance = @user.balance - @plan.price
-				if @user.expiry.nil? || @user.expiry < Date.today
-					@user.expiry = Date.today + @plan.months.months
-				else
-					@user.expiry += @plan.months.months
-				end
 				@user.save
+				if @device.expiry.nil? || @device.expiry < Date.today
+					@device.expiry = Date.today + @plan.months.months
+				else
+					@device.expiry += @plan.months.months
+				end
+				@device.save
 				transaction = Transaction.new
 				transaction.user_id = @user.id
 				transaction.payment_type = 'Previous Balance'
@@ -2280,7 +2389,12 @@ class AdminsController < ApplicationController
 				TransactionalMailer.order_paid(transaction, @user).deliver
 			end
 		else
-			@user_error = true
+			if params[:user_id].present? == false
+				@user_error = true
+			end
+			if params[:user_id].present? && params[:device_id].present? == false
+				@device_error = true
+			end
 		end
 	end
 
@@ -2441,6 +2555,63 @@ class AdminsController < ApplicationController
 			end
 		else
 			@transactions = Transaction.where(status: 'Cancelled')
+		end
+	end
+
+	def upload_customers
+		file = params[:file]
+		roo_file = file_type(file)
+
+		header = roo_file.row(1)
+		(2..roo_file.last_row).each do |i|
+    		row = Hash[[header, roo_file.row(i)].transpose]
+
+			user = User.new
+
+			if row['First Name'].present? || row['Last Name'].present?
+				user.first_name = row['First Name']
+				user.last_name = row['Last Name']
+			elsif row['Company'].present?
+				user.first_name = row['Company']
+			end
+			user.email = row['E-mail Address']
+			if row['Home Phone'].present?
+				user.phone = row['Home Phone']
+			elsif row['Business Phone'].present?
+				user.phone = row['Business Phone']
+			end
+			user.mobile_phone = row['Mobile Phone']
+			user.address_1 = row['Address']
+			user.city = row['City']
+			user.state = row['State/Province']
+			user.zip = row['ZIP/Postal Code']
+			user.country = row['Country']
+
+			if user.email.present?
+				user.password = SecureRandom.hex(6)
+			end
+
+			code = SecureRandom.hex(6)
+			until User.where(refer_code: code).count < 1
+				user.refer_code = code
+			end
+
+			unless User.where(email: user.email).any?
+				user.save(:validate => false)
+			end
+		end
+
+		redirect_to '/admins'
+	end
+
+	private
+
+	def file_type(file)
+		case File.extname(file.original_filename)
+		when '.csv' then Roo::Csv.new(file.path, nil, :ignore)
+		when '.xls' then Roo::Excel.new(file.path, nil, :ignore)
+		when '.xlsx' then Roo::Excelx.new(file.path, nil, :ignore)
+		else raise "Unknown file type: #{file.original_filename}"
 		end
 	end
 end

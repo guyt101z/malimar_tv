@@ -1,0 +1,6 @@
+<% if @subscribed == false %>
+    $('#subscribed').after('<p class="text-success" id="subscribe-error">You have been unsubscribed</p>')
+    $('#subscribed').html('Not Subscribed')
+<% else %>
+    $('#subscribed').after('<p class="text-danger" id="subscribe-error">Error unsubscribing</p>')
+<% end %>

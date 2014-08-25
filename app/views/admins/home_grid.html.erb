@@ -2,6 +2,26 @@
 <% content_for :low_levels, YAML.dump(['Grid Management','Homepage Grids']) %>
 <div id="left-scroll" class="nano">
     <div class="nano-content">
+        <%= form_tag admin_home_grid_path, method: :get do %>
+        <div class='panel panel-default'>
+            <div class='panel-body'>
+                <div class='row'>
+                    <div class='col-md-6 col-xs-12'>
+                        <%= text_field_tag :search, params[:search], class: 'form-control', placeholder: 'Search Home Grids' %>
+                    </div>
+                    <div class='col-md-3 col-xs-6'>
+                        <%= select_tag :adult, options_for_select([['Adult Content', nil],['No Adult Content', false], ['Only Adult Content',true]], params[:adult]), class: 'form-control' %>
+                    </div>
+                    <div class='col-md-3 col-xs-6'>
+                        <%= select_tag :content_type, options_for_select([['Content Type', nil],'Movie', 'Show','Channel'], params[:content_type]), class: 'form-control' %>
+                    </div>
+                </div>
+            </div>
+            <div class='panel-footer text-right'>
+                <%= submit_tag 'Search', class: 'btn btn-primary' %>
+            </div>
+        </div>
+        <% end %>
         <% @grids.each do |grid| %>
             <% @grid = grid %>
             <%= render 'admins/cms_partials/grid_details' %>

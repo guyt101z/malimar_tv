@@ -64,6 +64,7 @@ gem 'resque-web', require: 'resque_web'
 gem 'httparty'
 gem 'nokogiri'
 gem 'crack'
+gem 'roo'
 gem 'searchkick'
 
 gem 'impressionist'

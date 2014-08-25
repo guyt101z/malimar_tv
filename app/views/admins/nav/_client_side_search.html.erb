@@ -11,12 +11,7 @@
             <div id="right-scroll" class="nano">
                 <div class="nano-content">
                     <ul class="nav list-user" id='user_full_list'>
-                        <% users.each do |user| %>
-                        <li>
-                            <a data-container="body" data-toggle="popover" data-placement="left" data-html="true" data-title="<div class='text-bold'><%= user.name %></div> <%= user.area %>" data-content="Client: #25477931AE<br><% unless user.premium? %>Free Member<% else %>Premium: <%= distance_of_time_in_words_to_now(user.expiry) %><% end %><br><% if user.online? %><span class='online'></span> Active<% end %>  <a href='/admins/users/<%= user.id %>' class='popover-footer'>Manage Client</a>"><span class="icon-circle-user"></span> <%= user.name %></a>
-
-                        </li>
-                        <% end %>
+                        
                     </ul>
                     <ul class="nav list-user" style='display:none' id='user_search_list'>
                     </ul>

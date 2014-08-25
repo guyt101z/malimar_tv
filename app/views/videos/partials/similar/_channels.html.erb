@@ -9,11 +9,15 @@
         @channel.name.split(' ').each do |word|
             search.push(word)
         end
-        @channel.genres.split(/\r\n/).each do |genre|
-            search.push(genre)
+        if @channel.genres.present?
+            @channel.genres.split(/\r\n/).each do |genre|
+                search.push(genre)
+            end
         end
-        @channel.actors.split(/\r\n/).each do |actor|
-            search.push(actor)
+        if @channel.actors.present?
+            @channel.actors.split(/\r\n/).each do |actor|
+                search.push(actor)
+            end
         end
 
         show_results = Array.new

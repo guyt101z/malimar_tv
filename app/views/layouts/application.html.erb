@@ -175,7 +175,7 @@
 			});
 		<% end %>
 		setHeight();
-		$(function(){
+		$(function()
 			$(window).on('resize', function() {
 				setHeight();
 			});
@@ -228,16 +228,50 @@
 	</script>
 </body>
 <% else %>
-<body>
+<% if user_signed_in? %>
+	<body style='padding-top: 102px'>
+<% else %>
+	<body>
+<% end %>
     <div class='notification-section' id='notifications'></div>
 	<% unless user_signed_in? %>
 		<%= render 'layouts/nav/navbar' %>
 	<% else %>
 		<%= render 'layouts/nav/navbar_logged_in' %>
 	<% end %>
-	<%= yield %>
+	<div id='main-container'>
+		<%= yield %>
+	</div>
 	<%= render 'layouts/nav/footer' %>
 	<script>
+	<% if user_signed_in? %>
+		$(document).ready(function(){
+			function setHeight(){
+				var height = $(window).height()
+				height = height - $('#main-footer').height()
+				height = height - $('#main-header-1').height()
+				height = height - $('#main-header-2').height()
+				if (height > $('#main-container').height()){
+					$('#main-container').css('height', height+'px')
+				}
+			}
+			setHeight()
+			$(window).resize(function(){setHeight()})
+		})
+	<% else %>
+		$(document).ready(function(){
+			function setHeight(){
+				var height = $(window).height()
+				height = height - $('#main-footer').height()
+				height = height - $('#main-header-1').height()
+				if (height > $('#main-container').height()){
+					$('#main-container').css('height', height+'px')
+				}
+			}
+			setHeight()
+			$(window).resize(function(){setHeight()})
+		})
+	<% end %>
         var num = 0;
 
         <% flash.each do |name, msg| -%>
