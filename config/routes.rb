@@ -202,7 +202,8 @@ Rails.application.routes.draw do
         get 'delete_movie' => 'videos#delete_movie'
 
         get 'search_movies' => 'videos#search_movies'
-
+        get 'admin_show_all_grids' => 'admins#show_all_grids'
+        get 'admin_show_existing_grids' => 'admins#show_existing_grids'
 
         get '/admins/videos/grids/all' => 'admins#all_grids', as: 'admin_all_grids'
         get '/admins/videos/grids/home' => 'admins#home_grid', as: 'admin_home_grid'
