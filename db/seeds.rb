@@ -29,7 +29,7 @@ free_trial_length = Setting.create(name: 'Free Trial Length', data: 30)
 payment_methods = Setting.create(name: 'Payout Methods', data: YAML.dump(['Cheque','Bank Transfer','Paypal','Wire Transfer']))
 
 footer_content = Setting.create(name: 'Footer Content', data: YAML.dump([{name: '', html: ''},{name: '', html: ''},{name: '', html: ''},
-	{name: '', html: ''},{name: '', html: ''},{name: '', html: ''}])
+	{name: '', html: ''},{name: '', html: ''},{name: '', html: ''},'']))
 
 mail_templates = [
 	MailTemplate.create(name: 'Self Sign Up', required_variables: YAML.dump(['user_name','user_email'])),
