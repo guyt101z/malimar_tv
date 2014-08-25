@@ -5,14 +5,21 @@
                 <div class='col-sm-4'>
                     <div class="box-white">
                         <div class="row">
-                        	<div class="col-sm-12">                                    
+                        	<div class="col-sm-12">
                                 <% if current_user.premium? %>
                                     <h3 class="mt0 mb0">Premium Membership</h3>
                                     <div>
                                         <span class="fz12 text-success glyphicon glyphicon-ok"></span> Status
                                         <span class="text-success text-sans-semi fz12-5">Active</span>
                                     </div>
+                                <% elsif current_user.expiry.nil? %>
+                                    <h3 class="mt0 mb0">Free Membership</h3>
+                                    <div>
+                                        <span class="fz12 text-success glyphicon glyphicon-ok"></span> Status
+                                        <span class="text-success text-sans-semi fz12-5">Active</span>
+                                    </div>
                                 <% else %>
+                                    <h3 class="mt0 mb0">Premium Membership</h3>
                                     <div>
                                         <span class="fz12 text-danger fa fa-exclamation-triangle"></span> Status
                                         <span class="text-danger text-sans-semi fz12-5">Expired</span>
