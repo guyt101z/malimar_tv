@@ -1,0 +1,34 @@
+<%= form_tag remote_sign_in_for_video_path, remote: true do %>
+<div class="modal fade" id="modal-login">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body p0">
+                <div class="row row0">
+                    <div class="col-sm-12">
+                        <div class="plr20 text-center">
+                            <%= hidden_field_tag :content_type, 'Show' %>
+                            <%= hidden_field_tag :show_id, @show.id %>
+                            <%= hidden_field_tag :episode_num, params[:episode_number] %>
+                            <br>
+                            <h3 class="text-sans-light">Sign in to Malimar.tv</h3>
+                            <p class="fz12">You need to sign in before watching this content.</p>
+                                <div class="form-group">
+                                    <%= email_field_tag :email, '',class: 'form-control', placeholder: 'Email' %>
+                                </div>
+                                <div class="form-group">
+                                    <%= password_field_tag :password, '',class: 'form-control', placeholder: 'Password' %>
+                                </div>
+                                <p class="fz12 text-left">Forgot your <a href="/users/password/new">password?</a></p>
+                                <div class="form-group">
+                                    <%= submit_tag 'Sign In', class: 'btn btn-primary btn-w180', onclick: '$("#login-error").remove()', data: {disable_with: 'Signing In...'} %>
+                                </div>
+                                <p class="fz12 text-left">You don’t have an account yet? <a href="/free_trial">Register</a></p>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!--modal-->
+<% end %>

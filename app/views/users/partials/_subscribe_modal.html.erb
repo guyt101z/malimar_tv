@@ -8,13 +8,13 @@
         		<h4 class="modal-title" id="myModalLabel">Subscribe Your Device</h4>
     		</div>
     		<div class="modal-body">
-        		<h4 style='margin-top:0;'>Roku Details</h4>
+        		<h4 style='margin-top:0;'>Device Details</h4>
         		<div class='row'>
         			<div class='col-sm-6'>
                         <div class='form-group'>
                             <% rokus = Roku.where(user_id: current_user.id) %>
                             <%
-                                options = [['Register new Roku',nil]]
+                                options = [['Register new Roku',nil], ['Web/Tablet/Mobile',0]]
                                 rokus.each do |roku|
                                     if roku.name.present?
                                         options.push(["#{roku.nickname(true)} - #{roku.serial}", roku.id])

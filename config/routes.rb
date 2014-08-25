@@ -16,6 +16,9 @@ Rails.application.routes.draw do
 
         get '/watch/shows/:show_id' => 'videos#browse_episodes', as: 'browse_episodes'
         get '/watch/shows/:show_id/:episode_number' => 'videos#watch_episode', as: 'watch_episode'
+
+        post 'remote_sign_in_for_video' => 'videos#remote_sign_in_for_video'
+        post 'remote_sign_in' => 'users#remote_sign_in'
   	# User Methods
     authenticate :user do
   	  	get 'account' => 'users#account'
@@ -75,6 +78,7 @@ Rails.application.routes.draw do
 
 
         get 'admin_show_existing_grids' => 'admins#show_existing_grids'
+        get 'show_sub_expiry' => 'admins#show_sub_expiry'
 
         mount ResqueWeb::Engine => "/resque_web"
         get '/admins/notifications/view/:id' => 'admin_notifications#notification_redirect', as: 'admin_view_notification'

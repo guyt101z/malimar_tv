@@ -8,7 +8,7 @@
             <div class='panel-body'>
                 <% rokus = Roku.where(user_id: @user.id) %>
                 <%
-                    options = []
+                    options = [['Web/Tablet/Mobile',0]]
                     rokus.each do |roku|
                         if roku.name.present?
                             options.push(["#{roku.nickname(false)} - #{roku.serial}", roku.id])
@@ -96,11 +96,8 @@
             <div class='panel-body' id='tx_details'>
                 <% @plan = @plans.first %>
                 <% @total = @plan.price - @user.balance %>
-                <% if rokus.any? %>
-                    <% @device = Roku.find(rokus[0]) %>
-                <% else %>
-                    <% @device = Device.new %>
-                <% end %>
+                <% @device = Device.new %>
+                <% @device.expiry = @user.expiry %>
                 <%= render 'admins/partials/transaction_details' %>
             </div>
             <div class='panel-footer'>
@@ -123,14 +120,14 @@
         $('#tx_details').html("<div class='stat-number'><div class='number'><i class='fa fa-refresh fa-spin'></i></div>Loading Details</div>")
 
         $.ajax({
-            url: '/admin_choose_plan?plan_id='+$(this).val()+'&roku_id='+$('#tx_serial').val()
+            url: '/admin_choose_plan?plan_id='+$(this).val()+'&roku_id='+$('#tx_serial').val()+'&user_id=<%= @user.id %>'
         })
     })
     $('#tx_serial').change(function(){
         $('#tx_details').html("<div class='stat-number'><div class='number'><i class='fa fa-refresh fa-spin'></i></div>Loading Details</div>")
 
         $.ajax({
-            url: '/admin_choose_plan?plan_id='+$('#plan_id').val()+'&roku_id='+$(this).val()
+            url: '/admin_choose_plan?plan_id='+$('#plan_id').val()+'&roku_id='+$(this).val()+'&user_id=<%= @user.id %>'
         })
     })
 </script>

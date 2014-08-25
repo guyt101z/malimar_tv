@@ -1,15 +1,28 @@
 class TransactionsController < ApplicationController
 	def accept
 		@transaction = Transaction.find(params[:id])
-		@device = Roku.find(@transaction.roku_id)
-		if @device.expiry.blank?
-			details = YAML.load(@transaction.product_details)
-			@device.expiry = Date.today+details[:duration].months
-			@device.save
+		if @transaction.roku_id.present?
+			@device = Roku.find(@transaction.roku_id)
+			if @device.expiry.blank?
+				details = YAML.load(@transaction.product_details)
+				@device.expiry = Date.today+details[:duration].months
+				@device.save
+			else
+				details = YAML.load(@transaction.product_details)
+				@device.expiry += details[:duration].months
+				@device.save
+			end
 		else
-			details = YAML.load(@transaction.product_details)
-			@device.expiry += details[:duration].months
-			@device.save
+			@user = User.find(@transaction.user_id)
+			if @user.expiry.blank?
+				details = YAML.load(@transaction.product_details)
+				@user.expiry = Date.today+details[:duration].months
+				@user.save
+			else
+				details = YAML.load(@transaction.product_details)
+				@user.expiry += details[:duration].months
+				@user.save
+			end
 		end
 		@transaction.customer_paid = DateTime.now
 		@transaction.status = 'Paid'
@@ -186,7 +199,13 @@ class TransactionsController < ApplicationController
 			@rep = SalesRepresentative.where(id: @transaction.sales_rep_id).first
 		end
 		@user = User.where(id: @transaction.user_id).first
-		@roku = Roku.find(@transaction.roku_id)
+		if @transaction.roku_id.present?
+			@roku_attached = true
+			@roku = Roku.where(id: @transaction.roku_id).first
+		else
+			@roku_attached = false
+			@roku = nil
+		end
 	end
 
 	def view_all

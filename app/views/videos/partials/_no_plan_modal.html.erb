@@ -1,0 +1,54 @@
+<% @plans = Plan.all %>
+<% array = Array.new %>
+<% @plans.each do |plan| %>
+    <% array.push(plan) %>
+<% end %>
+<div class="modal fade modal-510" id="modal-no-plan">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="zi">
+                    <a href="#" class="modal-close" data-dismiss="modal"><%= image_tag "close.png" %></a>
+                    <h3 class="text-sans-light mt0">
+                        <span class="glyphicon glyphicon-exclamation-sign text-red"></span>
+                        You don't have a premium plan
+                    </h3>
+                    <div class="mw300"><hr class="mtb10"></div>
+                    <p class="fz12">In order to watch Premium content,<br/> you will need to update your billing<br/> information.<br/> Click below to continue. </p>
+                </div>
+                <div class="figure-modal" style='margin-left: -15px'><%= image_tag "img-01.jpg", class:"img-responsive" %></div>
+                <div class="zi">
+                <div class="row mt-60">
+                    <div class="col-sm-7">
+                        <div class="bg-blue-light text-center mb10">
+                            <p class="text-blue"><span class="fz24 text-sans-semi">$<%= array[3].price %></span> / <%= pluralize(array[3].months, 'month') %></p>
+                            <p><a href="/subscribe" class="btn btn-primary btn-bold fz12-5">Add a Subscription Plan</a></p>
+                            or go back <%= link_to 'home', '/' %>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <br><br><br>
+                        <p class="fz13 text-blue text-sans-semi">Pricing Plans</p>
+                        <table class="table tablep3 fz12-5">
+                        <tbody>
+                            <tr>
+                                <td><%= array[0].name %></td>
+                                <td>$ <%= number_with_precision(array[0].price.to_f/array[0].months, precision: 0) %>/month</td>
+                            </tr>
+                            <tr>
+                                <td><%= array[1].name %></td>
+                                <td>$ <%= number_with_precision(array[1].price.to_f/array[1].months, precision: 0) %>/month</td>
+                            </tr>
+                            <tr>
+                                <td><%= array[2].name %></td>
+                                <td>$ <%= number_with_precision(array[2].price.to_f/array[2].months, precision: 0) %>/month</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!--modal-->

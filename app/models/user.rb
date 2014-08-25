@@ -23,6 +23,14 @@ class User < ActiveRecord::Base
       return "#{first_name} #{last_name}"
     end
 
+    def expired?
+        if Transaction.where(user_id: id, roku_id: nil).any? && premium? == false
+            return true
+        else
+            return false
+        end
+    end
+
     def matches?(search_string)
       if name.downcase.include?(search_string.downcase)
         return true
@@ -89,32 +97,13 @@ class User < ActiveRecord::Base
     end
 
     def premium?
-        premium_devices = 0
-
-        devices = Roku.where(user_id: id)
-        devices.each do |device|
-            if device.expiry != nil && device.expiry > Date.today
-                premium_devices += 1
-            end
-        end
-
-        return premium_devices > 0
-    end
-
-    def expiry
-        if premium?
-            devices = Roku.where(user_id: id)
-            latest_date = Date.today
-            devices.each do |device|
-                if device.expiry != nil && device.expiry > latest_date
-                    latest_date = device.expiry
-                end
-            end
-            return latest_date.to_date
+        if expiry.nil? || expiry < Date.today
+            return false
         else
-            return nil
+            return true
         end
     end
+
 
     def online?
         return last_seen != nil && last_seen > 5.minutes.ago

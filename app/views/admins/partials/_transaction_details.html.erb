@@ -1,3 +1,4 @@
+<% if params[:roku_id].present? && params[:roku_id].to_i == 0 %>
 <div class="list-group mb0">
     <div class="list-group-item">
         <table class="table table-noborder" style='margin-bottom:0'>
@@ -32,7 +33,52 @@
         </tr>
         <tr>
             <td>Renewal</td>
-            <% if @device.expiry.nil? || @device.expiry < Date.today %>
+            <% if @user.expiry.nil? || @user.expiry < Date.today %>
+                <td colspan='3' style='text-align:right' id='renewal'><%= (Date.today + @plan.months.months).strftime('%Y/%m/%d') %></td>
+            <% else %>
+                <td colspan='3' style='text-align:right' id='renewal'><%= (@user.expiry + @plan.months.months).strftime('%Y/%m/%d') %></td>
+            <% end %>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+</div>
+<% else %>
+<div class="list-group mb0">
+    <div class="list-group-item">
+        <table class="table table-noborder" style='margin-bottom:0'>
+        <tbody>
+        <tr>
+            <td class="text-sans-semi">Plan</td>
+            <td></td>
+            <td></td>
+            <td class="text-right text-blue text-sans-semi" id='plan-price'>$<%= number_with_precision(@plan.price, precision: 2) %></td>
+        </tr>
+        <tr>
+            <td class="text-sans-semi">Balance</td>
+            <td></td>
+            <td></td>
+            <td class="text-right text-blue text-sans-semi" id='balance'>$<%= number_with_precision(@user.balance, precision: 2) %></td>
+        </tr>
+        <tr>
+            <td class="text-sans-semi">Payment</td>
+            <% if @total > 0 %>
+                <td colspan='3' id='payment_cycle' style='text-align:right'>$<%= number_with_precision(@total, precision: 2) %></td>
+            <% else %>
+                <td colspan='3' id='payment_cycle' style='text-align:right'>$<%= number_with_precision(0, precision: 2) %></td>
+            <% end %>
+        </tr>
+        <tr>
+            <td>Remaining Balance</td>
+            <% if @total > 0 %>
+                <td colspan='3' id='payment_cycle' style='text-align:right'>$<%= number_with_precision(0, precision: 2) %></td>
+            <% else %>
+                <td colspan='3' id='payment_cycle' style='text-align:right'>$<%= number_with_precision(@user.balance - @plan.price, precision: 2) %></td>
+            <% end %>
+        </tr>
+        <tr>
+            <td>Renewal</td>
+            <% if @device.nil? || (@device.expiry.nil? || @device.expiry < Date.today) %>
                 <td colspan='3' style='text-align:right' id='renewal'><%= (Date.today + @plan.months.months).strftime('%Y/%m/%d') %></td>
             <% else %>
                 <td colspan='3' style='text-align:right' id='renewal'><%= (@device.expiry + @plan.months.months).strftime('%Y/%m/%d') %></td>
@@ -42,3 +88,4 @@
         </table>
     </div>
 </div>
+<% end %>

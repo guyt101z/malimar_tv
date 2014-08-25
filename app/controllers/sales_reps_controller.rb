@@ -50,7 +50,7 @@ class SalesRepsController < ApplicationController
 		if params[:plan_id].to_i == 0
 			@device_required = false
 		else
-			@device_required = true
+			@device_required = false
 		end
 
 		if params[:serial].present?
@@ -81,6 +81,7 @@ class SalesRepsController < ApplicationController
 				@device_error = 'Serial '+@device.errors[:serial].join(", ")
 			end
 		else
+			@device = nil
 			if @device_required == true
 				@device_errors = true
 				@device_error = 'You must register a device'
@@ -141,10 +142,13 @@ class SalesRepsController < ApplicationController
 							transaction.payment_type = 'Credit Card'
 							transaction.paypal_id = response.params['transaction_id']
 							transaction.status = 'Paid'
-							unless @device.nil? && @device_errors == false
+							unless @device.nil?
 								transaction.roku_id = @device.id
 								@device.expiry = Date.today + @plan.months.months
 								@device.save
+							else
+								@user.expiry = Date.today + @plan.months.months
+								@user.save
 							end
 							transaction.customer_paid = DateTime.now
 							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, commission_rate: current_sales_representative.commission_rate})
@@ -175,7 +179,7 @@ class SalesRepsController < ApplicationController
 					transaction.user_id = @user.id
 					transaction.payment_type = params[:payment_type]
 					transaction.status = 'Pending'
-					unless @device.nil? && @device_errors == false
+					unless @device.nil?
 						transaction.roku_id = @device.id
 					end
 					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, commission_rate: current_sales_representative.commission_rate})

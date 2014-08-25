@@ -1,0 +1,5 @@
+<% if @expiry.nil? || @expiry < Date.today %>
+    $('#sub_expiry').html('N/A')
+<% else %>
+    $('#sub_expiry').html('<%= @expiry.strftime('%Y/%m/%d') %>')
+<% end %>

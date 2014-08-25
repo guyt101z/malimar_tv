@@ -145,7 +145,7 @@
                             <div class='panel-body'>
                                 <% rokus = Roku.where(user_id: @user.id) %>
                                 <%
-                                    options = []
+                                    options = [['Web/Tablet/Mobile',0]]
                                     rokus.each do |roku|
                                         if roku.name.present?
                                             options.push(["#{roku.nickname(false)} - #{roku.serial}", roku.id])
@@ -154,11 +154,25 @@
                                         end
                                     end
                                 %>
-
+                                <div class='stat-number'><div class="number" id='sub_expiry'>
+                                    <% if @user.expiry.nil? || @user.expiry < Date.today %>
+                                        N/A
+                                    <% else %>
+                                        <%= @user.expiry.strftime('%Y/%m/%d') %>
+                                    <% end %>
+                                </div>Expiry</div>
+                                <hr>
                                 <div class='form-group' id='sub_serial_wrapper'>
                                     <label>Choose a Roku <span class="text-danger">*</span></label>
                                     <%= select_tag :sub_serial, options_for_select(options), class: 'form-control', placeholder: 'Serial Number (Optional)' %>
+                                    <%= hidden_field_tag :user_id, @user.id %>
                                 </div>
+                                <script>
+                                    $('#sub_serial').change(function(){
+                                        $('#sub_expiry').html('<i class="fa fa-refresh fa-spin"></i>')
+                                        $.ajax({url: '/show_sub_expiry?sub_serial=' + $('#sub_serial').val() + '&user_id=<%= @user.id %>'})
+                                    })
+                                </script>
                                 <hr>
                                 <div class='row'>
                                     <div class='col-md-4 form-group'>

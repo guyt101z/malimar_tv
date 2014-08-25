@@ -537,61 +537,24 @@ class VideosController < ApplicationController
 	# Watch Methods
 	#######################################################################################
 	def watch_channel
-		if user_signed_in? || admin_signed_in?
-			@channel = Channel.find(params[:channel_id])
-			@token = generate_token(@channel.stream_name)
-
-			unless @channel.free? || admin_signed_in?
-				premium_wall
-			end
-		else
-			flash[:notice] = 'You mus sign up or sign in to watch videos'
-			redirect_to '/'
-		end
+		@channel = Channel.find(params[:channel_id])
+		@token = generate_token(@channel.stream_name)
 	end
 
 	def browse_episodes
-		if user_signed_in? || admin_signed_in?
-			@show = Show.find(params[:show_id])
-			@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
-			@episodes = @episodes.paginate(page: params[:page], per_page: 10)
-
-			unless @show.free? || admin_signed_in?
-				premium_wall
-			end
-		else
-			flash[:notice] = 'You mus sign up or sign in to watch videos'
-			redirect_to '/'
-		end
+		@show = Show.find(params[:show_id])
+		@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
+		@episodes = @episodes.paginate(page: params[:page], per_page: 10)
 	end
 	def watch_episode
-		if user_signed_in? || admin_signed_in?
-			@show = Show.find(params[:show_id])
-			@episode = Episode.where(show_id: @show.id, episode_number: params[:episode_number]).first
+		@show = Show.find(params[:show_id])
+		@episode = Episode.where(show_id: @show.id, episode_number: params[:episode_number]).first
 
-			@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
-
-			unless @show.free? || admin_signed_in?
-				premium_wall
-			end
-		else
-			flash[:notice] = 'You mus sign up or sign in to watch videos'
-			redirect_to '/'
-		end
+		@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
 	end
 
 	def watch_movie
-		if user_signed_in? || admin_signed_in?
-			@movie = Movie.find(params[:movie_id])
-			@token = generate_token(@movie.stream_name)
-
-			unless @movie.free? || admin_signed_in?
-				premium_wall
-			end
-		else
-			flash[:notice] = 'You mus sign up or sign in to watch videos'
-			redirect_to '/'
-		end
+		@movie = Movie.find(params[:movie_id])
 	end
 
 	def navbar_search
@@ -629,11 +592,18 @@ class VideosController < ApplicationController
 	end
 
 	def full_grid
-		if user_signed_in? || admin_signed_in?
-			@grid = Grid.find(params[:category_id])
+		@grid = Grid.find(params[:category_id])
+	end
+
+	def remote_sign_in_for_video
+		user = User.authenticate(params[:email],params[:password])
+
+		if user.nil?
+			@error = 'Invalid email or password'
 		else
-			flash[:notice] = 'You mus sign up or sign in to watch videos'
-			redirect_to '/'
+			sign_in(user, bypass: true)
+			flash[:success] = "Welcome back, #{user.name}"
+			@error = nil
 		end
 	end
 

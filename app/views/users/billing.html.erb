@@ -30,6 +30,11 @@
                                         <span class="fz12 text-success glyphicon glyphicon-ok"></span> Status
                                         <span class="text-success text-sans-semi fz12-5">Active</span>
                                     </div>
+                                    <% if current_user.balance.nil? %>
+                                        Balance: $0.00
+                                    <% else %>
+                                        Balance: $<%= number_with_precision(current_user.balance, precision: 2) %>
+                                    <% end %>
                                 <% end %>
                                 <% devices = Roku.where(user_id: current_user.id) %>
                                 <div  style='max-height: 250px; overflow-y:scroll'>
@@ -50,7 +55,7 @@
                                         <tr>
                                             <td colspan='4'>
                                             <% if Transaction.where(roku_id: device.id).any? %>
-                                                <% if device.expiry != nil || device.expiry > Date.today %>
+                                                <% unless device.nil? && device.expiry <= Date.today %>
                                                     <div>
                                                         <span class="fz12 text-success glyphicon glyphicon-ok"></span> Status
                                                         <span class="text-success text-sans-semi fz12-5">Active</span> (Premium)
@@ -95,7 +100,7 @@
                                 if transaction.roku_id.present?
                                     device = Roku.where(id: transaction.roku_id).first
                                     if device.nil?
-                                        roku = 'Device not found''Device not found'
+                                        roku = 'Web, Tablets, Mobile'
                                     else
                                         if device.name.present?
                                             roku = "#{device.nickname} - #{device.serial}"
@@ -104,7 +109,7 @@
                                         end
                                     end
                                 else
-                                    roku = 'Device not found'
+                                    roku = 'Web, Tablets, Mobile'
                                 end %>
                                 <% details = YAML.load(transaction.product_details) %>
                                 <% name = details[:name].gsub('REFUNDED: ','').gsub('PAID: ','').gsub('CANCELLED: ','') %>

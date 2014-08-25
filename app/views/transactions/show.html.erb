@@ -89,9 +89,22 @@
                             </div>
                         </div>
                         <div class='row'>
+                            <% if @roku_attached == true %>
                             <div class='col-lg-4 col-sm-6'>
-                                <p><strong style='font-size: 105%'>Roku Serial:</strong><br/><%= @roku.serial %></p>
+                                <p><strong style='font-size: 105%'>Subscription Type:</strong><br/>Roku</p>
                             </div>
+                            <div class='col-lg-4 col-sm-6'>
+                                <% unless @roku.nil? %>
+                                <p><strong style='font-size: 105%'>Roku Serial:</strong><br/><%= @roku.serial %></p>
+                                <% else %>
+                                <p><strong style='font-size: 105%'>Roku Serial:</strong><br/>Not Found</p>
+                                <% end %>
+                            </div>
+                            <% else %>
+                            <div class='col-lg-4 col-sm-6'>
+                                <p><strong style='font-size: 105%'>Subscription Type:</strong><br/>Web/Mobile/Tablet</p>
+                            </div>
+                            <% end %>
                             <div class='col-lg-4 col-sm-6'>
                                 <p><strong style='font-size: 105%'>Payment Method:</strong><br/><%= @transaction.payment_type %></p>
                             </div>

@@ -8,6 +8,6 @@
     $('#tx_details').html("<div class='stat-number'><div class='number'><i class='fa fa-refresh fa-spin'></i></div>Loading Details</div>")
 
     $.ajax({
-        url: '/admin_choose_plan?user_id=<%= @user.id %>&plan_id='+$('#plan_id').val()
+        url: '/admin_choose_plan?user_id=<%= @user.id %>&plan_id='+$('#plan_id').val()+'&roku_id='+$('#tx_serial').val()
     })
 <% end %>

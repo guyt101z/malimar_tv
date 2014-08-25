@@ -40,13 +40,17 @@ $('#serial-error').remove()
 $('#serial').parent().removeClass('has-error')
 
 <% if @user_errors == false && @device_errors == false %>
-    $('#content').html('<%= escape_javascript(render("users/activation/step_1")) %>')
+    <% unless @device.nil? %>
+        $('#content').html('<%= escape_javascript(render("users/activation/step_1")) %>')
+    <% else %>
+        window.location = '/account'
+    <% end %>
 <% else %>
     var notification = new NotificationFx({
         message : '<p>Account could not be created.</p>',
         layout : 'growl',
         effect : 'jelly',
-        type : 'error', // notice, warning, error or success
+        type : 'danger', // notice, warning, error or success
         num: <%= Random.rand(10000) %>
     });
 

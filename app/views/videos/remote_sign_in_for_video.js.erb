@@ -1,0 +1,17 @@
+<% if @error.nil? %>
+    <% if params[:content_type] == 'Channel' %>
+        window.location = '/watch/live/<%= params[:channel_id] %>'
+    <% elsif params[:content_type] == 'Show' %>
+        <% if params[:episode_num].present? %>
+            window.location = '/watch/shows/<%= params[:show_id] %>/<%= params[:episode_num] %>'
+        <% else %>
+            window.location = '/watch/shows/<%= params[:show_id] %>'
+        <% end %>
+    <% elsif params[:content_type] == 'Movie' %>
+        window.location = '/watch/movies/<%= params[:movie_id] %>'
+    <% elsif params[:content_type] == 'Grid' %>
+        window.location = '/watch/grid/<%= params[:grid_id] %>'
+    <% end %>
+<% else %>
+    $('#password').after('<div class="text-danger" id="login-error"><%= @error %></div>')
+<% end %>

@@ -30,6 +30,42 @@
         <%= render 'videos/partials/similar_links' %>
     </div>
 </div><!--content-->
+
+
+<% if (user_signed_in? && current_user.premium?) || admin_signed_in?  %>
+    <!-- Nothing -->
+<% elsif user_signed_in? && current_user.expired? %>
+    <% if @movie.free? %>
+        <%= render('videos/partials/expired_account_modal') %>
+        <script>$('#modal-expired').modal({show: true})</script>
+    <% else %>
+        <%= render('videos/partials/expired_account_modal') %>
+        <script>
+            $('#modal-expired').modal({show: true, keyboard: false, backdrop: 'static'})
+            $('#modal-expired').on('hidden.bs.modal', function () {
+                window.location = '/'
+            })
+        </script>
+    <% end %>
+<% elsif user_signed_in? && user.premium == false && @movie.free == false %>
+    <%= render('videos/partials/no_plan') %>
+    <script>
+        $('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
+        $('#modal-no-plan').on('hidden.bs.modal', function () {
+            window.location = '/'
+        })
+    </script>
+<% else %>
+    <%= render('videos/partials/sign_in_modal_movie') %>
+    <script>
+        $('#modal-login').modal({show: true, keyboard: false, backdrop: 'static'})
+        $('#modal-login').on('hidden.bs.modal', function () {
+            window.location = '/'
+        })
+    </script>
+<% end %>
+
+
 <script>
 <% if @movie.rtmp_url.present? %>
 jwplayer("video_wrapper").setup({

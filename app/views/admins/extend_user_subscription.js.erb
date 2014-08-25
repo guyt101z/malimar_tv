@@ -7,4 +7,9 @@
     addNotification('success', 'Subscription updated: <%= @message %>', 'Success', 'check-circle')
     $('#length').val('')
     $('#period').val('days')
+    <% if @expiry.nil? || @expiry < Date.today %>
+        $('#sub_expiry').html('N/A')
+    <% else %>
+        $('#sub_expiry').html('<%= @expiry.strftime('%Y/%m/%d') %>')
+    <% end %>
 <% end %>
