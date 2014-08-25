@@ -5,14 +5,6 @@ class ApplicationController < ActionController::Base
 
   	before_filter :update_last_seen, :timezone
 
-    def redirect_https
-        redirect_to :protocol => "https://" unless request.ssl?
-        return true
-    end
-    if Rails.env.production?
-    	before_filter :redirect_https
-    end
-
 
   	def update_last_seen
   		if user_signed_in?
