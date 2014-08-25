@@ -74,7 +74,7 @@ Rails.application.routes.draw do
         get '/admins/migrations/client/:id' => 'admins#view_client_upload', as: 'view_client_upload'
 
 
-        get 'admin_show_existing_grids' => 'admins#admin_show_existing_grids'
+        get 'admin_show_existing_grids' => 'admins#show_existing_grids'
 
         mount ResqueWeb::Engine => "/resque_web"
         get '/admins/notifications/view/:id' => 'admin_notifications#notification_redirect', as: 'admin_view_notification'
