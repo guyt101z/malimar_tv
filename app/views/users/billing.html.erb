@@ -5,36 +5,23 @@
                 <div class='col-sm-4'>
                     <div class="box-white">
                         <div class="row">
-                        	<div class="col-sm-12">
-                                <% if Transaction.where(user_id: current_user.id).any? %>
+                        	<div class="col-sm-12">                                    
+                                <% if current_user.premium? %>
                                     <h3 class="mt0 mb0">Premium Membership</h3>
-                                    <% if current_user.premium? %>
-                                        <div>
-                                            <span class="fz12 text-success glyphicon glyphicon-ok"></span> Status
-                                            <span class="text-success text-sans-semi fz12-5">Active</span>
-                                        </div>
-                                    <% else %>
-                                        <div>
-                                            <span class="fz12 text-danger fa fa-exclamation-triangle"></span> Status
-                                            <span class="text-danger text-sans-semi fz12-5">Expired</span>
-                                        </div>
-                                    <% end %>
-                                    <% if current_user.balance.nil? %>
-                                        Balance: $0.00
-                                    <% else %>
-                                        Balance: $<%= number_with_precision(current_user.balance, precision: 2) %>
-                                    <% end %>
-                                <% else %>
-                                    <h3 class="mt0 mb0">Free Membership</h3>
                                     <div>
                                         <span class="fz12 text-success glyphicon glyphicon-ok"></span> Status
                                         <span class="text-success text-sans-semi fz12-5">Active</span>
                                     </div>
-                                    <% if current_user.balance.nil? %>
-                                        Balance: $0.00
-                                    <% else %>
-                                        Balance: $<%= number_with_precision(current_user.balance, precision: 2) %>
-                                    <% end %>
+                                <% else %>
+                                    <div>
+                                        <span class="fz12 text-danger fa fa-exclamation-triangle"></span> Status
+                                        <span class="text-danger text-sans-semi fz12-5">Expired</span>
+                                    </div>
+                                <% end %>
+                                <% if current_user.balance.nil? %>
+                                    Balance: $0.00
+                                <% else %>
+                                    Balance: $<%= number_with_precision(current_user.balance, precision: 2) %>
                                 <% end %>
                                 <% devices = Roku.where(user_id: current_user.id) %>
                                 <div  style='max-height: 250px; overflow-y:scroll'>
