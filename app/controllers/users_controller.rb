@@ -112,8 +112,12 @@ class UsersController < ApplicationController
 
 	def subscribe_newsletter_footer
 		begin
-			mailchimp = Mailchimp::API.new(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:api_key])
-			mailchimp.lists.subscribe(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:list_id], {'email' => params[:email]})
+			if params[:sub_email].present?
+				mailchimp = Mailchimp::API.new(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:api_key])
+				mailchimp.lists.subscribe(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:list_id], {'email' => params[:sub_email]})
+			else
+				@error = "You must enter an email address"
+			end
 		rescue
 			@error = "Sorry, an issue occured subscribing your email"
 		end
