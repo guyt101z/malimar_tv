@@ -20,7 +20,7 @@ Rails.application.routes.draw do
         post 'remote_sign_in_for_video' => 'videos#remote_sign_in_for_video'
         post 'remote_sign_in' => 'users#remote_sign_in'
 
-        post 'subscribe_newsletter_footer' => 'users#subscribe_newsletter_footer'
+        get 'subscribe_newsletter_footer' => 'users#subscribe_newsletter_footer'
   	# User Methods
     authenticate :user do
   	  	get 'account' => 'users#account'
