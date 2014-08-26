@@ -206,10 +206,10 @@ transition: background-color 0.2s ease-out;}
 -o-transition: opacity 0.2s ease-out;
 transition: opacity 0.2s ease-out;
 max-width: 100%;height: auto;
-height: 150px;
+height: 285px;
 width: 199px;}
 .channel {
-	height: 205px;
+	height: 340px;
 	width: 190px;
 	padding-bottom: 20px;
 	float: left;

@@ -36,8 +36,8 @@ $('#front_page-error').remove()
     <% if @movie.errors[:release_date].present? %>
         $('#release_date').after('<div class="text-danger" id="release_date-error">Release date <%= @movie.errors[:release_date].join(", ") %>.</div>')
     <% end %>
-    <% if @movie.errors[:front_page].present? %>
-        $('#front_page').after('<div class="text-danger" id="front_page-error"><%= @movie.errors[:front_page].join(", ") %>.</div>')
+    <% if @movie.errors[:hd].present? %>
+        $('#front_page').after('<div class="text-danger" id="front_page-error"><%= @movie.errors[:hd].join(", ") %>.</div>')
     <% end %>
     $('#details-title').html('Channel Details - <span class="text-danger">Not Updated</span>')
 <% else %>
