@@ -3,10 +3,10 @@
 class BannerUploader < CarrierWave::Uploader::Base
 
   include CarrierWave::MiniMagick
-  storage :file
+  storage :fog
 
   def store_dir
-    "uploads/banners/#{model.id}"
+    "images/banners/#{model.id}"
   end
 
   version :front_page do
