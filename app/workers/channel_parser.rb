@@ -17,7 +17,7 @@ class ChannelParser
             channel.bitrate = item['media']['streamBitrate']
 
             #get stream name
-            url = media['streamUrl'].to_s.clone
+            url = item['media']['streamUrl'].to_s.clone
             url = url.gsub!('/playlist.m3u8','')
             url = url.split('')
             url.reverse!
