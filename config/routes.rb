@@ -53,10 +53,6 @@ Rails.application.routes.draw do
         get 'start_free_trial' => 'users#start_free_trial'
     end
 
-    get 'events/admin/:id' => 'events#admin_events'
-    get 'events/sales_rep/:id' => 'events#sales_rep_events'
-    get 'events/user/:id' => 'events#user_events'
-
   	# Admin Methods
     authenticate :admin do
         get 'admin_load_devices' => 'admins#load_devices'
