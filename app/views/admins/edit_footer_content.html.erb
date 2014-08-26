@@ -20,7 +20,7 @@
                         </div>
                         <div class='form-group'>
                             <label>HTML Content 1</label>
-                            <%= text_area_tag :html_0, @data[0][:html], class: 'form-control', style: 'resize:none', rows: 6 %>
+                            <%= text_area_tag :html_0, @data[0][:html], class: 'form-control code-editor', style: 'resize:none', rows: 6 %>
                         </div>
                     </div>
                     <div class='col-md-4 col-sm-6 col-xs-12'>
@@ -30,7 +30,7 @@
                         </div>
                         <div class='form-group'>
                             <label>HTML Content 2</label>
-                            <%= text_area_tag :html_1, @data[1][:html], class: 'form-control', style: 'resize:none', rows: 6 %>
+                            <%= text_area_tag :html_1, @data[1][:html], class: 'form-control code-editor', style: 'resize:none', rows: 6 %>
                         </div>
                     </div>
                     <div class='col-md-4 col-sm-6 col-xs-12'>
@@ -40,7 +40,7 @@
                         </div>
                         <div class='form-group'>
                             <label>HTML Content 3</label>
-                            <%= text_area_tag :html_2, @data[2][:html], class: 'form-control', style: 'resize:none', rows: 6 %>
+                            <%= text_area_tag :html_2, @data[2][:html], class: 'form-control code-editor', style: 'resize:none', rows: 6 %>
                         </div>
                     </div>
                     <div class='col-md-4 col-sm-6 col-xs-12'>
@@ -50,7 +50,7 @@
                         </div>
                         <div class='form-group'>
                             <label>HTML Content 4</label>
-                            <%= text_area_tag :html_3, @data[3][:html], class: 'form-control', style: 'resize:none', rows: 6 %>
+                            <%= text_area_tag :html_3, @data[3][:html], class: 'form-control code-editor', style: 'resize:none', rows: 6 %>
                         </div>
                     </div>
                     <div class='col-md-4 col-sm-6 col-xs-12'>
@@ -60,7 +60,7 @@
                         </div>
                         <div class='form-group'>
                             <label>HTML Content 5</label>
-                            <%= text_area_tag :html_4, @data[4][:html], class: 'form-control', style: 'resize:none', rows: 6 %>
+                            <%= text_area_tag :html_4, @data[4][:html], class: 'form-control code-editor', style: 'resize:none', rows: 6 %>
                         </div>
                     </div>
                     <div class='col-md-4 col-sm-6 col-xs-12'>
@@ -70,16 +70,16 @@
                         </div>
                         <div class='form-group'>
                             <label>HTML Content 5</label>
-                            <%= text_area_tag :html_5, @data[5][:html], class: 'form-control', style: 'resize:none', rows: 6 %>
+                            <%= text_area_tag :html_5, @data[5][:html], class: 'form-control code-editor', style: 'resize:none', rows: 6 %>
                         </div>
                     </div>
                     <div class='col-md-8 col-sm-6'>
                         <div class='form-group'>
                             <label>Bottom Footer Content</label>
                             <% if @data.count > 6 %>
-                                <%= text_area_tag :bottom_content, @data[6], class: 'form-control', style: 'resize:none', rows: 8 %>
+                                <%= text_area_tag :bottom_content, @data[6], class: 'form-control code-editor', style: 'resize:none', rows: 8 %>
                             <% else %>
-                                <%= text_area_tag :bottom_content, '', class: 'form-control', style: 'resize:none', rows: 8 %>
+                                <%= text_area_tag :bottom_content, '', class: 'form-control code-editor', style: 'resize:none', rows: 8 %>
                             <% end %>
                         </div>
                     </div>
@@ -91,13 +91,25 @@
 </div>
 <script>
     $('#footer').addClass('active')
-    function isNumberKey(evt)
-   {
-      var charCode = (evt.which) ? evt.which : evt.keyCode;
-      if (charCode != 46 && charCode > 31
-        && (charCode < 48 || charCode > 57))
-         return false;
+    $(".code-editor").keydown(function(e) {
+        if(e.keyCode === 9) { // tab was pressed
+            // get caret position/selection
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
 
-      return true;
-   }
+            var $this = $(this);
+            var value = $this.val();
+
+            // set textarea value to: text before caret + tab + text after caret
+            $this.val(value.substring(0, start)
+                        + "\t"
+                        + value.substring(end));
+
+            // put caret at right position again (add one for the tab)
+            this.selectionStart = this.selectionEnd = start + 1;
+
+            // prevent the focus lose
+            e.preventDefault();
+        }
+    });
 </script>

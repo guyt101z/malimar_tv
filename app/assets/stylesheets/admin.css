@@ -20,6 +20,11 @@
  *= require notifications
  *= require new_admin_style
  */
+.code-editor {
+    font-size: 75%;
+    font-family: 'Monaco';
+}
+
 .sidebar .nav{
     max-height: calc(100% - 51px);
     overflow-y: scroll;

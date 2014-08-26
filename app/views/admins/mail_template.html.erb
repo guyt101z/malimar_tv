@@ -17,7 +17,7 @@
                         <div class='panel-body'>
                             <div class='form-group'>
                                 <%= hidden_field_tag :id, @template.id %>
-                                <%= text_field_tag :subject, @template.subject, class: 'form-control' %>
+                                <%= text_field_tag :subject, @template.subject, class: 'form-control code-editor' %>
                             </div>
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                         <div class='panel-body'>
                             <div class='form-group'>
                                 <%= hidden_field_tag :id, @template.id %>
-                                <%= text_area_tag :css, @template.css, class: 'form-control', style: 'resize: vertical; font-family: Monaco', rows: 6 %>
+                                <%= text_area_tag :css, @template.css, class: 'form-control code-editor', style: 'resize: vertical; font-family: Monaco', rows: 6 %>
                             </div>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                         <div class='panel-body'>
                             <div class='form-group'>
                                 <%= hidden_field_tag :id, @template.id %>
-                                <%= text_area_tag :body, @template.body, class: 'form-control', style: 'resize: vertical; font-family: Monaco', rows: 6 %>
+                                <%= text_area_tag :body, @template.body, class: 'form-control code-editor', style: 'resize: vertical; font-family: Monaco', rows: 6 %>
                             </div>
                         </div>
                     </div>
