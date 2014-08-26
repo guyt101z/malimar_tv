@@ -12,25 +12,29 @@ class ChannelParser
 
             channel.adult = grid.adult
             channel.content_type = item['contentType']
-            channel.content_quality = item['media']['streamQuality']
-            channel.stream_url = item['media']['streamUrl']
-            channel.bitrate = item['media']['streamBitrate']
 
             #get stream name
-            url = item['media']['streamUrl'].to_s.clone
-            url = url.gsub!('/playlist.m3u8','')
-            url = url.split('')
-            url.reverse!
-            name_array = Array.new
-            url.each do |i|
-                if i == '/'
-                    break
-                else
-                    name_array.push(i)
+            if item.has_key?('media')
+                media = item['media'].to_hash
+
+                channel.content_quality = media['streamQuality']
+                channel.stream_url = media['streamUrl']
+                channel.bitrate = media['streamBitrate']
+                url = media['streamUrl'].to_s.clone
+                url = url.gsub!('/playlist.m3u8','')
+                url = url.split('')
+                url.reverse!
+                name_array = Array.new
+                url.each do |i|
+                    if i == '/'
+                        break
+                    else
+                        name_array.push(i)
+                    end
                 end
+                name_array.reverse!
+                channel.stream_name = name_array.join('')
             end
-            name_array.reverse!
-            channel.stream_name = name_array.join('')
 
             channel.genres = ""
 
