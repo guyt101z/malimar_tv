@@ -40,6 +40,16 @@
                         </div>
                         <div class="table-responsive">
                             <div class='panel-scroll transactions'>
+                                <% priorities = ['Low',     'Medium',  'High'] %>
+                                <% classes =    ['success', 'warning', 'danger'] %>
+                                <% @closed_tickets.each do |ticket| %>
+                                <div class='ticket' id='ticket_<%= ticket.id %>'>
+                                    <p class='title'><a style='cursor:pointer' onclick='viewTicket(<%= ticket.id %>)'><%= ticket.title %></a></p>
+                                    <p class='updated_at'><%= distance_of_time_in_words_to_now(ticket.updated_at) %> ago</p>
+                                    <p class='description'><%= ticket.issue_description %></p>
+                                    <p class='priority'><span class='text-<%= classes[ticket.priority] %>'><%= priorities[ticket.priority] %></span></p>
+                                </div>
+                                <% end %>
                             </div>
                         </div>
                     </div>

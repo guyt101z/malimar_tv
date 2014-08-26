@@ -110,6 +110,15 @@ class UsersController < ApplicationController
 		@twelve_month = Plan.find(4)
 	end
 
+	def subscribe_newsletter_footer
+		begin
+			mailchimp = Mailchimp::API.new(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:api_key])
+			mailchimp.lists.subscribe(YAML.load(Setting.where(name: 'MailChimp Credentials').first.data)[:list_id], {'email' => params[:email]})
+		rescue
+			@error = "Sorry, an issue occured subscribing your email"
+		end
+	end
+
 	def add_subscription
 		@plan = Plan.find(params[:plan_id])
 
@@ -490,9 +499,6 @@ class UsersController < ApplicationController
 	end
 
 	def account
-		@devices = Device.where(user_id: current_user.id)
-		@transactions = Transaction.where(user_id: current_user.id).order(created_at: :desc)
-		@tickets = SupportCase.where(user_id: current_user.id, status: ['Pending','Open']).order(updated_at: :desc)
 	end
 
 	def new_ticket
@@ -602,7 +608,7 @@ class UsersController < ApplicationController
 
 	def support
 		@open_tickets = SupportCase.where(user_id: current_user.id, status: ['Pending','Open']).order(updated_at: :desc)
-		@closed_tickets = SupportCase.where(user_id: current_user.id, status: ['Closed']).order(updated_at: :desc)
+		@closed_tickets = SupportCase.where(user_id: current_user.id, status: ['Closed','Archived']).order(updated_at: :desc)
 	end
 
 	def free_trial_1
