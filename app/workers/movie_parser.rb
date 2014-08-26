@@ -17,10 +17,9 @@ class MovieParser
             else
                 movie.adult = false
             end
-            media = item['media'].to_hash
-            movie.content_quality = media['streamQuality']
-            movie.stream_url = media['streamUrl']
-            movie.bitrate = media['streamBitrate']
+            movie.content_quality = item['media']['streamQuality']
+            movie.stream_url = item['media']['streamUrl']
+            movie.bitrate = item['media']['streamBitrate']
             movie.length = 0
             movie.genres = ""
 

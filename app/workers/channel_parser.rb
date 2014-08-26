@@ -11,11 +11,10 @@ class ChannelParser
             channel.synopsis = item['synopsis']
 
             channel.adult = grid.adult
-            media = item['media'].to_hash
             channel.content_type = item['contentType']
-            channel.content_quality = media['streamQuality']
-            channel.stream_url = media['streamUrl']
-            channel.bitrate = media['streamBitrate']
+            channel.content_quality = item['media']['streamQuality']
+            channel.stream_url = item['media']['streamUrl']
+            channel.bitrate = item['media']['streamBitrate']
 
             #get stream name
             url = media['streamUrl'].to_s.clone
