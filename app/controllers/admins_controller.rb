@@ -2239,10 +2239,23 @@ class AdminsController < ApplicationController
 		setting = Setting.where(name: 'Footer Content').first
 		@data = YAML.load(setting.data)
 
-		@data.each_with_index do |data, i|
-			@data[i][:name] = params[("name_#{i}").to_sym]
-			@data[i][:html] = params[("html_#{i}").to_sym]
-		end
+		@data[0][:name] = params[:name_0]
+		@data[0][:html] = params[:html_0]
+
+		@data[1][:name] = params[:name_1]
+		@data[1][:html] = params[:html_1]
+
+		@data[2][:name] = params[:name_2]
+		@data[2][:html] = params[:html_2]
+
+		@data[3][:name] = params[:name_3]
+		@data[3][:html] = params[:html_3]
+
+		@data[4][:name] = params[:name_4]
+		@data[4][:html] = params[:html_4]
+
+		@data[5][:name] = params[:name_5]
+		@data[5][:html] = params[:html_5]
 
 		@data[6] = params[:bottom_content]
 
