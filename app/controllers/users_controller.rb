@@ -154,9 +154,13 @@ class UsersController < ApplicationController
 		elsif params[:serial].present? && params[:serial].to_i != 0
 			@device = Device.find(params[:serial])
 			@device_errors = false
-		else
+		elsif params[:serial].present? && params[:serial].to_i == 0
 			@device = nil
 			@device_errors = false
+		else
+			@device = nil
+			@device_errors = true
+			@device_error = 'You must register a Roku or select an existing device'
 		end
 
 		if @device_errors == false
