@@ -229,8 +229,8 @@ text-overflow:ellipsis;
 o-text-overflow:ellipsis;
 max-width: 100%;
 }
-.channel:hover .channel-img{background-color:#fff;}
-.channel:hover .channel-img > img{opacity:.6;filter:alpha(opacity=60);}
+.channel:hover .channel-img{background-color:#000;}
+.channel:hover .channel-img > img{opacity:0.8;filter:alpha(opacity=80);}
 .channel:hover h4{color:#6d7885;}
 .bg-blue{background:#14b9f0;color:#fff;border:1px solid #12a6d8;font-size: 12px;text-shadow:1px 1px 2px rgba(0,0,0,.1);position:relative;padding:13px 20px;}
 .bg-blue h3{font-weight: 600;margin:0 0 5px;font-size: 15px;}
