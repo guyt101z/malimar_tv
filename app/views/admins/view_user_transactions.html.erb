@@ -1,0 +1,81 @@
+<% content_for :top_level, 'Clients' %>
+<% content_for :low_levels, YAML.dump([@user.name, 'Transactions']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='row'>
+            <div class='col-xs-12'>
+                <div class="panel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='user_balance'>$<%= number_with_precision(@user.balance, precision: 2) %></div>
+                                    Account Balance
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='pending_tx'>$<%= number_with_precision(@pending, precision: 2) %></div>
+                                    Pending Payments
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number"><%= @devices.count %></div>
+                                    Devices
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='membership_1'><% if @user.expiry.nil? || @user.expiry < Date.today %>Free<% else %>Premium<% end %></div>
+                                    Membership
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6'>
+                <%= render 'admins/partials/user_transaction' %>
+            </div>
+            <div class='col-md-6'>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Client Transactions</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <div id='user_transactions'>
+                            <%= render 'admins/partials/user_transactions' %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$('#user_tx').addClass('active')
+var current_uploaded_image = 0
+function viewDevice(id) {
+    $.ajax({
+        url: '/admin_view_device/'+id
+    })
+}
+function deleteImage(id){
+    $.ajax({
+        url: '/delete_note_file?id='+id
+    })
+}
+$(window).bind('beforeunload', function(){
+    $.ajax({
+        url: '/delete_unsaved_note?id='+$('#new_note_id').val()
+    })
+});
+$('#color-picker a').click(function(){
+    $('#color-picker a').removeClass('selected')
+    $(this).addClass('selected')
+    $('#note_form').removeClass('bgcolor-8 bgcolor-7 bgcolor-6 bgcolor-5 bgcolor-4 bgcolor-3 bgcolor-2 bgcolor-1')
+    $('#note_form').addClass($(this).attr('id'))
+    $('#color').val($(this).attr('id'))
+})
+</script>

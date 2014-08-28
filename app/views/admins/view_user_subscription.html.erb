@@ -1,0 +1,124 @@
+<% content_for :top_level, 'Clients' %>
+<% content_for :low_levels, YAML.dump([@user.name, 'Subscription Adjustment']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='row'>
+            <div class='col-xs-12'>
+                <div class="panel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='user_balance'>$<%= number_with_precision(@user.balance, precision: 2) %></div>
+                                    Account Balance
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='pending_tx'>$<%= number_with_precision(@pending, precision: 2) %></div>
+                                    Pending Payments
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number"><%= @devices.count %></div>
+                                    Devices
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='membership_1'><% if @user.expiry.nil? || @user.expiry < Date.today %>Free<% else %>Premium<% end %></div>
+                                    Membership
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-md-4 col-sm-6 col-centered'>
+                <%= form_tag extend_user_subscription_path, remote: true do %>
+                <div class='panel panel-default'>
+                    <div class='panel-heading' style='position: relative'>
+                        <h3 class='panel-title'>Subscription</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <% rokus = Roku.where(user_id: @user.id) %>
+                        <%
+                            options = [['Web/Tablet/Mobile',0]]
+                            rokus.each do |roku|
+                                if roku.name.present?
+                                    options.push(["#{roku.nickname(false)} - #{roku.serial}", roku.id])
+                                else
+                                    options.push(["Roku - #{roku.serial}", roku.id])
+                                end
+                            end
+                        %>
+                        <div class='stat-number'><div class="number" id='sub_expiry'>
+                            <% if @user.expiry.nil? || @user.expiry < Date.today %>
+                                N/A
+                            <% else %>
+                                <%= @user.expiry.strftime('%Y/%m/%d') %>
+                            <% end %>
+                        </div>Current Expiry</div>
+                        <hr>
+                        <div class='form-group' id='sub_serial_wrapper'>
+                            <label>Choose a Roku <span class="text-danger">*</span></label>
+                            <%= select_tag :sub_serial, options_for_select(options), class: 'form-control', placeholder: 'Serial Number (Optional)' %>
+                            <%= hidden_field_tag :user_id, @user.id %>
+                        </div>
+                        <script>
+                            $('#sub_serial').change(function(){
+                                $('#sub_expiry').html('<i class="fa fa-refresh fa-spin"></i>')
+                                $.ajax({url: '/show_sub_expiry?sub_serial=' + $('#sub_serial').val() + '&user_id=<%= @user.id %>'})
+                            })
+                        </script>
+                        <hr>
+                        <div class='row'>
+                            <div class='col-md-4 form-group'>
+                                <label>Add Time</label>
+                                <%= text_field_tag :length, '', class: 'form-control' %>
+                            </div>
+                            <div class='col-md-8 form-group'>
+                                <label>&nbsp;</label>
+                                <%= select_tag :period, options_for_select(['days','months','years']), class: 'form-control' %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='panel-footer'>
+                        <%= submit_tag 'Update Subscription', class: 'btn btn-primary', style: 'width: 100%', data: {disable_with: 'Updating...'} %>
+                    </div>
+                </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</div>
+<%= render 'admins/partials/view_device_modal' %>
+<script>
+$('#user_sub').addClass('active')
+var current_uploaded_image = 0
+function viewDevice(id) {
+    $.ajax({
+        url: '/admin_view_device/'+id
+    })
+}
+function deleteImage(id){
+    $.ajax({
+        url: '/delete_note_file?id='+id
+    })
+}
+$(window).bind('beforeunload', function(){
+    $.ajax({
+        url: '/delete_unsaved_note?id='+$('#new_note_id').val()
+    })
+});
+$('#color-picker a').click(function(){
+    $('#color-picker a').removeClass('selected')
+    $(this).addClass('selected')
+    $('#note_form').removeClass('bgcolor-8 bgcolor-7 bgcolor-6 bgcolor-5 bgcolor-4 bgcolor-3 bgcolor-2 bgcolor-1')
+    $('#note_form').addClass($(this).attr('id'))
+    $('#color').val($(this).attr('id'))
+})
+</script>

@@ -1,0 +1,136 @@
+<% content_for :top_level, 'Clients' %>
+<% content_for :low_levels, YAML.dump([@user.name, 'Notes']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='row'>
+            <div class='col-xs-12'>
+                <div class="panel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='user_balance'>$<%= number_with_precision(@user.balance, precision: 2) %></div>
+                                    Account Balance
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='pending_tx'>$<%= number_with_precision(@pending, precision: 2) %></div>
+                                    Pending Payments
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number"><%= @devices.count %></div>
+                                    Devices
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='membership_1'><% if @user.expiry.nil? || @user.expiry < Date.today %>Free<% else %>Premium<% end %></div>
+                                    Membership
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-md-6 col-sm-8 col-centered'>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>New Note</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <%= form_tag add_note_to_user_path, remote: true do %>
+                            <%= hidden_field_tag :user_id, @user.id %>
+                            <div class="form-editor expand bgcolor-1" id='note_form' style=' margin-bottom: 10px'>
+                                <%= text_field_tag :note_title, '', class: 'form-control input-md input-title', placeholder: 'Title' %>
+                                <%= text_area_tag :note, '', class: 'form-control', placeholder: 'Add a note...' %>
+                                <div class='' id='note-reglist' style='display:none; margin-bottom: 3px'></div>
+                                <div class='' id='note-checklist' style='display:none; margin-bottom: 3px'></div>
+                                <div class="icon-editor">
+                                    <div class="row">
+                                        <%= hidden_field_tag :color, nil %>
+                                        <div class="col-sm-6">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn-icon" data-toggle="dropdown"><span class="fa fa-square-o"></span></button>
+                                                <div class="dropdown-menu dropdown-border" role="menu" id='color-picker'>
+                                                    <a id='bgcolor-1' class="sqcolor-1 selected"><span class="fa fa-check"></span></a>
+                                                    <a id='bgcolor-2' class="sqcolor-2"><span class="fa fa-check"></span></a>
+                                                    <a id='bgcolor-3' class="sqcolor-3"><span class="fa fa-check"></span></a>
+                                                    <a id='bgcolor-4' class="sqcolor-4"><span class="fa fa-check"></span></a>
+                                                    <a id='bgcolor-5' class="sqcolor-5"><span class="fa fa-check"></span></a>
+                                                    <a id='bgcolor-6' class="sqcolor-6"><span class="fa fa-check"></span></a>
+                                                    <a id='bgcolor-7' class="sqcolor-7"><span class="fa fa-check"></span></a>
+                                                    <a id='bgcolor-8' class="sqcolor-8"><span class="fa fa-check"></span></a>
+                                                </div>
+                                            </div>
+                                            <button type="button" onclick='addChecklistNew()' class='btn btn-icon'><i class='fa fa-check-square-o'></i></button>
+                                            <button type="button" onclick='addReglistNew()' class='btn btn-icon'><i class='fa fa-list'></i></button>
+                                        </div>
+                                        <div class="col-sm-6 text-right save">
+                                            <div class="fz12-5" id='save_btn'><%= submit_tag 'Save Note', class: 'btn btn-icon', data: {disable_with: 'Saving...'} %></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% end %>
+                    </div>
+                </div>
+
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>Client Notes</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <div id='notes_list'>
+                            <% @notes.each do |note| %>
+                                <% @note = note %>
+                                <%= render 'users/partials/note' %>
+                            <% end %>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    function addChecklistNew(){
+                        $('#note-checklist').show()
+                        $('#note-checklist').append('<%= escape_javascript(render("users/partials/checklist_item")) %>')
+                    }
+                    function addReglistNew(){
+                        $('#note-reglist').show()
+                        $('#note-reglist').append('<%= escape_javascript(render("users/partials/reglist_item")) %>')
+                    }
+
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$('#user_notes').addClass('active')
+var current_uploaded_image = 0
+function viewDevice(id) {
+    $.ajax({
+        url: '/admin_view_device/'+id
+    })
+}
+function deleteImage(id){
+    $.ajax({
+        url: '/delete_note_file?id='+id
+    })
+}
+$(window).bind('beforeunload', function(){
+    $.ajax({
+        url: '/delete_unsaved_note?id='+$('#new_note_id').val()
+    })
+});
+$('#color-picker a').click(function(){
+    $('#color-picker a').removeClass('selected')
+    $(this).addClass('selected')
+    $('#note_form').removeClass('bgcolor-8 bgcolor-7 bgcolor-6 bgcolor-5 bgcolor-4 bgcolor-3 bgcolor-2 bgcolor-1')
+    $('#note_form').addClass($(this).attr('id'))
+    $('#color').val($(this).attr('id'))
+})
+</script>

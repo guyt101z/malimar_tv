@@ -120,7 +120,12 @@ Rails.application.routes.draw do
   		# Manage Users
   		get '/admins/users' => 'admins#users', as: 'search_users'
   		get 'side_search_users' => 'admins#search_users'
-  		get '/admins/users/:id' => 'admins#view_user', as: 'view_user'
+        get '/admins/users/profile/:id' => 'admins#view_user', as: 'view_user'
+        get '/admins/users/transactions/:id' => 'admins#view_user_transactions', as: 'view_user_transactions'
+        get '/admins/users/devices/:id' => 'admins#view_user_devices', as: 'view_user_devices'
+        get '/admins/users/notes/:id' => 'admins#view_user_notes', as: 'view_user_notes'
+        get '/admins/users/subscription_adjustment/:id' => 'admins#view_user_subscription', as: 'view_user_subscription'
+        get '/admins/users/balance_adjustment/:id' => 'admins#view_user_balance', as: 'view_user_balance'
 
         get 'reset_user_password' => 'admins#reset_user_password'
         post 'manual_reset_user_password' => 'admins#manual_reset_user_password'

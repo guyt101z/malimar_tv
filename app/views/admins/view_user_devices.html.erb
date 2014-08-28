@@ -1,0 +1,112 @@
+<% content_for :top_level, 'Clients' %>
+<% content_for :low_levels, YAML.dump([@user.name, 'Devices']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='row'>
+            <div class='col-xs-12'>
+                <div class="panel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='user_balance'>$<%= number_with_precision(@user.balance, precision: 2) %></div>
+                                    Account Balance
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='pending_tx'>$<%= number_with_precision(@pending, precision: 2) %></div>
+                                    Pending Payments
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number"><%= @devices.count %></div>
+                                    Devices
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="stat-number">
+                                    <div class="number" id='membership_1'><% if @user.expiry.nil? || @user.expiry < Date.today %>Free<% else %>Premium<% end %></div>
+                                    Membership
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-md-6 col-sm-8 col-centered'>
+                <%= form_tag admin_register_device_path, remote: true do %>
+                <div class='panel panel-default'>
+                    <%= hidden_field_tag :user_id, @user.id %>
+                    <div class='panel-heading' style='position: relative'>
+                        <h3 class='panel-title'>Register New Device</h3>
+                        <div class='upload_image_heading'>
+                            <%= submit_tag 'Register Device', class: 'btn btn-primary btn-sm', data: {disable_with: 'Registering...'} %>
+                        </div>
+                    </div>
+                    <div class='panel-body'>
+                        <div class='row'>
+                            <div class='col-md-12'>
+                                <div class='form-group'>
+                                    <%= text_field_tag :serial, '', class: 'form-control', placeholder: 'Serial Number' %>
+                                </div>
+                            </div>
+                            <div class='col-md-6'>
+                                <div class='form-group'>
+                                    <%= text_field_tag :name, '', class: 'form-control', placeholder: 'Nickname' %>
+                                </div>
+                            </div>
+                            <div class='col-md-6'>
+                                <div class='form-group'>
+                                    <%= select_tag :adult, options_for_select([['Adult Content Disabled',false],['Adult Content Enabled',true]]), class: 'form-control', placeholder: 'Serial Number' %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% end %>
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        <h3 class='panel-title'>User Devices</h3>
+                    </div>
+                    <div class='panel-body devices' id='device-list'>
+                        <% @devices.each do |device| %>
+                            <% @device = device %>
+                            <%= render 'admins/partials/device' %>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%= render 'admins/partials/view_device_modal' %>
+<script>
+$('#user_devices').addClass('active')
+var current_uploaded_image = 0
+function viewDevice(id) {
+    $.ajax({
+        url: '/admin_view_device/'+id
+    })
+}
+function deleteImage(id){
+    $.ajax({
+        url: '/delete_note_file?id='+id
+    })
+}
+$(window).bind('beforeunload', function(){
+    $.ajax({
+        url: '/delete_unsaved_note?id='+$('#new_note_id').val()
+    })
+});
+$('#color-picker a').click(function(){
+    $('#color-picker a').removeClass('selected')
+    $(this).addClass('selected')
+    $('#note_form').removeClass('bgcolor-8 bgcolor-7 bgcolor-6 bgcolor-5 bgcolor-4 bgcolor-3 bgcolor-2 bgcolor-1')
+    $('#note_form').addClass($(this).attr('id'))
+    $('#color').val($(this).attr('id'))
+})
+</script>

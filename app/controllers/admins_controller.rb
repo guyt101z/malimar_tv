@@ -348,6 +348,131 @@ class AdminsController < ApplicationController
 			redirect_to '/admins'
 		end
 	end
+	def view_user_transactions
+		if current_admin.authorized_to?('manage_user')
+			@user = User.find(params[:id])
+			if @user.balance.nil?
+				@user.balance = 0
+				@user.save
+			end
+			@devices = Device.where(user_id: @user.id)
+			@transactions = Transaction.where(user_id: @user.id)
+
+			@total_spent = 0
+			@pending = 0
+			@transactions.each do |tx|
+				if tx.status == 'Pending'
+					@pending += YAML.load(tx.product_details)[:price]
+				elsif tx.status == 'Paid' || tx.status == 'Refunded'
+					@total_spent += YAML.load(tx.product_details)[:price]
+				end
+			end
+			@notes = UserNote.where(user_id: @user.id).order(updated_at: :desc)
+		else
+			flash[:error] = 'You do not have permission to view that.'
+			redirect_to '/admins'
+		end
+	end
+	def view_user_notes
+		if current_admin.authorized_to?('manage_user')
+			@user = User.find(params[:id])
+			if @user.balance.nil?
+				@user.balance = 0
+				@user.save
+			end
+			@devices = Device.where(user_id: @user.id)
+			@transactions = Transaction.where(user_id: @user.id)
+
+			@total_spent = 0
+			@pending = 0
+			@transactions.each do |tx|
+				if tx.status == 'Pending'
+					@pending += YAML.load(tx.product_details)[:price]
+				elsif tx.status == 'Paid' || tx.status == 'Refunded'
+					@total_spent += YAML.load(tx.product_details)[:price]
+				end
+			end
+			@notes = UserNote.where(user_id: @user.id).order(updated_at: :desc)
+		else
+			flash[:error] = 'You do not have permission to view that.'
+			redirect_to '/admins'
+		end
+	end
+	def view_user_devices
+		if current_admin.authorized_to?('manage_user')
+			@user = User.find(params[:id])
+			if @user.balance.nil?
+				@user.balance = 0
+				@user.save
+			end
+			@devices = Device.where(user_id: @user.id)
+			@transactions = Transaction.where(user_id: @user.id)
+
+			@total_spent = 0
+			@pending = 0
+			@transactions.each do |tx|
+				if tx.status == 'Pending'
+					@pending += YAML.load(tx.product_details)[:price]
+				elsif tx.status == 'Paid' || tx.status == 'Refunded'
+					@total_spent += YAML.load(tx.product_details)[:price]
+				end
+			end
+			@notes = UserNote.where(user_id: @user.id).order(updated_at: :desc)
+		else
+			flash[:error] = 'You do not have permission to view that.'
+			redirect_to '/admins'
+		end
+	end
+	def view_user_subscription
+		if current_admin.authorized_to?('manage_user')
+			@user = User.find(params[:id])
+			if @user.balance.nil?
+				@user.balance = 0
+				@user.save
+			end
+			@devices = Device.where(user_id: @user.id)
+			@transactions = Transaction.where(user_id: @user.id)
+
+			@total_spent = 0
+			@pending = 0
+			@transactions.each do |tx|
+				if tx.status == 'Pending'
+					@pending += YAML.load(tx.product_details)[:price]
+				elsif tx.status == 'Paid' || tx.status == 'Refunded'
+					@total_spent += YAML.load(tx.product_details)[:price]
+				end
+			end
+			@notes = UserNote.where(user_id: @user.id).order(updated_at: :desc)
+		else
+			flash[:error] = 'You do not have permission to view that.'
+			redirect_to '/admins'
+		end
+	end
+	def view_user_balance
+		if current_admin.authorized_to?('manage_user')
+			@user = User.find(params[:id])
+			if @user.balance.nil?
+				@user.balance = 0
+				@user.save
+			end
+			@devices = Device.where(user_id: @user.id)
+			@transactions = Transaction.where(user_id: @user.id)
+
+			@total_spent = 0
+			@pending = 0
+			@transactions.each do |tx|
+				if tx.status == 'Pending'
+					@pending += YAML.load(tx.product_details)[:price]
+				elsif tx.status == 'Paid' || tx.status == 'Refunded'
+					@total_spent += YAML.load(tx.product_details)[:price]
+				end
+			end
+			@notes = UserNote.where(user_id: @user.id).order(updated_at: :desc)
+		else
+			flash[:error] = 'You do not have permission to view that.'
+			redirect_to '/admins'
+		end
+	end
 
 	def add_subscription
 		if params[:tx_serial].present? && params[:tx_serial].to_i != 0
@@ -707,6 +832,7 @@ class AdminsController < ApplicationController
 						@success = true
 						@message = length
 						@expiry = device.expiry
+						@type = 'device'
 					else
 						@success = false
 						@message = "Errors: <br/> #{device.errors.full_messages.join("<br/>")}"
@@ -735,6 +861,7 @@ class AdminsController < ApplicationController
 					@success = true
 					@message = length
 					@expiry = @user.expiry
+					@type = 'user'
 				else
 					@success = false
 					@message = "Errors: <br/> #{user.errors.full_messages.join("<br/>")}"
@@ -773,7 +900,7 @@ class AdminsController < ApplicationController
 	def register_device
 		if current_admin.authorized_to?('manage_user')
 			@user = User.find(params[:user_id])
-			@device = Device.new
+			@device = Roku.new
 			@device.serial = params[:serial].upcase
 			if @device.serial.include?('O')
 				@device.serial = @device.serial.gsub!('O','0')

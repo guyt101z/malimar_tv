@@ -19,8 +19,10 @@
 		 		 params[:action] == 'payment_requests' || params[:action] == 'view_request' %>
 			<%= render 'admins/nav/sidenavs/sales_reps' %>
 
-		<% elsif params[:action] == 'users' || params[:action] == 'view_user' || params[:action] == 'new_user' %>
-			<%= render 'admins/nav/sidenavs/users' %>
+		<% elsif params[:action] == 'view_user' || params[:action] == 'view_user_transactions' || params[:action] == 'view_user_devices' ||
+		params[:action] == 'view_user_notes' || params[:action] == 'view_user_subscription' || params[:action] == 'view_user_balance' %>
+			<%= render 'admins/nav/sidenavs/users_individual' %>
+
 
 		<% elsif params[:action] == 'support' || params[:action] == 'new_tickets' || params[:action] == 'new_ticket' || params[:action] == 'admin_view_ticket'||
 		params[:action] == 'open_tickets' || params[:action] == 'closed_tickets' || params[:action] == 'archived_tickets' ||

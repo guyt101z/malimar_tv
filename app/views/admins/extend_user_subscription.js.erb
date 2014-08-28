@@ -2,9 +2,12 @@
     addNotification('error', '<%= raw(@message) %>', 'Error', 'exclamation-circle')
 <% else %>
     $('#membership_1').html('Premium')
-    $('#device-list').html('<%= escape_javascript(render("admins/partials/device_list")) %>')
-    $('#membership_2').html('<div class="number"><%= @user.expiry.strftime("%Y/%m/%d") %></div><%= distance_of_time_in_words(Date.today, @user.expiry) %>')
-    addNotification('success', 'Subscription updated: <%= @message %>', 'Success', 'check-circle')
+    <% if @type == 'device' %>
+        $('#device-list').html('<%= escape_javascript(render("admins/partials/device_list")) %>')
+    <% elsif @type == 'user' %>
+        $('#membership_2').html('<div class="number"><%= @user.expiry.strftime("%Y/%m/%d") %></div><%= distance_of_time_in_words(Date.today, @user.expiry) %>')
+    <% end %>
+    addNotification('success', 'Subscription updated', 'Success', 'check-circle')
     $('#length').val('')
     $('#period').val('days')
     <% if @expiry.nil? || @expiry < Date.today %>

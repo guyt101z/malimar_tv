@@ -20,3 +20,8 @@ $('#device_linked').html('<%= @device.created_at.strftime('%B %-d, %Y') %>')
     $('#serial_wrapper').hide()
 <% end %>
 $('#unlink_btn').html('<%= link_to "Unlink Device", admin_unlink_device_path(id: @device.id), remote: true, class: "btn btn-danger", style: "width: 100%", data: {confirm: "Are you sure you want to delete this device?"} %>')
+<% if @device.name.present? %>
+    $('#device-modal-title').html('Edit <%= @device.nickname(true) %>')
+<% else %>
+    $('#device-modal-title').html('Edit <%= @device.humanized_type %>')
+<% end %>
