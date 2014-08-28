@@ -119,8 +119,27 @@
                                     </div>
                                 <% end %>
                             </div>
-                            <div class='text-center' style='margin-top:5px'>
-                                <%= will_paginate(@transactions) %>
+                            <div class='row' style='margin-top:10px'>
+                                <div class='col-sm-6 text-left'>
+                                    <% if params[:page].blank? || params[:page].to_i > 1 %>
+                                        <% new_params = params.clone %>
+                                        <% new_params[:page] = (params[:page].to_i - 1).to_s %>
+                                        <%= link_to 'Previous', my_billing_path(new_params), class: 'btn btn-primary', style: 'width: 100px' %>
+                                    <% end %>
+                                </div>
+                                <div class='col-sm-6 text-right'>
+                                    <% unless params[:page].present? && params[:page].to_i == @transactions.total_pages %>
+                                        <% new_params = params.clone %>
+                                        <% if params[:page].blank? %>
+                                            <% new_params[:page] = '2' %>
+                                            <%= link_to 'Next', browse_episodes_path(new_params), class: 'btn btn-primary', style: 'width: 100px' %>
+                                        <% else %>
+                                            <% new_params[:page] = (params[:page].to_i + 1).to_s %>
+                                            <%= link_to 'Next', my_billing_path(new_params), class: 'btn btn-primary', style: 'width: 100px' %>
+                                        <% end %>
+                                    <% end %>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -132,5 +151,6 @@
 </div><!--content-->
 
 <script>
+
     $('#billing').addClass('active')
 </script>
