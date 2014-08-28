@@ -70,7 +70,7 @@
                         </td>
                     </tr></thead>
                     <% @users.each do |user| %>
-                        <tr style='cursor:pointer' onclick='window.location = "<%= view_user_path(id: user.id), style: "margin-left: 20px" %>"'>
+                        <tr style='cursor:pointer' onclick='window.location = "<%= view_user_path(id: user.id) %>"'>
                             <td><%= user.id %></td>
                             <td><%= user.last_name %></td>
                             <td><%= user.first_name %></td>
@@ -92,5 +92,5 @@
 <script>
     $('#user_table').dataTable()
     $('#all_users').addClass('active')
-    $('#user_table_length').after('<%= link_to "New Client", new_user_path, class: "btn btn-primary" %>')
+    $('#user_table_length').after('<%= link_to "New Client", new_user_path, class: "btn btn-primary", style: "margin-left: 20px" %>')
 </script>
