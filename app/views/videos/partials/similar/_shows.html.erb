@@ -1,87 +1,17 @@
-
-
-
 <div class="panel panel-custom">
     <div class="panel-heading">
         <div class="icon-left"><span class="glyphicon glyphicon-heart"></span></div>
-        <h3>Similar to <%= @show.name %></h3>
+        <h3>Other episodes from <%= @show.name %></h3>
     </div>
     <div class="panel-body scroller">
-        <%
-        search = Array.new
-        @show.name.split(' ').each do |word|
-            search.push(word)
-        end
-        if @show.genres.present?
-            @show.genres.split(/\r\n/).each do |genre|
-                search.push(genre)
-            end
-        end
-        if @show.actors.present?
-            @show.actors.split(/\r\n/).each do |actor|
-                search.push(actor)
-            end
-        end
-
-        show_results = Array.new
-        movie_results = Array.new
-        channel_results = Array.new
-        %>
-
-
-
-
-
-        <% search.each do |search_term| %>
-            <% items = Movie.search(search_term ,where: {web: true}) %>
-            <% items.each do |item| %>
-                <% unless movie_results.include? item.id %>
-
-                    <% if item.adult == false || item.adult.nil? || (current_user.adult == true && item.adult == true) %>
-                    <div class="channel">
-                        <a href="<%= item.watch_url %>">
-                            <% if item.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
-                            <div class="channel-img"><div class="hover-play"><%= image_tag 'hover-play.png' %></div><%= image_tag item.image_url(:hd), class: "grayscale" %></div>
-                            <h4><%= item.name %></h4>
-                        </a>
-                    </div>
-                    <% end %>
-                    <% movie_results.push(item.id) %>
-                <% end %>
-            <% end %>
-            <% items = Show.search(search_term ,where: {web: true}) %>
-            <% items.each do |item| %>
-                <% unless show_results.include? item.id %>
-                    <% if item.id != @show.id %>
-                        <% if item.adult == false || item.adult.nil? || (current_user.adult == true && item.adult == true) %>
-                        <div class="channel">
-                            <a href="<%= item.watch_url %>">
-                                <% if item.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
-                                <div class="channel-img"><div class="hover-play"><%= image_tag 'hover-play.png' %></div><%= image_tag item.image_url(:hd), class: "grayscale" %></div>
-                                <h4><%= item.name %></h4>
-                            </a>
-                        </div>
-                        <% end %>
-                        <% show_results.push(item.id) %>
-                    <% end %>
-                <% end %>
-            <% end %>
-            <% items = Channel.search(search_term ,where: {web: true}) %>
-            <% items.each do |item| %>
-                <% unless channel_results.include? item.id %>
-
-                    <% if item.adult == false || item.adult.nil? || (current_user.adult == true && item.adult == true) %>
-                    <div class="channel">
-                        <a href="<%= item.watch_url %>">
-                            <% if item.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
-                            <div class="channel-img"><div class="hover-play"><%= image_tag 'hover-play.png' %></div><%= image_tag item.image_url(:hd), class: "grayscale" %></div>
-                            <h4><%= item.name %></h4>
-                        </a>
-                    </div>
-                    <% end %>
-                    <% channel_results.push(item.id) %>
-                <% end %>
-            <% end %>
+        <% @episodes_reordered.each do |episode| %>
+            <div class="channel">
+                <a href="<%= episode.watch_url %>">
+                    <% if @show.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
+                    <div class="channel-img"><div class="hover-play"><%= image_tag 'hover-play.png' %></div><%= image_tag @show.image_url(:hd), class: "grayscale" %></div>
+                    <h4>Episode <%= episode.episode_number %></h4>
+                </a>
+            </div>
         <% end %>
     </div>
 </div><!--pannel-->

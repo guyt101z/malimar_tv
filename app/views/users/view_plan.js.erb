@@ -24,4 +24,11 @@ $('#payment_cycle').html('Every <%= pluralize(@plan.months, "Month") %>')
     $('#total').html('$<%= number_with_precision(total, precision: 2) %>')
     $('#remaining_balance').html('$<%= number_with_precision(0, precision: 2) %>')
 <% end %>
+<% if @device.present? %>
+    <% if @device.name.present? %>
+        $('#device_sub_title').html('Subscribe <%= @device.nickname(false) %>')
+    <% else %>
+        $('#device_sub_title').html('Subscribe Roku <%= @device.serial %>')
+    <% end %>
+<% end %>
 $("#subscribe_modal").modal("show")

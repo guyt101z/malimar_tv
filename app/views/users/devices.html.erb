@@ -33,6 +33,7 @@
                                     <td><div class="fz12-5">Serial: <%= device.serial %><br/><%= device.status %></div></td>
                                     <td class="w180 text-center">
                                         <button onclick='viewDevice(<%= device.id %>)' type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></button>
+										<button onclick='viewPlan(<%= device.id %>)' type="button" class="btn btn-default"><span class="glyphicon glyphicon-tag"></span></button>
                                         <%= link_to raw('<span class="glyphicon glyphicon-remove"></span>'), unlink_device_path(id: device.id), class: "btn btn-default", data: {disable_with: '...', confirm: 'Are you sure you want to unlink this device?'}, remote: true %>
                                     </td>
                                 </tr>
@@ -57,7 +58,7 @@
                                         <div><span class="text-danger text-sans-semi fz12-5">Sign back into Malimar on this device.</span></div>
                                     <% end %></td>
                                     <td class="w180 text-center">
-                                        <button onclick='viewDevice(<%= device.id %>)' type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></button>
+										<button onclick='viewDevice(<%= device.id %>)' type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></button>
                                         <%= link_to raw('<span class="glyphicon glyphicon-remove"></span>'), unlink_device_path(id: device.id), class: "btn btn-default", data: {disable_with: '...', confirm: 'Are you sure you want to unlink this device?'}, remote: true %>
                                     </td>
                                 </tr>
@@ -72,12 +73,19 @@
         </div>
     </div>
 </div><!--content-->
+<%= render 'users/partials/subscribe_device_modal' %>
 <script>
 
 function viewDevice(id) {
     $.ajax({
         url: '/view_device/'+id
     })
+}
+function viewPlan(id) {
+	$.ajax({
+		url: '/view_plan?id='+1+'&roku_id='+id
+	})
+	$('#serial').val(id)
 }
 function newDevice() {
     $('#new_device_serial').val('')

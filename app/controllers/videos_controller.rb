@@ -544,13 +544,30 @@ class VideosController < ApplicationController
 	def browse_episodes
 		@show = Show.find(params[:show_id])
 		@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
-		@episodes = @episodes.paginate(page: params[:page], per_page: 10)
+		unless params[:method].present? && params[:method] == 'all'
+			@episodes = @episodes.paginate(page: params[:page], per_page: 10)
+		end
 	end
 	def watch_episode
 		@show = Show.find(params[:show_id])
 		@episode = Episode.where(show_id: @show.id, episode_number: params[:episode_number]).first
 
-		@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
+		episodes_ordered = Episode.where(show_id: @show.id).order(episode_number: :asc)
+
+		@episodes_reordered = Array.new
+		start_index = @episode.episode_number - 1
+
+		episodes_ordered.each_with_index do |episode, index|
+			if index > start_index
+				@episodes_reordered.push(episode)
+			end
+		end
+
+		episodes_ordered.each_with_index do |episode, index|
+			if index <= start_index
+				@episodes_reordered.push(episode)
+			end
+		end
 	end
 
 	def watch_movie

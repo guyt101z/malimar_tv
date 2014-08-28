@@ -97,7 +97,7 @@
                                         roku = 'Web, Tablets, Mobile'
                                     else
                                         if device.name.present?
-                                            roku = "#{device.nickname} - #{device.serial}"
+                                            roku = "#{device.nickname(false)} - #{device.serial}"
                                         else
                                             roku = "Roku - #{device.serial}"
                                         end

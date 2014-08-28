@@ -7,7 +7,7 @@
                     	<h3 class="fz14"><%= @show.name %></h3>
                     </div>
                     <div class="panel-body b0">
-                        <%= image_tag @show.image_url, class: 'img-responsive' %>
+                        <%= image_tag @show.image_url, class: 'img-responsive', style: 'width: 100%' %>
                     </div>
                 </div>
                 <!--<div class="socials">
@@ -40,11 +40,35 @@
                         </a>
                     </div>
                     <% end %>
-					<div class='text-center'>
-						<%= will_paginate(@episodes) %>
-					</div>
+					<% unless params[:method].present? && params[:method] == 'all' %>
+						<div class='row'>
+							<div class='col-sm-4 text-left'>
+								<% if params[:page].blank? || params[:page].to_i > 1 %>
+									<% new_params = params.clone %>
+									<% new_params[:page] = (params[:page].to_i - 1).to_s %>
+									<%= link_to 'Previous', browse_episodes_path(new_params), class: 'btn btn-primary', style: 'width: 100px' %>
+								<% end %>
+							</div>
+							<div class='col-sm-4 text-center'>
+								<%= link_to 'All Episodes', browse_episodes_path(show_id: @show.id, method: 'all'), class: 'btn btn-primary', style: 'width: 100px' %>
+							</div>
+							<div class='col-sm-4 text-right'>
+								<% unless params[:page].present? && params[:page].to_i == @episodes.total_pages %>
+									<% new_params = params.clone %>
+									<% if params[:page].blank? %>
+										<% new_params[:page] = '2' %>
+										<%= link_to 'Next', browse_episodes_path(new_params), class: 'btn btn-primary', style: 'width: 100px' %>
+									<% else %>
+										<% new_params[:page] = (params[:page].to_i + 1).to_s %>
+										<%= link_to 'Next', browse_episodes_path(new_params), class: 'btn btn-primary', style: 'width: 100px' %>
+									<% end %>
+								<% end %>
+							</div>
+
+						</div>
+					<% end %>
+
                 </div>
-				<%= render 'videos/partials/similar_links' %>
             </div>
         </div>
     </div>

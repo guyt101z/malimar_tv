@@ -15,6 +15,9 @@ Rails.application.routes.draw do
         get '/watch/movies/:movie_id' => 'videos#watch_movie', as: 'watch_movie'
 
         get '/watch/shows/:show_id' => 'videos#browse_episodes', as: 'browse_episodes'
+        # All or page
+
+
         get '/watch/shows/:show_id/:episode_number' => 'videos#watch_episode', as: 'watch_episode'
 
         post 'remote_sign_in_for_video' => 'videos#remote_sign_in_for_video'

@@ -7,7 +7,7 @@ $('#refer_code').parent().removeClass('has-error has-feedback')
 $('#payment-error').remove()
 $('#payment_type').parent().removeClass('has-error has-feedback')
 <% if @success == true %>
-	window.location = '/account'
+	window.location = '/account/billing'
 <% else %>
 	<% if @device_errors == true %>
 		$('#serial').parent().addClass('has-error has-feedback').append('<div class="text-danger" id="device_serial-error"><%= @device_error %></div>')

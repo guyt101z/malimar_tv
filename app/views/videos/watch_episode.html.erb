@@ -1,51 +1,34 @@
-<div class="content">
+<div class="splash mb30">
     <div class="container">
         <div class="row">
-            <div class="col-sm-4 col-md-3">
-                <div class="panel panel-custom">
-                    <div class="panel-heading">
-                        <h3 class="fz14"><%= @show.name %></h3>
-                    </div>
-                    <div class="panel-body b0" style='text-align:center'>
-                        <%= image_tag @show.image_url, class: 'img-responsive' %>
-                    </div>
-                </div>
-                <div class="socials">
-                    <div class='episode_list_title'>
-                        Episode List
-                    </div>
-                    <div class='episode_list'>
-                        <% @episodes.each do |episode| %>
-                            <div class='episode' id='episode_<%= episode.id %>' onclick='window.location="/watch/shows/<%= @show.id %>/<%= episode.episode_number %>"'>
-                                <div class='title'>
-                                    <%= episode.title %>
-                                </div>
-                            </div>
-                        <% end %>
+            <div class="col-sm-6">
+                <div class="media">
+                    <div class="pull-left mr30"><%= image_tag @show.image_url(:preview), class: "media-object", style: 'height: 50px' %></div>
+                    <div class="media-body">
+                        <h3 class="name"><%= @show.name %></h3>
+                        Episode <%= @episode.episode_number %>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-8 col-md-9">
-                <div class="box-white">
-                    <div class="data-bb clearfix">
-                        <div class="pull-left">
-                            <strong><%= @episode.title %></strong>
-                            <div class="fz12-5"><%= @episode.release_date.strftime('%B %-d, %Y') %></div>
-                        </div>
-                        <div class="pull-right">
-                            <div class="fz12-5"><%= pluralize(@episodes.count, 'Episode') %></div>
-                        </div>
-                    </div>
-                    <div class="data-bb">
-                        <%= simple_format(@episode.synopsis) %>
-                    </div>
-                    <div class='video_wrapper' id='video_wrapper'>
-
-                    </div>
+            <div class="col-sm-6">
+                <div class="channel-meta mt10">
+                    <% if @show.grid_id.present? %>
+                        <%= link_to 'Full List', full_grid_path(category_id: @show.grid_id), class: 'btn btn-primary btn-bold btn-w180' %>
+                    <% end %>
                 </div>
-                <%= render 'videos/partials/similar_links' %>
             </div>
         </div>
+    </div>
+</div><!--splash-->
+<div class="content">
+    <div class="container">
+        <div class="w960">
+            <div class="video-container" id='video_wrapper'>
+
+            </div>
+        </div>
+        <% @item = @channel %>
+        <%= render 'videos/partials/similar/shows' %>
     </div>
 </div><!--content-->
 
@@ -100,7 +83,7 @@ jwplayer("video_wrapper").setup({
     image: "<%= @show.image_url %>",
     title:"<%= @episode.title %>",
     width: '100%',
-    height: 400,
+    height: 550,
     primary: 'flash'
 });
 <% else %>
@@ -115,7 +98,7 @@ jwplayer("video_wrapper").setup({
     image: "<%= @show.image_url %>",
     title:"<%= @episode.title %>",
     width: '100%',
-    height: 400,
+    height: 550,
     primary: 'flash'
 });
 <% end %>

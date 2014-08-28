@@ -1,32 +1,25 @@
 <%= form_tag add_subscription_path, remote: true do %>
-<%= hidden_field_tag :plan_id %>
+<%= hidden_field_tag :serial %>
 <div class="modal fade" id="subscribe_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      	<div class="modal-content">
-    		<div class="modal-header">
-        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        		<h4 class="modal-title" id="myModalLabel">Subscribe Your Device</h4>
-    		</div>
-    		<div class="modal-body">
-        		<h4 style='margin-top:0;'>Device Details</h4>
-        		<div class='row'>
-        			<div class='col-sm-6'>
+          <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="device_sub_title">Subscribe Your Device</h4>
+            </div>
+            <div class="modal-body">
+                <h4 style='margin-top:0;'>Device Details</h4>
+                <div class='row'>
+                    <div class='col-sm-6'>
                         <div class='form-group'>
-                            <% rokus = Roku.where(user_id: current_user.id) %>
+                            <% plans = Plan.all %>
+                            <% options = Array.new %>
                             <%
-                                options = [['Register new Roku',nil], ['Web/Tablet/Mobile',0]]
-                                rokus.each do |roku|
-                                    if roku.name.present?
-                                        options.push(["#{roku.nickname(true)} - #{roku.serial}", roku.id])
-                                    else
-                                        options.push(["Roku - #{roku.serial}", roku.id])
-                                    end
+                                plans.each do |plan|
+                                    options.push(["#{plan.name}", plan.id])
                                 end
                             %>
-                            <%= select_tag :serial, options_for_select(options), class: 'form-control', placeholder: 'Serial Number (Optional)' %>
-                        </div>
-                        <div class='form-group'>
-                            <%= text_field_tag :new_serial, '', class: 'form-control', placeholder: 'Serial Number' %>
+                            <%= select_tag :plan_id, options_for_select(options), class: 'form-control' %>
                         </div>
                         <hr>
                         <h4 style='margin-top:0;'>Payment Details</h4>
@@ -87,11 +80,11 @@
                                 </div>
                             </div>
                         </div>
-        			</div>
+                    </div>
                     <div class="col-sm-6">
-                    	<div class="list-group mb0">
+                        <div class="list-group mb0">
                             <div class="list-group-item">
-                            	<table class="table table-noborder">
+                                <table class="table table-noborder">
                                 <tbody>
                                 <tr>
                                     <td class="text-sans-semi">Plan</td>
@@ -106,18 +99,18 @@
                                     <td class="text-right text-blue text-sans-semi" id='balance'></td>
                                 </tr>
                                 <tr>
-                                	<td class="text-sans-semi">Payment</td>
+                                    <td class="text-sans-semi">Payment</td>
                                     <td colspan='3' id='payment_cycle' style='text-align:right'></td>
                                 </tr>
                                 <tr>
-                                	<td>Renewal</td>
+                                    <td>Renewal</td>
                                     <td colspan='3' style='text-align:right' id='renewal'></td>
                                 </tr>
                                 </tbody>
                                 </table>
                             </div>
                             <div class="list-group-item">
-                            	<table class="table table-noborder">
+                                <table class="table table-noborder">
                                     <tbody>
                                     <tr>
                                         <td class="text-sans-semi">Total</td>
@@ -129,9 +122,9 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                        	</div>
+                            </div>
                             <div class="list-group-item">
-                            	<table class="table table-noborder">
+                                <table class="table table-noborder">
                                     <tbody>
                                     <tr>
                                         <td class="text-sans-semi fz12-5 vam"><span class="glyphicon glyphicon-lock"></span> Your transaction is 100% secure by:</td>
@@ -139,41 +132,33 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                        	</div>
+                            </div>
                         </div>
                     </div>
-        		</div>
-    		</div>
-    		<div class="modal-footer">
-        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        		<%= submit_tag 'Subscribe', class: 'btn btn-primary', data: {disable_with: 'Adding Subscription...'} %>
-    		</div>
-      	</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <%= submit_tag 'Subscribe', class: 'btn btn-primary', data: {disable_with: 'Adding Subscription...'} %>
+            </div>
+          </div>
     </div>
 </div>
 <% end %>
 <script type="text/javascript">
-	$('#payment_type').change(function(){
-		if ($(this).val() == 'Credit Card') {
-			$('#credit_info').show()
+    $('#payment_type').change(function(){
+        if ($(this).val() == 'Credit Card') {
+            $('#credit_info').show()
             $('#credit_card').show()
-		}
-		else {
-			$('#credit_info').hide()
-            $('#credit_card').hide()
-		}
-	})
-    $('#serial').change(function(){
-        if ($(this).val() == '') {
-            $('#new_serial').show()
-            $('#new_serial').val('')
         }
         else {
-            $('#new_serial').hide()
-            $('#new_serial').val('')
+            $('#credit_info').hide()
+            $('#credit_card').hide()
         }
+    })
+    $('#plan_id').change(function(){
         $.ajax({
-            url: '/view_plan?id='+$('#plan_id').val()+'&roku_id='+$('#serial').val()
+            url: '/view_plan?id='+$(this).val()+'&roku_id='+$('#serial').val()
         })
     })
 </script>

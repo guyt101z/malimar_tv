@@ -192,7 +192,7 @@ color:#aeb5bd;padding-top:6px;padding-bottom:6px;line-height: 23px;}
 .panel-custom .panel-body.b0{border:0;}
 .icon-left{float:left;color:#6d737a;border-right:1px solid #3e4448;margin:-6px 12px 0 -15px;padding:6px 15px;}
 .channel{text-align: center;position:relative;}
-.ribbon{position:absolute;top:0;right:0; z-index: 10}
+.ribbon{position:absolute;top:0;right:5px; z-index: 10}
 .channel-img{background-color:#eeeeee;border-bottom:1px solid #e5e5e5;border-right:1px solid #d6d6d6;
 -webkit-transition: background-color 0.2s ease-out;
 -moz-transition: background-color 0.2s ease-out;
@@ -206,13 +206,13 @@ transition: background-color 0.2s ease-out;}
 -o-transition: opacity 0.2s ease-out;
 transition: opacity 0.2s ease-out;
 max-width: 100%;height: auto;
-height: 285px;
-width: 199px;
+height: 251px;
+width: 178px;
 position:relative}
 .channel {
-	height: 340px;
-	width: 190px;
-	padding-bottom: 20px;
+	height: 304px;
+	width: 170px;
+	padding: 0px 5px 20px;
 	float: left;
 }
 .scroller {
@@ -232,10 +232,10 @@ max-width: 100%;
 }
 .hover-play {
 	position: absolute;
-top: 110px;
-left: 62px;
-height: 65px;
-width: 65px;
+top: 94px;
+left: 52px;
+height: 64px;
+width: 64px;
 z-index: 5;
 display:none;
 -webkit-transition: display 0.2s ease-out;
@@ -244,8 +244,8 @@ display:none;
 transition: display 0.2s ease-out;
 }
 .hover-play img {
-	width: 65px;
-	height: 65px;
+	width: 64px;
+	height: 64px;
 }
 .channel:hover .channel-img{background-color:#000;}
 .channel:hover .channel-img > img{opacity:0.7;filter:alpha(opacity=70);}

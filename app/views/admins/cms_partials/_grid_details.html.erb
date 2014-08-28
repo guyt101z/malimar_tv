@@ -2,7 +2,24 @@
 @parent_grid = @grid.clone
 @child_grids = Grid.where(grid_id: @parent_grid.id).order(weight: :desc)
 if @parent_grid.class_type == 'Show'
-    items = Show.where(grid_id: @parent_grid.id)
+    if @parent_grid.sort == 'Alphabetical'
+        items = Show.where(grid_id: @parent_grid.id).order(name: :asc)
+    elsif @parent_grid.sort == 'Random'
+        items = Show.where(grid_id: @parent_grid.id).shuffle
+    else
+        unsorted_items = Show.where(grid_id: @parent_grid.id)
+        sort_hash = Hash.new
+        unsorted_items.each do |item|
+            sort_hash[item.id] = item.newest_episode
+        end
+        sort_hash.sort_by {|_key, value| value}
+
+        items = Array.new
+        sort_hash.each do |k,v|
+            items.push(Show.find(k))
+        end
+
+    end
 elsif @parent_grid.class_type == 'Channel'
     if @parent_grid.sort == 'Alphabetical'
         items = Channel.where(grid_id: @parent_grid.id).order(name: :asc)
