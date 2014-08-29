@@ -92,7 +92,7 @@ jwplayer("video_wrapper").setup({
             })
         </script>
     <% end %>
-<% elsif user_signed_in? && current_user.premium == false && @show.free == false %>
+<% elsif user_signed_in? && current_user.premium? == false && @show.free == false %>
     <%= render('videos/partials/no_plan') %>
     <script>
         $('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
