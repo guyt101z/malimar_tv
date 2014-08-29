@@ -30,12 +30,52 @@
         <%= render 'videos/partials/similar_links' %>
     </div>
 </div><!--content-->
+<script>
+$('#episode_<%= @channel.id %>').addClass('active')
+<% if @channel.rtmp_url.present? %>
+jwplayer("video_wrapper").setup({
+	sources: [
+		{file: "<%= @channel.rtmp_url %>"},
+		<% if @channel.stream_url.include?('/playlist.m3u8') %>
+		{file: "<%= @channel.stream_url %>?token=<%= @token %>"}
+		<% else %>
+		{file: "<%= @channel.stream_url %>/playlist.m3u8?token=<%= @token %>"}
+		<% end %>
+	],
+	image: "<%= @channel.image_url %>",
+	title:"<%= @channel.name %>",
+	width: '100%',
+	height: 550,
+	primary: 'flash'
+});
+<% else %>
+jwplayer("video_wrapper").setup({
+	sources: [
+		<% if @channel.stream_url.include?('/playlist.m3u8') %>
+		{file: "<%= @channel.stream_url %>?token=<%= @token %>"}
+		<% else %>
+		{file: "<%= @channel.stream_url %>/playlist.m3u8?token=<%= @token %>"}
+		<% end %>
+	],
+	image: "<%= @channel.image_url %>",
+	title:"<%= @channel.name %>",
+	width: '100%',
+	height: 550,
+	primary: 'flash'
+});
+<% end %>
+</script>
 <% if (user_signed_in? && current_user.premium?) || admin_signed_in?  %>
-	<!-- Nothing -->
+	<script>
+		jwplayer().play()
+	</script>
 <% elsif user_signed_in? && current_user.expired? %>
 	<% if @channel.free? %>
 		<%= render('videos/partials/expired_account_modal') %>
-		<script>$('#modal-expired').modal({show: true})</script>
+		<script>
+			$('#modal-expired').modal({show: true});
+			jwplayer().play()
+		</script>
 	<% else %>
 		<%= render('videos/partials/expired_account_modal') %>
 		<script>
@@ -62,40 +102,3 @@
 		})
 	</script>
 <% end %>
-
-<script>
-<% if @channel.rtmp_url.present? %>
-jwplayer("video_wrapper").setup({
-	sources: [
-		{file: "<%= @channel.rtmp_url %>?token=<%= @token %>"},
-		<% if @channel.stream_url.include?('/playlist.m3u8') %>
-		{file: "<%= @channel.stream_url %>?token=<%= @token %>"}
-		<% else %>
-		{file: "<%= @channel.stream_url %>/playlist.m3u8?token=<%= @token %>"}
-		<% end %>
-	],
-	image: "<%= @channel.image_url %>",
-	title:"<%= @channel.name %>",
-	width: '100%',
-	height: 550,
-	primary: 'flash'
-});
-jwplayer().play()
-<% else %>
-jwplayer("video_wrapper").setup({
-	sources: [
-		<% if @channel.stream_url.include?('/playlist.m3u8') %>
-		{file: "<%= @channel.stream_url %>?token=<%= @token %>"}
-		<% else %>
-		{file: "<%= @channel.stream_url %>/playlist.m3u8?token=<%= @token %>"}
-		<% end %>
-	],
-	image: "<%= @channel.image_url %>",
-	title:"<%= @channel.name %>",
-	width: '100%',
-	height: 550,
-	primary: 'flash'
-});
-jwplayer().play()
-<% end %>
-</script>
