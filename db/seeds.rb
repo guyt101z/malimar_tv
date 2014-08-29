@@ -17,6 +17,8 @@ wowza_token = Setting.create(name: 'WMS Token', data: 'sfV45RvdHJR.658sSSferyhD6
 withdrawal_limits = Setting.create(name: 'Withdrawal Limits', data: {max: 100, min: 10})
 
 admin = Admin.create(first_name: 'Josh', last_name: 'Tate', password: 'buh12345', email: 'jtate@variationmedia.com', role_id: 0)
+admin = Admin.create(first_name: 'Elliot', last_name: 'Whyte', password: 'password123', email: 'ewhyte@variationmedia.com', role_id: 0)
+admin = Admin.create(first_name: 'Mubarak', last_name: 'Malimar', password: 'password123', email: 'mubarak@malimar.tv', role_id: 0)
 
 invoice_logo = InvoiceLogo.create(image: nil)
 
@@ -27,6 +29,7 @@ default_timezone = Setting.create(name: 'Default Timezone', data: 'Pacific Time 
 referral_bonus = Setting.create(name: 'Referral Bonus', data: YAML.dump(method: 'Lump Sum', rate: 5)) # methods are 'Lump Sum' or 'Percentage of Referral Purchase'
 free_trial_length = Setting.create(name: 'Free Trial Length', data: 30)
 payment_methods = Setting.create(name: 'Payout Methods', data: YAML.dump(['Cheque','Bank Transfer','Paypal','Wire Transfer']))
+payment_methods = Setting.create(name: 'Languages', data: YAML.dump("English\r\nLao\r\nThai\r\nKhmer\r\nKhmer"))
 
 footer_content = Setting.create(name: 'Footer Content', data: YAML.dump([{name: '', html: ''},{name: '', html: ''},{name: '', html: ''},
 	{name: '', html: ''},{name: '', html: ''},{name: '', html: ''},'']))
