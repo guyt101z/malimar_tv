@@ -93,6 +93,8 @@ jwplayer("video_wrapper").setup({
 			window.location = '/'
 		})
 	</script>
+
+<% elsif user_signed_in? %>
 <% else %>
 	<%= render('videos/partials/sign_in_modal_channel') %>
 	<script>
