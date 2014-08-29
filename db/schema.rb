@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140825155351) do
+ActiveRecord::Schema.define(version: 20140829170159) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -140,6 +140,7 @@ ActiveRecord::Schema.define(version: 20140825155351) do
     t.string   "banner"
     t.boolean  "adult"
     t.integer  "grid_id"
+    t.string   "slug"
   end
 
   create_table "client_migration_items", force: true do |t|
@@ -311,6 +312,7 @@ ActiveRecord::Schema.define(version: 20140825155351) do
     t.string   "banner"
     t.boolean  "adult"
     t.integer  "grid_id"
+    t.string   "slug"
   end
 
   create_table "note_files", force: true do |t|
@@ -407,6 +409,7 @@ ActiveRecord::Schema.define(version: 20140825155351) do
     t.string   "banner"
     t.boolean  "adult"
     t.integer  "grid_id"
+    t.string   "slug"
   end
 
   create_table "support_attachments", force: true do |t|

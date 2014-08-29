@@ -1,5 +1,5 @@
 class Movie < ActiveRecord::Base
-    attr_accessible :name, :live, :free, :image, :roku, :ios, :android, :web, :stream_url, :rtmp_url, :release_date, :length
+    attr_accessible :name, :live, :free, :image, :roku, :ios, :android, :web, :stream_url, :rtmp_url, :release_date, :length, :slug
 
     validates_presence_of :name, :stream_url, :release_date, :length
     validates_inclusion_of :free, in: [true,false], message: 'must be selected'
@@ -12,6 +12,22 @@ class Movie < ActiveRecord::Base
     has_many :episodes
 
     searchkick
+
+    before_validation :slug_change
+
+    def slug_change
+        new_name = name.clone
+
+        test_slug = "#{new_name.gsub(' ','-')}"
+        other_channels = Channel.where(slug: test_slug)
+        if other_channels.any?
+            test_slug = "#{new_name.gsub(' ','-')}-#{id.to_s}-movie"
+            self.slug = test_slug
+        else
+            self.slug = test_slug
+        end
+
+    end
 
     def matches?(search_term)
         searchable_string = name.downcase
@@ -81,7 +97,7 @@ class Movie < ActiveRecord::Base
     end
 
     def watch_url
-        return "/watch/movies/#{id}"
+        return "/watch/movies/#{slug}"
     end
 
     def device_url

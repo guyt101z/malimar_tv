@@ -537,19 +537,19 @@ class VideosController < ApplicationController
 	# Watch Methods
 	#######################################################################################
 	def watch_channel
-		@channel = Channel.find(params[:channel_id])
+		@channel = Channel.where(slug: params[:channel_slug]).first
 		@token = generate_token(@channel.stream_name)
 	end
 
 	def browse_episodes
-		@show = Show.find(params[:show_id])
+		@show = Show.where(slug: params[:show_slug]).first
 		@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
 		unless params[:method].present? && params[:method] == 'all'
 			@episodes = @episodes.paginate(page: params[:page], per_page: 10)
 		end
 	end
 	def watch_episode
-		@show = Show.find(params[:show_id])
+		@show = Show.where(slug: params[:show_slug]).first
 		@episode = Episode.where(show_id: @show.id, episode_number: params[:episode_number]).first
 
 		episodes_ordered = Episode.where(show_id: @show.id).order(episode_number: :asc)
@@ -571,7 +571,7 @@ class VideosController < ApplicationController
 	end
 
 	def watch_movie
-		@movie = Movie.find(params[:movie_id])
+		@movie = Movie.where(slug: params[:movie_slug]).first
 	end
 
 	def navbar_search

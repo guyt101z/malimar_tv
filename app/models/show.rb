@@ -1,5 +1,5 @@
 class Show < ActiveRecord::Base
-    attr_accessible :name, :free, :image, :roku, :ios, :android, :web, :rtmp_url, :grid_id
+    attr_accessible :name, :free, :image, :roku, :ios, :android, :web, :rtmp_url, :grid_id, :slug
 
     validates_presence_of :name, :bitrate
     validates_inclusion_of :free, in: [true,false], message: 'must be selected'
@@ -13,6 +13,26 @@ class Show < ActiveRecord::Base
     has_many :episodes
 
     searchkick
+
+    before_validation :slug_change
+
+    before_validation :slug_change
+
+    def slug_change
+        new_name = name.clone
+
+        test_slug = "#{new_name.gsub(' ','-')}"
+        other_channels = Channel.where(slug: test_slug)
+        if other_channels.any?
+            unless other_channels.first.id == id
+                test_slug = "#{new_name.gsub(' ','-')}-#{id.to_s}-show"
+            end
+            self.slug = test_slug
+        else
+            self.slug = test_slug
+        end
+
+    end
 
     def latest_episode
         episodes = Episode.where(show_id: id)
@@ -83,7 +103,7 @@ class Show < ActiveRecord::Base
     end
 
     def watch_url
-        return "/watch/shows/#{id}"
+        return "/watch/shows/#{slug}"
     end
 
     def device_url

@@ -10,15 +10,15 @@ Rails.application.routes.draw do
 
         get '/grid/:id' => 'videos#grid'
 
-        get '/watch/live/:channel_id' => 'videos#watch_channel', as: 'watch_channel'
+        get '/watch/live/:channel_slug' => 'videos#watch_channel', as: 'watch_channel'
 
-        get '/watch/movies/:movie_id' => 'videos#watch_movie', as: 'watch_movie'
+        get '/watch/movies/:movie_slug' => 'videos#watch_movie', as: 'watch_movie'
 
-        get '/watch/shows/:show_id' => 'videos#browse_episodes', as: 'browse_episodes'
+        get '/watch/shows/:show_slug' => 'videos#browse_episodes', as: 'browse_episodes'
         # All or page
 
 
-        get '/watch/shows/:show_id/:episode_number' => 'videos#watch_episode', as: 'watch_episode'
+        get '/watch/shows/:show_slug/:episode_number' => 'videos#watch_episode', as: 'watch_episode'
 
         post 'remote_sign_in_for_video' => 'videos#remote_sign_in_for_video'
         post 'remote_sign_in' => 'users#remote_sign_in'

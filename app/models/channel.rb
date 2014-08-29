@@ -1,5 +1,5 @@
 class Channel < ActiveRecord::Base
-    attr_accessible :name, :live, :free, :image, :roku, :ios, :android, :web, :stream_url, :content_type, :rtmp_url
+    attr_accessible :name, :live, :free, :image, :roku, :ios, :android, :web, :stream_url, :content_type, :rtmp_url, :slug
 
     validates_presence_of :name, :stream_url, :bitrate, :stream_name
     validates_inclusion_of :free, in: [true,false], message: 'must be selected'
@@ -9,6 +9,22 @@ class Channel < ActiveRecord::Base
 
     mount_uploader :image, MovieImageUploader
     mount_uploader :banner, BannerUploader
+
+    before_validation :slug_change
+
+    def slug_change
+        new_name = name.clone
+
+        test_slug = "#{new_name.gsub(' ','-')}"
+        other_channels = Channel.where(slug: test_slug)
+        if other_channels.any?
+            test_slug = "#{new_name.gsub(' ','-')}-#{id.to_s}-channel"
+            self.slug = test_slug
+        else
+            self.slug = test_slug
+        end
+
+    end
 
     has_many :episodes
 
@@ -86,7 +102,7 @@ class Channel < ActiveRecord::Base
     end
 
     def watch_url
-        return "/watch/live/#{id}"
+        return "/watch/live/#{slug}"
     end
 
     def roku_url
