@@ -3,7 +3,8 @@
     	<% if params[:action] == 'general_settings' || params[:action] == 'edit_timezone' ||
 			params[:action] == 'edit_device_limit' || params[:action] == 'edit_free_trial' ||
 			params[:action] == 'edit_wd_limits' || params[:action] == 'edit_payouts' ||
-			params[:action] == 'edit_contact_email' || params[:action] == 'edit_footer_content' %>
+			params[:action] == 'edit_contact_email' || params[:action] == 'edit_footer_content' ||
+			params[:action] == 'edit_languages' %>
 			<%= render 'admins/nav/sidenavs/general_settings' %>
 
 		<% elsif params[:action] == 'mail_settings' || params[:action] == 'mail_markup' || params[:action] == 'mail_template' %>

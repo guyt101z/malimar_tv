@@ -103,6 +103,13 @@ class SalesRepsController < ApplicationController
 					transaction.product_details = YAML.dump({name: 'Free Trial', duration: length, price: 0})
 					transaction.balance_used = 0
 					transaction.sales_rep_id = current_sales_representative.id
+					if @device.nil?
+						transaction.start = @user.expiry + 1.day
+						transaction.end = transaction.start + @plan.months.months
+					else
+						transaction.start = @device.expiry + 1.day
+						transaction.end = transaction.start + @plan.months.months
+					end
 					transaction.save
 				end
 			else
@@ -142,18 +149,17 @@ class SalesRepsController < ApplicationController
 							transaction.payment_type = 'Credit Card'
 							transaction.paypal_id = response.params['transaction_id']
 							transaction.status = 'Paid'
-							unless @device.nil?
-								transaction.roku_id = @device.id
-								@device.expiry = Date.today + @plan.months.months
-								@device.save
-							else
-								@user.expiry = Date.today + @plan.months.months
-								@user.save
-							end
 							transaction.customer_paid = DateTime.now
 							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, commission_rate: current_sales_representative.commission_rate})
 							transaction.plan_id = @plan.id
 							transaction.sales_rep_id = current_sales_representative.id
+							if @device.nil?
+								transaction.start = @user.expiry + 1.day
+								transaction.end = transaction.start + @plan.months.months
+							else
+								transaction.start = @device.expiry + 1.day
+								transaction.end = transaction.start + @plan.months.months
+							end
 
 
 							transaction.balance_used = 0
@@ -186,6 +192,13 @@ class SalesRepsController < ApplicationController
 					transaction.balance_used = 0
 					transaction.plan_id = @plan.id
 					transaction.sales_rep_id = current_sales_representative.id
+					if @device.nil?
+						transaction.start = @user.expiry + 1.day
+						transaction.end = transaction.start + @plan.months.months
+					else
+						transaction.start = @device.expiry + 1.day
+						transaction.end = transaction.start + @plan.months.months
+					end
 					transaction.save
 					OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
 					@tx_errors = false

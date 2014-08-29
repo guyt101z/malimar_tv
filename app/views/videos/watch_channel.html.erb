@@ -65,27 +65,11 @@ jwplayer("video_wrapper").setup({
 });
 <% end %>
 </script>
-<% if (user_signed_in? && current_user.premium?) || admin_signed_in?  %>
+<% if (user_signed_in? && current_user.web_premium?) || admin_signed_in?  %>
 	<script>
 		jwplayer().play()
 	</script>
-<% elsif user_signed_in? && current_user.expired? %>
-	<% if @channel.free? %>
-		<%= render('videos/partials/expired_account_modal') %>
-		<script>
-			$('#modal-expired').modal({show: true});
-			jwplayer().play()
-		</script>
-	<% else %>
-		<%= render('videos/partials/expired_account_modal') %>
-		<script>
-			$('#modal-expired').modal({show: true, keyboard: false, backdrop: 'static'})
-			$('#modal-expired').on('hidden.bs.modal', function () {
-				window.location = '/'
-			})
-		</script>
-	<% end %>
-<% elsif user_signed_in? && current_user.premium? == false && @channel.free == false %>
+<% elsif user_signed_in? && current_user.web_premium? == false && @channel.free == false %>
 	<%= render('videos/partials/no_plan') %>
 	<script>
 		$('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})

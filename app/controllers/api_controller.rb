@@ -283,10 +283,16 @@ class ApiController < ApplicationController
 
             if device != 'Roku' && user_device.nil?
                 return {code: 200, success: false, message: 'Invalid token'}
-            elsif device != 'Roku' && user_device.expired?
+            elsif device != 'Roku' && user_device.expired? || user_device.nil?
                 return {code: 200, success: false, message: 'Expired token'}
             else
-                return {code: 100, success: true, message: 'Success'}
+                if user_device.nil? == false && user_device.is_active?
+                    return {code: 100, success: true, message: 'Success'}
+                elsif user_device.nil? == false && user_device.is_active? == false
+                    return {code: 211, success: false, message: 'Device has been suspended'}
+                else
+                    return {code: 200, success: false, message: 'Expired token'}
+                end
             end
         else
             return {code: 201, success: false, message: 'Invalid device type'}
@@ -297,7 +303,7 @@ class ApiController < ApplicationController
         if ['Iphone','Ipod','Ipad'].include? devicetype
             filter_params = {ios: true}
         else
-            filter_params = {device.to_sym => true}
+            filter_params = {devicetype.downcase.to_sym => true}
         end
         if device.adult == true
             filter_params[:adult] = true

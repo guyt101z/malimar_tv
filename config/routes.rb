@@ -97,6 +97,9 @@ Rails.application.routes.draw do
         get '/admins/settings/timezone' => 'admins#edit_timezone', as: 'edit_timezone'
         post 'update_default_timezone' => 'admins#update_default_timezone'
 
+        get '/admins/settings/languages' => 'admins#edit_languages', as: 'edit_languages'
+        post 'update_languages' => 'admins#update_languages'
+
         get '/admins/settings/payouts' => 'admins#edit_payouts', as: 'edit_payouts'
         post 'update_payout_methods' => 'admins#update_payout_methods'
 
@@ -138,6 +141,7 @@ Rails.application.routes.draw do
         post 'admin_create_transaction' => 'admins#create_transaction'
         post 'admin_register_device' => 'admins#register_device'
         get 'admin_unlink_device' => 'admins#unlink_device'
+        get 'admin_toggle_user_status' => 'admins#toggle_user_status'
 
         post 'add_note_to_user' => 'users#add_note'
         post 'add_image_to_note' => 'users#add_image_to_note'
@@ -164,6 +168,7 @@ Rails.application.routes.draw do
         get '/admins/orders/refunded' => 'admins#refunded_transactions', as: 'refunded_tx'
         get '/admins/orders/cancelled' => 'admins#cancelled_transactions', as: 'cancelled_tx'
         get '/admins/orders/view/:id' => 'transactions#show', as: 'view_tx'
+        post 'update_transaction_dates' => 'transactions#update_dates'
 
         post 'create_tx_standalone' => 'transactions#create_standalone'
 

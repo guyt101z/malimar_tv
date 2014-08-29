@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140829170159) do
+ActiveRecord::Schema.define(version: 20140829205432) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -201,6 +201,7 @@ ActiveRecord::Schema.define(version: 20140829170159) do
     t.date     "expiry"
     t.string   "serial_file"
     t.boolean  "adult"
+    t.boolean  "is_active"
   end
 
   create_table "episodes", force: true do |t|
@@ -471,6 +472,8 @@ ActiveRecord::Schema.define(version: 20140829170159) do
     t.float    "balance_used"
     t.string   "paypal_id"
     t.integer  "plan_id"
+    t.date     "start"
+    t.date     "end"
   end
 
   create_table "user_notes", force: true do |t|
@@ -495,11 +498,11 @@ ActiveRecord::Schema.define(version: 20140829170159) do
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: ""
-    t.string   "encrypted_password",     default: "", null: false
+    t.string   "encrypted_password",     default: "",   null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,  null: false
+    t.integer  "sign_in_count",          default: 0,    null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
@@ -525,7 +528,8 @@ ActiveRecord::Schema.define(version: 20140829170159) do
     t.boolean  "adult"
     t.integer  "rep_id"
     t.string   "mobile_phone"
-    t.date     "expiry"
+    t.string   "language"
+    t.boolean  "is_active",              default: true
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

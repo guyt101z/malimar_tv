@@ -111,12 +111,24 @@ class Movie < ActiveRecord::Base
             if device.nil?
                 return {success: false, code: 200, message: 'Invalid token'}
             else
-                if type == 'Roku'
-                    unless available?(type.downcase)
-                        return {success: false, code: 202, message: 'Not available on this device'}
-                    else
-                        if free == false
-                            if device.premium?
+                if device.is_active.nil? || device.is_active?
+                    if type == 'Roku'
+                        unless available?(type.downcase)
+                            return {success: false, code: 202, message: 'Not available on this device'}
+                        else
+                            if free == false
+                                if device.premium?
+                                    if adult == true && device.adult == true
+                                        return {success: true, code: 100, message: 'Success'}
+                                    elsif adult == true && (device.adult.nil? || device.adult == false)
+                                        return {success: false, code: 205, message: 'Device is not permitted to view Adult Content'}
+                                    else
+                                        return {success: true, code: 100, message: 'Success'}
+                                    end
+                                else
+                                    return {success: false, code: 206, message: 'Device is not premium'}
+                                end
+                            else
                                 if adult == true && device.adult == true
                                     return {success: true, code: 100, message: 'Success'}
                                 elsif adult == true && (device.adult.nil? || device.adult == false)
@@ -124,48 +136,39 @@ class Movie < ActiveRecord::Base
                                 else
                                     return {success: true, code: 100, message: 'Success'}
                                 end
-                            else
-                                return {success: false, code: 206, message: 'Device is not premium'}
                             end
+                        end
+                    else
+                        user = User.find(device.user_id)
+                        unless available?(type.downcase)
+                            return {success: false, code: 202, message: 'Not available on this device'}
                         else
-                            if adult == true && device.adult == true
-                                return {success: true, code: 100, message: 'Success'}
-                            elsif adult == true && (device.adult.nil? || device.adult == false)
-                                return {success: false, code: 205, message: 'Device is not permitted to view Adult Content'}
+                            if free == false
+                                if user.premium?
+                                    if adult == true && device.adult == true
+                                        return {success: true, code: 100, message: 'Success'}
+                                    elsif adult == true && (device.adult.nil? || device.adult == false)
+                                        return {success: false, code: 205, message: 'Device is not permitted to view Adult Content'}
+                                    else
+                                        return {success: true, code: 100, message: 'Success'}
+                                    end
+                                else
+                                    return {success: false, code: 206, message: 'Device is not premium'}
+                                end
                             else
-                                return {success: true, code: 100, message: 'Success'}
+                                if adult == true && device.adult == true
+                                    return {success: true, code: 100, message: 'Success'}
+                                elsif adult == true && (device.adult.nil? || device.adult == false)
+                                    return {success: false, code: 205, message: 'Device is not permitted to view Adult Content'}
+                                else
+                                    return {success: true, code: 100, message: 'Success'}
+                                end
                             end
                         end
                     end
                 else
-                    user = User.find(device.user_id)
-                    unless available?(type.downcase)
-                        return {success: false, code: 202, message: 'Not available on this device'}
-                    else
-                        if free == false
-                            if user.premium?
-                                if adult == true && device.adult == true
-                                    return {success: true, code: 100, message: 'Success'}
-                                elsif adult == true && (device.adult.nil? || device.adult == false)
-                                    return {success: false, code: 205, message: 'Device is not permitted to view Adult Content'}
-                                else
-                                    return {success: true, code: 100, message: 'Success'}
-                                end
-                            else
-                                return {success: false, code: 206, message: 'Device is not premium'}
-                            end
-                        else
-                            if adult == true && device.adult == true
-                                return {success: true, code: 100, message: 'Success'}
-                            elsif adult == true && (device.adult.nil? || device.adult == false)
-                                return {success: false, code: 205, message: 'Device is not permitted to view Adult Content'}
-                            else
-                                return {success: true, code: 100, message: 'Success'}
-                            end
-                        end
-                    end
+                    return {success: false, code: 211, message: 'Device has been suspended'}
                 end
-
             end
         else
             return {success: false, code: 201, message: 'Invalid device type'}

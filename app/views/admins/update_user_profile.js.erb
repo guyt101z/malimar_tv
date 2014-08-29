@@ -1,6 +1,7 @@
 $('#first_name-error').remove()
 $('#last_name-error').remove()
 $('#email-error').remove()
+$('#refer_code-error').remove()
 
 
 <% if @user.errors.any? %>
@@ -10,8 +11,11 @@ $('#email-error').remove()
     <% if @user.errors[:last_name].present? %>
         $('#last_name').after('<div class="text-danger" id="last_name-error">Last name <%= @user.errors[:last_name].join(", ") %></div>')
     <% end %>
-    <% if @user.errors[:city].present? %>
+    <% if @user.errors[:email].present? %>
         $('#email').after('<div class="text-danger" id="email-error">Email address <%= @user.errors[:email].join(", ") %></div>')
+    <% end %>
+    <% if @user.errors[:refer_code].present? %>
+        $('#refer_code').after('<div class="text-danger" id="refer_code-error">Referral code <%= @user.errors[:refer_code].join(", ") %></div>')
     <% end %>
 
     addNotification('error', 'The account could not be updated, please see form for further information', 'Error', 'exclamation-circle')

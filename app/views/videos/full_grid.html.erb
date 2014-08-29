@@ -112,22 +112,11 @@
 </div>
 
 
-<% if (user_signed_in? && current_user.premium?) || admin_signed_in?  %>
-    <!-- Nothing -->
-<% elsif user_signed_in? && current_user.expired? %>
-    <% if @grid.free? %>
-        <%= render('videos/partials/expired_account_modal') %>
-        <script>$('#modal-expired').modal({show: true})</script>
-    <% else %>
-        <%= render('videos/partials/expired_account_modal') %>
-        <script>
-            $('#modal-expired').modal({show: true, keyboard: false, backdrop: 'static'})
-            $('#modal-expired').on('hidden.bs.modal', function () {
-                window.location = '/'
-            })
-        </script>
-    <% end %>
-<% elsif user_signed_in? && user.premium == false && @grid.free == false %>
+<% if (user_signed_in? && current_user.web_premium?) || admin_signed_in?  %>
+    <script>
+        jwplayer().play()
+    </script>
+<% elsif user_signed_in? && current_user.web_premium? == false && @channel.free == false %>
     <%= render('videos/partials/no_plan') %>
     <script>
         $('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
@@ -135,8 +124,10 @@
             window.location = '/'
         })
     </script>
+
+<% elsif user_signed_in? %>
 <% else %>
-    <%= render('videos/partials/sign_in_modal_grid') %>
+    <%= render('videos/partials/sign_in_modal_channel') %>
     <script>
         $('#modal-login').modal({show: true, keyboard: false, backdrop: 'static'})
         $('#modal-login').on('hidden.bs.modal', function () {

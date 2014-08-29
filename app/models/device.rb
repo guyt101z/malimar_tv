@@ -31,6 +31,10 @@ class Device < ActiveRecord::Base
 		end
 	end
 
+	def premium?
+		return Transaction.where(user_id: id, roku_id: id, status: ['Paid','Refunded']).where('? <= ?', :start, Date.today).where('? <= ?', Date.today, :end).any?
+	end
+
 	def expired?
 		if device.expiry.nil?
 			return true

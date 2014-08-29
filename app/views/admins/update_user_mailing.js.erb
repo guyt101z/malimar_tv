@@ -30,3 +30,5 @@ $('#zip-error').remove()
 <% else %>
     addNotification('success', 'The account has been updated', 'Success', 'check-circle')
 <% end %>
+
+alert('<%= @user.errors.full_messages.join(". ") %>')

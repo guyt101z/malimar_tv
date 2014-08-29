@@ -30,6 +30,7 @@ class CustomerParser
         code = SecureRandom.hex(6)
         until User.where(refer_code: code).count < 1
             user.refer_code = code
+            code = SecureRandom.hex(6)
         end
 
         unless User.where(email: user.email).any?

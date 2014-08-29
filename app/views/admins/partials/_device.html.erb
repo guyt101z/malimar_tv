@@ -32,10 +32,14 @@
                 <% end %>
             <% end %>
         </div>
-        <% if @device.expiry.nil? || @device.expiry >= Date.today %>
-            <div><span class="fa fa-check text-success"></span> <span class="text-grey text-light">Status</span> <span class="text-success">Available</span></div>
+        <% if @device.is_active.nil? || @device.is_active == true %>
+            <% if @device.expiry.nil? || @device.expiry >= Date.today %>
+                <div><span class="fa fa-check text-success"></span> <span class="text-grey text-light">Status</span> <span class="text-success">Available</span></div>
+            <% else %>
+                <div><span class="fa fa-minus text-error"></span> <span class="text-grey text-light">Status</span> <span class="text-error">Expired Token</span></div>
+            <% end %>
         <% else %>
-            <div><span class="fa fa-minus text-error"></span> <span class="text-grey text-light">Status</span> <span class="text-error">Expired Token</span></div>
+            <div><span class="fa fa-minus text-error"></span> <span class="text-grey text-light">Status</span> <span class="text-error">Disabled</span></div>
         <% end %>
     </div>
 </div>

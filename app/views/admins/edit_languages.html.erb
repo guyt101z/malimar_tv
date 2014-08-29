@@ -1,0 +1,37 @@
+<% content_for :top_level, 'Utilities' %>
+<% content_for :low_levels, YAML.dump(['General Settings','Languages']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='col-md-6 col-sm-9 col-centered'>
+            <div class='row'>
+                <div class='col-sm-6 col-centered'>
+                    <%= form_tag update_languages_path do %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>Languages</h3>
+                        </div>
+                        <div class='panel-body text-center', style='font-size: 180%'>
+                            <%= text_area_tag :languages, @languages, class: 'form-control', rows: 8 %>
+                        </div>
+                        <div class='panel-footer'>
+                            <%= submit_tag 'Update', class: 'btn btn-primary', style: 'width: 100%' %>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#languages').addClass('active')
+    function isNumberKey(evt)
+   {
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      if (charCode != 46 && charCode > 31
+        && (charCode < 48 || charCode > 57))
+         return false;
+
+      return true;
+   }
+</script>

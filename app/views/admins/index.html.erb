@@ -60,7 +60,7 @@
                         <div class="panel-body">
                             <div class="nano" style="height:310px;">
                                 <div class="nano-content">
-                                    <table class="table fz12-5 table-nb1 table-hover">
+                                    <table class="table fz12-5 table-nb1 table-hover table-striped">
                                         <tbody>
                                         	<% current_admin.all_ticket_notifications.each do |notif| %>
 											<tr onclick='window.location="<%= admin_view_notification_path(id: notif.id) %>"' style='cursor:pointer'>
@@ -83,7 +83,7 @@
                         <div class="panel-body">
                             <div class="nano" style="height:310px;">
                                 <div class="nano-content">
-                                    <table class="table fz12-5 table-nb1 table-hover">
+                                    <table class="table fz12-5 table-nb1 table-hover table-striped">
                                         <tbody>
                                         <% current_admin.all_system_notifications.each do |notif| %>
 										<tr onclick='window.location="<%= admin_view_notification_path(id: notif.id) %>"' style='cursor:pointer'>

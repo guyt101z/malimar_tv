@@ -220,23 +220,6 @@ class UsersController < ApplicationController
 						response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
 
 						if response.success?
-							user = current_user
-							user.balance = 0
-							unless @device.nil?
-								if @device.expiry.nil? || @device.expiry < Date.today
-									@device.expiry = Date.today + @plan.months.months
-								else
-									@device.expiry += @plan.months.months
-								end
-							else
-								if user.expiry.nil? || user.expiry < Date.today
-									user.expiry = Date.today + @plan.months.months
-								else
-									user.expiry += @plan.months.months
-								end
-							end
-							user.save
-							@device.save
 					    	transaction = Transaction.new
 							transaction.user_id = user.id
 							transaction.payment_type = 'Credit Card'
@@ -263,6 +246,13 @@ class UsersController < ApplicationController
 							unless @device.nil?
 								transaction.roku_id = @device.id
 								@device.save
+							end
+							if @device.nil?
+								transaction.start = user.expiry + 1.day
+								transaction.end = transaction.start + @plan.months.months
+							else
+								transaction.start = @device.expiry + 1.day
+								transaction.end = transaction.start + @plan.months.months
 							end
 							transaction.balance_used = @plan.price - total
 							transaction.save
@@ -308,6 +298,13 @@ class UsersController < ApplicationController
 					else
 						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 					end
+					if @device.nil?
+						transaction.start = user.expiry + 1.day
+						transaction.end = transaction.start + @plan.months.months
+					else
+						transaction.start = @device.expiry + 1.day
+						transaction.end = transaction.start + @plan.months.months
+					end
 					transaction.plan_id = @plan.id
 					transaction.balance_used = @plan.price - total
 					transaction.save
@@ -319,11 +316,6 @@ class UsersController < ApplicationController
 			elsif total <= 0
 				user = current_user
 				user.balance = user.balance - @plan.price
-				if @device.expiry.nil? || @device.expiry < Date.today
-					@device.expiry = Date.today + @plan.months.months
-				else
-					@device.expiry += @plan.months.months
-				end
 				user.save
 				@device.save
 				transaction = Transaction.new
@@ -332,6 +324,13 @@ class UsersController < ApplicationController
 				transaction.status = 'Paid'
 				transaction.balance_used = @plan.price
 				transaction.roku_id = @device.id
+				if @device.nil?
+					transaction.start = user.expiry + 1.day
+					transaction.end = transaction.start + @plan.months.months
+				else
+					transaction.start = @device.expiry + 1.day
+					transaction.end = transaction.start + @plan.months.months
+				end
 				unless friend.nil?
 					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
 					@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)

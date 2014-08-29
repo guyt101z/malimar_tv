@@ -1,6 +1,2 @@
-<li id='user_profile'><%= link_to 'Profile', view_user_path(id: @user.id) %></li>
-<li id='user_tx'><%= link_to 'Transactions', view_user_transactions_path(id: @user.id) %></li>
-<li id='user_devices'><%= link_to 'Devices', view_user_devices_path(id: @user.id) %></li>
-<li id='user_notes'><%= link_to 'Notes', view_user_notes_path(id: @user.id) %></li>
-<li id='user_sub'><%= link_to 'Subscription Adj.', view_user_subscription_path(id: @user.id) %></li>
-<li id='user_bal'><%= link_to 'Balance Adj.', view_user_balance_path(id: @user.id) %></li>
+<li id='user_profile'><%= link_to 'Client Details', view_user_path(id: @user.id) %></li>
+<li id='user_tx'><%= link_to 'Payments & Subscriptions', view_user_transactions_path(id: @user.id) %></li>

@@ -9,6 +9,7 @@ $('#device_id').val(<%= @device.id %>)
 $('#device_image').attr('src','/assets/<%= @device.type.downcase %>_large.png')
 $('#device_modal').modal('show')
 $('#device_type').html('<%= @device.humanized_type %>')
+$('#device_active').val('<%= @device.is_active %>')
 $('#device_linked').html('<%= @device.created_at.strftime('%B %-d, %Y') %>')
 <% if @device.type == 'Roku' %>
     $('#device_status').html('<%= @device.status %>')

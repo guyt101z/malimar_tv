@@ -14,7 +14,7 @@
             <% if @user.online? %>
                 <span class='online'></span> Active
             <% end %>
-            <a href='/admins/users/<%= @user.id %>' class='popover-footer'>Manage Client</a>">
+            <a href='/admins/users/profile/<%= @user.id %>' class='popover-footer'>Manage Client</a>">
         <span class="icon-circle-user"></span> <%= @user.name %>
     </a>
 

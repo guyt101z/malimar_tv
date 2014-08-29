@@ -23,6 +23,13 @@ class User < ActiveRecord::Base
       return "#{first_name} #{last_name}"
     end
 
+    def active_for_authentication?
+        #remember to call the super
+        #then put our own check to determine "active" state using
+        #our own "is_active" column
+        super and self.is_active?
+    end
+
     def expired?
         if Transaction.where(user_id: id, roku_id: nil).any? && premium? == false
             return true
@@ -97,11 +104,11 @@ class User < ActiveRecord::Base
     end
 
     def premium?
-        if expiry.nil? || expiry < Date.today
-            return false
-        else
-            return true
-        end
+        return Transaction.where(user_id: id, status: ['Paid','Refunded']).where('? <= ?', :start, Date.today).where('? <= ?', Date.today, :end).any?
+    end
+
+    def web_premium?
+        return Transaction.where(user_id: id, roku_id: nil, status: ['Paid','Refunded']).where('? <= ?', :start, Date.today).where('? <= ?', Date.today, :end).any?
     end
 
 
@@ -115,5 +122,19 @@ class User < ActiveRecord::Base
         else
             return city
         end
+    end
+
+    def expiry
+        transactions = Transaction.where(user_id: id, roku_id: nil)
+
+        expiration = nil
+        transactions.each do |transaction|
+            if expiration.nil? && transaction.end != nil
+                expiration = transaction.end
+            elsif transaction.end.nil? == false && transaction.end > expiration
+                expiration = transaction.end
+            end
+        end
+        return expiration
     end
 end

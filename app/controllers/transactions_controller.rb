@@ -208,6 +208,23 @@ class TransactionsController < ApplicationController
 		end
 	end
 
+	def update_dates
+		begin
+			start_date = Date.parse("#{params[:start_year]}-#{params[:start_month]}-#{params[:start_day]}")
+			end_date = Date.parse("#{params[:end_year]}-#{params[:end_month]}-#{params[:end_day]}")
+			@dates_valid = true
+		rescue
+			@dates_valid = false
+		end
+
+		if @dates_valid == true
+			@transaction = Transaction.find(params[:transaction_id])
+			@transaction.start = start_date
+			@transaction.end = end_date
+			@transaction.save
+		end
+	end
+
 	def view_all
 		transactions = Transaction.where(user_id: params[:id]).order(created_at: :desc)
 		Payday::Config.default.invoice_logo = "#{Rails.root}/app/assets/images/logo.png"

@@ -67,7 +67,7 @@
                     <div class="panel-body">
                         <div class="nano" style="height:200px;">
                             <div class="nano-content">
-                                <table class="table fz12-5 table-nb1 table-hover">
+                                <table class="table fz12-5 table-nb1 table-hover table-striped">
                                     <tbody>
                                     <% SupportCase.where(status: 'Pending').order(created_at: :desc).limit(6).each do |ticket| %>
                                     <tr onclick='window.location = "<%= admin_view_ticket_path(id: ticket.id) %>"' style='cursor: pointer'>
@@ -95,7 +95,7 @@
                         <div id="notif-today" class="collapse in">
                             <div class="nano" style="height:200px;">
                                 <div class="nano-content">
-                                    <table class="table fz12-5 table-nb1 table-hover">
+                                    <table class="table fz12-5 table-nb1 table-hover table-striped">
                                         <tbody>
                                             <% @notifs.each do |notif| %>
                                                 <tr onclick='window.location = "<%= notif.link %>"' style='cursor: pointer'>

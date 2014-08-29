@@ -1,0 +1,6 @@
+<% if @dates_valid == true %>
+    <% flash[:success] = 'Subscription Updated' %>
+    window.location = '<%= view_tx_path(id: @transaction.id) %>'
+<% else %>
+    addNotification('error', 'Please choose a valid date range', 'Error', 'exclamation-circle')
+<% end %>

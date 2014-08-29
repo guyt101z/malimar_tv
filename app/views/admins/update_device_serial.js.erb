@@ -3,6 +3,8 @@ $('#serial_message').remove()
     $('#device_serial').after('<span class="text-danger" id="serial_message">Serial <%= @device.errors[:serial].join(", ") %></span>')
 <% else %>
     $('#device_serial').after('<span class="text-success" id="serial_message">Serial updated!</span>')
+    <% @user = User.where(id: @device.user_id).first %>
+    $('#device-list').html('<%= escape_javascript(render("admins/partials/device_list")) %>')
     $('#device_<%= @device.id %>').children('.serial').html('<%= @device.serial %>')
     <% rokus = Roku.where(user_id: @device.user_id) %>
     <%

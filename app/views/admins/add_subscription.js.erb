@@ -1,6 +1,11 @@
 $('#tx-error').remove()
 $('#device-error').remove()
-<% if @tx_errors == true || @device_errors == true %>
+$('#date-error').remove()
+<% if @tx_errors == true || @device_errors == true || @date_errors == true %>
+
+    <% if @date_errors == true %>
+        $('#tx_dates').append('<div class="text-danger" id="date-error" style="margin: 0 15px"><%= @date_error %></div>')
+    <% end %>
 
     <% if @tx_errors == true %>
         $('#payment_type').after('<div class="text-danger" id="tx-error"><%= @tx_error %></div>')

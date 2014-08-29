@@ -36,6 +36,10 @@
                             <label>Adult Content</label>
                             <%= select_tag :device_adult, options_for_select([['Disabled',false],['Enabled',true]]), id: 'device_adult', class: 'form-control' %>
                         </div>
+                        <div class='form-group'>
+                            <label>Device Active</label>
+                            <%= select_tag :device_active, options_for_select([['Enabled',true],['Disabled',false]]), id: 'device_active', class: 'form-control' %>
+                        </div>
                     </div>
                 </div>
 
