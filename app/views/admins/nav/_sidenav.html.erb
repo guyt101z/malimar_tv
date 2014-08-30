@@ -1,4 +1,8 @@
-<div class="sidebar">
+<% if params[:action] == 'new_user' || params[:action] == 'users' %>
+	<div class="sidebar" style='display:none; left: -220px'>
+<% else %>
+	<div class="sidebar">
+<% end %>
 	<ul class="nav">
     	<% if params[:action] == 'general_settings' || params[:action] == 'edit_timezone' ||
 			params[:action] == 'edit_device_limit' || params[:action] == 'edit_free_trial' ||

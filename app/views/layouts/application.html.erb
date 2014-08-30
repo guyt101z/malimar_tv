@@ -34,7 +34,12 @@
 		<div class='main'>
 			<div class='container-fluid'>
 				<% if admin_signed_in? %><%= render 'admins/nav/sidenav' %><% end %>
-				<div class='content'>
+
+					<% if params[:action] == 'new_user' || params[:action] == 'users' %>
+						<div class='content' style='left: 0px'>
+					<% else %>
+						<div class='content'>
+					<% end %>
 					<% if params[:action] == 'index' && params[:controller] == 'admins' %>
 						<%= render 'admins/nav/client_side_search' %>
 					<% end %>
