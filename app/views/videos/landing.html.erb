@@ -29,6 +29,9 @@
 
 <div class="content">
 	<div class="container">
+        <% if user_signed_in? && current_user.has_in_progress? %>
+            <%= render 'videos/partials/similar/continue_watching' %>
+        <% end %>
         <% @grids.each do |grid| %>
             <% if (grid.adult.nil? || grid.adult == false) %>
                 <%

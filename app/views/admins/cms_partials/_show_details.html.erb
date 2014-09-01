@@ -1,4 +1,4 @@
-<div class='channel_title'><%= @show.name %> <%= link_to 'View Now', browse_episodes_path(show_id: @show.id), style: 'margin-top: 4px', class: 'pull-right btn btn-md btn-warning', target: '_blank' %></div>
+<div class='channel_title'><%= @show.name %> <%= link_to 'View Now', browse_episodes_path(show_slug: @show.slug), style: 'margin-top: 4px', class: 'pull-right btn btn-md btn-warning', target: '_blank' %></div>
 <div class='show_details'>
     <div class='row'>
         <div class=' col-lg-8 col-md-12'>

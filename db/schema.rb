@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140829205432) do
+ActiveRecord::Schema.define(version: 20140901134235) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -204,6 +204,14 @@ ActiveRecord::Schema.define(version: 20140829205432) do
     t.boolean  "is_active"
   end
 
+  create_table "episode_progresses", force: true do |t|
+    t.integer  "episode_id"
+    t.integer  "time"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "show_progress_id"
+  end
+
   create_table "episodes", force: true do |t|
     t.string   "video_id"
     t.string   "title"
@@ -287,6 +295,14 @@ ActiveRecord::Schema.define(version: 20140829205432) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "subject"
+  end
+
+  create_table "movie_progresses", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "movie_id"
+    t.integer  "time"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "movies", force: true do |t|
@@ -386,6 +402,14 @@ ActiveRecord::Schema.define(version: 20140829205432) do
   create_table "settings", force: true do |t|
     t.string   "name"
     t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "show_progresses", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "show_id"
+    t.integer  "episode_number"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

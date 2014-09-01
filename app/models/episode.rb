@@ -15,6 +15,27 @@ class Episode < ActiveRecord::Base
     end
 
     def watch_url
-        return "/watch/shows/#{show_id}/#{episode_number}"
+        show = Show.find(show_id)
+        return "/watch/shows/#{show.slug}/#{episode_number}"
+    end
+
+    def last_episode?
+        later_episodes = Episode.where(show_id: show_id).where('episode_number > ?', episode_number)
+
+        if later_episodes.any?
+            return false
+        else
+            return true
+        end
+    end
+
+    def next_episode
+        later_episodes = Episode.where(show_id: show_id).where('episode_number > ?', episode_number).order(episode_number: :asc)
+
+        if later_episodes.any?
+            return later_episodes.first.episode_number
+        else
+            return nil
+        end
     end
 end

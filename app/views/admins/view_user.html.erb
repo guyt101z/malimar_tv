@@ -115,7 +115,7 @@
                             <% languages = Setting.where(name: 'Languages').first.data.split("\r\n") %>
                             <div class="col-md-6 form-group">
                                 <label for="">Language <span class="text-danger">*</span></label>
-                                <%= select_tag :language, options_for_select(languages), class: 'form-control input-md' %>
+                                <%= select_tag :language, options_for_select(languages, @user.language), class: 'form-control input-md' %>
                             </div>
                             <div class='col-md-6 form-group'>
                                 <label>Referral Code</label>

@@ -74,7 +74,39 @@ jwplayer("video_wrapper").setup({
 </script>
 <% if (user_signed_in? && current_user.web_premium?) || admin_signed_in?  %>
     <script>
-        jwplayer().play()
+        <% if @episode_update.present? && params[:resume] != 'false' %>
+            jwplayer().onSeek(function(){
+                jwplayer().play(true);
+            });
+                jwplayer().seek(<%= @episode_update.time %>)
+
+        <% else %>
+            jwplayer().play()
+        <% end %>
+        <% unless @episode.last_episode? %>
+            jwplayer().onComplete(function(){
+                $.ajax({
+                    url: '/mark_episode_complete?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>'
+                }).complete(function(){
+                    window.location = '<%= watch_episode_path(show_slug: @show.slug, episode_number: @episode.next_episode, resume: false) %>'
+                })
+            })
+        <% else %>
+            jwplayer().onComplete(function(){
+                $.ajax({
+                    url: '/mark_show_complete?show_id=<%= @show.id %>'
+                }).complete(function(){
+                    window.location = '<%= browse_episodes_path(show_slug: @show.slug) %>'
+                })
+            })
+        <% end %>
+        jwplayer().onTime(function(){
+            if (Math.round(jwplayer().getPosition() * 10) % 50 == 0){
+                $.ajax({
+                    url: '/update_show_time?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>&time='+jwplayer().getPosition()
+                })
+            }
+        })
     </script>
 <% elsif user_signed_in? && current_user.web_premium? == false && @channel.free == false %>
     <%= render('videos/partials/no_plan') %>

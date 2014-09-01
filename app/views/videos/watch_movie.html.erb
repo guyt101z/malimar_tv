@@ -70,7 +70,27 @@ jwplayer("video_wrapper").setup({
 </script>
 <% if (user_signed_in? && current_user.web_premium?) || admin_signed_in?  %>
     <script>
-        jwplayer().play()
+        jwplayer().onSeek(function(){
+            jwplayer().play(true);
+        });
+        % if @movie_update.present? && params[:resume] != 'false' %>
+            jwplayer().seek(<%= @movie_update.time %>)
+        <% else %>
+            jwplayer().play()
+        <% end %>
+        jwplayer().onComplete(function(){
+            $.ajax({
+                url: '/mark_movie_complete?movie_id=<%= @movie.id %>'
+            })
+        })
+
+        jwplayer().onTime(function(){
+            if (Math.round(jwplayer().getPosition() * 10) % 50 == 0){
+                $.ajax({
+                    url: '/update_movie_time?movie_id=<%= @movie.id %>&time='+jwplayer().getPosition()
+                })
+            }
+        })
     </script>
 <% elsif user_signed_in? && current_user.web_premium? == false && @channel.free == false %>
     <%= render('videos/partials/no_plan') %>

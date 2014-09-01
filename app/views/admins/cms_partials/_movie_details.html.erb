@@ -1,4 +1,4 @@
-<div class='channel_title'><%= @movie.name %> <%= link_to 'View Now', watch_movie_path(channel_id: @movie.id), style: 'margin-top: 4px', class: 'pull-right btn btn-md btn-warning', target: '_blank' %></div>
+<div class='channel_title'><%= @movie.name %> <%= link_to 'View Now', watch_movie_path(movie_slug: @movie.slug), style: 'margin-top: 4px', class: 'pull-right btn btn-md btn-warning', target: '_blank' %></div>
 <div class='channel_details'>
     <div class='row'>
         <div class=' col-lg-8 col-md-12'>

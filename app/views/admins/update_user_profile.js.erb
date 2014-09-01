@@ -22,3 +22,5 @@ $('#refer_code-error').remove()
 <% else %>
     addNotification('success', 'The account has been updated', 'Success', 'check-circle')
 <% end %>
+alert('<%= escape_javascript(params.inspect).html_safe %>')
+alert('<%= escape_javascript(@user.inspect).html_safe %>')

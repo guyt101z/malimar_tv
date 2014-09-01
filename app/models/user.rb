@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   	attr_accessible :email, :password, :password_confirmation, :first_name, :last_name, :address_1, :address_2, :city, :state,
-                    :country, :zip, :phone, :photo, :expiry, :timezone, :refer_code, :timezone
+                    :country, :zip, :phone, :photo, :expiry, :timezone, :refer_code, :timezone, :language
 
   	validates_presence_of :first_name
   	validates_presence_of :last_name
@@ -136,5 +136,17 @@ class User < ActiveRecord::Base
             end
         end
         return expiration
+    end
+
+    def continue_watching
+        show_updates = ShowProgress.where(user_id: id).order(updated_at: :desc)
+        movie_updates = MovieProgress.where(user_id: id).order(updated_at: :desc)
+
+        return (show_updates + movie_updates).sort_by(&:created_at).reverse
+    end
+
+    def has_in_progress?
+        return show_updates = ShowProgress.where(user_id: id).order(updated_at: :desc).any? ||
+            movie_updates = MovieProgress.where(user_id: id).order(updated_at: :desc).any?
     end
 end

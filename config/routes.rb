@@ -26,6 +26,15 @@ Rails.application.routes.draw do
         get 'subscribe_newsletter_footer' => 'users#subscribe_newsletter_footer'
   	# User Methods
     authenticate :user do
+        get 'update_show_time' => 'time#update_show'
+        get 'mark_episode_complete' => 'time#mark_episode_complete'
+        get 'mark_show_complete' => 'time#mark_show_complete'
+
+
+        get 'update_movie_time' => 'time#update_movie'
+        get 'mark_movie_complete' => 'time#mark_movie_complete'
+
+
   	  	get 'account' => 'users#account'
 
         get '/account/devices' => 'users#devices', as: 'my_devices'
