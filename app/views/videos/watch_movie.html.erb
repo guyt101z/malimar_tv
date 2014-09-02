@@ -103,7 +103,7 @@ jwplayer("video_wrapper").setup({
 
 <% elsif user_signed_in? %>
 <% else %>
-    <%= render('videos/partials/sign_in_modal_channel') %>
+    <%= render('videos/partials/sign_in_modal_movie') %>
     <script>
         $('#modal-login').modal({show: true, keyboard: false, backdrop: 'static'})
         $('#modal-login').on('hidden.bs.modal', function () {
