@@ -32,7 +32,11 @@ class Device < ActiveRecord::Base
 	end
 
 	def premium?
-		return Transaction.where(user_id: id, roku_id: id, status: ['Paid','Refunded']).where('? <= ?', :start, Date.today).where('? <= ?', Date.today, :end).any?
+		if type == 'Roku'
+			return Transaction.where(user_id: id, roku_id: id, status: ['Paid','Refunded']).where('? <= ?', :start, Date.today).where('? <= ?', Date.today, :end).any?
+		else
+			return Transaction.where(user_id: id, roku_id: nil, status: ['Paid','Refunded']).where('? <= ?', :start, Date.today).where('? <= ?', Date.today, :end).any?
+		end
 	end
 	def status
 		unless premium?
