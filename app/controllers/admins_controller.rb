@@ -93,9 +93,9 @@ class AdminsController < ApplicationController
 		if @user.save
 			@user_errors = false
 			if params[:device_to_add] == 'true'
-				@device = Device.where(id: params[:device_id]).first
+				@device = Roku.where(id: params[:device_id]).first
 				if @device.nil?
-					@device = Device.new
+					@device = Roku.new
 				end
 				@device.serial = params[:serial].upcase
 				if @device.serial.include?('O')
