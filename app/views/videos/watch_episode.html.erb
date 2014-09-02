@@ -83,7 +83,7 @@ jwplayer("video_wrapper").setup({
         <% else %>
             jwplayer().play()
         <% end %>
-        <% unless @episode.last_episode? && user_signed_in? %>
+        <% unless @episode.last_episode? %>
             jwplayer().onComplete(function(){
                 $.ajax({
                     url: '/mark_episode_complete?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>'
