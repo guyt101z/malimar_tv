@@ -772,8 +772,15 @@ class AdminsController < ApplicationController
 				@user.save
 			end
 		elsif params[:roku_id].to_i == 0
-			@user = User.find(params[:user_id])
 			@plan = Plan.find(params[:plan_id])
+			if params[:user_id].present?
+				@user = User.find(params[:user_id])
+			else
+				@user = User.new
+				@user.balance = 0
+
+				@total = @plan.price
+			end
 			unless @user.balance.nil?
 				@total = @plan.price - @user.balance
 			else
@@ -2652,122 +2659,133 @@ class AdminsController < ApplicationController
 
 	def create_transaction
 		if params[:user_id].present? && params[:device_id].present?
-			@user = User.find(params[:user_id])
-			@plan = Plan.find(params[:plan_id])
-			if params[:device_id].to_i == 0
-				@device = nil
-			else
-				@device = Roku.find(params[:device_id])
+			begin
+				start_date = Date.parse("#{params[:start_year]}-#{params[:start_month]}-#{params[:start_day]}")
+				end_date = Date.parse("#{params[:end_year]}-#{params[:end_month]}-#{params[:end_day]}")
+				@dates_valid = true
+			rescue
+				@dates_valid = false
 			end
 
-			total = @plan.price - @user.balance
+			if @dates_valid == true && start_date < end_date
+				@user = User.find(params[:user_id])
+				@plan = Plan.find(params[:plan_id])
+				if params[:device_id].to_i == 0
+					@device = nil
+				else
+					@device = Roku.find(params[:device_id])
+				end
 
-			if total > 0 && params[:payment_type].present?
-				if params[:payment_type] == 'Credit Card'
-					# Send requests to the gateway's test servers
-					ActiveMerchant::Billing::Base.mode = :test
+				if @user.balance.nil?
+					total = @plan.price
+					@user.balance = 0
+					@user.save
+				else
+					total = @plan.price - @user.balance
+				end
 
-					# Create a new credit card object
+				if total > 0 && params[:payment_type].present?
+					if params[:payment_type] == 'Credit Card'
+						# Send requests to the gateway's test servers
+						ActiveMerchant::Billing::Base.mode = :test
 
-					names = params[:card_name].split(' ', 2)
-					credit_card = ActiveMerchant::Billing::CreditCard.new(
-						:number     => params[:card_number],
-						:month      => params[:card_month],
-						:year       => params[:card_year],
-						:first_name => names[0],
-						:last_name  => names[1],
-						:verification_value  => params[:ccv]
-					)
+						# Create a new credit card object
 
-					if credit_card.valid?
-						@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
-						gateway = ActiveMerchant::Billing::PaypalGateway.new(
-							login:    	@paypal[:login],
-							password: 	@paypal[:password],
-							signature: 	@paypal[:signature]
+						names = params[:card_name].split(' ', 2)
+						credit_card = ActiveMerchant::Billing::CreditCard.new(
+							:number     => params[:card_number],
+							:month      => params[:card_month],
+							:year       => params[:card_year],
+							:first_name => names[0],
+							:last_name  => names[1],
+							:verification_value  => params[:ccv]
 						)
 
-						response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
+						if credit_card.valid?
+							@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
+							gateway = ActiveMerchant::Billing::PaypalGateway.new(
+								login:    	@paypal[:login],
+								password: 	@paypal[:password],
+								signature: 	@paypal[:signature]
+							)
 
-						if response.success?
-							@user.balance = 0
-							unless @device.nil?
-								if @device.expiry.nil? || @device.expiry < Date.today
-									@device.expiry = Date.today + @plan.months.months
-								else
-									@device.expiry += @plan.months.months
+							response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
+
+							if response.success?
+								@user.balance = 0
+								@user.save
+								transaction = Transaction.new
+								transaction.user_id = @user.id
+								unless @device.nil?
+									transaction.roku_id = @device.id
 								end
+								transaction.start = start_date
+								transaction.end = end_date
+								transaction.payment_type = 'Credit Card'
+								transaction.paypal_id = response.params['transaction_id']
+								transaction.status = 'Paid'
+								transaction.customer_paid = DateTime.now
+								transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+								transaction.plan_id = @plan.id
+								transaction.balance_used = @plan.price - total
+								transaction.save
+								@tx_id = transaction.id
+								OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
+								TransactionalMailer.order_paid(transaction, @user).deliver
 							else
-								if @user.expiry.nil? || @user.expiry < Date.today
-									@user.expiry = Date.today + @plan.months.months
-								else
-									@user.expiry += @plan.months.months
-								end
+								@tx_errors = true
+								@tx_error = response.message
 							end
-							@user.save
-							@device.save
-							transaction = Transaction.new
-							transaction.user_id = @user.id
-							unless @device.nil?
-								transaction.roku_id = @device.id
-							end
-							transaction.payment_type = 'Credit Card'
-							transaction.paypal_id = response.params['transaction_id']
-							transaction.status = 'Paid'
-							transaction.customer_paid = DateTime.now
-							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
-							transaction.plan_id = @plan.id
-							transaction.balance_used = @plan.price - total
-							transaction.save
-							@tx_id = transaction.id
-							OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
-							TransactionalMailer.order_paid(transaction, @user).deliver
 						else
 							@tx_errors = true
-							@tx_error = response.message
+							@tx_error = 'This card is not valid'
 						end
+					elsif params[:payment_type].present?
+						transaction = Transaction.new
+						transaction.start = start_date
+						transaction.end = end_date
+						transaction.user_id = @user.id
+						transaction.payment_type = params[:payment_type]
+						transaction.status = 'Pending'
+						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+						transaction.plan_id = @plan.id
+						transaction.balance_used = @plan.price - total
+						unless @device.nil?
+							transaction.roku_id = @device.id
+						end
+						transaction.save
+						OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
+						@tx_id = transaction.id
+						TransactionalMailer.order_created(transaction, @user).deliver
+						@tx_errors = false
 					else
 						@tx_errors = true
-						@tx_error = 'This card is not valid'
+						@tx_error = 'You must choose a payment type.'
 					end
-				elsif params[:payment_type].present?
+				elsif total <= 0
+					@user.balance = @user.balance - @plan.price
+					@user.save
+					if @device.expiry.nil? || @device.expiry < Date.today
+						@device.expiry = Date.today + @plan.months.months
+					else
+						@device.expiry += @plan.months.months
+					end
+					@device.save
 					transaction = Transaction.new
 					transaction.user_id = @user.id
-					transaction.payment_type = params[:payment_type]
-					transaction.status = 'Pending'
+					transaction.payment_type = 'Previous Balance'
+					transaction.status = 'Paid'
+					transaction.balance_used = @plan.price
 					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 					transaction.plan_id = @plan.id
-					transaction.balance_used = @plan.price - total
-					transaction.roku_id = @device.id
 					transaction.save
-					OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
+					OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
 					@tx_id = transaction.id
-					TransactionalMailer.order_created(transaction, @user).deliver
-					@tx_errors = false
-				else
-					@tx_errors = true
-					@tx_error = 'You must choose a payment type.'
+					TransactionalMailer.order_paid(transaction, @user).deliver
 				end
-			elsif total <= 0
-				@user.balance = @user.balance - @plan.price
-				@user.save
-				if @device.expiry.nil? || @device.expiry < Date.today
-					@device.expiry = Date.today + @plan.months.months
-				else
-					@device.expiry += @plan.months.months
-				end
-				@device.save
-				transaction = Transaction.new
-				transaction.user_id = @user.id
-				transaction.payment_type = 'Previous Balance'
-				transaction.status = 'Paid'
-				transaction.balance_used = @plan.price
-				transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
-				transaction.plan_id = @plan.id
-				transaction.save
-				OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
-				@tx_id = transaction.id
-				TransactionalMailer.order_paid(transaction, @user).deliver
+			else
+				@date_errors = true
+				@date_error = 'You must pick a valid date range'
 			end
 		else
 			if params[:user_id].present? == false

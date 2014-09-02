@@ -1,11 +1,14 @@
 $('#user_error').remove()
 $('#tx_error').remove()
 $('#device_error').remove()
-<% if @user_error == true || @device_error == true %>
+$('#date_error').remove()
+<% if @user_error == true || @device_error == true || @date_errors == true %>
     <% if @user_error == true %>
         $('#user_search').after('<div class="text-danger" id="user_error">You must select a client</div>')
     <% elsif @device_error == true %>
         $('#device_id').after('<div class="text-danger" id="device_error">You must select a Roku</div>')
+    <% elsif @date_errors == true %>
+        $('#payment_type').after('<div class="text-danger" id="date_error"><%= @date_error %></div>')
     <% end %>
 <% else %>
     <% if @tx_errors == true %>

@@ -1,29 +1,7 @@
 class TransactionsController < ApplicationController
 	def accept
 		@transaction = Transaction.find(params[:id])
-		if @transaction.roku_id.present?
-			@device = Roku.find(@transaction.roku_id)
-			if @device.expiry.blank?
-				details = YAML.load(@transaction.product_details)
-				@device.expiry = Date.today+details[:duration].months
-				@device.save
-			else
-				details = YAML.load(@transaction.product_details)
-				@device.expiry += details[:duration].months
-				@device.save
-			end
-		else
-			@user = User.find(@transaction.user_id)
-			if @user.expiry.blank?
-				details = YAML.load(@transaction.product_details)
-				@user.expiry = Date.today+details[:duration].months
-				@user.save
-			else
-				details = YAML.load(@transaction.product_details)
-				@user.expiry += details[:duration].months
-				@user.save
-			end
-		end
+		details = YAML.load(@transaction.product_details)
 		@transaction.customer_paid = DateTime.now
 		@transaction.status = 'Paid'
 		if @transaction.save
