@@ -74,7 +74,7 @@ jwplayer("video_wrapper").setup({
 </script>
 <% if (user_signed_in? && current_user.web_premium?) || admin_signed_in?  %>
     <script>
-        <% if @episode_update.present? && params[:resume] != 'false' %>
+        <% if @episode_update.present? && params[:resume] != 'false' && user_signed_in? %>
             jwplayer().onSeek(function(){
                 jwplayer().play(true);
             });
@@ -83,7 +83,7 @@ jwplayer("video_wrapper").setup({
         <% else %>
             jwplayer().play()
         <% end %>
-        <% unless @episode.last_episode? %>
+        <% unless @episode.last_episode? && user_signed_in? %>
             jwplayer().onComplete(function(){
                 $.ajax({
                     url: '/mark_episode_complete?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>'

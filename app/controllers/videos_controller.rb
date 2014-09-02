@@ -551,11 +551,13 @@ class VideosController < ApplicationController
 	def watch_episode
 		@show = Show.where(slug: params[:show_slug]).first
 		@episode = Episode.where(show_id: @show.id, episode_number: params[:episode_number]).first
-		show_update = ShowProgress.where(user_id: current_user.id, show_id: @show.id).first
-		if show_update.nil?
-			@episode_update = nil
-		else
-			@episode_update = EpisodeProgress.where(show_progress_id: show_update.id, episode_id: @episode.id).first
+		if user_signed_in?
+			show_update = ShowProgress.where(user_id: current_user.id, show_id: @show.id).first
+			if show_update.nil?
+				@episode_update = nil
+			else
+				@episode_update = EpisodeProgress.where(show_progress_id: show_update.id, episode_id: @episode.id).first
+			end
 		end
 
 		episodes_ordered = Episode.where(show_id: @show.id).order(episode_number: :asc)
@@ -578,7 +580,9 @@ class VideosController < ApplicationController
 
 	def watch_movie
 		@movie = Movie.where(slug: params[:movie_slug]).first
-		@movie_update = MovieProgress.where(user_id: current_user.id, movie_id: @movie.id).first
+		if user_signed_in?
+			@movie_update = MovieProgress.where(user_id: current_user.id, movie_id: @movie.id).first
+		end
 	end
 
 	def navbar_search

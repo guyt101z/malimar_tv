@@ -73,7 +73,7 @@ jwplayer("video_wrapper").setup({
         jwplayer().onSeek(function(){
             jwplayer().play(true);
         });
-        % if @movie_update.present? && params[:resume] != 'false' %>
+        % if @movie_update.present? && params[:resume] != 'false' && user_signed_in? %>
             jwplayer().seek(<%= @movie_update.time %>)
         <% else %>
             jwplayer().play()
