@@ -1,10 +1,10 @@
 <% content_for :top_level, 'Clients' %>
 <% if @user.last_name.present? && @user.first_name.present? %>
-    <% content_for :low_levels, YAML.dump([@user.name, 'Profile']) %>
+    <% content_for :low_levels, YAML.dump([@user.name.squish, 'Profile']) %>
 <% elsif @user.last_name.present? %>
-    <% content_for :low_levels, YAML.dump([@user.last_name, 'Profile']) %>
+    <% content_for :low_levels, YAML.dump([@user.last_name.squish, 'Profile']) %>
 <% elsif @user.first_name.present? %>
-    <% content_for :low_levels, YAML.dump([@user.first_name, 'Profile']) %>
+    <% content_for :low_levels, YAML.dump([@user.first_name.squish, 'Profile']) %>
 <% end %>
 <div id="left-scroll" class="nano">
     <div class="nano-content">
