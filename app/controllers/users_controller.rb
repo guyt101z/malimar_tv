@@ -247,13 +247,9 @@ class UsersController < ApplicationController
 								transaction.roku_id = @device.id
 								@device.save
 							end
-							if @device.nil?
-								transaction.start = user.expiry + 1.day
-								transaction.end = transaction.start + @plan.months.months
-							else
-								transaction.start = @device.expiry + 1.day
-								transaction.end = transaction.start + @plan.months.months
-							end
+
+							transaction.start = Date.today
+							transaction.end = Date.today + @plan.months.months
 							transaction.balance_used = @plan.price - total
 							transaction.save
 							@success = true
@@ -298,13 +294,8 @@ class UsersController < ApplicationController
 					else
 						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 					end
-					if @device.nil?
-						transaction.start = user.expiry + 1.day
-						transaction.end = transaction.start + @plan.months.months
-					else
-						transaction.start = @device.expiry + 1.day
-						transaction.end = transaction.start + @plan.months.months
-					end
+					transaction.start = Date.today
+					transaction.end = Date.today + @plan.months.months
 					transaction.plan_id = @plan.id
 					transaction.balance_used = @plan.price - total
 					transaction.save
@@ -323,14 +314,8 @@ class UsersController < ApplicationController
 				transaction.payment_type = 'Previous Balance'
 				transaction.status = 'Paid'
 				transaction.balance_used = @plan.price
-				transaction.roku_id = @device.id
-				if @device.nil?
-					transaction.start = user.expiry + 1.day
-					transaction.end = transaction.start + @plan.months.months
-				else
-					transaction.start = @device.expiry + 1.day
-					transaction.end = transaction.start + @plan.months.months
-				end
+				transaction.start = Date.today
+				transaction.end = Date.today + @plan.months.months
 				unless friend.nil?
 					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
 					@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)

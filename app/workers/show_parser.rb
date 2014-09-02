@@ -15,6 +15,17 @@ class ShowParser
             show.content_quality = 'SD'
             show.bitrate = 0
 
+            new_name = show.name.clone
+
+            test_slug = "#{new_name.gsub(' ','-')}"
+            other_shows = Show.where(slug: test_slug)
+            if other_shows.any?
+                test_slug = "#{new_name.gsub(' ','-')}-#{id.to_s}-show"
+                show.slug = test_slug
+            else
+                show.slug = test_slug
+            end
+
             show.roku = true
             show.web = true
             show.ios = true

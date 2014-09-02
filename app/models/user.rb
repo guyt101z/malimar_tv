@@ -104,11 +104,11 @@ class User < ActiveRecord::Base
     end
 
     def premium?
-        return Transaction.where(user_id: id, status: ['Paid','Refunded']).where('? <= ?', :start, Date.today).where('? <= ?', Date.today, :end).any?
+        return Transaction.where(user_id: id, status: ['Paid','Refunded']).where('start <= ?', Date.today).where('? <= end', Date.today).any?
     end
 
     def web_premium?
-        return Transaction.where(user_id: id, roku_id: nil, status: ['Paid','Refunded']).where('? <= ?', :start, Date.today).where('? <= ?', Date.today, :end).any?
+        return Transaction.where(user_id: id, roku_id: nil, status: ['Paid','Refunded']).where('start <= ?', Date.today).where('? <= end', Date.today).any?
     end
 
 

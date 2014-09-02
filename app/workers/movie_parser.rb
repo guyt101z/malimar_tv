@@ -12,6 +12,17 @@ class MovieParser
             movie.synopsis = item['synopsis']
             movie.release_date = Date.strptime(item['releaseDate'], "%d-%B-%Y")
 
+            new_name = movie.name.clone
+
+            test_slug = "#{new_name.gsub(' ','-')}"
+            other_movies = Movie.where(slug: test_slug)
+            if other_movies.any?
+                test_slug = "#{new_name.gsub(' ','-')}-#{id.to_s}-movie"
+                movie.slug = test_slug
+            else
+                movie.slug = test_slug
+            end
+
             if item['rating'] == 'Rated R'
                 movie.adult = true
             else

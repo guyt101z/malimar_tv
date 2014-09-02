@@ -8,7 +8,7 @@ $('#serial_message').remove()
     $('#device_<%= @device.id %>').children('.serial').html('<%= @device.serial %>')
     <% rokus = Roku.where(user_id: @device.user_id) %>
     <%
-        options = []
+        options = [['Web/Tablet/Mobile',0]]
         rokus.each do |roku|
             if roku.name.present?
                 options.push(["#{roku.nickname(false)} - #{roku.serial}", roku.id])

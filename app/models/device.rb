@@ -33,9 +33,9 @@ class Device < ActiveRecord::Base
 
 	def premium?
 		if type == 'Roku'
-			return Transaction.where(user_id: id, roku_id: id, status: ['Paid','Refunded']).where('? <= ?', :start, Date.today).where('? <= ?', Date.today, :end).any?
+			return Transaction.where(user_id: id, roku_id: id, status: ['Paid','Refunded']).where('start <= ?', Date.today).where('? <= end', Date.today).any?
 		else
-			return Transaction.where(user_id: id, roku_id: nil, status: ['Paid','Refunded']).where('? <= ?', :start, Date.today).where('? <= ?', Date.today, :end).any?
+			return Transaction.where(user_id: id, roku_id: nil, status: ['Paid','Refunded']).where('start <= ?', Date.today).where('? <= end', Date.today).any?
 		end
 	end
 	def status
@@ -47,10 +47,18 @@ class Device < ActiveRecord::Base
 	end
 
 	def expired?
-		if device.expiry.nil?
-			return true
+		if type == 'Roku'
+			if Transaction.where(user_id: id, roku_id: id, status: ['Paid','Refunded']).any? && premium? == false
+				return true
+			else
+				return false
+			end
 		else
-			return expiry < Date.today
+			if expiry.nil? || expiry < Date.today
+				return true
+			else
+				return false
+			end
 		end
 	end
 end

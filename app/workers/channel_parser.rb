@@ -9,6 +9,16 @@ class ChannelParser
             channel.name = item['title']
             channel.free = grid.free
             channel.synopsis = item['synopsis']
+            new_name = channel.name.clone
+
+            test_slug = "#{new_name.gsub(' ','-')}"
+            other_channels = Channel.where(slug: test_slug)
+            if other_channels.any?
+                test_slug = "#{new_name.gsub(' ','-')}-#{id.to_s}-channel"
+                channel.slug = test_slug
+            else
+                channel.slug = test_slug
+            end
 
             channel.adult = grid.adult
             channel.content_type = item['contentType']

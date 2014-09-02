@@ -107,10 +107,10 @@ class Transaction < ActiveRecord::Base
 		if roku_id.present?
 			device = Roku.where(id: roku_id).first
 			if device.nil?
-				roku = 'Device not found''Device not found'
+				roku = 'Device not found'
 			else
 				if device.name.present?
-					roku = "#{device.nickname} - #{device.serial}"
+					roku = "#{device.nickname(false)} - #{device.serial}"
 				else
 					roku = "Roku - #{device.serial}"
 				end
