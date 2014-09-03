@@ -2,13 +2,13 @@
     $('#search_placeholder').html('<%= @channels.count + @movies.count + @shows.count %> found')
     $('#search_result_list').html('')
     <% @channels.each do |channel| %>
-        $('#search_result_list').append('<div class="result" onclick="window.location = \'<%= watch_channel_path(channel_id: channel.id) %>\'"><div class="image"><%= image_tag channel.image_url(:preview) %></div><div class="desc"><span class="name"><%= channel.name %></div></div>')
+        $('#search_result_list').append('<div class="result" onclick="window.location = \'<%= watch_channel_path(channel_slug: channel.slug) %>\'"><div class="image"><%= image_tag channel.image_url(:preview) %></div><div class="desc"><span class="name"><%= channel.name %></div></div>')
     <% end %>
     <% @movies.each do |movie| %>
-        $('#search_result_list').append('<div class="result" onclick="window.location = \'<%= watch_movie_path(movie_id: movie.id) %>\'"><div class="image"><%= image_tag movie.image_url(:preview) %></div><div class="desc"><span class="name"><%= movie.name %></div></div>')
+        $('#search_result_list').append('<div class="result" onclick="window.location = \'<%= watch_movie_path(movie_slug: movie.slug) %>\'"><div class="image"><%= image_tag movie.image_url(:preview) %></div><div class="desc"><span class="name"><%= movie.name %></div></div>')
     <% end %>
     <% @shows.each do |show| %>
-        $('#search_result_list').append('<div class="result" onclick="window.location = \'<%= browse_episodes_path(show_id: show.id) %>\'"><div class="image"><%= image_tag show.image_url(:preview) %></div><div class="desc"><span class="name"><%= show.name %></span><br/><span class="episodes"><%= pluralize(show.episode_count, "Episode") %></span></div></div>')
+        $('#search_result_list').append('<div class="result" onclick="window.location = \'<%= browse_episodes_path(show_slug: show.slug) %>\'"><div class="image"><%= image_tag show.image_url(:preview) %></div><div class="desc"><span class="name"><%= show.name %></span><br/><span class="episodes"><%= pluralize(show.episode_count, "Episode") %></span></div></div>')
     <% end %>
     $('#search_result_list').show()
 <% else %>
