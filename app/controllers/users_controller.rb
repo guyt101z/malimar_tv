@@ -633,7 +633,6 @@ class UsersController < ApplicationController
 			code = SecureRandom.hex(5).upcase
 		end
 		@user.refer_code = code
-		@user.expiry = Date.today + Setting.where(name: 'Free Trial Length').first.data.to_i.days
 
 		if @user.save
 			@user_errors = false
@@ -645,7 +644,6 @@ class UsersController < ApplicationController
 					@device.serial = @device.serial.gsub!('O','0')
 				end
 				@device.name = params[:nickname]
-				@device.expiry = Date.today + Setting.where(name: 'Free Trial Length').first.data.to_i.days
 				if @device.save
 					if Rails.env.development?
 						path = "#{Rails.root}/serials/#{@device.serial}"
@@ -662,6 +660,8 @@ class UsersController < ApplicationController
 					transaction.user_id = @user.id
 					transaction.payment_type = params[:payment_type]
 					transaction.status = 'Paid'
+					transaction.start = Date.today
+					transaction.end = Date.today + Setting.where(name: 'Free Trial Length').first.data.to_i.days
 					transaction.customer_paid = DateTime.now
 					transaction.product_details = YAML.dump({name: 'Free Trial', duration: Setting.where(name: 'Free Trial Length').first.data.to_i, price: 0})
 					transaction.balance_used = 0
@@ -689,6 +689,8 @@ class UsersController < ApplicationController
 				transaction.payment_type = params[:payment_type]
 				transaction.status = 'Paid'
 				transaction.customer_paid = DateTime.now
+				transaction.start = Date.today
+				transaction.end = Date.today + Setting.where(name: 'Free Trial Length').first.data.to_i.days
 				transaction.product_details = YAML.dump({name: 'Free Trial', duration: Setting.where(name: 'Free Trial Length').first.data.to_i, price: 0})
 				transaction.balance_used = 0
 				transaction.save
