@@ -30,21 +30,13 @@ class AdminsController < ApplicationController
 	end
 
 	def delete_user
-		if current_admin.authorized_to?('manage_user')
-			user = User.find(params[:id])
-			devices = Device.where(user_id: user.id)
-
-			user.destroy
-			if devices.any?
-				devices.destroy_all
-			end
-
-			flash[:success] = 'Client has been deleted'
-			redirect_to '/admins/users'
+		admin = Admin.authenticate_for_root(params[:root_email], params[:root_password])
+		if admin.nil?
+			@success = false
 		else
-
-			flash[:error] = 'You are not authorized to view that.'
-			redirect_to '/admins'
+			@success = true
+			user = User.find(params[:id])
+			user.destroy
 		end
 	end
 
@@ -70,8 +62,9 @@ class AdminsController < ApplicationController
 		@user.first_name = params[:first_name]
 		@user.last_name = params[:last_name]
 		@user.email = params[:email]
-		@user.phone = params[:phone]
-		@user.mobile_phone = params[:mobile_phone]
+		@user.phone_1 = params[:phone_1]
+		@user.phone_2 = params[:phone_2]
+		@user.phone_3 = params[:phone_3]
 		@user.address_1 = params[:address_1]
 		@user.address_2 = params[:address_2]
 		@user.country = params[:country]
@@ -79,6 +72,9 @@ class AdminsController < ApplicationController
 		@user.city = params[:city]
 		@user.zip = params[:zip]
 		@user.language = params[:language]
+		length = Setting.where(name: 'Web Free Trial Length').first.data.to_i
+		@user.start_date = Date.today
+		@user.expiry = Date.today + length.days
 
 
 		code = SecureRandom.hex(5).upcase
@@ -103,7 +99,9 @@ class AdminsController < ApplicationController
 				end
 				@device.name = params[:name]
 				@device.user_id = @user.id
-				@device.type = 'Roku'
+				length = Setting.where(name: 'Roku Free Trial Length').first.data.to_i
+				@device.start_date = Date.today
+				@device.expiry = Date.today + length.days
 				if @device.save
 					if Rails.env.development?
 						path = "#{Rails.root}/serials/#{@device.serial}"
@@ -182,15 +180,21 @@ class AdminsController < ApplicationController
 			end
 
 			if params[:tx_to_process] == 'true' && @device_errors == false && @note_errors == false && params[:plan_id].present?
-				begin
-					start_date = Date.parse("#{params[:start_year]}-#{params[:start_month]}-#{params[:start_day]}")
-					end_date = Date.parse("#{params[:end_year]}-#{params[:end_month]}-#{params[:end_day]}")
-					@dates_valid = true
-				rescue
-					@dates_valid = false
+				if params[:refer_code].present?
+					@test1 = 'Test'
+					friend = User.where(refer_code: params[:refer_code]).first
+					if friend.nil? || friend.id == @user.id
+						@referral_errors = true
+						@referral_message = 'This referral code is not valid.'
+					else
+						@referral_errors = false
+					end
+				else
+					friend = nil
+					@referral_errors = false
 				end
 
-				if @dates_valid == true && start_date < end_date
+				if @referral_errors == false
 					@plan = Plan.find(params[:plan_id])
 					if params[:payment_type] == 'Credit Card'
 						# Send requests to the gateway's test servers
@@ -225,9 +229,35 @@ class AdminsController < ApplicationController
 								transaction.paypal_id = response.params['transaction_id']
 								transaction.status = 'Paid'
 								transaction.customer_paid = DateTime.now
-								transaction.start = start_date
-								transaction.end = end_date
-								transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+
+								if @device.present?
+									if @device.expiry.nil? || @device.expiry < Date.today
+										@device.expiry = Date.today + @plan.months.months
+									else
+										@device.expiry += @plan.months.months
+									end
+									@device.save
+								else
+									if @user.expiry.nil? || @user.expiry < Date.today
+										@user.expiry = Date.today + @plan.months.months
+									else
+										@user.expiry += @plan.months.months
+									end
+									@user.save
+								end
+								unless friend.nil?
+									transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
+									@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)
+									if @referral_bonus[:method] == 'Lump Sum'
+										friend.balance += @referral_bonus[:rate]
+									else
+										new_balance = (@referral_bonus[:rate]/100) * @plan.price
+										friend.balance += (new_balance * 100).round / 100
+									end
+									friend.save
+								else
+									transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+								end
 								transaction.plan_id = @plan.id
 
 
@@ -248,13 +278,23 @@ class AdminsController < ApplicationController
 						transaction.user_id = @user.id
 						transaction.payment_type = params[:payment_type]
 						transaction.status = 'Pending'
-						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 						transaction.balance_used = 0
 						transaction.plan_id = @plan.id
-						transaction.start = start_date
-						transaction.end = end_date
 						unless @device.nil?
 							transaction.roku_id = @device.id
+						end
+						unless friend.nil?
+							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
+							@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)
+							if @referral_bonus[:method] == 'Lump Sum'
+								friend.balance += @referral_bonus[:rate]
+							else
+								new_balance = (@referral_bonus[:rate]/100) * @plan.price
+								friend.balance += (new_balance * 100).round / 100
+							end
+							friend.save
+						else
+							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 						end
 						transaction.save
 						OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
@@ -263,28 +303,7 @@ class AdminsController < ApplicationController
 						@tx_errors = true
 						@tx_error = 'You must choose a payment type.'
 					end
-				else
-					@tx_errors = true
-					@tx_error = 'You must select a valid date range'
 				end
-			elsif @device_errors == false && @note_errors == false
-				@tx_errors = false
-				length = Setting.where(name: 'Free Trial Length').first.data
-				transaction = Transaction.new
-				transaction.user_id = @user.id
-				transaction.payment_type = params[:payment_type]
-				transaction.status = 'Paid'
-				transaction.customer_paid = DateTime.now
-				transaction.product_details = YAML.dump({name: 'Free Trial', duration: length, price: 0})
-				transaction.balance_used = 0
-				if start_date.nil? || end_date.nil?
-					transaction.start = Date.today
-					transaction.end = Date.today + length.to_i.days
-				else
-					transaction.start = start_date
-					transaction.end = end_date
-				end
-				transaction.save
 			else
 				@tx_errors = false
 			end
@@ -305,6 +324,15 @@ class AdminsController < ApplicationController
 	end
 
 
+	def all_users
+		if current_admin.authorized_to?('manage_user')
+			@users = User.all.order(first_name: :desc)
+		else
+			flash[:error] = 'You do not have permission to view that.'
+			redirect_to '/admins'
+		end
+	end
+
 	def users
 		if current_admin.authorized_to?('manage_user')
 			@users = User.all.order(first_name: :desc)
@@ -321,6 +349,10 @@ class AdminsController < ApplicationController
 		else
 			render status: 403
 		end
+	end
+
+	def search_users_table
+		@matched_users = User.search(params[:search])
 	end
 
 	def search_users_for_ticket_order
@@ -485,136 +517,11 @@ class AdminsController < ApplicationController
 	end
 
 	def add_subscription
-		begin
-			start_date = Date.parse("#{params[:start_year]}-#{params[:start_month]}-#{params[:start_day]}")
-			end_date = Date.parse("#{params[:end_year]}-#{params[:end_month]}-#{params[:end_day]}")
-			@dates_valid = true
-		rescue
-			@dates_valid = false
-		end
 
-		if @dates_valid == true && start_date < end_date
-			if params[:tx_serial].present? && params[:tx_serial].to_i != 0
-				@device = Roku.where(id: params[:tx_serial]).first
+		if params[:tx_serial].present? && params[:tx_serial].to_i != 0
+			@device = Roku.where(id: params[:tx_serial]).first
 
-				unless @device.nil?
-					@user = User.find(params[:user_id])
-					@plan = Plan.find(params[:plan_id])
-
-					unless @user.balance.nil?
-						total = @plan.price - @user.balance
-					else
-						total = @plan.price
-					end
-
-					if params[:payment_type].present?
-						if total > 0
-							if params[:payment_type] == 'Credit Card'
-								ActiveMerchant::Billing::Base.mode = :test
-
-								# Create a new credit card object
-								names = params[:card_name].split(' ', 2)
-								credit_card = ActiveMerchant::Billing::CreditCard.new(
-									:number     => params[:card_number],
-									:month      => params[:card_month],
-									:year       => params[:card_year],
-									:first_name => names[0],
-									:last_name  => names[1],
-									:verification_value  => params[:ccv]
-								)
-
-								if credit_card.valid?
-									@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
-									gateway = ActiveMerchant::Billing::PaypalGateway.new(
-										login:    	@paypal[:login],
-										password: 	@paypal[:password],
-										signature: 	@paypal[:signature]
-									)
-
-									response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
-
-									if response.success?
-										transaction = Transaction.new
-										transaction.user_id = @user.id
-										transaction.payment_type = 'Credit Card'
-										transaction.paypal_id = response.params['transaction_id']
-										transaction.status = 'Paid'
-										transaction.customer_paid = DateTime.now
-										transaction.balance_used = @user.balance
-										transaction.roku_id = @device.id
-										transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
-										transaction.plan_id = @plan.id
-										transaction.start = start_date
-										transaction.end = end_date
-										transaction.save
-
-										OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
-										@user.balance = 0
-										@user.save
-										TransactionalMailer.order_paid(transaction, @user).deliver
-										@tx_errors = false
-									else
-										@tx_errors = true
-										@tx_error = response.message
-									end
-								else
-									@tx_errors = true
-									@tx_error = 'This card is not valid'
-								end
-							else
-								transaction = Transaction.new
-								transaction.user_id = @user.id
-								transaction.payment_type = params[:payment_type]
-								transaction.status = 'Pending'
-								transaction.balance_used = @user.balance
-								transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
-								transaction.plan_id = @plan.id
-								transaction.roku_id = @device.id
-								transaction.start = start_date
-								transaction.end = end_date
-								transaction.save
-								OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
-								@user.balance = 0
-								@user.save
-								TransactionalMailer.order_created(transaction, @user).deliver
-								@tx_errors = false
-							end
-						else
-							@user.balance = @user.balance - @plan.price
-							@user.save
-							if @device.expiry.nil? || @device.expiry < Date.today
-								@device.expiry = Date.today + @plan.months.months
-							else
-								@device.expiry += @plan.months.months
-							end
-							@device.save
-
-							transaction = Transaction.new
-							transaction.user_id = @user.id
-							transaction.payment_type = 'Previous Balance'
-							transaction.payment_type = params[:payment_type]
-							transaction.status = 'Paid'
-							transaction.customer_paid = DateTime.now
-							transaction.balance_used = @plan.price
-							transaction.roku_id = @device.id
-							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
-							transaction.plan_id = @plan.id
-							transaction.start = start_date
-							transaction.end = end_date
-							transaction.save
-							OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
-							TransactionalMailer.order_paid(transaction, @user).deliver
-							@tx_errors = false
-						end
-					else
-						@tx_errors = true
-						@tx_error = 'You must select a payment type'
-					end
-				else
-					@device_errors = true
-					@device_error = 'Only a Roku can add a subscription'
-				end
-			elsif params[:tx_serial].to_i == 0
+			unless @device.nil?
 				@user = User.find(params[:user_id])
 				@plan = Plan.find(params[:plan_id])
 
@@ -658,13 +565,18 @@ class AdminsController < ApplicationController
 									transaction.status = 'Paid'
 									transaction.customer_paid = DateTime.now
 									transaction.balance_used = @user.balance
+									transaction.roku_id = @device.id
 									transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 									transaction.plan_id = @plan.id
-									transaction.start = start_date
-									transaction.end = end_date
 									transaction.save
 
 									OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
+									if @device.expiry.nil? || @device.expiry < Date.today
+										@device.expiry = Date.today + @plan.months.months
+									else
+										@device.expiry += @plan.months.months
+									end
+									@device.save
 									@user.balance = 0
 									@user.save
 									TransactionalMailer.order_paid(transaction, @user).deliver
@@ -685,8 +597,7 @@ class AdminsController < ApplicationController
 							transaction.balance_used = @user.balance
 							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 							transaction.plan_id = @plan.id
-							transaction.start = start_date
-							transaction.end = end_date
+							transaction.roku_id = @device.id
 							transaction.save
 							OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
 							@user.balance = 0
@@ -696,20 +607,21 @@ class AdminsController < ApplicationController
 						end
 					else
 						@user.balance = @user.balance - @plan.price
-						if @user.expiry.nil? || @user.expiry < Date.today
-							@user.expiry = Date.today + @plan.months.months
-						else
-							@user.expiry += @plan.months.months
-						end
 						@user.save
+						if @device.expiry.nil? || @device.expiry < Date.today
+							@device.expiry = Date.today + @plan.months.months
+						else
+							@device.expiry += @plan.months.months
+						end
+						@device.save
 
 						transaction = Transaction.new
 						transaction.user_id = @user.id
 						transaction.payment_type = 'Previous Balance'
-						transaction.payment_type = params[:payment_type]
 						transaction.status = 'Paid'
 						transaction.customer_paid = DateTime.now
 						transaction.balance_used = @plan.price
+						transaction.roku_id = @device.id
 						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 						transaction.plan_id = @plan.id
 						transaction.start = start_date
@@ -725,21 +637,130 @@ class AdminsController < ApplicationController
 				end
 			else
 				@device_errors = true
-				@device_error = 'You must select a Roku to continue'
+				@device_error = 'Please select a valid Roku or Web option'
+			end
+		elsif params[:tx_serial].to_i == 0
+			@user = User.find(params[:user_id])
+			@plan = Plan.find(params[:plan_id])
+
+			unless @user.balance.nil?
+				total = @plan.price - @user.balance
+			else
+				total = @plan.price
 			end
 
-			if @device_errors == false && @tx_errors == false
-				@transactions = Transaction.where(user_id: @user.id)
-				@pending = 0
-				@transactions.each do |tx|
-					if tx.status == 'Pending'
-						@pending += YAML.load(tx.product_details)[:price]
+			if params[:payment_type].present?
+				if total > 0
+					if params[:payment_type] == 'Credit Card'
+						ActiveMerchant::Billing::Base.mode = :test
+
+						# Create a new credit card object
+						names = params[:card_name].split(' ', 2)
+						credit_card = ActiveMerchant::Billing::CreditCard.new(
+							:number     => params[:card_number],
+							:month      => params[:card_month],
+							:year       => params[:card_year],
+							:first_name => names[0],
+							:last_name  => names[1],
+							:verification_value  => params[:ccv]
+						)
+
+						if credit_card.valid?
+							@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
+							gateway = ActiveMerchant::Billing::PaypalGateway.new(
+								login:    	@paypal[:login],
+								password: 	@paypal[:password],
+								signature: 	@paypal[:signature]
+							)
+
+							response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
+
+							if response.success?
+								transaction = Transaction.new
+								transaction.user_id = @user.id
+								transaction.payment_type = 'Credit Card'
+								transaction.paypal_id = response.params['transaction_id']
+								transaction.status = 'Paid'
+								transaction.customer_paid = DateTime.now
+								transaction.balance_used = @user.balance
+								transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+								transaction.plan_id = @plan.id
+								@user.balance = @user.balance - @plan.price
+								if @user.expiry.nil? || @user.expiry < Date.today
+									@user.expiry = Date.today + @plan.months.months
+								else
+									@user.expiry += @plan.months.months
+								end
+								@user.save
+								transaction.save
+
+								OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
+								@user.balance = 0
+								@user.save
+								TransactionalMailer.order_paid(transaction, @user).deliver
+								@tx_errors = false
+							else
+								@tx_errors = true
+								@tx_error = response.message
+							end
+						else
+							@tx_errors = true
+							@tx_error = 'This card is not valid'
+						end
+					else
+						transaction = Transaction.new
+						transaction.user_id = @user.id
+						transaction.payment_type = params[:payment_type]
+						transaction.status = 'Pending'
+						transaction.balance_used = @user.balance
+						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+						transaction.plan_id = @plan.id
+						transaction.save
+						OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
+						@user.balance = 0
+						@user.save
+						TransactionalMailer.order_created(transaction, @user).deliver
+						@tx_errors = false
 					end
+				else
+					@user.balance = @user.balance - @plan.price
+					if @user.expiry.nil? || @user.expiry < Date.today
+						@user.expiry = Date.today + @plan.months.months
+					else
+						@user.expiry += @plan.months.months
+					end
+					@user.save
+
+					transaction = Transaction.new
+					transaction.user_id = @user.id
+					transaction.payment_type = 'Previous Balance'
+					transaction.status = 'Paid'
+					transaction.customer_paid = DateTime.now
+					transaction.balance_used = @plan.price
+					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+					transaction.plan_id = @plan.id
+					transaction.save
+					OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
+					TransactionalMailer.order_paid(transaction, @user).deliver
+					@tx_errors = false
 				end
+			else
+				@tx_errors = true
+				@tx_error = 'You must select a payment type'
 			end
 		else
-			@date_errors = true
-			@date_error = 'You must pick a valid date range'
+			@device_errors = true
+			@device_error = 'You must select a Roku to continue'
+		end
+
+		if @device_errors == false && @tx_errors == false
+			@transactions = Transaction.where(user_id: @user.id)
+			@pending = 0
+			@transactions.each do |tx|
+				if tx.status == 'Pending'
+					@pending += YAML.load(tx.product_details)[:price]
+				end
+			end
 		end
 	end
 
@@ -815,8 +836,34 @@ class AdminsController < ApplicationController
 			@user.first_name = params[:first_name]
 			@user.last_name = params[:last_name]
 			@user.email = params[:email]
+			@user.phone_1 = params[:phone_1]
+			@user.phone_2 = params[:phone_2]
+			@user.phone_3 = params[:phone_3]
 			@user.refer_code = params[:refer_code]
+
+			@user.save
+		else
+			render status: 403
+		end
+	end
+
+	def update_user_language
+		if current_admin.authorized_to?('manage_user')
+			@user = User.find(params[:id])
 			@user.language = params[:language]
+
+			@user.save
+		else
+			render status: 403
+		end
+	end
+
+	def update_user_roku_account
+		if current_admin.authorized_to?('manage_user')
+			@user = User.find(params[:id])
+			@user.roku_email = params[:roku_email]
+			@user.roku_password = params[:roku_password]
+
 			@user.save
 		else
 			render status: 403
@@ -834,6 +881,7 @@ class AdminsController < ApplicationController
 			@user.state = params[:state]
 			@user.country = params[:country]
 			@user.zip = params[:zip]
+			@user.paperless_billing = params[:paperless_billing]
 			@user.save
 		else
 			render status: 403
@@ -947,6 +995,9 @@ class AdminsController < ApplicationController
 			if @device.serial.include?('O')
 				@device.serial = @device.serial.gsub!('O','0')
 			end
+			length = Setting.where(name: 'Roku Free Trial Length').first.data.to_i
+			@device.start_date = Date.today
+			@device.expiry = Date.today + length.days
 			@device.name = params[:name]
 			@device.user_id = @user.id
 			@device.adult = params[:adult]
@@ -1557,6 +1608,8 @@ class AdminsController < ApplicationController
 		if current_admin.authorized_to?('manage_user')
 			@device = Device.find(params[:id])
 			if @device.type == 'Roku'
+				@device.start_date = Date.strptime("#{params[:device_start_month]}/#{params[:device_start_day]}/#{params[:device_start_year]}", "%m/%d/%Y")
+				@device.expiry = Date.strptime("#{params[:device_expiry_month]}/#{params[:device_expiry_day]}/#{params[:device_expiry_year]}", "%m/%d/%Y")
 				@device.serial = params[:device_serial].upcase
 				if @device.serial.include?('O')
 					@device.serial = @device.serial.gsub!('O','0')
@@ -1581,6 +1634,19 @@ class AdminsController < ApplicationController
 				@device.is_active = params[:device_active]
 				@device.save
 			end
+		else
+			render status: 403
+		end
+	end
+
+	def update_web_sub
+		if current_admin.authorized_to?('manage_user')
+			@user = User.find(params[:id])
+			@user.start_date = Date.strptime("#{params[:web_start_month]}/#{params[:web_start_day]}/#{params[:web_start_year]}", "%m/%d/%Y")
+			@user.expiry = Date.strptime("#{params[:web_expiry_month]}/#{params[:web_expiry_day]}/#{params[:web_expiry_year]}", "%m/%d/%Y")
+
+			@user.save
+			@devices = Device.where(user_id: @user.id)
 		else
 			render status: 403
 		end
@@ -2520,7 +2586,8 @@ class AdminsController < ApplicationController
 			flash[:error] = 'You are not allowed to view that.'
 			redirect_to '/admins'
 		end
-		@current_length = Setting.where(name: 'Free Trial Length').first.data
+		@current_roku_length = Setting.where(name: 'Roku Free Trial Length').first.data
+		@current_web_length = Setting.where(name: 'Web Free Trial Length').first.data
 	end
 
 	def update_free_trial
@@ -2528,10 +2595,14 @@ class AdminsController < ApplicationController
 			flash[:error] = 'You are not allowed to view that.'
 			redirect_to '/admins'
 		end
-		if params[:free_trial_length].present?
-			length = Setting.where(name: 'Free Trial Length').first
-			length.data = params[:free_trial_length]
-			length.save
+		if params[:roku_length].present? && params[:web_length].present?
+			roku_length = Setting.where(name: 'Roku Free Trial Length').first
+			roku_length.data = params[:roku_length]
+			roku_length.save
+
+			web_length = Setting.where(name: 'Web Free Trial Length').first
+			web_length.data = params[:web_length]
+			web_length.save
 			flash[:success] = 'Successfully updated trial length!'
 		else
 			flash[:error] = 'There was an error updating the trial.'
@@ -2659,133 +2730,140 @@ class AdminsController < ApplicationController
 
 	def create_transaction
 		if params[:user_id].present? && params[:device_id].present?
-			begin
-				start_date = Date.parse("#{params[:start_year]}-#{params[:start_month]}-#{params[:start_day]}")
-				end_date = Date.parse("#{params[:end_year]}-#{params[:end_month]}-#{params[:end_day]}")
-				@dates_valid = true
-			rescue
-				@dates_valid = false
+
+			@user = User.find(params[:user_id])
+			@plan = Plan.find(params[:plan_id])
+			if params[:device_id].to_i == 0
+				@device = nil
+			else
+				@device = Roku.find(params[:device_id])
 			end
 
-			if @dates_valid == true && start_date < end_date
-				@user = User.find(params[:user_id])
-				@plan = Plan.find(params[:plan_id])
-				if params[:device_id].to_i == 0
-					@device = nil
-				else
-					@device = Roku.find(params[:device_id])
-				end
+			if @user.balance.nil?
+				total = @plan.price
+				@user.balance = 0
+				@user.save
+			else
+				total = @plan.price - @user.balance
+			end
 
-				if @user.balance.nil?
-					total = @plan.price
-					@user.balance = 0
-					@user.save
-				else
-					total = @plan.price - @user.balance
-				end
+			if total > 0 && params[:payment_type].present?
+				if params[:payment_type] == 'Credit Card'
+					# Send requests to the gateway's test servers
+					ActiveMerchant::Billing::Base.mode = :test
 
-				if total > 0 && params[:payment_type].present?
-					if params[:payment_type] == 'Credit Card'
-						# Send requests to the gateway's test servers
-						ActiveMerchant::Billing::Base.mode = :test
+					# Create a new credit card object
 
-						# Create a new credit card object
+					names = params[:card_name].split(' ', 2)
+					credit_card = ActiveMerchant::Billing::CreditCard.new(
+						:number     => params[:card_number],
+						:month      => params[:card_month],
+						:year       => params[:card_year],
+						:first_name => names[0],
+						:last_name  => names[1],
+						:verification_value  => params[:ccv]
+					)
 
-						names = params[:card_name].split(' ', 2)
-						credit_card = ActiveMerchant::Billing::CreditCard.new(
-							:number     => params[:card_number],
-							:month      => params[:card_month],
-							:year       => params[:card_year],
-							:first_name => names[0],
-							:last_name  => names[1],
-							:verification_value  => params[:ccv]
+					if credit_card.valid?
+						@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
+						gateway = ActiveMerchant::Billing::PaypalGateway.new(
+							login:    	@paypal[:login],
+							password: 	@paypal[:password],
+							signature: 	@paypal[:signature]
 						)
 
-						if credit_card.valid?
-							@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
-							gateway = ActiveMerchant::Billing::PaypalGateway.new(
-								login:    	@paypal[:login],
-								password: 	@paypal[:password],
-								signature: 	@paypal[:signature]
-							)
+						response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
 
-							response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
-
-							if response.success?
-								@user.balance = 0
-								@user.save
-								transaction = Transaction.new
-								transaction.user_id = @user.id
-								unless @device.nil?
-									transaction.roku_id = @device.id
-								end
-								transaction.start = start_date
-								transaction.end = end_date
-								transaction.payment_type = 'Credit Card'
-								transaction.paypal_id = response.params['transaction_id']
-								transaction.status = 'Paid'
-								transaction.customer_paid = DateTime.now
-								transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
-								transaction.plan_id = @plan.id
-								transaction.balance_used = @plan.price - total
-								transaction.save
-								@tx_id = transaction.id
-								OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
-								TransactionalMailer.order_paid(transaction, @user).deliver
-							else
-								@tx_errors = true
-								@tx_error = response.message
+						if response.success?
+							@user.balance = 0
+							@user.save
+							transaction = Transaction.new
+							transaction.user_id = @user.id
+							unless @device.nil?
+								transaction.roku_id = @device.id
 							end
+							if @device.present?
+								if @device.expiry.nil? || @device.expiry < Date.today
+									@device.expiry = Date.today + @plan.months.months
+								else
+									@device.expiry += @plan.months.months
+								end
+								@device.save
+							else
+								if @user.expiry.nil? || @user.expiry < Date.today
+									@user.expiry = Date.today + @plan.months.months
+								else
+									@user.expiry += @plan.months.months
+								end
+								@user.save
+							end
+							transaction.payment_type = 'Credit Card'
+							transaction.paypal_id = response.params['transaction_id']
+							transaction.status = 'Paid'
+							transaction.customer_paid = DateTime.now
+							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+							transaction.plan_id = @plan.id
+							transaction.balance_used = @plan.price - total
+							transaction.save
+							@tx_id = transaction.id
+							OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
+							TransactionalMailer.order_paid(transaction, @user).deliver
 						else
 							@tx_errors = true
-							@tx_error = 'This card is not valid'
+							@tx_error = response.message
 						end
-					elsif params[:payment_type].present?
-						transaction = Transaction.new
-						transaction.start = start_date
-						transaction.end = end_date
-						transaction.user_id = @user.id
-						transaction.payment_type = params[:payment_type]
-						transaction.status = 'Pending'
-						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
-						transaction.plan_id = @plan.id
-						transaction.balance_used = @plan.price - total
-						unless @device.nil?
-							transaction.roku_id = @device.id
-						end
-						transaction.save
-						OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
-						@tx_id = transaction.id
-						TransactionalMailer.order_created(transaction, @user).deliver
-						@tx_errors = false
 					else
 						@tx_errors = true
-						@tx_error = 'You must choose a payment type.'
+						@tx_error = 'This card is not valid'
 					end
-				elsif total <= 0
-					@user.balance = @user.balance - @plan.price
-					@user.save
+				elsif params[:payment_type].present?
+					transaction = Transaction.new
+					transaction.user_id = @user.id
+					transaction.payment_type = params[:payment_type]
+					transaction.status = 'Pending'
+					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+					transaction.plan_id = @plan.id
+					transaction.balance_used = @plan.price - total
+					unless @device.nil?
+						transaction.roku_id = @device.id
+					end
+					transaction.save
+					OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
+					@tx_id = transaction.id
+					TransactionalMailer.order_created(transaction, @user).deliver
+					@tx_errors = false
+				else
+					@tx_errors = true
+					@tx_error = 'You must choose a payment type.'
+				end
+			elsif total <= 0
+				@user.balance = @user.balance - @plan.price
+				if @device.present?
 					if @device.expiry.nil? || @device.expiry < Date.today
 						@device.expiry = Date.today + @plan.months.months
 					else
 						@device.expiry += @plan.months.months
 					end
 					@device.save
-					transaction = Transaction.new
-					transaction.user_id = @user.id
-					transaction.payment_type = 'Previous Balance'
-					transaction.status = 'Paid'
-					transaction.balance_used = @plan.price
-					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
-					transaction.plan_id = @plan.id
-					transaction.save
-					OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
-					@tx_id = transaction.id
-					TransactionalMailer.order_paid(transaction, @user).deliver
+				else
+					if @user.expiry.nil? || @user.expiry < Date.today
+						@user.expiry = Date.today + @plan.months.months
+					else
+						@user.expiry += @plan.months.months
+					end
+					@user.save
 				end
-			else
-				@date_errors = true
-				@date_error = 'You must pick a valid date range'
+				transaction = Transaction.new
+				transaction.user_id = @user.id
+				transaction.payment_type = 'Previous Balance'
+				transaction.status = 'Paid'
+				transaction.balance_used = @plan.price
+				transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+				transaction.plan_id = @plan.id
+				transaction.save
+				OrderNotification.create(transaction_id: @transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
+				@tx_id = transaction.id
+				TransactionalMailer.order_paid(transaction, @user).deliver
 			end
 		else
 			if params[:user_id].present? == false
@@ -2795,6 +2873,201 @@ class AdminsController < ApplicationController
 				@device_error = true
 			end
 		end
+	end
+
+	def add_subscription
+		@plan = Plan.find(params[:plan_id])
+
+		@user = User.find(params[:user_id])
+
+		if params[:new_serial].present?
+			@device = Roku.new
+			@device.user_id = @user.id
+			@device.serial = params[:new_serial].upcase
+			if @device.serial.include?('O')
+				@device.serial = @device.serial.gsub!('O','0')
+			end
+
+			if @device.valid?
+				@device_errors = false
+				@device.type = 'Roku'
+				length = Setting.where(name: 'Roku Free Trial Length').first.data
+				@device.start_date = Date.today
+				@device.expiry = Date.today + length.to_i.days
+				if @device.save
+					if Rails.env.development?
+						path = "#{Rails.root}/serials/#{@device.serial}"
+					elsif Rails.env.production?
+						path = "/tmp/serials/#{@device.serial}"
+					end
+
+					serial_file = File.open(path,'w+')
+					@device.serial_file = serial_file
+					@device.save
+					@device_errors = false
+				else
+					@device_errors = true
+				end
+			else
+				@device_errors = true
+				@device_error = 'Serial '+ @device.errors[:serial].join(", ")
+			end
+		else
+			@device = nil
+			@device_errors = false
+		end
+
+		if @device_errors == false
+			if params[:refer_code].present?
+				friend = User.where(refer_code: params[:refer_code]).first
+				if friend.nil? || friend.id == @user.id
+					@referral_errors = true
+					@referral_message = 'This referral code is not valid.'
+				else
+					@referral_errors = false
+				end
+			else
+				friend = nil
+				@referral_errors = false
+			end
+		end
+
+		if @device_errors == false && @referral_errors == false
+
+			if params[:payment_type].present?
+				if params[:payment_type] == 'Credit Card'
+					# Send requests to the gateway's test servers
+					ActiveMerchant::Billing::Base.mode = :test
+
+					# Create a new credit card object
+					credit_card = ActiveMerchant::Billing::CreditCard.new(
+						:number     => params[:card],
+						:month      => params[:card_month],
+						:year       => params[:card_year],
+						:first_name => params[:card_first_name],
+						:last_name  => params[:card_last_name],
+						:verification_value  => params[:ccv]
+					)
+
+					if credit_card.valid?
+						@paypal = YAML.load(Setting.where(name: 'Paypal Credentials').first.data)
+						gateway = ActiveMerchant::Billing::PaypalGateway.new(
+							login:    	@paypal[:login],
+							password: 	@paypal[:password],
+							signature: 	@paypal[:signature]
+						)
+
+
+
+
+
+						response = gateway.purchase((total*100).to_i, credit_card, ip: '104.131.205.107')
+
+						if response.success?
+							transaction = Transaction.new
+							transaction.user_id = user.id
+							transaction.payment_type = 'Credit Card'
+							transaction.paypal_id = response.params['transaction_id']
+							transaction.status = 'Paid'
+							transaction.customer_paid = DateTime.now
+							unless @device.nil?
+								transaction.roku_id = @device.id
+							end
+							unless friend.nil?
+								transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
+								@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)
+								if @referral_bonus[:method] == 'Lump Sum'
+									friend.balance += @referral_bonus[:rate]
+								else
+									new_balance = (@referral_bonus[:rate]/100) * @plan.price
+									friend.balance += (new_balance * 100).round / 100
+								end
+								friend.save
+							else
+								transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+							end
+							transaction.plan_id = @plan.id
+							unless @device.nil?
+								transaction.roku_id = @device.id
+							end
+
+							if @device.present?
+								if @device.expiry.nil? || @device.expiry < Date.today
+									@device.expiry = Date.today + @plan.months.months
+								else
+									@device.expiry += @plan.months.months
+								end
+								@device.save
+							else
+								if @user.expiry.nil? || @user.expiry < Date.today
+									@user.expiry = Date.today + @plan.months.months
+								else
+									@user.expiry += @plan.months.months
+								end
+								@user.save
+							end
+
+							transaction.balance_used = @plan.price - total
+							transaction.save
+							@success = true
+							flash[:success] = 'Your subscription has been successfully processed.'
+							OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
+							TransactionalMailer.order_paid(transaction, user).deliver
+						else
+							@payment_errors = true
+							@payment_message = response.message
+							if params[:new_serial].present?
+								@device.destroy
+							end
+						end
+					else
+						@payment_errors = true
+						@payment_message = 'This credit card is not valid.'
+						if params[:new_serial].present?
+							@device.destroy
+						end
+					end
+				else
+					@user.balance = 0
+					@user.save
+					transaction = Transaction.new
+					transaction.user_id = user.id
+					transaction.payment_type = params[:payment_type]
+					transaction.status = 'Pending'
+					unless @device.nil?
+						transaction.roku_id = @device.id
+					end
+					unless friend.nil?
+						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
+						@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)
+						if @referral_bonus[:method] == 'Lump Sum'
+							friend.balance += @referral_bonus[:rate]
+						else
+							new_balance = (@referral_bonus[:rate]/100) * @plan.price
+							friend.balance += (new_balance * 100).round / 100
+						end
+						friend.save
+					else
+						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+					end
+					transaction.plan_id = @plan.id
+					transaction.balance_used = @plan.price - total
+					transaction.save
+					@success = true
+					flash[:success] = 'Your order has been processed. Please send your payment to activate your subscription.'
+					OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
+					TransactionalMailer.order_created(transaction, user).deliver
+				end
+			else
+				@payment_errors = true
+				@payment_message = 'You must select a payment type.'
+				if params[:new_serial].present?
+					@device.destroy
+				end
+			end
+		end
+
+
 	end
 
 	def pending_transactions

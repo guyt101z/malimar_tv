@@ -1,0 +1,28 @@
+<div class="modal fade" id="admin_root_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <%= form_tag delete_user_path(id: @user.id), remote: true, method: :get do %>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id='transaction_details_title'>Authenticate Delete</h4>
+            </div>
+            <div class="modal-body">
+                <div class='form-group'>
+                    <%= email_field_tag :root_email, '', class: 'form-control', placeholder: 'Root User Email' %>
+                </div>
+                <div class=''>
+                    <%= password_field_tag :root_password, '', class: 'form-control', placeholder: 'Root User Password' %>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class='form-group'>
+                    <%= submit_tag 'Authenticate', class: 'btn btn-primary btn-block', data: {disable_with: 'Authenticating...'}, onclick: '$("#root_auth_error").remove()' %>
+                </div>
+                <div class=''>
+                    <button type="button" class="btn btn-default btn-block" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <% end %>
+        </div>
+    </div>
+</div>

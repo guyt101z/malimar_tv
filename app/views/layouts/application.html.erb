@@ -35,7 +35,7 @@
 			<div class='container-fluid'>
 				<% if admin_signed_in? %><%= render 'admins/nav/sidenav' %><% end %>
 
-					<% if params[:action] == 'new_user' || params[:action] == 'users' %>
+					<% if params[:action] == 'new_user' || params[:action] == 'users' || params[:action] == 'all_users' %>
 						<div class='content' style='left: 0px'>
 					<% else %>
 						<div class='content'>

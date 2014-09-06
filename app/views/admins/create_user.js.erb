@@ -20,13 +20,15 @@ $('#zip-error').remove()
 $('#zip').removeClass('has-error')
 $('#password-error').remove()
 $('#password').removeClass('has-error')
+$('#refer-error').remove()
+$('#refer_code').removeClass('has-error')
 
 $('#device-error').remove()
 
 <% unless @user.id.nil? %>
 	$('#user_id').val(<%= @user.id %>)
 <% end %>
-<% if @user_errors == true || @device_errors == true || @note_errors == true || @tx_errors == true %>
+<% if @user_errors == true || @device_errors == true || @note_errors == true || @tx_errors == true || @referral_errors == true %>
 	<% if @user.errors[:first_name].present? %>
 		$('#first_name').addClass('has-error').after('<span class="text-danger" id="first_name-error">First name <%= @user.errors[:first_name].join(", ") %>')
 	<% end %>
@@ -69,6 +71,10 @@ $('#device-error').remove()
 
 	<% if @device_errors == true %>
 		$('#device_title').after('<div class="text-danger" id="device-error"><%= @device_error %></div>')
+	<% end %>
+
+	<% if @referral_errors == true %>
+		$('#refer_code').after('<div class="text-danger" id="refer-error"><%= @referral_message %></div>')
 	<% end %>
 
 	<% if @note != nil %>

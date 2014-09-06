@@ -4,22 +4,23 @@
     <div class="nano-content">
         <div class='col-md-6 col-sm-9 col-centered'>
             <div class='row'>
-                <div class='col-sm-6 col-centered'>
-                    <div class='panel panel-default'>
-                        <div class='panel-heading'>
-                            <h3 class='panel-title'>Current Trial Length</h3>
-                        </div>
-                        <div class='panel-body text-center', style='font-size: 180%'>
-                            <%= pluralize(@current_length, 'day') %>
-                        </div>
-                    </div>
+                <div class='col-sm-12 col-centered'>
                     <%= form_tag update_free_trial_path do %>
                     <div class='panel panel-default'>
                         <div class='panel-heading'>
-                            <h3 class='panel-title'>Set New Trial Length</h3>
+                            <h3 class='panel-title'>Set New Trial Lengths</h3>
                         </div>
                         <div class='panel-body text-center', style='font-size: 180%'>
-                            <%= text_field_tag :free_trial_length, @current_length, class: 'form-control', onkeypress: 'return isNumberKey(event)' %>
+                            <div class='row'>
+                                <div class='col-sm-6'>
+                                    <label>Web/Tablet/Mobile</label>
+                                    <%= text_field_tag :web_length, @current_web_length, class: 'form-control', onkeypress: 'return isNumberKey(event)' %>
+                                </div>
+                                <div class='col-sm-6'>
+                                    <label>Roku</label>
+                                    <%= text_field_tag :roku_length, @current_roku_length, class: 'form-control', onkeypress: 'return isNumberKey(event)' %>
+                                </div>
+                            </div>
                         </div>
                         <div class='panel-footer'>
                             <%= submit_tag 'Update', class: 'btn btn-primary', style: 'width: 100%' %>

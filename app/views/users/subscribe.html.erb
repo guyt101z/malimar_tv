@@ -23,7 +23,6 @@
                                     <div class="month">/ <%= pluralize(@one_month.months, 'month') %></div>
                                 </div>
                                 <hr>
-                                <div class="text-semi">15 Premium Channels</div>
                                 <% features = YAML.load(@one_month.features) %>
                                 <% features.each do |feature| %>
                                 <p class="text-light"><%= feature %></p>
@@ -45,7 +44,6 @@
                                     <div class="month">/ <%= pluralize(@six_month.months, 'month') %></div>
                                 </div>
                                 <hr>
-                                <div class="text-semi">45 Premium Channels</div>
                                 <% features = YAML.load(@six_month.features) %>
                                 <% features.each do |feature| %>
                                 <p class="text-light"><%= feature %></p>
@@ -67,7 +65,6 @@
                                     <div class="month">/ <%= pluralize(@twelve_month.months, 'month') %></div>
                                 </div>
                                 <hr>
-                                <div class="text-semi">All Premium Channels</div>
                                 <% features = YAML.load(@twelve_month.features) %>
                                 <% features.each do |feature| %>
                                 <p class="text-light"><%= feature %></p>
@@ -89,7 +86,6 @@
                                     <div class="month">/ <%= pluralize(@three_month.months, 'month') %></div>
                                 </div>
                                 <hr>
-                                <div class="text-semi">45 Premium Channels</div>
                                 <% features = YAML.load(@three_month.features) %>
                                 <% features.each do |feature| %>
                                 <p class="text-light"><%= feature %></p>

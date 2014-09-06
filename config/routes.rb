@@ -131,6 +131,8 @@ Rails.application.routes.draw do
 
   		# Manage Users
   		get '/admins/users' => 'admins#users', as: 'search_users'
+        get '/admins/users/all' => 'admins#all_users', as: 'all_users'
+        get 'admin_search_users_table' => 'admins#search_users_table'
   		get 'side_search_users' => 'admins#search_users'
         get '/admins/users/profile/:id' => 'admins#view_user', as: 'view_user'
         get '/admins/users/transactions/:id' => 'admins#view_user_transactions', as: 'view_user_transactions'
@@ -141,6 +143,9 @@ Rails.application.routes.draw do
 
         get 'reset_user_password' => 'admins#reset_user_password'
         post 'manual_reset_user_password' => 'admins#manual_reset_user_password'
+
+        post 'update_user_roku_account' => 'admins#update_user_roku_account'
+        post 'update_user_language' => 'admins#update_user_language'
 
         post 'admin_update_user_profile' => 'admins#update_user_profile'
         post 'admin_update_user_mailing' => 'admins#update_user_mailing'
@@ -356,6 +361,7 @@ Rails.application.routes.draw do
 
         get 'admin_view_device/:id' => 'admins#view_device', as: 'admin_view_device'
         post 'admin_update_device_serial' => 'admins#update_device_serial'
+        post 'admin_update_web_sub' => 'admins#update_web_sub'
 
         # System
         get '/admins/background_tasks_status' => 'admins#bg_tasks', as: 'bg_tasks'

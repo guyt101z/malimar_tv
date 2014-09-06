@@ -29,7 +29,7 @@ $('#zip').removeClass('has-error')
 		$('#email').addClass('has-error').after('<span class="text-danger" id="email-error">Email address <%= @user.errors[:email].join(", ") %>')
 	<% end %>
 	<% if @user.errors[:phone].present? %>
-		$('#phone').addClass('has-error').after('<span class="text-danger" id="phone-error">Phone number <%= @user.errors[:phone].join(", ") %>')
+		$('#phone_1').addClass('has-error').after('<span class="text-danger" id="phone-error">Phone number <%= @user.errors[:phone_1].join(", ") %>')
 	<% end %>
 	<% if @user.errors[:address_1].present? %>
 		$('#address_1').addClass('has-error').after('<span class="text-danger" id="address_1-error">Street address <%= @user.errors[:address_1].join(", ") %>')
@@ -55,3 +55,4 @@ $('#zip').removeClass('has-error')
 	addNotification('success', 'Customer successfully registered', 'Success', 'check-circle')
 	$('#register-panel').html('<%= escape_javascript(render("sales_reps/partials/register_step_two")).html_safe %>')
 <% end %>
+alert('<%= @user.errors.full_messages.join(". ") %>')

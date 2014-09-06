@@ -137,6 +137,9 @@ class UsersController < ApplicationController
 			if @device.valid?
 				@device_errors = false
 				@device.type = 'Roku'
+				length = Setting.where(name: 'Roku Free Trial Length').first.data
+				@device.start_date = Date.today
+				@device.expiry = Date.today + length.to_i.days
 				if @device.save
 					if Rails.env.development?
 						path = "#{Rails.root}/serials/#{@device.serial}"
@@ -217,7 +220,7 @@ class UsersController < ApplicationController
 
 
 
-						response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
+						response = gateway.purchase((total*100).to_i, credit_card, ip: '104.131.205.107')
 
 						if response.success?
 					    	transaction = Transaction.new
@@ -245,11 +248,26 @@ class UsersController < ApplicationController
 							transaction.plan_id = @plan.id
 							unless @device.nil?
 								transaction.roku_id = @device.id
-								@device.save
 							end
 
-							transaction.start = Date.today
-							transaction.end = Date.today + @plan.months.months
+							if @device.present?
+								if @device.expiry.nil? || @device.expiry < Date.today
+									@device.expiry = Date.today + @plan.months.months
+								else
+									@device.expiry += @plan.months.months
+								end
+								@device.save
+							else
+								if current_user.expiry.nil? || current_user.expiry < Date.today
+									@user = current_user
+									@user.expiry = Date.today + @plan.months.months
+								else
+									@user = current_user
+									@user.expiry += @plan.months.months
+								end
+								@user.save
+							end
+
 							transaction.balance_used = @plan.price - total
 							transaction.save
 							@success = true
@@ -294,8 +312,6 @@ class UsersController < ApplicationController
 					else
 						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 					end
-					transaction.start = Date.today
-					transaction.end = Date.today + @plan.months.months
 					transaction.plan_id = @plan.id
 					transaction.balance_used = @plan.price - total
 					transaction.save
@@ -314,8 +330,25 @@ class UsersController < ApplicationController
 				transaction.payment_type = 'Previous Balance'
 				transaction.status = 'Paid'
 				transaction.balance_used = @plan.price
-				transaction.start = Date.today
-				transaction.end = Date.today + @plan.months.months
+
+				if @device.present?
+					if @device.expiry.nil? || @device.expiry < Date.today
+						@device.expiry = Date.today + @plan.months.months
+					else
+						@device.expiry += @plan.months.months
+					end
+					@device.save
+				else
+					if current_user.expiry.nil? || current_user.expiry < Date.today
+						@user = current_user
+						@user.expiry = Date.today + @plan.months.months
+					else
+						@user = current_user
+						@user.expiry += @plan.months.months
+					end
+					@user.save
+				end
+
 				unless friend.nil?
 					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
 					@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)
@@ -533,13 +566,15 @@ class UsersController < ApplicationController
 			if serial.include?('O')
 				serial = serial.gsub!('O','0')
 			end
-			@device = Device.new
+			@device = Roku.new
 			@device.serial = serial
 		else
 			@device = nil
 		end
 		@device.user_id = current_user.id
-		@device.type = 'Roku'
+		length = Setting.where(name: 'Roku Free Trial Length').first.data
+		@device.start_date = Date.today
+		@device.expiry = Date.today + length.days
 		if current_user.max_devices?
 			@device.errors.add(:base, 'You have reached the maximum limit for your registered devices.')
 		else
@@ -572,8 +607,10 @@ class UsersController < ApplicationController
 		@user.state = params[:state]
 		@user.country = params[:country]
 		@user.zip = params[:zip]
-		@user.phone = params[:phone]
-		@user.mobile_phone = params[:mobile_phone]
+		@user.phone_1 = params[:phone_1]
+		@user.phone_2 = params[:phone_2]
+		@user.phone_3 = params[:phone_3]
+		@user.paperless_billing = params[:paperless_billing]
 
 		if params[:timezone].present?
 			@user.timezone = params[:timezone]
@@ -612,6 +649,9 @@ class UsersController < ApplicationController
 		@device_errors = false
 
 		@user = User.new
+		length = Setting.where(name: 'Web Free Trial Length').first.data.to_i
+		@user.start_date = Date.today
+		@user.expiry = Date.today + length.days
 		@user.first_name = params[:first_name]
 		@user.last_name = params[:last_name]
 		@user.mailchimp = params[:mailchimp]
@@ -622,9 +662,10 @@ class UsersController < ApplicationController
 		@user.state = params[:state]
 		@user.country = params[:country]
 		@user.zip = params[:zip]
-		@user.phone = params[:phone]
-		@user.mobile_phone = params[:mobile_phone]
-
+		@user.phone_1 = params[:phone_1]
+		@user.phone_2 = params[:phone_2]
+		@user.phone_3 = params[:phone_3]
+		@user.paperless_billing = params[:paperless_billing]
 		@user.password = params[:password]
 		@user.password_confirmation = params[:password_confirmation]
 
@@ -640,6 +681,10 @@ class UsersController < ApplicationController
 				@device.user_id = @user.id
 				@device.type = 'Roku'
 				@device.serial = params[:serial].upcase
+				@device.name = params[:nickname]
+				length = Setting.where(name: 'Roku Free Trial Length').first.data.to_i
+				@device.start_date = Date.today
+				@device.expiry = Date.today + length.days
 				if @device.serial.include?('O')
 					@device.serial = @device.serial.gsub!('O','0')
 				end
@@ -655,20 +700,6 @@ class UsersController < ApplicationController
 					@device.serial_file = serial_file
 					@device.save
 					@device_errors = false
-
-					transaction = Transaction.new
-					transaction.user_id = @user.id
-					transaction.payment_type = params[:payment_type]
-					transaction.status = 'Paid'
-					transaction.start = Date.today
-					transaction.end = Date.today + Setting.where(name: 'Free Trial Length').first.data.to_i.days
-					transaction.customer_paid = DateTime.now
-					transaction.product_details = YAML.dump({name: 'Free Trial', duration: Setting.where(name: 'Free Trial Length').first.data.to_i, price: 0})
-					transaction.balance_used = 0
-					unless @device.nil?
-						transaction.roku_id = @device.id
-					end
-					transaction.save
 					sign_in(@user, bypass: true)
 				else
 					@device_errors = true
@@ -684,16 +715,6 @@ class UsersController < ApplicationController
 
 				end
 			else
-				transaction = Transaction.new
-				transaction.user_id = @user.id
-				transaction.payment_type = params[:payment_type]
-				transaction.status = 'Paid'
-				transaction.customer_paid = DateTime.now
-				transaction.start = Date.today
-				transaction.end = Date.today + Setting.where(name: 'Free Trial Length').first.data.to_i.days
-				transaction.product_details = YAML.dump({name: 'Free Trial', duration: Setting.where(name: 'Free Trial Length').first.data.to_i, price: 0})
-				transaction.balance_used = 0
-				transaction.save
 				@user_errors = false
 				sign_in(@user, bypass: true)
 			end

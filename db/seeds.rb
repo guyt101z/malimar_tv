@@ -27,7 +27,8 @@ invoice_settings = Setting.create(name: 'Invoice Details', data: YAML.dump({comp
 device_limit = Setting.create(name: 'Device Limit', data: 5)
 default_timezone = Setting.create(name: 'Default Timezone', data: 'Pacific Time (US & Canada)')
 referral_bonus = Setting.create(name: 'Referral Bonus', data: YAML.dump(method: 'Lump Sum', rate: 5)) # methods are 'Lump Sum' or 'Percentage of Referral Purchase'
-free_trial_length = Setting.create(name: 'Free Trial Length', data: 30)
+free_trial_length = Setting.create(name: 'Roku Free Trial Length', data: 30)
+free_trial_length = Setting.create(name: 'Web Free Trial Length', data: 30)
 payment_methods = Setting.create(name: 'Payout Methods', data: YAML.dump(['Cheque','Bank Transfer','Paypal','Wire Transfer']))
 payment_methods = Setting.create(name: 'Languages', data: YAML.dump("English\r\nLao\r\nThai\r\nKhmer\r\nKhmer"))
 

@@ -4,7 +4,9 @@ $('#refer-error').remove()
 $('#refer_code').parent().removeClass('has-error has-feedback')
 $('#payment-error').remove()
 $('#payment_type').parent().removeClass('has-error has-feedback')
-<% if @device_errors == false && @tx_errors == false %>
+$('#refer-error').remove()
+$('#refer_code').parent().removeClass('has-error has-feedback')
+<% if @device_errors == false && @tx_errors == false && @referral_errors == false %>
 	$('#subscribe_modal').modal('hide')
 	setTimeout(function(){
 		$('#register-panel').html('<%= escape_javascript(render("sales_reps/partials/registration_success")).html_safe %>')
@@ -13,6 +15,10 @@ $('#payment_type').parent().removeClass('has-error has-feedback')
 	<% if @device_errors == true %>
 		$('#serial').parent().addClass('has-error has-feedback')
 		$('#serial').after('<div class="text-danger" id="device-error"><%= @device_error %></div>')
+	<% end %>
+	<% if @referral_errors == true %>
+		$('#refer_code').parent().addClass('has-error has-feedback')
+		$('#refer_code').after('<div class="text-danger" id="refer-error"><%= @referral_message %></div>')
 	<% end %>
 
 	<% if @tx_errors == true %>

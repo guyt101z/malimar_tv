@@ -2,7 +2,7 @@
 <div class="form-editor expand bgcolor-1" id='note_form' style='display:none; margin-bottom: 10px'>
     <%= hidden_field_tag :note_to_add, false %>
     <%= hidden_field_tag :note_id %>
-    <%= text_field_tag :note_title, '', class: 'form-control input-md input-title', placeholder: 'Title' %>
+    <%= text_field_tag :note_title, '', class: 'form-control input-md input-title', placeholder: 'Title', style: 'background-color: transparent' %>
     <%= text_area_tag :note, '', class: 'form-control', placeholder: 'Add a note...' %>
     <div class='note-reglist' id='note-reglist' style='display:none; margin-bottom: 3px'></div>
     <div class='note-checklist' id='note-checklist' style='display:none; margin-bottom: 3px'></div>

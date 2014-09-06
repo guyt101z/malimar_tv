@@ -23,14 +23,26 @@
 							</div>
 						</div>
 						<div class='row'>
-							<div class='col-sm-6'>
+							<div class='col-sm-12'>
 								<div class='form-group'>
 									<%= email_field_tag :email, '', class: 'form-control', placeholder: 'Email Address' %>
 								</div>
 							</div>
-							<div class='col-sm-6'>
+						</div>
+						<div class='row'>
+							<div class='col-sm-4'>
 								<div class='form-group'>
-									<%= text_field_tag :phone, '', class: 'form-control', placeholder: 'Phone Number' %>
+									<%= text_field_tag :phone_1, '', class: 'form-control', placeholder: 'Home Phone' %>
+								</div>
+							</div>
+							<div class='col-sm-4'>
+								<div class='form-group'>
+									<%= text_field_tag :phone_2, '', class: 'form-control', placeholder: 'Mobile Phone (Optional)' %>
+								</div>
+							</div>
+							<div class='col-sm-4'>
+								<div class='form-group'>
+									<%= text_field_tag :phone_3, '', class: 'form-control', placeholder: 'Business Phone (Optional)' %>
 								</div>
 							</div>
 						</div>
@@ -64,7 +76,7 @@
 							</div>
 							<div class='col-md-3 col-sm-6'>
 								<div class='form-group'>
-									<%= text_field_tag :country, '', class: 'form-control', placeholder: 'Country' %>
+									<%= country_select('', '', {priority_countries: ['US','CA']}, { class: 'form-control input-md', name: 'country', id: 'country' }) %>
 								</div>
 							</div>
 						</div>

@@ -53,6 +53,25 @@
                     </div>
                 </div>
                 <%= render 'admins/partials/user_transaction' %>
+                <%= form_tag update_user_balance_path, remote: true do %>
+                <div class='panel panel-default'>
+                    <div class='panel-heading' style='position: relative'>
+                        <h3 class='panel-title'>Balance</h3>
+                    </div>
+                    <div class='panel-body'>
+                        <div class='stat-number'><div class="number" id='balance_2'>$<%= number_with_precision(@user.balance, precision: 2) %></div>USD</div>
+                        <hr>
+                        <div class='form-group'>
+                            <label>Add Money</label>
+                            <%= hidden_field_tag :user_id, @user.id %>
+                            <%= text_field_tag :add_balance, '', class: 'form-control' %>
+                        </div>
+                    </div>
+                    <div class='panel-footer'>
+                        <%= submit_tag 'Update Balance', class: 'btn btn-primary', style: 'width: 100%', data: {disable_with: 'Updating...'} %>
+                    </div>
+                </div>
+                <% end %>
             </div>
             <div class='col-md-6 col-sm-8 '>
                 <%= form_tag admin_register_device_path, remote: true do %>
@@ -89,11 +108,8 @@
                     <div class='panel-heading'>
                         <h3 class='panel-title'>User Devices</h3>
                     </div>
-                    <div class='panel-body devices' id='device-list'>
-                        <% @devices.each do |device| %>
-                            <% @device = device %>
-                            <%= render 'admins/partials/device' %>
-                        <% end %>
+                    <div class='panel-body' id='device-list'>
+                        <%= render 'admins/partials/device_list' %>
                     </div>
                 </div>
             </div>
@@ -101,6 +117,7 @@
     </div>
 </div>
 <%= render 'admins/partials/view_device_modal' %>
+<%= render 'admins/partials/view_web_modal' %>
 <script>
 $('#user_tx').addClass('active')
 var current_uploaded_image = 0

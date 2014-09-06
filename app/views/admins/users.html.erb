@@ -1,8 +1,8 @@
 <% content_for :top_level, 'Clients' %>
-<% content_for :low_levels, YAML.dump([]) %>
+<% content_for :low_levels, YAML.dump(['Find a Client']) %>
 <div id="left-scroll" class="nano">
     <div class="nano-content">
-
+        <%= render 'admins/nav/user_nav' %>
         <div class="panel">
             <div class="panel-heading">
                 <div class="row">
@@ -12,92 +12,52 @@
                 </div>
             </div>
             <div class="panel-body plr20">
-                <table class='table table-list fz11-5 table-hover table-striped' id='user_table'>
+                <div class='row'>
+                    <div class='col-sm-6 col-xs-12'>
+
+                    </div>
+                    <div class='col-sm-6 col-xs-12 form-group'>
+                        <%= text_field_tag :search, '', class: 'form-control', placeholder: 'Search Users' %>
+                        <%= hidden_field_tag :search_num, -1 %>
+                    </div>
+                </div>
+                <table class='table table-list fz11-5 table-hover table-striped'>
                     <thead><tr>
-                        <td>Account #
-                            <span class="sort">
-                                <span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td>Last Name
-                            <span class="sort">
-                                <span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td>First Name
-                            <span class="sort">
-                                <span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td>Email
-                            <span class="sort">
-                                <span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td>City
-                            <span class="sort">
-                                <span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td>State
-                            <span class="sort">
-                                <span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td>Country
-                            <span class="sort">
-                                <span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td>Zip Code
-                            <span class="sort">
-                                <span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td>Phone
-                            <span class="sort">
-                                <span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
-                        <td>Mobile
-                            <span class="sort">
-                                <span class="fa fa-angle-up"></span>
-                                <span class="fa fa-angle-down"></span>
-                            </span>
-                        </td>
+                        <td>Account #</td>
+                        <td>Last Name</td>
+                        <td>First Name</td>
+                        <td>Email</td>
+                        <td>City</td>
+                        <td>State</td>
+                        <td>Country</td>
+                        <td>Zip Code</td>
+                        <td>Phone 1</td>
+                        <td>Phone 2</td>
+                        <td>Phone 3</td>
+                        <td>Mobile</td>
                     </tr></thead>
-                    <% @users.each do |user| %>
-                        <tr style='cursor:pointer' onclick='window.location = "<%= view_user_path(id: user.id) %>"'>
-                            <td><%= user.id %></td>
-                            <td><%= user.last_name %></td>
-                            <td><%= user.first_name %></td>
-                            <td><%= user.email %></td>
-                            <td><%= user.city %></td>
-                            <td><%= user.state %></td>
-                            <td><%= user.country %></td>
-                            <td><%= user.zip %></td>
-                            <td><%= user.phone %></td>
-                            <td><%= user.mobile_phone %></td>
-                        </tr>
-                    <% end %>
+                    <tbody id='user_table'>
+                    </tbody>
                 </table>
             </div>
         </div>
 
-	</div>
+    </div>
 </div>
 
 <script>
-    $('#user_table').dataTable()
     $('#all_users').addClass('active')
-    $('#user_table_length').after('<%= link_to "New Client", new_user_path, class: "btn btn-primary", style: "margin-left: 20px" %>')
+
+    var search_num = 0;
+
+    $('#search').keyup(function(){
+        if ($(this).val() != '') {
+            $.ajax({
+                url: '/admin_search_users_table?search='+$(this).val()
+            })
+        }
+        else {
+            $('#user_table').html('')
+        }
+    })
 </script>

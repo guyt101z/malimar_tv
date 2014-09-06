@@ -1,0 +1,5 @@
+$('#user_table').html('')
+<% @matched_users.each do |user| %>
+    <% @user = user %>
+    $('#user_table').append('<%= escape_javascript(render("admins/partials/user_table_item")).html_safe %>')
+<% end %>

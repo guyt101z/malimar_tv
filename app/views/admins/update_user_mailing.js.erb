@@ -1,3 +1,8 @@
+$('#first_name-error').remove()
+$('#last_name-error').remove()
+$('#email-error').remove()
+$('#refer_code-error').remove()
+$('#phone_1-error').remove()
 $('#address_1-error').remove()
 $('#address_2-error').remove()
 $('#city-error').remove()
@@ -7,6 +12,22 @@ $('#zip-error').remove()
 
 
 <% if @user.errors.any? %>
+    <% if @user.errors[:first_name].present? %>
+        $('#first_name').after('<div class="text-danger" id="first_name-error">First name <%= @user.errors[:first_name].join(", ") %></div>')
+    <% end %>
+    <% if @user.errors[:last_name].present? %>
+        $('#last_name').after('<div class="text-danger" id="last_name-error">Last name <%= @user.errors[:last_name].join(", ") %></div>')
+    <% end %>
+    <% if @user.errors[:email].present? %>
+        $('#email').after('<div class="text-danger" id="email-error">Email address <%= @user.errors[:email].join(", ") %></div>')
+    <% end %>
+    <% if @user.errors[:refer_code].present? %>
+        $('#refer_code').after('<div class="text-danger" id="refer_code-error">Referral code <%= @user.errors[:refer_code].join(", ") %></div>')
+    <% end %>
+
+    <% if @user.errors[:phone_1].present? %>
+        $('#phone_1').after('<div class="text-danger" id="phone_1-error">Phone <%= @user.errors[:phone_1].join(", ") %></div>')
+    <% end %>
     <% if @user.errors[:address_1].present? %>
         $('#address_1').after('<div class="text-danger" id="address_1-error">Address <%= @user.errors[:address_1].join(", ") %></div>')
     <% end %>
@@ -30,5 +51,3 @@ $('#zip-error').remove()
 <% else %>
     addNotification('success', 'The account has been updated', 'Success', 'check-circle')
 <% end %>
-
-alert('<%= @user.errors.full_messages.join(". ") %>')

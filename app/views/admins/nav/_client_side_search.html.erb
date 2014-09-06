@@ -3,7 +3,7 @@
     <div class="panel">
         <div class="panel-heading ptb0">
             <form class="form-search1">
-                <%= text_field_tag :user_search, '', placeholder: 'Quick Search', class: 'form-control', autocomplete: 'off' %>
+                <%= text_field_tag :user_search, '', placeholder: 'Quick Search', class: 'form-control', autocomplete: 'off', style: 'background-color: transparent' %>
                 <span class="glyphicon glyphicon-search"></span>
             </form>
         </div>
@@ -11,7 +11,7 @@
             <div id="right-scroll" class="nano">
                 <div class="nano-content">
                     <ul class="nav list-user" id='user_full_list'>
-                        
+
                     </ul>
                     <ul class="nav list-user" style='display:none' id='user_search_list'>
                     </ul>

@@ -1,6 +1,7 @@
 <div class="splash">
     <div class="container">
-        <h3 class="name">Register New <%= pluralize(Setting.where(name: 'Free Trial Length').first.data, 'Day') %> Trial</h3>
+        <h3 class="name">Register New Free Trial</h3>
+        <h4 class='text-muted'>Enjoy a free <%= pluralize(Setting.where(name: 'Web Free Trial Length').first.data, 'Day') %> trial on our website, plus <%= pluralize(Setting.where(name: 'Roku Free Trial Length').first.data, 'Day') %> on your Roku.</h4>
     </div>
 </div><!--splash-->
 <div class="content">
@@ -24,26 +25,36 @@
                 <hr>
                 <h4 class="title4">User Information</h4>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-3">
                         <div class="form-group">
                             <%= text_field_tag :first_name, '', class: 'form-control', placeholder: 'First Name' %>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-3">
                         <div class="form-group">
                             <%= text_field_tag :last_name, '', class: 'form-control', placeholder: 'Last Name' %>
                         </div>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <%= text_field_tag :email, '', class: 'form-control', placeholder: 'Email Address' %>
+                            <%= text_field_tag :email, '', class: 'form-control', placeholder: 'Email / Username' %>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
                         <div class="form-group">
-                            <%= text_field_tag :phone, '', class: 'form-control', placeholder: 'Phone' %>
+                            <%= text_field_tag :phone_1, '', class: 'form-control', placeholder: 'Home Phone' %>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <%= text_field_tag :phone_2, '', class: 'form-control', placeholder: 'Mobile Phone (Optional)' %>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <%= text_field_tag :phone_3, '', class: 'form-control', placeholder: 'Business Phone (Optional)' %>
                         </div>
                     </div>
                 </div>
@@ -64,7 +75,7 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <%= text_field_tag :country, '', class: 'form-control', placeholder: 'Country' %>
+                                    <%= country_select('', '', {priority_countries: ['US','CA']}, { class: 'form-control input-md', name: 'country', id: 'country' }) %>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -86,6 +97,11 @@
                                     <%= text_field_tag :zip, '', class: 'form-control', placeholder: 'Zip Code' %>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <%= select_tag :paperless_billing, options_for_select([['Paperless Billing On', true],['Paperless Billing Off',false]]), class: 'form-control' %>
                         </div>
                     </div>
                 </div>

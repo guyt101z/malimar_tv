@@ -38,25 +38,7 @@
         </div>
         <div class='row'>
             <div class='col-md-4 col-sm-6 '>
-                <%= form_tag update_user_balance_path, remote: true do %>
-                <div class='panel panel-default'>
-                    <div class='panel-heading' style='position: relative'>
-                        <h3 class='panel-title'>Balance</h3>
-                    </div>
-                    <div class='panel-body'>
-                        <div class='stat-number'><div class="number" id='balance_2'>$<%= number_with_precision(@user.balance, precision: 2) %></div>USD</div>
-                        <hr>
-                        <div class='form-group'>
-                            <label>Add Money</label>
-                            <%= hidden_field_tag :user_id, @user.id %>
-                            <%= text_field_tag :add_balance, '', class: 'form-control' %>
-                        </div>
-                    </div>
-                    <div class='panel-footer'>
-                        <%= submit_tag 'Update Balance', class: 'btn btn-primary', style: 'width: 100%', data: {disable_with: 'Updating...'} %>
-                    </div>
-                </div>
-                <% end %>
+                
             </div>
         </div>
     </div>

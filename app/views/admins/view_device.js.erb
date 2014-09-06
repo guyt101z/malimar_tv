@@ -26,3 +26,27 @@ $('#unlink_btn').html('<%= link_to "Unlink Device", admin_unlink_device_path(id:
 <% else %>
     $('#device-modal-title').html('Edit <%= @device.humanized_type %>')
 <% end %>
+<% if @device.type == 'Roku' %>
+    $('#device_dates').show()
+    <% if @device.start_date.nil? %>
+        $('#device_start_month').val(<%= Date.today.strftime('%m').to_i %>)
+        $('#device_start_day').val(<%= Date.today.strftime('%d').to_i %>)
+        $('#device_start_year').val(<%= Date.today.strftime('%Y').to_i %>)
+    <% else %>
+        $('#device_start_month').val(<%= @device.start_date.strftime('%m').to_i %>)
+        $('#device_start_day').val(<%= @device.start_date.strftime('%d').to_i %>)
+        $('#device_start_year').val(<%= @device.start_date.strftime('%Y').to_i %>)
+    <% end %>
+
+    <% if @device.expiry.nil? %>
+        $('#device_expiry_month').val(<%= Date.today.strftime('%m').to_i %>)
+        $('#device_expiry_day').val(<%= Date.today.strftime('%d').to_i %>)
+        $('#device_expiry_year').val(<%= Date.today.strftime('%Y').to_i %>)
+    <% else %>
+        $('#device_expiry_month').val(<%= @device.expiry.strftime('%m').to_i %>)
+        $('#device_expiry_day').val(<%= @device.expiry.strftime('%d').to_i %>)
+        $('#device_expiry_year').val(<%= @device.expiry.strftime('%Y').to_i %>)
+    <% end %>
+<% else %>
+    $('#device_dates').hide()
+<% end %>

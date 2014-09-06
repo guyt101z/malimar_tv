@@ -57,6 +57,8 @@ gem 'will_paginate'
 gem 'random_data'
 gem 'payday'
 
+gem 'country_select'
+
 gem 'redis'
 gem 'resque'
 gem 'resque-web', require: 'resque_web'

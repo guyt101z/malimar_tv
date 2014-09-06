@@ -1,0 +1,6 @@
+<% if @success == true %>
+    <% flash[:success] = 'Client has been deleted' %>
+    window.location = '/admins/users'
+<% else %>
+    $('#root_email').after('<div class="text-danger" id="root_auth_error">Invalid username or password</div>')
+<% end %>

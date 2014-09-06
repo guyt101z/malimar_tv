@@ -28,7 +28,21 @@ class SalesRepsController < ApplicationController
 	end
 
 	def register_step_one
-		@user = User.new(params)
+		@user = User.new
+
+		@user.first_name = params[:first_name]
+		@user.last_name = params[:last_name]
+		@user.email = params[:email]
+		@user.phone_1 = params[:phone_1]
+		@user.phone_2 = params[:phone_2]
+		@user.phone_3 = params[:phone_3]
+		@user.address_1 = params[:address_1]
+		@user.address_2 = params[:address_2]
+		@user.state = params[:state]
+		@user.city = params[:city]
+		@user.zip = params[:zip]
+		@user.country = params[:country]
+
 		code = SecureRandom.hex(5).upcase
 		until User.where(refer_code: code).count < 1
 			code = SecureRandom.hex(5).upcase
@@ -91,22 +105,23 @@ class SalesRepsController < ApplicationController
 		end
 
 		if @device_errors == false
+			if params[:refer_code].present?
+				friend = User.where(refer_code: params[:refer_code]).first
+				if friend.nil? || friend.id == @user.id
+					@referral_errors = true
+					@referral_message = 'This referral code is not valid.'
+				else
+					@referral_errors = false
+				end
+			else
+				friend = nil
+				@referral_errors = false
+			end
+		end
+
+		if @device_errors == false && @referral_errors == false
 			if params[:plan_id].to_i == 0
 				@tx_errors = false
-				if params[:serial].present?
-					length = Setting.where(name: 'Free Trial Length').first.data
-					transaction = Transaction.new
-					transaction.user_id = @user.id
-					transaction.payment_type = params[:payment_type]
-					transaction.status = 'Paid'
-					transaction.customer_paid = DateTime.now
-					transaction.product_details = YAML.dump({name: 'Free Trial', duration: length, price: 0})
-					transaction.balance_used = 0
-					transaction.sales_rep_id = current_sales_representative.id
-					transaction.start = Date.today
-					transaction.end = Date.today + @plan.months.months
-					transaction.save
-				end
 			else
 				@plan = Plan.find(params[:plan_id])
 
@@ -148,9 +163,34 @@ class SalesRepsController < ApplicationController
 							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, commission_rate: current_sales_representative.commission_rate})
 							transaction.plan_id = @plan.id
 							transaction.sales_rep_id = current_sales_representative.id
-							transaction.start = Date.today
-							transaction.end = Date.today + @plan.months.months
-
+							if @device.present?
+								if @device.expiry.nil? || @device.expiry < Date.today
+									@device.expiry = Date.today + @plan.months.months
+								else
+									@device.expiry += @plan.months.months
+								end
+								@device.save
+							else
+								if @user.expiry.nil? || @user.expiry < Date.today
+									@user.expiry = Date.today + @plan.months.months
+								else
+									@user.expiry += @plan.months.months
+								end
+								@user.save
+							end
+							unless friend.nil?
+								transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
+								@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)
+								if @referral_bonus[:method] == 'Lump Sum'
+									friend.balance += @referral_bonus[:rate]
+								else
+									new_balance = (@referral_bonus[:rate]/100) * @plan.price
+									friend.balance += (new_balance * 100).round / 100
+								end
+								friend.save
+							else
+								transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+							end
 
 							transaction.balance_used = 0
 							transaction.save
@@ -178,6 +218,21 @@ class SalesRepsController < ApplicationController
 					unless @device.nil?
 						transaction.roku_id = @device.id
 					end
+
+					unless friend.nil?
+						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, refer_code: params[:refer_code], friend_id: friend.id})
+						@referral_bonus = YAML.load(Setting.where(name: 'Referral Bonus').first.data)
+						if @referral_bonus[:method] == 'Lump Sum'
+							friend.balance += @referral_bonus[:rate]
+						else
+							new_balance = (@referral_bonus[:rate]/100) * @plan.price
+							friend.balance += (new_balance * 100).round / 100
+						end
+						friend.save
+					else
+						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
+					end
+
 					transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price, commission_rate: current_sales_representative.commission_rate})
 					transaction.balance_used = 0
 					transaction.plan_id = @plan.id

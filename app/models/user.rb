@@ -11,8 +11,8 @@ class User < ActiveRecord::Base
   	validates_presence_of :last_name
   	validates_presence_of :city
   	validates_presence_of :country
-  	validates_presence_of :zip
-  	validates_presence_of :phone
+  	validates_presence_of :zip, if: Proc.new { |o| o.country.upcase == 'CA' || o.country.upcase == 'US' }
+  	validates_presence_of :phone_1
   	validates_presence_of :address_1
     validates_uniqueness_of :refer_code
 
@@ -83,18 +83,6 @@ class User < ActiveRecord::Base
         end
     end
 
-    def max_devices?
-        max = Setting.where(name: 'Device Limit').first.data.to_i
-
-        devices = Device.where(user_id: id)
-
-        if devices.count >= max && max > 0
-            return true
-        else
-            return false
-        end
-    end
-
     def area
         if state.present?
             return "#{city}, #{state}"
@@ -104,11 +92,28 @@ class User < ActiveRecord::Base
     end
 
     def premium?
-        return Transaction.where(user_id: id, status: ['Paid','Refunded']).where('start <= ?', Date.today).where('? <= end', Date.today).any?
+        if web_premium?
+            return true
+        else
+            premium = false
+
+            Roku.where(user_id: id).each do |roku|
+                if roku.premium?
+                    premium = true
+                end
+            end
+
+            return premium
+        end
+
     end
 
     def web_premium?
-        return Transaction.where(user_id: id, roku_id: nil, status: ['Paid','Refunded']).where('start <= ?', Date.today).where('? <= end', Date.today).any?
+        if start_date.present? && expiry.present?
+            return start_date <= Date.today && expiry >= Date.today
+        else
+            return false
+        end
     end
 
 
@@ -122,20 +127,6 @@ class User < ActiveRecord::Base
         else
             return city
         end
-    end
-
-    def expiry
-        transactions = Transaction.where(user_id: id, roku_id: nil)
-
-        expiration = nil
-        transactions.each do |transaction|
-            if expiration.nil? && transaction.end != nil
-                expiration = transaction.end
-            elsif transaction.end.nil? == false && transaction.end > expiration
-                expiration = transaction.end
-            end
-        end
-        return expiration
     end
 
     def continue_watching

@@ -1,0 +1,154 @@
+<%
+    years = Array.new
+    for i in ((Date.today - 10.years).strftime('%Y').to_i)..((Date.today + 10.years).strftime('%Y').to_i)
+        years.push(i)
+    end
+%>
+<%= form_tag admin_update_web_sub_path(id: @user.id), remote: true, id: 'web_sub_form' do %>
+<div class="modal fade" id="web_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="device-modal-title">Web/Tablet/Mobile Subscription</h4>
+            </div>
+            <div class="modal-body">
+                <div class='row'>
+                    <div class='col-sm-12 hidden-xs text-center' id='web_icon'>
+                        <i class='fa fa-laptop' style='font-size:250px; margin-bottom: 15px' ></i>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-body" style='border-top: 1px solid #e5e5e5;'>
+                <label>Start Date</label>
+                <div class='row'>
+                    <div class='col-xs-5 form-group'>
+                        <%= select_tag :web_start_month, options_for_select([['January',1],
+                                                                         ['February',2],
+                                                                         ['March',3],
+                                                                         ['April',4],
+                                                                         ['May',5],
+                                                                         ['June',6],
+                                                                         ['July',7],
+                                                                         ['August',8],
+                                                                         ['September',9],
+                                                                         ['October',10],
+                                                                         ['November',11],
+                                                                         ['December',12]], @user.start_date.strftime('%m').to_i), class: 'form-control' %>
+                    </div>
+                    <div class='col-xs-3 form-group'>
+                        <%= select_tag :web_start_day, options_for_select([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31], @user.start_date.strftime('%-d').to_i), class: 'form-control' %>
+                    </div>
+                    <div class='col-xs-4 form-group'>
+                        <%= select_tag :web_start_year, options_for_select(years, @user.start_date.strftime('%Y').to_i), class: 'form-control' %>
+                    </div>
+                </div>
+                <label>End Date</label>
+                <div class='row'>
+                    <div class='col-xs-5 form-group'>
+                        <%= select_tag :web_expiry_month, options_for_select([['January',1],
+                                                                         ['February',2],
+                                                                         ['March',3],
+                                                                         ['April',4],
+                                                                         ['May',5],
+                                                                         ['June',6],
+                                                                         ['July',7],
+                                                                         ['August',8],
+                                                                         ['September',9],
+                                                                         ['October',10],
+                                                                         ['November',11],
+                                                                         ['December',12]], @user.expiry.strftime('%m').to_i), class: 'form-control' %>
+                    </div>
+                    <div class='col-xs-3 form-group'>
+                        <%= select_tag :web_expiry_day, options_for_select([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31], @user.expiry.strftime('%-d').to_i), class: 'form-control' %>
+                    </div>
+                    <div class='col-xs-4 form-group'>
+                        <%= select_tag :web_expiry_year, options_for_select(years, @user.expiry.strftime('%Y').to_i), class: 'form-control' %>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <%= submit_tag 'Save Changes', class: 'btn btn-primary', data: {disable_with: 'Saving...'}, onclick: "$('#update_web_message').remove()" %>
+            </div>
+        </div>
+    </div>
+</div>
+<% end %>
+<script>
+    $('#web_start_month').change(function(){
+        if ($('#web_start_month').val() == 2 && ($('#web_start_year').val() % 4) == 0) {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
+        }
+        else if ($('#web_start_month').val() == 2) {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
+        }
+        else if ($('#web_start_month').val() == 4 || $('#web_start_month').val() == 6 || $('#web_start_month').val() == 9 || $('#web_start_month').val() == 11) {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+        }
+        else {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
+        }
+        $('#web_start_day').html('')
+        $.each(newOptions, function(value, day){
+            $('#web_start_day').append('<option value='+day+'>'+day+'</option>')
+        })
+    })
+    $('#web_start_year').change(function(){
+        if ($('#web_start_month').val() == 2 && ($('#web_start_year').val() % 4) == 0) {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
+        }
+        else if ($('#web_start_month').val() == 2) {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
+        }
+        else if ($('#web_start_month').val() == 4 || $('#web_start_month').val() == 6 || $('#web_start_month').val() == 9 || $('#web_start_month').val() == 11) {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+        }
+        else {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
+        }
+        $('#web_start_day').html('')
+        $.each(newOptions, function(value, day){
+            $('#web_start_day').append('<option value='+day+'>'+day+'</option>')
+        })
+    })
+
+
+    $('#web_expiry_month').change(function(){
+        if ($('#web_expiry_month').val() == 2 && ($('#web_expiry_year').val() % 4) == 0) {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
+        }
+        else if ($('#web_expiry_month').val() == 2) {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
+        }
+        else if ($('#web_expiry_month').val() == 4 || $('#web_expiry_month').val() == 6 || $('#web_expiry_month').val() == 9 || $('#web_expiry_month').val() == 11) {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+        }
+        else {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
+        }
+        $('#web_expiry_day').html('')
+        $.each(newOptions, function(value, day){
+            $('#web_expiry_day').append('<option value='+day+'>'+day+'</option>')
+        })
+    })
+    $('#web_expiry_year').change(function(){
+        if ($('#web_expiry_month').val() == 2 && ($('#web_expiry_year').val() % 4) == 0) {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
+        }
+        else if ($('#web_expiry_month').val() == 2) {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
+        }
+        else if ($('#web_expiry_month').val() == 4 || $('#web_expiry_month').val() == 6 || $('#web_expiry_month').val() == 9 || $('#web_expiry_month').val() == 11) {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+        }
+        else {
+            var newOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
+        }
+        $('#web_expiry_day').html('')
+        $.each(newOptions, function(value, day){
+            $('#web_expiry_day').append('<option value='+day+'>'+day+'</option>')
+        })
+    })
+</script>

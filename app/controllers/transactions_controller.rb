@@ -4,6 +4,35 @@ class TransactionsController < ApplicationController
 		details = YAML.load(@transaction.product_details)
 		@transaction.customer_paid = DateTime.now
 		@transaction.status = 'Paid'
+
+		unless @transaction.roku_id.nil?
+			roku = Roku.where(id: @transaction.roku_id).first
+			unless roku.nil?
+				if roku.expiry.nil? || roku.expiry < Date.today
+					roku.expiry = Date.today + details[:duration].to_i.months
+				else
+					roku.expiry = roku.expiry + details[:duration].to_i.months
+				end
+				if roku.start_date.nil?
+					roku.start_date = Date.today
+				end
+				roku.save(validate: false)
+			end
+		else
+			user = User.where(id: @transaction.user_id).first
+			unless user.nil?
+				if user.expiry.nil? || user.expiry < Date.today
+					user.expiry = Date.today + details[:duration].to_i.months
+				else
+					user.expiry = user.expiry + details[:duration].to_i.months
+				end
+				if user.start_date.nil?
+					user.start_date = Date.today
+				end
+				user.save(validate: false)
+			end
+		end
+
 		if @transaction.save
 			TransactionalMailer.order_paid(@transaction, @user).deliver
 			AdminActivity.create(admin_id: current_admin.id,
@@ -24,7 +53,6 @@ class TransactionsController < ApplicationController
 
 	def cancel
 		@transaction = Transaction.find(params[:id])
-		@user = User.find(@transaction.user_id)
 		@transaction.customer_refunded = DateTime.now
 		@transaction.status = 'Cancelled'
 		details = YAML.load(@transaction.product_details)

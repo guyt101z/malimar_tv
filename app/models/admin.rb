@@ -153,4 +153,22 @@ class Admin < ActiveRecord::Base
     def all_ticket_notifications
         return AdminNotification.where(admin_id: id, notif_type: 'ticket').order(created_at: :desc)
     end
+
+    def self.authenticate(username, password)
+        user = Admin.find_for_authentication(:email => username)
+        unless user.nil?
+            user.valid_password?(password) ? user : nil
+        end
+    end
+
+    def self.authenticate_for_root(username, password)
+        admin = Admin.find_for_authentication(:email => username)
+        unless admin.nil?
+            if admin.role_id == 0
+                admin.valid_password?(password) ? admin : nil
+            else
+                admin = nil
+            end
+        end
+    end
 end

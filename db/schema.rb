@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140901134235) do
+ActiveRecord::Schema.define(version: 20140906175551) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -202,6 +202,7 @@ ActiveRecord::Schema.define(version: 20140901134235) do
     t.string   "serial_file"
     t.boolean  "adult"
     t.boolean  "is_active"
+    t.date     "start_date"
   end
 
   create_table "episode_progresses", force: true do |t|
@@ -554,6 +555,14 @@ ActiveRecord::Schema.define(version: 20140901134235) do
     t.string   "mobile_phone"
     t.string   "language"
     t.boolean  "is_active",              default: true
+    t.string   "phone_1"
+    t.string   "phone_2"
+    t.string   "phone_3"
+    t.date     "start_date"
+    t.date     "expiry"
+    t.boolean  "paperless_billing"
+    t.string   "roku_email"
+    t.string   "roku_password"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

@@ -2,6 +2,7 @@ $('#serial_message').remove()
 <% if @device.errors.any? %>
     $('#device_serial').after('<span class="text-danger" id="serial_message">Serial <%= @device.errors[:serial].join(", ") %></span>')
 <% else %>
+    <% @devices = Device.where(user_id: @device.user_id) %>
     $('#device_serial').after('<span class="text-success" id="serial_message">Serial updated!</span>')
     <% @user = User.where(id: @device.user_id).first %>
     $('#device-list').html('<%= escape_javascript(render("admins/partials/device_list")) %>')

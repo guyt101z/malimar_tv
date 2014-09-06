@@ -1,5 +1,122 @@
-<% @devices = Device.where(user_id: @user.id) %>
-<% @devices.each do |device| %>
-    <% @device = device %>
-    <%= render 'admins/partials/device' %>
-<% end %>
+<table class='table table-list fz11-5 table-hover table-striped' style='width: 100%;' id='device_table'>
+    <thead><tr>
+        <td>Device Type
+            <span class="sort">
+                <span class="fa fa-angle-up"></span>
+                <span class="fa fa-angle-down"></span>
+            </span>
+        </td>
+        <td>Serial
+            <span class="sort">
+                <span class="fa fa-angle-up"></span>
+                <span class="fa fa-angle-down"></span>
+            </span>
+        </td>
+        <td>Nickname
+            <span class="sort">
+                <span class="fa fa-angle-up"></span>
+                <span class="fa fa-angle-down"></span>
+            </span>
+        </td>
+        <td>Start Date
+            <span class="sort">
+                <span class="fa fa-angle-up"></span>
+                <span class="fa fa-angle-down"></span>
+            </span>
+        </td>
+        <td>End Date
+            <span class="sort">
+                <span class="fa fa-angle-up"></span>
+                <span class="fa fa-angle-down"></span>
+            </span>
+        </td>
+        <td>Adult Content
+            <span class="sort">
+                <span class="fa fa-angle-up"></span>
+                <span class="fa fa-angle-down"></span>
+            </span>
+        </td>
+        <td>Subscription Status
+            <span class="sort">
+                <span class="fa fa-angle-up"></span>
+                <span class="fa fa-angle-down"></span>
+            </span>
+        </td>
+    </tr></thead>
+    <tr style='cursor:pointer' onclick='$("#web_modal").modal("show")'>
+        <td>Web/Tablet/Mobile</td>
+        <td>--</td>
+        <td>--</td>
+        <% if @user.start_date.nil? %>
+            <td>None</td>
+        <% else %>
+            <td><%= @user.start_date.strftime('%d/%m/%y') %></td>
+        <% end %>
+
+        <% if @user.expiry.nil? %>
+            <td>None</td>
+        <% else %>
+            <td><%= @user.expiry.strftime('%d/%m/%y') %></td>
+        <% end %>
+        <td>--</td>
+        <% if @user.premium? %>
+            <td>Premium</td>
+        <% else %>
+            <td>Free</td>
+        <% end %>
+    </tr>
+    <% @devices.each do |device| %>
+    <tr style='cursor:pointer' onclick='viewDevice(<%= device.id %>)'>
+        <td><%= device.humanized_type %></td>
+
+        <% if device.type == 'Roku' %>
+            <td><%= device.serial %></td>
+        <% else %>
+            <td>N/A</td>
+        <% end %>
+
+        <td><%= device.nickname(false) %></td>
+
+        <% if device.type == 'Roku' %>
+            <% if device.start_date.nil? %>
+                <td>None</td>
+            <% else %>
+                <td><%= device.start_date.strftime('%d/%m/%y') %></td>
+            <% end %>
+
+            <% if device.expiry.nil? %>
+                <td>None</td>
+            <% else %>
+                <td><%= device.expiry.strftime('%d/%m/%y') %></td>
+            <% end %>
+        <% else %>
+            <% if @user.start_date.nil? %>
+                <td>None</td>
+            <% else %>
+                <td><%= @user.start_date.strftime('%d/%m/%y') %></td>
+            <% end %>
+
+            <% if @user.expiry.nil? %>
+                <td>None</td>
+            <% else %>
+                <td><%= @user.expiry.strftime('%d/%m/%y') %></td>
+            <% end %>
+        <% end %>
+
+        <% if device.adult.nil? || device.adult == false %>
+            <td>Inactive</td>
+        <% else %>
+            <td>Active</td>
+        <% end %>
+
+        <% if device.premium? %>
+            <td>Premium</td>
+        <% else %>
+            <td>Free</td>
+        <% end %>
+    </tr>
+    <% end %>
+</table>
+<script>
+    $('#device_table').dataTable()
+</script>

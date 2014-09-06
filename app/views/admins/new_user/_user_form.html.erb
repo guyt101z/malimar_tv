@@ -20,12 +20,16 @@
             <%= select_tag :language, options_for_select(languages), class: 'form-control input-md' %>
         </div>
         <div class="form-group">
-            <label for="">Phone Number <span class="text-danger">*</span></label>
-            <%= text_field_tag :phone, '', class: 'form-control input-md' %>
+            <label for="">Phone 1 <span class="text-danger">*</span></label>
+            <%= text_field_tag :phone_1, '', class: 'form-control input-md' %>
         </div>
         <div class="form-group">
-            <label for="">Mobile Phone Number <span class="text-muted"><em>(Optional)</em></span></label>
-            <%= text_field_tag :mobile_phone, '', class: 'form-control input-md' %>
+            <label for="">Phone 2 </label>
+            <%= text_field_tag :phone_2, '', class: 'form-control input-md' %>
+        </div>
+        <div class="form-group">
+            <label for="">Phone 3 </label>
+            <%= text_field_tag :phone_3, '', class: 'form-control input-md' %>
         </div>
     </div>
     <div class="col-sm-6">
@@ -51,7 +55,7 @@
         </div>
         <div class="form-group">
             <label for="">Country <span class="text-danger">*</span></label>
-            <%= text_field_tag :country, '', class: 'form-control input-md' %>
+            <%= country_select('', '', {priority_countries: ['US','CA']}, { class: 'form-control input-md', name: 'country', id: 'country' }) %>
         </div>
     </div>
 </div>

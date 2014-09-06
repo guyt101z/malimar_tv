@@ -7,7 +7,7 @@
         <div class="form-editor expand <%= @note.note_colour %>" id='note_form-<%= @note.id %>' style='margin-bottom: 10px'>
     <% end %>
         <div class='delete_note'><%= link_to raw("<i class='fa fa-times'></i>"), delete_note_path(id: @note.id), class: 'btn btn-icon', remote: true %></div>
-        <%= text_field_tag :note_title, @note.title, class: 'form-control input-md input-title', placeholder: 'Title' %>
+        <%= text_field_tag :note_title, @note.title, class: 'form-control input-md input-title', placeholder: 'Title', style: 'background-color: transparent' %>
         <%= text_area_tag :note, @note.note, class: 'form-control', placeholder: 'Add a note...' %>
         <% lists = YAML.load(@note.checklist) %>
         <div class='' id='note-reglist' style='margin-bottom: 3px'>

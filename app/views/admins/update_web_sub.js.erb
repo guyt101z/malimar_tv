@@ -1,0 +1,4 @@
+$('#update_web_message').remove()
+
+$('#web_icon').after('<div id="update_web_message" class="text-success text-center">Web subscription updated</div>')
+$('#device-list').html('<%= escape_javascript(render("admins/partials/device_list")) %>')
