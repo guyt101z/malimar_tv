@@ -12,11 +12,11 @@ class CustomerParser
         end
         user.email = row['E-mail Address']
         if row['Home Phone'].present?
-            user.phone = row['Home Phone']
+            user.phone_1 = row['Home Phone']
         elsif row['Business Phone'].present?
-            user.phone = row['Business Phone']
+            user.phone_1 = row['Business Phone']
         end
-        user.mobile_phone = row['Mobile Phone']
+        user.phone_1 = row['Mobile Phone']
         user.address_1 = row['Address']
         user.city = row['City']
         user.state = row['State/Province']
