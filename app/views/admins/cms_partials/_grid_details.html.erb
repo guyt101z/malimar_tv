@@ -72,9 +72,9 @@ end
                             <div class='title_wrapper'>
                                 <% if item.is_a? Channel %>
                                     <%= link_to item.name, live_channels_path(id: item.id) %>
-                                <% elsif item.is_a? Movie %>
-                                    <%= link_to item.name, tv_shows_path(id: item.id) %>
                                 <% elsif item.is_a? Show %>
+                                    <%= link_to item.name, tv_shows_path(id: item.id) %>
+                                <% elsif item.is_a? Movie %>
                                     <%= link_to item.name, movies_path(id: item.id) %>
                                 <% end %>
                             </div>
