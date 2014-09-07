@@ -81,6 +81,9 @@
             url: '/view_show?id='+id
         })
     }
+    <% if params[:id].present? %>
+        viewShow(<%= params[:id] %>)
+    <% end %>
     $('.add_channel').tooltip()
     $('#shows_nav').addClass('active')
 </script>

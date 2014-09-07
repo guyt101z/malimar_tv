@@ -57,7 +57,7 @@ end
                             <%= image_tag grid.image_url %>
                         </div>
                         <div class='title_wrapper'>
-                            <%= grid.name %>
+                            <%= link_to grid.name, admin_view_grid_path(id: grid) %>
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,13 @@ end
                                 <%= image_tag item.image_url %>
                             </div>
                             <div class='title_wrapper'>
-                                <%= item.name %>
+                                <% if item.is_a? Channel %>
+                                    <%= link_to item.name, live_channels_path(id: item.id) %>
+                                <% elsif item.is_a? Movie %>
+                                    <%= link_to item.name, tv_shows_path(id: item.id) %>
+                                <% elsif item.is_a? Show %>
+                                    <%= link_to item.name, movies_path(id: item.id) %>
+                                <% end %>
                             </div>
                         </div>
                     </div>

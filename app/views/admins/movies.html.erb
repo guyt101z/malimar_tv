@@ -80,6 +80,9 @@
             url: '/view_movie?id='+id
         })
     }
+    <% if params[:id].present? %>
+        viewChannel(<%= params[:id] %>)
+    <% end %>
     $('.add_channel').tooltip()
     $('#movies_nav').addClass('active')
 </script>

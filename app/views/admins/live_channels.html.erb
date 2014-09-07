@@ -80,8 +80,9 @@
 			url: '/view_channel?id='+id
 		})
 	}
+
 	<% if params[:id].present? %>
-		$('#user_<%= params[:id] %>').click()
+		viewChannel(<%= params[:id] %>)
 	<% end %>
 	$('.add_channel').tooltip()
 	$('#channels_nav').addClass('active')
