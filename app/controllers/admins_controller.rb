@@ -1608,8 +1608,8 @@ class AdminsController < ApplicationController
 		if current_admin.authorized_to?('manage_user')
 			@device = Device.find(params[:id])
 			if @device.type == 'Roku'
-				@device.start_date = Date.strptime("#{params[:device_start_month]}/#{params[:device_start_day]}/#{params[:device_start_year]}", "%m/%d/%Y")
-				@device.expiry = Date.strptime("#{params[:device_expiry_month]}/#{params[:device_expiry_day]}/#{params[:device_expiry_year]}", "%m/%d/%Y")
+				@device.start_date = Date.strptime("#{params[:device_start_month]}/#{params[:device_start_day]}/#{params[:device_start_year]}", "%-m/%-d/%Y")
+				@device.expiry = Date.strptime("#{params[:device_expiry_month]}/#{params[:device_expiry_day]}/#{params[:device_expiry_year]}", "%-m/%-d/%Y")
 				@device.serial = params[:device_serial].upcase
 				if @device.serial.include?('O')
 					@device.serial = @device.serial.gsub!('O','0')
