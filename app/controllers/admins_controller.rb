@@ -2879,6 +2879,7 @@ class AdminsController < ApplicationController
 		@plan = Plan.find(params[:plan_id])
 
 		@user = User.find(params[:user_id])
+		@devices = Device.where(user_id: @user.id)
 
 		if params[:new_serial].present?
 			@device = Roku.new
