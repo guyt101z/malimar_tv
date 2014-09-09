@@ -524,7 +524,7 @@ class AdminsController < ApplicationController
 			unless @device.nil?
 				@user = User.find(params[:user_id])
 				@plan = Plan.find(params[:plan_id])
-
+				@devices = Device.where(user_id: @user.id)
 				unless @user.balance.nil?
 					total = @plan.price - @user.balance
 				else

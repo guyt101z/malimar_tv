@@ -1,0 +1,44 @@
+$('#tx-error').remove()
+$('#device-error').remove()
+$('#date-error').remove()
+<% if @tx_errors == true || @device_errors == true || @date_errors == true %>
+
+    <% if @date_errors == true %>
+        $('#tx_dates').append('<div class="text-danger" id="date-error" style="margin: 0 15px"><%= @date_error %></div>')
+    <% end %>
+
+    <% if @tx_errors == true %>
+        $('#payment_type').after('<div class="text-danger" id="tx-error"><%= @tx_error %></div>')
+    <% end %>
+
+    <% if @device_errors == true %>
+        $('#tx_serial').after('<div class="text-danger" id="device-error"><%= @device_error %></div>')
+    <% end %>
+    addNotification('error', 'Error processing payment', 'Error', 'exclamation-circle')
+<% else %>
+    <% @plan = Plan.all.order(price: :asc).first %>
+    <% @total = @plan.price - @user.balance %>
+    $('#tx_details').html('<%= escape_javascript(render("admins/partials/transaction_details")) %>')
+    $('#user_transactions').html('<%= escape_javascript(render("admins/partials/user_transactions")) %>')
+    $('#device-list').html('<%= escape_javascript(render("admins/partials/device_list")) %>')
+
+    $('#user_balance').html('$<%= number_with_precision(@user.balance, precision: 2) %>')
+    $('#balance_2').html('$<%= number_with_precision(@user.balance, precision: 2) %>')
+    addNotification('success', 'Payment processed', 'Success', 'check-circle')
+    $('#plan_id').val(<%= Plan.all.order(price: :asc).first.id %>)
+    $('#payment_type').val('')
+    $('#card_name').val('')
+    $('#card_number').val('')
+    $('#card_month').val('')
+    $('#card_year').val('')
+    $('#credit_form').hide()
+    $('#pending_tx').html('$<%= number_with_precision(@pending, precision: 2) %>')
+    <% if @user.expiry.nil? || @user.expiry < Date.today %>
+        $('#membership_1').html('Free')
+        $('#membership_2').html('<div class="number">N/A</div>No Subscription')
+    <% else %>
+        $('#membership_1').html('Premium')
+        $('#membership_2').html('<div class="number"><%= @user.expiry.strftime('%Y/%m/%d') %></div><%= distance_of_time_in_words(Date.today, @user.expiry) %>')
+    <% end %>
+<% end %>
+alert('<%= @test.html_safe %>')
