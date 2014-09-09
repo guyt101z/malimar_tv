@@ -4,7 +4,7 @@
         <% i = 0 %>
         <% @front_page_array.each do |item| %>
             <% if i == 0 %><div class="item active"><% else %><div class='item'> %><% end %>
-                  <%= image_tag item.banner_url(:hd) %>
+                  <%= image_tag item.banner_url(:front_page) %>
                   <div class="carousel-caption">
                     <div class="container">
                         <h2><%= item.name %></h2>
