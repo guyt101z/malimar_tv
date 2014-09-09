@@ -33,9 +33,64 @@ class SalesRepsController < ApplicationController
 		@user.first_name = params[:first_name]
 		@user.last_name = params[:last_name]
 		@user.email = params[:email]
-		@user.phone_1 = params[:phone_1]
-		@user.phone_2 = params[:phone_2]
-		@user.phone_3 = params[:phone_3]
+		if params[:phone_1].present?
+			phone_1 = params[:phone_1]
+			if params[:phone_1].include?(' ')
+				phone_1 = phone_1.gsub!(' ','')
+			end
+			if phone_1.include?('-')
+				phone_1 = phone_1.gsub!('-','')
+			end
+			if phone_1.include?('(')
+				phone_1 = phone_1.gsub!('(','')
+			end
+			if phone_1.include?(')')
+				phone_1 = phone_1.gsub!(')','')
+			end
+			phone_1 = view_context.number_to_phone(phone_1)
+		else
+			phone_1 = nil
+		end
+		if params[:phone_2].present?
+			phone_2 = params[:phone_2]
+			if params[:phone_2].include?(' ')
+				phone_2 = phone_2.gsub!(' ','')
+			end
+			if phone_2.include?('-')
+				phone_2 = phone_2.gsub!('-','')
+			end
+			if phone_2.include?('(')
+				phone_2 = phone_2.gsub!('(','')
+			end
+			if phone_2.include?(')')
+				phone_2 = phone_2.gsub!(')','')
+			end
+			phone_2 = view_context.number_to_phone(phone_2)
+		else
+			phone_2 = nil
+		end
+		if params[:phone_3].present?
+			phone_3 = params[:phone_3]
+			if params[:phone_3].include?(' ')
+				phone_3 = phone_3.gsub!(' ','')
+			end
+			if phone_3.include?('-')
+				phone_3 = phone_3.gsub!('-','')
+			end
+			if phone_3.include?('(')
+				phone_3 = phone_3.gsub!('(','')
+			end
+			if phone_3.include?(')')
+				phone_3 = phone_3.gsub!(')','')
+			end
+			phone_3 = view_context.number_to_phone(phone_3)
+		else
+			phone_3 = nil
+		end
+
+		@user.phone_1 = phone_1
+		@user.phone_2 = phone_2
+		@user.phone_3 = phone_3
 		@user.address_1 = params[:address_1]
 		@user.address_2 = params[:address_2]
 		@user.state = params[:state]

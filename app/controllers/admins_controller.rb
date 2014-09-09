@@ -62,13 +62,74 @@ class AdminsController < ApplicationController
 		@user.first_name = params[:first_name]
 		@user.last_name = params[:last_name]
 		@user.email = params[:email]
-		@user.phone_1 = params[:phone_1]
-		@user.phone_2 = params[:phone_2]
-		@user.phone_3 = params[:phone_3]
+		if params[:phone_1].present?
+			phone_1 = params[:phone_1]
+			if params[:phone_1].include?(' ')
+				phone_1 = phone_1.gsub!(' ','')
+			end
+			if phone_1.include?('-')
+				phone_1 = phone_1.gsub!('-','')
+			end
+			if phone_1.include?('(')
+				phone_1 = phone_1.gsub!('(','')
+			end
+			if phone_1.include?(')')
+				phone_1 = phone_1.gsub!(')','')
+			end
+			phone_1 = view_context.number_to_phone(phone_1)
+		else
+			phone_1 = nil
+		end
+		if params[:phone_2].present?
+			phone_2 = params[:phone_2]
+			if params[:phone_2].include?(' ')
+				phone_2 = phone_2.gsub!(' ','')
+			end
+			if phone_2.include?('-')
+				phone_2 = phone_2.gsub!('-','')
+			end
+			if phone_2.include?('(')
+				phone_2 = phone_2.gsub!('(','')
+			end
+			if phone_2.include?(')')
+				phone_2 = phone_2.gsub!(')','')
+			end
+			phone_2 = view_context.number_to_phone(phone_2)
+		else
+			phone_2 = nil
+		end
+		if params[:phone_3].present?
+			phone_3 = params[:phone_3]
+			if params[:phone_3].include?(' ')
+				phone_3 = phone_3.gsub!(' ','')
+			end
+			if phone_3.include?('-')
+				phone_3 = phone_3.gsub!('-','')
+			end
+			if phone_3.include?('(')
+				phone_3 = phone_3.gsub!('(','')
+			end
+			if phone_3.include?(')')
+				phone_3 = phone_3.gsub!(')','')
+			end
+			phone_3 = view_context.number_to_phone(phone_3)
+		else
+			phone_3 = nil
+		end
+
+		@user.phone_1 = phone_1
+		@user.phone_2 = phone_2
+		@user.phone_3 = phone_3
 		@user.address_1 = params[:address_1]
 		@user.address_2 = params[:address_2]
 		@user.country = params[:country]
-		@user.state = params[:state]
+		if params[:country] == 'CA'
+			@user.state = params[:province]
+		elsif @params[:country] == 'US'
+			@user.state = params[:state]
+		else
+			@user.state = params[:state_input]
+		end
 		@user.city = params[:city]
 		@user.zip = params[:zip]
 		@user.language = params[:language]
@@ -315,10 +376,12 @@ class AdminsController < ApplicationController
 			update = AdminActivity.create(admin_id: current_admin.id, data: YAML.dump({type: 'User Registration', message: "#{current_admin.name} registered a new user.", user_id: @user.id}))
 			Resque.enqueue(AdminNotifier, 0, 'system', "#{@user.name} has joined.", view_user_path(id: @user.id))
 
-			if transaction.payment_type == 'Credit Card'
-				TransactionalMailer.order_paid(transaction, @user).deliver
-			else
-				TransactionalMailer.order_created(transaction, @user).deliver
+			if transaction.present?
+				if transaction.payment_type == 'Credit Card'
+					TransactionalMailer.order_paid(transaction, @user).deliver
+				else
+					TransactionalMailer.order_created(transaction, @user).deliver
+				end
 			end
 		end
 	end
@@ -849,9 +912,64 @@ class AdminsController < ApplicationController
 			@user.first_name = params[:first_name]
 			@user.last_name = params[:last_name]
 			@user.email = params[:email]
-			@user.phone_1 = params[:phone_1]
-			@user.phone_2 = params[:phone_2]
-			@user.phone_3 = params[:phone_3]
+			if params[:phone_1].present?
+				phone_1 = params[:phone_1]
+				if params[:phone_1].include?(' ')
+					phone_1 = phone_1.gsub!(' ','')
+				end
+				if phone_1.include?('-')
+					phone_1 = phone_1.gsub!('-','')
+				end
+				if phone_1.include?('(')
+					phone_1 = phone_1.gsub!('(','')
+				end
+				if phone_1.include?(')')
+					phone_1 = phone_1.gsub!(')','')
+				end
+				phone_1 = view_context.number_to_phone(phone_1)
+			else
+				phone_1 = nil
+			end
+			if params[:phone_2].present?
+				phone_2 = params[:phone_2]
+				if params[:phone_2].include?(' ')
+					phone_2 = phone_2.gsub!(' ','')
+				end
+				if phone_2.include?('-')
+					phone_2 = phone_2.gsub!('-','')
+				end
+				if phone_2.include?('(')
+					phone_2 = phone_2.gsub!('(','')
+				end
+				if phone_2.include?(')')
+					phone_2 = phone_2.gsub!(')','')
+				end
+				phone_2 = view_context.number_to_phone(phone_2)
+			else
+				phone_2 = nil
+			end
+			if params[:phone_3].present?
+				phone_3 = params[:phone_3]
+				if params[:phone_3].include?(' ')
+					phone_3 = phone_3.gsub!(' ','')
+				end
+				if phone_3.include?('-')
+					phone_3 = phone_3.gsub!('-','')
+				end
+				if phone_3.include?('(')
+					phone_3 = phone_3.gsub!('(','')
+				end
+				if phone_3.include?(')')
+					phone_3 = phone_3.gsub!(')','')
+				end
+				phone_3 = view_context.number_to_phone(phone_3)
+			else
+				phone_3 = nil
+			end
+
+			@user.phone_1 = phone_1
+			@user.phone_2 = phone_2
+			@user.phone_3 = phone_3
 			@user.refer_code = params[:refer_code]
 
 			@user.save
@@ -891,8 +1009,14 @@ class AdminsController < ApplicationController
 			@user.address_1 = params[:address_1]
 			@user.address_2 = params[:address_2]
 			@user.city = params[:city]
-			@user.state = params[:state]
 			@user.country = params[:country]
+			if params[:country] == 'CA'
+				@user.state = params[:province]
+			elsif @params[:country] == 'US'
+				@user.state = params[:state]
+			else
+				@user.state = params[:state_input]
+			end
 			@user.zip = params[:zip]
 			@user.paperless_billing = params[:paperless_billing]
 			@user.save
