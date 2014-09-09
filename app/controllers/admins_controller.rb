@@ -565,22 +565,15 @@ class AdminsController < ApplicationController
 									transaction.status = 'Paid'
 									transaction.customer_paid = DateTime.now
 									transaction.balance_used = @user.balance
-									if @device.present?
-										transaction.roku_id = @device.id
-										if @device.expiry.nil? || @device.expiry < Date.today
-											@device.expiry = Date.today + @plan.months.months
-										else
-											@device.expiry += @plan.months.months
-										end
-										@device.save
+									if @device.expiry.nil? || @device.expiry < Date.today
+										@device.expiry = Date.today + @plan.months.months
 									else
-										if @user.expiry.nil? || @user.expiry < Date.today
-											@user.expiry = Date.today + @plan.months.months
-										else
-											@user.expiry += @plan.months.months
-										end
-										@user.save
+										@device.expiry += @plan.months.months
 									end
+									if @device.start_date.nil?
+										@device.start_date = Date.today
+									end
+									@device.save
 									transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 									transaction.plan_id = @plan.id
 									transaction.save
@@ -630,22 +623,15 @@ class AdminsController < ApplicationController
 						transaction.roku_id = @device.id
 						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 						transaction.plan_id = @plan.id
-						if @device.present?
-							transaction.roku_id = @device.id
-							if @device.expiry.nil? || @device.expiry < Date.today
-								@device.expiry = Date.today + @plan.months.months
-							else
-								@device.expiry += @plan.months.months
-							end
-							@device.save
+						if @device.expiry.nil? || @device.expiry < Date.today
+							@device.expiry = Date.today + @plan.months.months
 						else
-							if @user.expiry.nil? || @user.expiry < Date.today
-								@user.expiry = Date.today + @plan.months.months
-							else
-								@user.expiry += @plan.months.months
-							end
-							@user.save
+							@device.expiry += @plan.months.months
 						end
+						if @device.start_date.nil?
+							@device.start_date = Date.today
+						end
+						@device.save
 						transaction.save
 						OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
 						TransactionalMailer.order_paid(transaction, @user).deliver
@@ -712,6 +698,9 @@ class AdminsController < ApplicationController
 								else
 									@user.expiry += @plan.months.months
 								end
+								if @user.start_date.nil?
+									@user.start_date = Date.today
+								end
 								@user.save
 								transaction.save
 
@@ -749,6 +738,9 @@ class AdminsController < ApplicationController
 						@user.expiry = Date.today + @plan.months.months
 					else
 						@user.expiry += @plan.months.months
+					end
+					if @user.start_date.nil?
+						@user.start_date = Date.today
 					end
 					@user.save
 
