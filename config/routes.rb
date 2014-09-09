@@ -167,7 +167,7 @@ Rails.application.routes.draw do
 
         get 'admin_choose_plan' => 'admins#choose_plan'
         post 'admin_add_subscription' => 'admins#add_subscription'
-        post 'admin_add_subscription_user' => 'admins#admin_add_subscription_user'
+        post 'admin_add_subscription_user' => 'admins#add_subscription_user'
 
   		get '/admins/new_user' => 'admins#new_user', as: 'new_user'
   		post 'admin_create_user' => 'admins#create_user'
