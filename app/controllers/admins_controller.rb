@@ -2999,6 +2999,7 @@ class AdminsController < ApplicationController
 									@device.expiry += @plan.months.months
 								end
 								@device.save
+								@test = @device.errors.full_messages.join(". ")
 							else
 								if @user.expiry.nil? || @user.expiry < Date.today
 									@user.expiry = Date.today + @plan.months.months
