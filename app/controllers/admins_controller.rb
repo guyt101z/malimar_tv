@@ -662,6 +662,7 @@ class AdminsController < ApplicationController
 		elsif params[:tx_serial].to_i == 0
 			@user = User.find(params[:user_id])
 			@plan = Plan.find(params[:plan_id])
+			@devices = Device.where(user_id: @user.id)
 
 			unless @user.balance.nil?
 				total = @plan.price - @user.balance
