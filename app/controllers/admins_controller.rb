@@ -565,18 +565,28 @@ class AdminsController < ApplicationController
 									transaction.status = 'Paid'
 									transaction.customer_paid = DateTime.now
 									transaction.balance_used = @user.balance
-									transaction.roku_id = @device.id
+									if @device.present?
+										transaction.roku_id = @device.id
+										if @device.expiry.nil? || @device.expiry < Date.today
+											@device.expiry = Date.today + @plan.months.months
+										else
+											@device.expiry += @plan.months.months
+										end
+										@device.save
+									else
+										if @user.expiry.nil? || @user.expiry < Date.today
+											@user.expiry = Date.today + @plan.months.months
+										else
+											@user.expiry += @plan.months.months
+										end
+										@user.save
+									end
 									transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 									transaction.plan_id = @plan.id
 									transaction.save
 
 									OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
-									if @device.expiry.nil? || @device.expiry < Date.today
-										@device.expiry = Date.today + @plan.months.months
-									else
-										@device.expiry += @plan.months.months
-									end
-									@device.save
+
 									@user.balance = 0
 									@user.save
 									TransactionalMailer.order_paid(transaction, @user).deliver
@@ -597,7 +607,9 @@ class AdminsController < ApplicationController
 							transaction.balance_used = @user.balance
 							transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 							transaction.plan_id = @plan.id
-							transaction.roku_id = @device.id
+							if @device.present?
+								transaction.roku_id = @device.id
+							end
 							transaction.save
 							OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created.", link: true)
 							@user.balance = 0
@@ -608,12 +620,6 @@ class AdminsController < ApplicationController
 					else
 						@user.balance = @user.balance - @plan.price
 						@user.save
-						if @device.expiry.nil? || @device.expiry < Date.today
-							@device.expiry = Date.today + @plan.months.months
-						else
-							@device.expiry += @plan.months.months
-						end
-						@device.save
 
 						transaction = Transaction.new
 						transaction.user_id = @user.id
@@ -624,8 +630,22 @@ class AdminsController < ApplicationController
 						transaction.roku_id = @device.id
 						transaction.product_details = YAML.dump({name: @plan.name, duration: @plan.months, price: @plan.price})
 						transaction.plan_id = @plan.id
-						transaction.start = start_date
-						transaction.end = end_date
+						if @device.present?
+							transaction.roku_id = @device.id
+							if @device.expiry.nil? || @device.expiry < Date.today
+								@device.expiry = Date.today + @plan.months.months
+							else
+								@device.expiry += @plan.months.months
+							end
+							@device.save
+						else
+							if @user.expiry.nil? || @user.expiry < Date.today
+								@user.expiry = Date.today + @plan.months.months
+							else
+								@user.expiry += @plan.months.months
+							end
+							@user.save
+						end
 						transaction.save
 						OrderNotification.create(transaction_id: transaction.id,message: "Order \##{transaction.id} has been created and paid.", link: true)
 						TransactionalMailer.order_paid(transaction, @user).deliver
@@ -2962,7 +2982,7 @@ class AdminsController < ApplicationController
 
 
 
-						response = gateway.purchase((total*100).to_i, credit_card, ip: '104.131.205.107')
+						response = gateway.purchase((total*100).to_i, credit_card, ip: request.remote_ip)
 
 						if response.success?
 							transaction = Transaction.new
