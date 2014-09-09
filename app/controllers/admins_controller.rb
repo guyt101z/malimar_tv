@@ -516,7 +516,7 @@ class AdminsController < ApplicationController
 		end
 	end
 
-	def add_subscription
+	def add_subscription_user
 
 		if params[:tx_serial].present? && params[:tx_serial].to_i != 0
 			@device = Roku.where(id: params[:tx_serial]).first
