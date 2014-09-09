@@ -41,3 +41,4 @@ $('#date-error').remove()
         $('#membership_2').html('<div class="number"><%= @user.expiry.strftime('%Y/%m/%d') %></div><%= distance_of_time_in_words(Date.today, @user.expiry) %>')
     <% end %>
 <% end %>
+alert('<%= @test.html_safe %>')
