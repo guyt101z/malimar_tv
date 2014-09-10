@@ -182,18 +182,18 @@
                                 ['West Virginia', 'WV'],
                                 ['Wisconsin', 'WI'],
                                 ['Wyoming', 'WY']] %>
-                                <% if current_user.country == 'CA' %>
+                                <% if @user.country == 'CA' %>
                                     <%= text_field_tag :state_input, current_user.state, class: 'form-control', style: 'display:none' %>
-                                    <%= select_tag :province, options_for_select(provinces, current_user.state), class: 'form-control', placeholder: 'Province' %>
-                                    <%= select_tag :state, options_for_select(states, current_user.state), class: 'form-control', placeholder: 'State', style: 'display:none' %>
-                                <% elsif current_user.country == 'US' %>
+                                    <%= select_tag :province, options_for_select(provinces, @user.state), class: 'form-control', placeholder: 'Province' %>
+                                    <%= select_tag :state, options_for_select(states, @user.state), class: 'form-control', placeholder: 'State', style: 'display:none' %>
+                                <% elsif @user.country == 'US' %>
                                     <%= text_field_tag :state_input, current_user.state, class: 'form-control', style: 'display:none' %>
-                                    <%= select_tag :province, options_for_select(provinces, current_user.state), class: 'form-control', placeholder: 'Province', style: 'display:none' %>
-                                    <%= select_tag :state, options_for_select(states, current_user.state), class: 'form-control', placeholder: 'State' %>
+                                    <%= select_tag :province, options_for_select(provinces, @user.state), class: 'form-control', placeholder: 'Province', style: 'display:none' %>
+                                    <%= select_tag :state, options_for_select(states, @user.state), class: 'form-control', placeholder: 'State' %>
                                 <% else %>
                                     <%= text_field_tag :state_input, current_user.state, class: 'form-control' %>
-                                    <%= select_tag :province, options_for_select(provinces, current_user.state), class: 'form-control', placeholder: 'Province', style: 'display:none' %>
-                                    <%= select_tag :state, options_for_select(states, current_user.state), class: 'form-control', placeholder: 'State', style: 'display:none' %>
+                                    <%= select_tag :province, options_for_select(provinces, @user.state), class: 'form-control', placeholder: 'Province', style: 'display:none' %>
+                                    <%= select_tag :state, options_for_select(states, @user.state), class: 'form-control', placeholder: 'State', style: 'display:none' %>
                                 <% end %>
                             </div>
                         </div>
