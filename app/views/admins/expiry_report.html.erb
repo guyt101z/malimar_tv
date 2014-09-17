@@ -40,7 +40,7 @@
                         <% end %>
 
                         <tr>
-                            <td><%= user.name %></td>
+                            <td><%= link_to user.name, view_user_path(id: user.id) %></td>
                             <td><%= ex[:type] %></td>
                             <% if ex[:type] == 'Web' %>
                                 <td><%= user.expiry.strftime('%B %-d, %Y') %></td>
@@ -66,13 +66,13 @@
                                 <% if user.last_printed.nil? %>
                                     <td>Never</td>
                                 <% else %>
-                                    <td><%= user.last_printed.strftime('%B %-d, %Y') %></td>
+                                    <td><%= user.last_printed.strftime('%B %-d, %Y at %H:%M') %></td>
                                 <% end %>
                             <% else %>
                                 <% if roku.last_printed.nil? %>
                                     <td>Never</td>
                                 <% else %>
-                                    <td><%= roku.last_printed.strftime('%B %-d, %Y') %></td>
+                                    <td><%= roku.last_printed.strftime('%B %-d, %Y at %H:%M') %></td>
                                 <% end %>
                             <% end %>
                             <% if ex[:type] == 'Web' %>

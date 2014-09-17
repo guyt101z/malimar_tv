@@ -3447,7 +3447,7 @@ class AdminsController < ApplicationController
 						last_tx: last_tx.id
 					})
 				end
-				user.last_printed = Date.today
+				user.last_printed = DateTime.now
 				user.save(:validate => false)
 			end
 		end
@@ -3471,7 +3471,7 @@ class AdminsController < ApplicationController
 						last_tx: last_tx.id
 					})
 				end
-				roku.last_printed = Date.today
+				roku.last_printed = DateTime.now
 				roku.save(:validate => false)
 			end
 		end
