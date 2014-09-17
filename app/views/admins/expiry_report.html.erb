@@ -21,13 +21,13 @@
             <div class="panel-body" id='reports'>
                 <table class='table fz12-5 table-nb1'>
                     <thead><tr>
+                        <th><a style="cursor:pointer" onclick='selectAll()' id='select_all'>Select All</a>
+                            <a style="cursor:pointer; display:none" onclick='deselectAll()' id='deselect_all'>Deselect All</a></th>
                         <th>Name</th>
                         <th>Sub Type</th>
                         <th>Expiry</th>
                         <th>Current Plan</th>
                         <th>Last Printed</th>
-                        <th><a style="cursor:pointer" onclick='selectAll()' id='select_all'>Select All</a>
-                            <a style="cursor:pointer; display:none" onclick='deselectAll()' id='deselect_all'>Deselect All</a></th>
                     </tr></thead>
                     <% @expirations.each do |ex| %>
                         <% if ex[:type] == 'Web' %>
@@ -40,6 +40,15 @@
                         <% end %>
 
                         <tr>
+                            <% if ex[:type] == 'Web' %>
+                                <td>
+                                    <%= check_box_tag 'users[]', user.id, false, class: 'check-group' %>
+                                </td>
+                            <% else %>
+                                <td>
+                                    <%= check_box_tag 'rokus[]', roku.id, false, class: 'check-group' %>
+                                </td>
+                            <% end %>
                             <td><%= link_to user.name, view_user_path(id: user.id) %></td>
                             <td><%= ex[:type] %></td>
                             <% if ex[:type] == 'Web' %>
@@ -74,15 +83,6 @@
                                 <% else %>
                                     <td><%= roku.last_printed.strftime('%B %-d, %Y at %H:%M') %></td>
                                 <% end %>
-                            <% end %>
-                            <% if ex[:type] == 'Web' %>
-                                <td>
-                                    <%= check_box_tag 'users[]', user.id, false, class: 'check-group' %>
-                                </td>
-                            <% else %>
-                                <td>
-                                    <%= check_box_tag 'rokus[]', roku.id, false, class: 'check-group' %>
-                                </td>
                             <% end %>
                         </tr>
                     <% end %>
