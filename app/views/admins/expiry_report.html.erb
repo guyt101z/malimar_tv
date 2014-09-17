@@ -26,8 +26,8 @@
                         <th>Expiry</th>
                         <th>Current Plan</th>
                         <th>Last Printed</th>
-                        <th><a href='#' style="cursor:pointer" onclick='selectAll()' id='select_all'>Select All</a>
-                            <a href='#' style="cursor:pointer; display:none" onclick='deselectAll()' id='deselect_all'>Deselect All</a></th>
+                        <th><a style="cursor:pointer" onclick='selectAll()' id='select_all'>Select All</a>
+                            <a style="cursor:pointer; display:none" onclick='deselectAll()' id='deselect_all'>Deselect All</a></th>
                     </tr></thead>
                     <% @expirations.each do |ex| %>
                         <% if ex[:type] == 'Web' %>

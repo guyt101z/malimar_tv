@@ -3405,21 +3405,23 @@ class AdminsController < ApplicationController
 				end
 			end
 
-			Roku.where(user_id: user.id, expiry: expiry).each do |roku|
-				last_tx = Transaction.where(roku_id: roku.id, status: ['Paid','Refunded']).order(customer_paid: :desc).first
-				if last_tx.nil?
-					@expirations.push({
-						type: 'Roku',
-						id: roku.id,
-						last_tx: nil
-					})
-				else
-					@expirations.push({
-						type: 'Roku',
-						id: roku.id,
-						last_tx: last_tx.id
-					})
-				end
+
+		end
+
+		Roku.where(expiry: expiry).each do |roku|
+			last_tx = Transaction.where(roku_id: roku.id, status: ['Paid','Refunded']).order(customer_paid: :desc).first
+			if last_tx.nil?
+				@expirations.push({
+					type: 'Roku',
+					id: roku.id,
+					last_tx: nil
+				})
+			else
+				@expirations.push({
+					type: 'Roku',
+					id: roku.id,
+					last_tx: last_tx.id
+				})
 			end
 		end
 	end
