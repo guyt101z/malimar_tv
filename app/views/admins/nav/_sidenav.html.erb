@@ -39,7 +39,7 @@
 		params[:action] == 'refunded_transactions' %>
 			<%= render 'admins/nav/sidenavs/transactions' %>
 
-		<% elsif params[:controller] == 'admins' && params[:action] == 'index' %>
+		<% elsif (params[:controller] == 'admins' && params[:action] == 'index') || params[:action] == 'expiry_report' %>
 			<%= render 'admins/nav/sidenavs/index' %>
 
 		<% elsif params[:action] == 'live_channels' || params[:action] == 'movies' || params[:action] == 'shows' ||

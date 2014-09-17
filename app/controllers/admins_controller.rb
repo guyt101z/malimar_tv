@@ -3378,6 +3378,273 @@ class AdminsController < ApplicationController
 		redirect_to '/admins'
 	end
 
+	def expiry_report
+		if params[:range].present?
+			expiry = Date.today + params[:range].to_i.days
+		else
+			expiry = Date.today
+		end
+
+		@expirations = Array.new
+
+		User.all.order(last_name: :desc).each do |user|
+			if user.expiry == expiry
+				last_tx = Transaction.where(user_id: user.id, roku_id: nil, status: ['Paid','Refunded']).order(customer_paid: :desc).first
+				if last_tx.nil?
+					@expirations.push({
+						type: 'Web',
+						id: user.id,
+						last_tx: nil
+					})
+				else
+					@expirations.push({
+						type: 'Web',
+						id: user.id,
+						last_tx: last_tx.id
+					})
+				end
+			end
+
+			Roku.where(user_id: user.id, expiry: expiry).each do |roku|
+				last_tx = Transaction.where(roku_id: roku.id, status: ['Paid','Refunded']).order(customer_paid: :desc).first
+				if last_tx.nil?
+					@expirations.push({
+						type: 'Roku',
+						id: roku.id,
+						last_tx: nil
+					})
+				else
+					@expirations.push({
+						type: 'Roku',
+						id: roku.id,
+						last_tx: last_tx.id
+					})
+				end
+			end
+		end
+	end
+
+	def pdf_expiry_report
+		if params[:range].present?
+			expiry = Date.today + params[:range].to_i.days
+		else
+			expiry = Date.today
+		end
+
+		@expirations = Array.new
+
+		User.all.order(last_name: :desc).each do |user|
+			if user.expiry == expiry
+				last_tx = Transaction.where(user_id: user.id, roku_id: nil, status: ['Paid','Refunded']).order(customer_paid: :desc).first
+				if last_tx.nil?
+					@expirations.push({
+						type: 'Web',
+						id: user.id,
+						last_tx: nil
+					})
+				else
+					@expirations.push({
+						type: 'Web',
+						id: user.id,
+						last_tx: last_tx.id
+					})
+				end
+			end
+
+			Roku.where(user_id: user.id, expiry: expiry).each do |roku|
+				last_tx = Transaction.where(roku_id: roku.id, status: ['Paid','Refunded']).order(customer_paid: :desc).first
+				if last_tx.nil?
+					@expirations.push({
+						type: 'Roku',
+						id: roku.id,
+						last_tx: nil
+					})
+				else
+					@expirations.push({
+						type: 'Roku',
+						id: roku.id,
+						last_tx: last_tx.id
+					})
+				end
+			end
+		end
+
+		pdf = Prawn::Document.new(page_size: 'LETTER')
+		pdf.font_size(8)
+
+		invoice_details = YAML.load(Setting.where(name: 'Invoice Details').first.data)
+		@plans = Plan.all.order(price: :desc)
+		data = Array.new
+
+
+
+		@expirations.each do |ex|
+			pdf.image "#{Rails.root}/public#{InvoiceLogo.first.image_url(:invoice_display)}", position: :center, vposition: :top, height: 40
+
+			if ex[:type] == 'Web'
+				user = User.find(ex[:id])
+			else
+				roku = Roku.find(ex[:id])
+				user = User.find(roku.user_id)
+			end
+
+			pdf.bounding_box([0, 650], width: 200) do
+				pdf.text "#{invoice_details[:company_name]}", style: :bold
+				pdf.text "#{invoice_details[:address]}"
+			end
+
+			pdf.bounding_box([181, 650], width: 200) do
+				pdf.text "www.malimar.tv\nsupport@malimar.tv\n1.877.400.7733\n1.619.272.7600", align: :center
+			end
+
+			pdf.bounding_box([0, 575], width: 200) do
+				pdf.text "#{user.name}", size: 12, style: :bold
+				pdf.text "#{user.address_1}"
+				if user.address_2.present?
+					pdf.text "#{user.address_1}"
+				end
+				if user.state.present?
+					if user.zip.present?
+						pdf.text "#{user.city}, #{user.state} #{user.zip.upcase}"
+					else
+						pdf.text "#{user.city}, #{user.state}"
+					end
+				else
+					pdf.text "#{user.city}"
+				end
+				pdf.text "#{user.country}"
+			end
+
+			pdf.bounding_box([337, 575], width: 200) do
+		        pdf.stroke_color '000000'
+				pdf.move_down 3
+				pdf.indent 3 do
+					pdf.text "Current Plan", align: :center, style: :bold, size: 10
+
+					pdf.move_down 5
+					if ex[:type] == "Web"
+						user = User.find(ex[:id])
+						if ex[:last_tx].nil?
+							pdf.text "FREE TRIAL (WEB/MOBILE/TABLET)", align: :center
+							pdf.text "Expires: #{user.expiry.strftime('%B %-d, %Y')}", align: :center
+							pdf.text ""
+						else
+							tx = Transaction.find(ex[:last_tx])
+							tx_details = YAML.load(tx.product_details)
+
+							pdf.text "#{tx_details[:name].upcase}", align: :center
+							pdf.text "Expires: #{user.expiry.strftime('%B %-d, %Y')}", align: :center
+							pdf.text ""
+						end
+					elsif ex[:type] == 'Roku'
+						roku = Roku.find(params[:id])
+
+						if ex[:last_tx].nil?
+							pdf.text "FREE TRIAL - (#{roku.serial})", align: :center
+							pdf.text "Expires: #{roku.expiry.strftime('%B %-d, %Y')}", align: :center
+							pdf.text ""
+						else
+							tx = Transaction.find(ex[:last_tx])
+							tx_details = YAML.load(tx.product_details)
+
+							pdf.text "#{tx_details[:name].upcase}", align: :center
+							pdf.text "Expires: #{roku.expiry.strftime('%B %-d, %Y')}", align: :center
+							pdf.text ""
+						end
+					end
+				end
+				pdf.stroke_bounds
+			end
+
+			pdf.bounding_box([0, 500], width: 200) do
+				pdf.text "AVAILABLE PLANS", style: :bold, size: 10
+			end
+
+			data = Array.new
+			data.push(['Plan', 'Device', 'Begin Date', 'End Date', 'Qty', 'Price'])
+			@plans.each do |plan|
+				if ex[:type] == 'Web'
+					data.push([
+						"#{plan.name} - WEB",
+						'Web/Tablet/Mobile',
+						user.expiry.strftime('%d/%m/%Y'),
+						(user.expiry + plan.months.months).strftime('%d/%m/%Y'),
+						1,
+						view_context.number_to_currency(plan.price)
+					])
+				else
+					data.push([
+						"#{plan.name} - ROKU",
+						roku.serial,
+						roku.expiry.strftime('%d/%m/%Y'),
+						(roku.expiry + plan.months.months).strftime('%d/%m/%Y'),
+						1,
+						view_context.number_to_currency(plan.price)
+					])
+				end
+			end
+
+
+			pdf.bounding_box([0, 485], width: pdf.bounds.width) do
+				pdf.table(data, width: pdf.bounds.width) do
+					row(0).font_style = :bold
+					columns(1..5).align = :center
+					columns(0..5).border_width = 0
+					row(0).border_bottom_width = 1
+				end
+			end
+
+			pdf.bounding_box([0, 275], width: pdf.bounds.width) do
+				pdf.stroke_color '000000'
+				pdf.stroke_bounds
+			end
+
+			pdf.bounding_box([0, 270], width: pdf.bounds.width) do
+				pdf.image "#{Rails.root}/public#{InvoiceLogo.first.image_url(:invoice_display)}", position: :center, vposition: :top, height: 40
+			end
+
+			pdf.bounding_box([0, 225], width: 200) do
+				pdf.text "Payable to:".upcase, style: :bold
+				pdf.move_down 3
+				pdf.text "#{invoice_details[:company_name]}", style: :bold
+				pdf.text "#{invoice_details[:address]}"
+			end
+
+			pdf.bounding_box([181, 225], width: 200) do
+				pdf.text "www.malimar.tv\nsupport@malimar.tv\n1.877.400.7733\n1.619.272.7600", align: :center
+			end
+
+			pdf.bounding_box([181, 175], width: 200) do
+				pdf.text "Pay online at www.malimar.tv", align: :center, style: :bold
+				pdf.image "#{Rails.root}/public/img/credit-card-icons.png", position: :center, height: 20
+			end
+
+			pdf.bounding_box([337, 225], width: 200) do
+				pdf.text "#{user.name}", size: 12, style: :bold, align: :right
+				pdf.text "#{user.address_1}", align: :right
+				if user.address_2.present?
+					pdf.text "#{user.address_1}", align: :right
+				end
+				if user.state.present?
+					if user.zip.present?
+						pdf.text "#{user.city}, #{user.state} #{user.zip.upcase}", align: :right
+					else
+						pdf.text "#{user.city}, #{user.state}", align: :right
+					end
+				else
+					pdf.text "#{user.city}", align: :right
+				end
+				pdf.text "#{user.country}", align: :right
+			end
+
+			pdf.start_new_page
+		end
+
+		send_data pdf.render, filename: "test.pdf", :type => "application/pdf", :disposition => "inline"
+
+
+	end
+
 	private
 
 	def file_type(file)

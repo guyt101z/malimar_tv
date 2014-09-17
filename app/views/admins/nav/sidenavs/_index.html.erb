@@ -2,5 +2,6 @@
 <li><%= link_to 'New Sales Rep', new_rep_path %></li>
 <li><%= link_to 'Support', admin_support_path %></li>
 <li><%= link_to 'Orders', orders_path %></li>
+<li id='expiry_report'><%= link_to 'Expirations', '#', style: 'cursor:pointer', onclick: 'window.location= "'+expiry_report_path(range: 0)+'"' %></li>
 <li><%= link_to 'VOD Migrations', vod_uploads_path %></li>
 <li><%= link_to 'Client Migrations', client_uploads_path %></li>

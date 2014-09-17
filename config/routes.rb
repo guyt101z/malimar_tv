@@ -69,6 +69,10 @@ Rails.application.routes.draw do
 
   	# Admin Methods
     authenticate :admin do
+        get '/admins/expiry_report' => 'admins#expiry_report', as: 'expiry_report'
+        get '/admins/pdf_expiry_report' => 'admins#pdf_expiry_report', as: 'pdf_expiry_report'
+
+
         get 'admin_load_devices' => 'admins#load_devices'
 
         get 'delete_user' => 'admins#delete_user'

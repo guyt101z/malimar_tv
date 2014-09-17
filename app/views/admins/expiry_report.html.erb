@@ -1,0 +1,111 @@
+<% content_for :top_level, 'Dashboard' %>
+<% content_for :low_levels, YAML.dump(['Expiry Report']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class="panel">
+            <div class="panel-heading ptb5">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mt5"><span class="icon-graph mr7"></span> Reports <a href="#" class="sign"><span class="fa fa-question-circle"></span></a></div>
+                    </div>
+                    <div class="col-md-9 text-right">
+                        <%= link_to 'PRINT', pdf_expiry_report_path(range: params[:range]), class: "btn btn-default btn-sm btn-w170", id: 'PRINT', target: '_blank' %>
+                        <%= link_to '30 Days', '#', style: 'cursor:pointer', class: "btn btn-default btn-sm btn-w170", id: '30_days', onclick: 'window.location= "'+expiry_report_path(range: 30)+'"' %>
+                        <%= link_to '14 Days', '#', style: 'cursor:pointer', class: "btn btn-default btn-sm btn-w170", id: '14_days', onclick: 'window.location= "'+expiry_report_path(range: 14)+'"' %>
+                        <%= link_to '7 Days', '#', style: 'cursor:pointer', class: "btn btn-default btn-sm btn-w170", id: '7_days', onclick: 'window.location= "'+expiry_report_path(range: 7)+'"' %>
+                        <%= link_to 'Today', '#', style: 'cursor:pointer', class: "btn btn-default btn-sm btn-w170", id: '0_days', onclick: 'window.location= "'+expiry_report_path(range: 0)+'"' %>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body" id='reports'>
+                <table class='table fz12-5 table-nb1'>
+                    <thead><tr>
+                        <td>Name</td>
+                        <td>Sub Type</td>
+                        <td>Expiry</td>
+                        <td>Current Plan</td>
+                    </tr></thead>
+                    <% @expirations.each do |ex| %>
+                        <% if ex[:type] == 'Web' %>
+                            <% user = User.find(ex[:id]) %>
+                            <% tx = Transaction.where(id: ex[:last_tx]).first %>
+                        <% else %>
+                            <% roku = Roku.find(ex[:id]) %>
+                            <% user = User.find(roku.user_id) %>
+                            <% tx = Transaction.where(id: ex[:last_tx]).first %>
+                        <% end %>
+
+                        <tr>
+                            <td><%= user.name %></td>
+                            <td><%= ex[:type] %></td>
+                            <% if ex[:type] == 'Web' %>
+                                <td><%= user.expiry.strftime('%B %-d, %Y') %></td>
+                            <% else %>
+                                <td><%= roku.expiry.strftime('%B %-d, %Y') %></td>
+                            <% end %>
+                            <% if tx.nil? %>
+                                <% if ex[:type] == 'Web' %>
+                                    <td>FREE TRIAL - (WEB/TABLET/MOBILE)</td>
+                                <% else %>
+                                    <td>FREE TRIAL - (<%= roku.serial %>)</td>
+                                <% end %>
+                            <% else %>
+                                <% if ex[:type] == 'Web' %>
+                                    <% tx_details = YAML.load(tx.product_details) %>
+                                    <td><%= tx_details[:name].upcase %></td>
+                                <% else %>
+                                    <% tx_details = YAML.load(tx.product_details) %>
+                                    <td><%= tx_details[:name].upcase %></td>
+                                <% end %>
+                            <% end %>
+                        </tr>
+                    <% end %>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    $.ajax({
+        url: '/load_activity_feed'
+    })
+    function load_updates(timestamp){
+        $('#loading').html()
+        $.ajax({
+            url: '/load_activity_feed?before='+timestamp
+        })
+    }
+    $(window).resize(function(){
+        waitForFinalEvent(function(){
+            chart.redraw()
+        },500,makeid())
+    })
+    var waitForFinalEvent = (function () {
+        var timers = {};
+        return function (callback, ms, uniqueId) {
+            if (!uniqueId) {
+                uniqueId = "Don't call this twice without a uniqueId";
+            }
+            if (timers[uniqueId]) {
+                clearTimeout (timers[uniqueId]);
+            }
+            timers[uniqueId] = setTimeout(callback, ms);
+        };
+    })();
+    function makeid() {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for( var i=0; i < 5; i++ )
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+    }
+    <% if params[:range].present? %>
+        $('#<%= params[:range] %>_days').addClass('active')
+    <% else %>
+        $('#0_days').addClass('active')
+    <% end %>
+    $('#expiry_report').addClass('active')
+</script>
