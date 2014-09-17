@@ -3537,7 +3537,7 @@ class AdminsController < ApplicationController
 							pdf.text ""
 						end
 					elsif ex[:type] == 'Roku'
-						roku = Roku.find(params[:id])
+						roku = Roku.find(ex[:id])
 
 						if ex[:last_tx].nil?
 							pdf.text "FREE TRIAL - (#{roku.serial})", align: :center
