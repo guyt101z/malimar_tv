@@ -2,6 +2,7 @@
 <% content_for :low_levels, YAML.dump(['Expiry Report']) %>
 <div id="left-scroll" class="nano">
     <div class="nano-content">
+        <%= form_tag pdf_expiry_report_path(range: params[:range]), method: :get do %>
         <div class="panel">
             <div class="panel-heading ptb5">
                 <div class="row">
@@ -9,7 +10,7 @@
                         <div class="mt5"><span class="icon-graph mr7"></span> Reports <a href="#" class="sign"><span class="fa fa-question-circle"></span></a></div>
                     </div>
                     <div class="col-md-9 text-right">
-                        <%= link_to 'PRINT', pdf_expiry_report_path(range: params[:range]), class: "btn btn-default btn-sm btn-w170", id: 'PRINT', target: '_blank' %>
+                        <%= submit_tag 'PRINT',  class: "btn btn-default btn-sm btn-w170" %>
                         <%= link_to '30 Days', '#', style: 'cursor:pointer', class: "btn btn-default btn-sm btn-w170", id: '30_days', onclick: 'window.location= "'+expiry_report_path(range: 30)+'"' %>
                         <%= link_to '14 Days', '#', style: 'cursor:pointer', class: "btn btn-default btn-sm btn-w170", id: '14_days', onclick: 'window.location= "'+expiry_report_path(range: 14)+'"' %>
                         <%= link_to '7 Days', '#', style: 'cursor:pointer', class: "btn btn-default btn-sm btn-w170", id: '7_days', onclick: 'window.location= "'+expiry_report_path(range: 7)+'"' %>
@@ -20,10 +21,13 @@
             <div class="panel-body" id='reports'>
                 <table class='table fz12-5 table-nb1'>
                     <thead><tr>
-                        <td>Name</td>
-                        <td>Sub Type</td>
-                        <td>Expiry</td>
-                        <td>Current Plan</td>
+                        <th>Name</th>
+                        <th>Sub Type</th>
+                        <th>Expiry</th>
+                        <th>Current Plan</th>
+                        <th>Last Printed</th>
+                        <th><a href='#' style="cursor:pointer" onclick='selectAll()' id='select_all'>Select All</a>
+                            <a href='#' style="cursor:pointer; display:none" onclick='deselectAll()' id='deselect_all'>Deselect All</a></th>
                     </tr></thead>
                     <% @expirations.each do |ex| %>
                         <% if ex[:type] == 'Web' %>
@@ -58,12 +62,34 @@
                                     <td><%= tx_details[:name].upcase %></td>
                                 <% end %>
                             <% end %>
+                            <% if ex[:type] == 'Web' %>
+                                <% if user.last_printed.nil? %>
+                                    <td>Never</td>
+                                <% else %>
+                                    <td><%= user.last_printed.strftime('%B %-d, %Y') %></td>
+                                <% end %>
+                            <% else %>
+                                <% if roku.last_printed.nil? %>
+                                    <td>Never</td>
+                                <% else %>
+                                    <td><%= roku.last_printed.strftime('%B %-d, %Y') %></td>
+                                <% end %>
+                            <% end %>
+                            <% if ex[:type] == 'Web' %>
+                                <td>
+                                    <%= check_box_tag 'users[]', user.id, false, class: 'check-group' %>
+                                </td>
+                            <% else %>
+                                <td>
+                                    <%= check_box_tag 'rokus[]', roku.id, false, class: 'check-group' %>
+                                </td>
+                            <% end %>
                         </tr>
                     <% end %>
                 </table>
             </div>
         </div>
-
+        <% end %>
     </div>
 </div>
 <script type="text/javascript">
@@ -102,6 +128,23 @@
 
         return text;
     }
+
+    function selectAll(){
+        $('#select_all').hide()
+        $('#deselect_all').show()
+        $('.check-group').each(function(){
+            this.checked = true
+        })
+    }
+
+    function deselectAll(){
+        $('#select_all').show()
+        $('#deselect_all').hide()
+        $('.check-group').each(function(){
+            this.checked = false
+        })
+    }
+
     <% if params[:range].present? %>
         $('#<%= params[:range] %>_days').addClass('active')
     <% else %>

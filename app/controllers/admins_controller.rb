@@ -3433,38 +3433,52 @@ class AdminsController < ApplicationController
 
 		@expirations = Array.new
 
-		User.all.order(last_name: :desc).each do |user|
-			if user.expiry == expiry
-				last_tx = Transaction.where(user_id: user.id, roku_id: nil, status: ['Paid','Refunded']).order(customer_paid: :desc).first
-				if last_tx.nil?
-					@expirations.push({
-						type: 'Web',
-						id: user.id,
-						last_tx: nil
-					})
-				else
-					@expirations.push({
-						type: 'Web',
-						id: user.id,
-						last_tx: last_tx.id
-					})
+		if params[:users].present?
+			params[:users].each do |user_id|
+				user = User.find(user_id)
+				if user.expiry == expiry
+					last_tx = Transaction.where(user_id: user.id, roku_id: nil, status: ['Paid','Refunded']).order(customer_paid: :desc).first
+					if last_tx.nil?
+						@expirations.push({
+							type: 'Web',
+							id: user.id,
+							last_tx: nil
+						})
+					else
+						@expirations.push({
+							type: 'Web',
+							id: user.id,
+							last_tx: last_tx.id
+						})
+					end
+					user.last_printed = Date.today
+					user.save(:validate => false)
 				end
 			end
+		end
 
-			Roku.where(user_id: user.id, expiry: expiry).each do |roku|
-				last_tx = Transaction.where(roku_id: roku.id, status: ['Paid','Refunded']).order(customer_paid: :desc).first
-				if last_tx.nil?
-					@expirations.push({
-						type: 'Roku',
-						id: roku.id,
-						last_tx: nil
-					})
-				else
-					@expirations.push({
-						type: 'Roku',
-						id: roku.id,
-						last_tx: last_tx.id
-					})
+		if params[:rokus].present?
+			params[:rokus].each do |roku_id|
+				roku = Roku.find(roku_id)
+				user = User.find(roku.user_id)
+
+				if roku.expiry == expiry
+					last_tx = Transaction.where(roku_id: roku.id, status: ['Paid','Refunded']).order(customer_paid: :desc).first
+					if last_tx.nil?
+						@expirations.push({
+							type: 'Roku',
+							id: roku.id,
+							last_tx: nil
+						})
+					else
+						@expirations.push({
+							type: 'Roku',
+							id: roku.id,
+							last_tx: last_tx.id
+						})
+					end
+					roku.last_printed = Date.today
+					roku.save(:validate => false)
 				end
 			end
 		end
