@@ -232,8 +232,8 @@ max-width: 100%;
 }
 .hover-play {
 	position: absolute;
-top: 94px;
-left: 52px;
+top: calc((100%/2) - 56px);
+left: calc((100%/2) - 32px);
 height: 64px;
 width: 64px;
 z-index: 5;

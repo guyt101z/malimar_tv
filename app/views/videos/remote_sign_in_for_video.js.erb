@@ -1,14 +1,14 @@
 <% if @error.nil? %>
     <% if params[:content_type] == 'Channel' %>
-        window.location = '/watch/live/<%= params[:channel_id] %>'
+        window.location = '/watch/live/<%= params[:channel_slug] %>'
     <% elsif params[:content_type] == 'Show' %>
         <% if params[:episode_num].present? %>
-            window.location = '/watch/shows/<%= params[:show_id] %>/<%= params[:episode_num] %>'
+            window.location = '/watch/shows/<%= params[:show_slug] %>/<%= params[:episode_num] %>'
         <% else %>
-            window.location = '/watch/shows/<%= params[:show_id] %>'
+            window.location = '/watch/shows/<%= params[:show_slug] %>'
         <% end %>
     <% elsif params[:content_type] == 'Movie' %>
-        window.location = '/watch/movies/<%= params[:movie_id] %>'
+        window.location = '/watch/movies/<%= params[:movie_slug] %>'
     <% elsif params[:content_type] == 'Grid' %>
         window.location = '/watch/grid/<%= params[:grid_id] %>'
     <% end %>
