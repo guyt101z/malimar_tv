@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require slick
 //= require turbolinks
 //= require bootstrap
 //= require Autolinker
@@ -23,7 +24,6 @@
 //= require dataTables
 //= require dataTables_bootstrap
 //= require_directory ./main
-//= require slick
 
 
 /**
