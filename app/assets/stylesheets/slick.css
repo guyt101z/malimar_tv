@@ -26,7 +26,6 @@
 /* Arrows */
 .slick-prev, .slick-next {
     position: absolute;
-    display: block;
     height: 100%;
     width: 70px;
     line-height: 0;
@@ -39,7 +38,11 @@
     padding: 0;
     border: none;
     outline: none;
+    display: none;
 }
+
+.slick-slider:hover .slick-prev, .slick-slider:hover .slick-next { display: block }
+
 .slick-prev:hover, .slick-prev:focus, .slick-next:hover, .slick-next:focus { outline: none; opacity: 0.9; background: #222; }
 .slick-prev:hover:before, .slick-prev:focus:before, .slick-next:hover:before, .slick-next:focus:before { opacity: 1; }
 .slick-prev.slick-disabled:before, .slick-next.slick-disabled:before { opacity: 0.25; }
