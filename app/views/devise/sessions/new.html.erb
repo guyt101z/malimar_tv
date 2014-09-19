@@ -4,6 +4,11 @@
     	<h3 class="name">Sign Into Your Account</h3>
     </div>
 </div><!--splash-->
+<% status = Setting.where(name: 'Active Registration').first.data %>
+<% unless status == 'true' %>
+	<% flash[:notice] = 'Registration and sign in is not active' %>
+	<script>window.location = '/'</script>
+<% end %>
 <div class="content">
 	<div class="container">
 		<div class='col-md-3 col-sm-2 col-xs-1'></div>

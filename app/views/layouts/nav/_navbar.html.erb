@@ -36,6 +36,8 @@
                     </div>
                 </div>
             </div>
+            <% status = Setting.where(name: 'Active Registration').first.data %>
+            <% if status == 'true' %>
             <ul class="nav navbar-nav navbar-right">
                 <li><div class="sep hidden-xs"></div></li>
                 <li><%= link_to 'FREE TRIAL', free_trial_path %></li>
@@ -43,6 +45,7 @@
                 <li><%= link_to 'SIGN IN', new_user_session_path %></li>
                 <li><div class="sep hidden-xs"></div></li>
             </ul>
+            <% end %>
         </div>
     </div>
 </div><!--navbar-->
