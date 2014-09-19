@@ -705,7 +705,7 @@ class UsersController < ApplicationController
 
 	def free_trial_1
 		if params[:serial].present?
-			@device = Device.new
+			@device = Roku.new
 		else
 			@device = nil
 		end
