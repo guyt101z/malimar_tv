@@ -113,6 +113,9 @@ Rails.application.routes.draw do
         get '/admins/settings/languages' => 'admins#edit_languages', as: 'edit_languages'
         post 'update_languages' => 'admins#update_languages'
 
+        get '/admins/settings/registration_sign_in' => 'admins#edit_registration', as: 'edit_registration'
+        post 'update_registration' => 'admins#update_registration'
+
         get '/admins/settings/payouts' => 'admins#edit_payouts', as: 'edit_payouts'
         post 'update_payout_methods' => 'admins#update_payout_methods'
 

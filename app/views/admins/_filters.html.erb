@@ -1,0 +1,461 @@
+<div class="filer-title"><h4 class="fz11"><a href="#filter-price_facet" data-toggle="collapse">SHOP BY PRICE <span class="caret"></span></a></h4></div>
+<div id="filter-price_facet" class="filter-content collapse in">
+    <ul class="list-unstyled">
+        <% @search.facet(:price_facet).rows.each do |facet| %>
+            <% unless facet.value.blank? %>
+                <li>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id='price_facet_<%= facet.value.to_s.gsub(/[^0-9A-Za-z]/,'').split('.')[0] %>' name='price_facet_<%= facet.value %>' value="<%= facet.value %>" class='facet-box price_facet_id'> <%= number_to_currency(facet.value) %> <span class="count"><%= facet.count %></span></label>
+                    </div>
+                </li>
+            <% end %>
+        <% end %>
+    </ul>
+    <% price_params = params.clone %>
+    <% price_params = price_params.except(:price_facet, :page) %>
+    <script>
+        $('.price_facet_id').change(function(){
+            if ($(this).is(':checked')){
+                <% if search_path(price_params).include?('?') %>
+                    LoadPage('<%= search_path(price_params) %>&price_facet='+$(this).val())
+                <% else %>
+                    LoadPage('<%= search_path(price_params) %>?price_facet='+$(this).val())
+                <% end %>
+            }
+            else {
+                LoadPage('<%= search_path(price_params) %>')
+            }
+        })
+        <% if params[:price_facet].present? %>
+            $('#price_facet_<%= params[:price_facet].gsub(/[^0-9A-Za-z]/,'').split('.')[0] %>').prop('checked', true);
+        <% end %>
+    </script>
+</div>
+
+<div class="filer-title"><h4 class="fz11"><a href="#filter-shape" data-toggle="collapse">SHOP BY SHAPE <span class="caret"></span></a></h4></div>
+<div id="filter-shape" class="filter-content collapse in">
+    <ul class="list-unstyled">
+        <% @search.facet(:shape).rows.each do |facet| %>
+            <% unless facet.value.blank? %>
+                <li>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id='shape_<%= facet.value.gsub(/[^0-9A-Za-z]/,'') %>' name='shape_<%= facet.value %>' value="<%= facet.value %>" class='facet-box shape_id'> <%= facet.value %> <span class="count"><%= facet.count %></span></label>
+                    </div>
+                </li>
+            <% end %>
+        <% end %>
+    </ul>
+    <% shape_params = params.clone %>
+    <% shape_params = shape_params.except(:shape, :page) %>
+    <script>
+        $('.shape_id').change(function(){
+            if ($(this).is(':checked')){
+                <% if search_path(shape_params).include?('?') %>
+                    LoadPage('<%= search_path(shape_params) %>&shape='+$(this).val())
+                <% else %>
+                    LoadPage('<%= search_path(shape_params) %>?shape='+$(this).val())
+                <% end %>
+            }
+            else {
+                LoadPage('<%= search_path(shape_params) %>')
+            }
+        })
+        <% if params[:shape].present? %>
+            $('#shape_<%= params[:shape].gsub(/[^0-9A-Za-z]/,'') %>').prop('checked', true);
+        <% end %>
+    </script>
+</div>
+
+<div class="filer-title"><h4 class="fz11"><a href="#filter-shape" data-toggle="collapse">SHOP BY MEASUREMENT <span class="caret"></span></a></h4></div>
+<div id="filter-shape" class="filter-content collapse in">
+    <ul class="list-unstyled">
+        <% options = [nil] %>
+        <% @search.facet(:lens_height).rows.each do |facet| %>
+            <% options.push(["#{facet.value.to_i}mm (#{facet.count})", facet.value]) %>
+        <% end %>
+        <li><label><%= select_tag :lens_height, options_for_select(options) %> Lens Height</label></li>
+    </ul>
+    <% lens_height_params = params.clone %>
+    <% lens_height_params = lens_height_params.except(:shape, :page) %>
+    <script>
+        $('#lens_height').change(function(){
+            <% if search_path(lens_height_params).include?('?') %>
+                LoadPage('<%= search_path(lens_height_params) %>&lens_height='+$(this).val())
+            <% else %>
+                LoadPage('<%= search_path(lens_height_params) %>?lens_height='+$(this).val())
+            <% end %>
+            }
+        )
+        <% if params[:lens_height].present? %>
+            $('#lens_height').val('<%= params[:lens_height] %>');
+        <% end %>
+    </script>
+
+    <ul class="list-unstyled">
+        <% options = [nil] %>
+        <% @search.facet(:lens_width).rows.each do |facet| %>
+            <% options.push(["#{facet.value.to_i}mm (#{facet.count})", facet.value]) %>
+        <% end %>
+        <li><label><%= select_tag :lens_width, options_for_select(options) %> Lens Width</label></li>
+    </ul>
+    <% l_width_params = params.clone %>
+    <% l_width_params = l_width_params.except(:lens_width, :page) %>
+    <script>
+        $('#lens_width').change(function(){
+            <% if search_path(l_width_params).include?('?') %>
+                LoadPage('<%= search_path(l_width_params) %>&lens_width='+$(this).val())
+            <% else %>
+                LoadPage('<%= search_path(l_width_params) %>?lens_width='+$(this).val())
+            <% end %>
+        })
+        <% if params[:lens_width].present? %>
+            $('#lens_width').val('<%= params[:lens_width] %>');
+        <% end %>
+    </script>
+</div>
+
+<div class="filer-title"><h4 class="fz11"><a href="#filter-style" data-toggle="collapse">SHOP BY STYLE <span class="caret"></span></a></h4></div>
+<div id="filter-style" class="filter-content collapse in">
+    <ul class="list-unstyled">
+        <% @search.facet(:style).rows.each do |facet| %>
+            <% unless facet.value.blank? %>
+                <li>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id='style_<%= facet.value.gsub(/[^0-9A-Za-z]/,'') %>' name='style_<%= facet.value %>' value="<%= facet.value %>" class='facet-box style_id'> <%= facet.value %> <span class="count"><%= facet.count %></span></label>
+                    </div>
+                </li>
+            <% end %>
+        <% end %>
+    </ul>
+    <% style_params = params.clone %>
+    <% style_params = style_params.except(:style, :page) %>
+    <script>
+        $('.style_id').change(function(){
+            if ($(this).is(':checked')){
+                <% if search_path(price_params).include?('?') %>
+                    LoadPage('<%= search_path(style_params) %>&style='+$(this).val())
+                <% else %>
+                    LoadPage('<%= search_path(style_params) %>?style='+$(this).val())
+                <% end %>
+            }
+            else {
+                LoadPage('<%= search_path(style_params) %>')
+            }
+        })
+        <% if params[:style].present? %>
+            $('#style_<%= params[:style].gsub(/[^0-9A-Za-z]/,'') %>').prop('checked', true);
+        <% end %>
+    </script>
+</div>
+
+<div class="filer-title"><h4 class="fz11"><a href="#filter-brand" data-toggle="collapse">SHOP BY BRAND <span class="caret"></span></a></h4></div>
+<div id="filter-brand" class="filter-content collapse in">
+    <ul class="list-unstyled">
+        <%
+            brands = Hash.new
+            @products.each do |product|
+                if product.brand_id.present?
+                    unless brands.has_key?(product.brand_id)
+                        brands[product.brand_id] = 1
+                    else
+                        brands[product.brand_id] += 1
+                    end
+                end
+            end
+        %>
+        <% brands.each do |k,v| %>
+            <% brand = Shoppe::Brand.where(id: k).first %>
+            <% unless brand.nil? %>
+                <li>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id='brand_<%= k %>' name='brand_<%= k %>' value="<%= k %>" class='facet-box brand_id'> <%= brand.name %> <span class="count"><%= v %></span></label>
+                    </div>
+                </li>
+            <% end %>
+        <% end %>
+    </ul>
+    <% brand_params = params.clone %>
+    <% brand_params = brand_params.except(:brand_id, :page) %>
+    <script>
+        $('.brand_id').change(function(){
+            if ($(this).is(':checked')){
+                <% if search_path(brand_params).include?('?') %>
+                    LoadPage('<%= search_path(brand_params) %>&brand_id='+$(this).val())
+                <% else %>
+                    LoadPage('<%= search_path(brand_params) %>?brand_id='+$(this).val())
+                <% end %>
+            }
+            else {
+                LoadPage('<%= search_path(brand_params) %>')
+            }
+        })
+        <% if params[:brand_id].present? %>
+            $('#brand_<%= params[:brand_id] %>').prop('checked', true);
+        <% end %>
+    </script>
+</div>
+<div class="filer-title"><h4 class="fz11"><a href="#filter-frame_type" data-toggle="collapse">SHOP BY FRAME STYLE <span class="caret"></span></a></h4></div>
+<div id="filter-frame_type" class="filter-content collapse in">
+    <ul class="list-unstyled">
+        <% @search.facet(:frame_type).rows.each do |facet| %>
+            <% unless facet.value.blank? %>
+                <li>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id='frame_type_<%= facet.value.gsub(/[^0-9A-Za-z]/,'') %>' name='frame_type_<%= facet.value %>' value="<%= facet.value %>" class='facet-box frame_type_id'> <%= facet.value %> <span class="count"><%= facet.count %></span></label>
+                    </div>
+                </li>
+            <% end %>
+        <% end %>
+    </ul>
+    <% frame_type_params = params.clone %>
+    <% frame_type_params = frame_type_params.except(:frame_type, :page) %>
+    <script>
+        $('.frame_type_id').change(function(){
+            if ($(this).is(':checked')){
+                <% if search_path(frame_type_params).include?('?') %>
+                    LoadPage('<%= search_path(frame_type_params) %>&frame_type='+$(this).val())
+                <% else %>
+                    LoadPage('<%= search_path(frame_type_params) %>?frame_type='+$(this).val())
+                <% end %>
+            }
+            else {
+                LoadPage('<%= search_path(frame_type_params) %>')
+            }
+        })
+        <% if params[:frame_type].present? %>
+            $('#frame_type_<%= params[:frame_type].gsub(/[^0-9A-Za-z]/,'') %>').prop('checked', true);
+        <% end %>
+    </script>
+</div>
+<div class="filer-title"><h4 class="fz11"><a href="#filter-material" data-toggle="collapse">SHOP BY MATERIAL <span class="caret"></span></a></h4></div>
+<div id="filter-material" class="filter-content collapse in">
+    <ul class="list-unstyled">
+        <% @search.facet(:material).rows.each do |facet| %>
+            <% unless facet.value.blank? %>
+                <li>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id='material_<%= facet.value %>' name='material_<%= facet.value %>' value="<%= facet.value %>" class='facet-box material_id'> <%= facet.value %> <span class="count"><%= facet.count %></span></label>
+                    </div>
+                </li>
+            <% end %>
+        <% end %>
+    </ul>
+    <% material_params = params.clone %>
+    <% material_params = material_params.except(:material, :page) %>
+    <script>
+        $('.material_id').change(function(){
+            if ($(this).is(':checked')){
+                <% if search_path(material_params).include?('?') %>
+                    LoadPage('<%= search_path(material_params) %>&material='+$(this).val())
+                <% else %>
+                    LoadPage('<%= search_path(material_params) %>?material='+$(this).val())
+                <% end %>
+            }
+            else {
+                LoadPage('<%= search_path(material_params) %>')
+            }
+        })
+        <% if params[:material].present? %>
+            $('#material_<%= params[:material] %>').prop('checked', true);
+        <% end %>
+    </script>
+</div>
+<div class="filer-title"><h4 class="fz11"><a href="#filter-featured" data-toggle="collapse">SHOP FEATURED ITEMS <span class="caret"></span></a></h4></div>
+<div id="filter-featured" class="filter-content collapse in">
+    <ul class="list-unstyled">
+        <% polarized_params = params.clone %>
+        <% polarized_params = polarized_params.except(:polarized, :page) %>
+        <% @search.facet(:polarized).rows.each do |facet| %>
+            <% unless facet.value == false || facet.value.nil? %>
+                <li>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id='polarized' name='polarized' value="<%= facet.value %>" class='facet-box polarized'> Polarized Lenses <span class="count"><%= facet.count %></span></label>
+                    </div>
+                </li>
+            <% end %>
+        <% end %>
+        <script>
+            $('.polarized').change(function(){
+                if ($(this).is(':checked')){
+                    <% if search_path(polarized_params).include?('?') %>
+                        LoadPage('<%= search_path(polarized_params) %>&polarized=true')
+                    <% else %>
+                        LoadPage('<%= search_path(polarized_params) %>?polarized=true')
+                    <% end %>
+                }
+                else {
+                    LoadPage('<%= search_path(polarized_params) %>')
+                }
+            })
+            <% if params[:polarized] == 'true' || params[:polarized] == true %>
+                $('#polarized').prop('checked', true);
+            <% end %>
+        </script>
+        <% on_sale_params = params.clone %>
+        <% on_sale_params = on_sale_params.except(:on_sale, :page) %>
+        <% @search.facet(:on_sale).rows.each do |facet| %>
+            <% unless facet.value == false || facet.value.nil? %>
+                <li>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id='on_sale' name='on_sale' value="<%= facet.value %>" class='facet-box on_sale'> On Sale <span class="count"><%= facet.count %></span></label>
+                    </div>
+                </li>
+            <% end %>
+        <% end %>
+        <script>
+            $('.on_sale').change(function(){
+                if ($(this).is(':checked')){
+                    <% if search_path(on_sale_params).include?('?') %>
+                        LoadPage('<%= search_path(on_sale_params) %>&on_sale=true')
+                    <% else %>
+                        LoadPage('<%= search_path(on_sale_params) %>?on_sale=true')
+                    <% end %>
+                }
+                else {
+                    LoadPage('<%= search_path(on_sale_params) %>')
+                }
+            })
+            <% if params[:on_sale] == 'true' || params[:on_sale] == true %>
+                $('#on_sale').prop('checked', true);
+            <% end %>
+        </script>
+        <% featured_params = params.clone %>
+        <% featured_params = featured_params.except(:featured, :page) %>
+        <% @search.facet(:featured).rows.each do |facet| %>
+            <% unless facet.value == false || facet.value.nil? %>
+                <li>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id='featured' name='featured' value="<%= facet.value %>" class='facet-box featured'> Featured <span class="count"><%= facet.count %></span></label>
+                    </div>
+                </li>
+            <% end %>
+        <% end %>
+        <script>
+            $('.featured').change(function(){
+                if ($(this).is(':checked')){
+                    <% if search_path(featured_params).include?('?') %>
+                        LoadPage('<%= search_path(featured_params) %>&featured=true')
+                    <% else %>
+                        LoadPage('<%= search_path(featured_params) %>?featured=true')
+                    <% end %>
+                }
+                else {
+                    LoadPage('<%= search_path(featured_params) %>')
+                }
+            })
+            <% if params[:featured] == 'true' || params[:featured] == true %>
+                $('#featured').prop('checked', true);
+            <% end %>
+        </script>
+
+        <% exclusive_params = params.clone %>
+        <% exclusive_params = exclusive_params.except(:exclusive, :page) %>
+        <% @search.facet(:exclusive).rows.each do |facet| %>
+            <% unless facet.value == false || facet.value.nil? %>
+                <li>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id='exclusive' name='exclusive' value="<%= facet.value %>" class='facet-box exclusive'> Exclusive <span class="count"><%= facet.count %></span></label>
+                    </div>
+                </li>
+            <% end %>
+        <% end %>
+        <script>
+            $('.exclusive').change(function(){
+                if ($(this).is(':checked')){
+                    <% if search_path(exclusive_params).include?('?') %>
+                        LoadPage('<%= search_path(exclusive_params) %>&exclusive=true')
+                    <% else %>
+                        LoadPage('<%= search_path(exclusive_params) %>?exclusive=true')
+                    <% end %>
+                }
+                else {
+                    LoadPage('<%= search_path(exclusive_params) %>')
+                }
+            })
+            <% if params[:exclusive] == 'true' || params[:exclusive] == true %>
+                $('#exclusive').prop('checked', true);
+            <% end %>
+        </script>
+
+        <% top_rated_params = params.clone %>
+        <% top_rated_params = top_rated_params.except(:top_rated, :page) %>
+        <% @search.facet(:top_rated).rows.each do |facet| %>
+            <% unless facet.value == false || facet.value.nil? %>
+                <li>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id='top_rated' name='top_rated' value="<%= facet.value %>" class='facet-box top_rated'> Top Rated <span class="count"><%= facet.count %></span></label>
+                    </div>
+                </li>
+            <% end %>
+        <% end %>
+        <script>
+            $('.top_rated').change(function(){
+                if ($(this).is(':checked')){
+                    <% if search_path(top_rated_params).include?('?') %>
+                        LoadPage('<%= search_path(top_rated_params) %>&top_rated=true')
+                    <% else %>
+                        LoadPage('<%= search_path(top_rated_params) %>?top_rated=true')
+                    <% end %>
+                }
+                else {
+                    LoadPage('<%= search_path(top_rated_params) %>')
+                }
+            })
+            <% if params[:top_rated] == 'true' || params[:top_rated] == true %>
+                $('#top_rated').prop('checked', true);
+            <% end %>
+        </script>
+
+        <% new_params = params.clone %>
+        <% new_params = new_params.except(:new, :page) %>
+        <% @search.facet(:new).rows.each do |facet| %>
+            <% unless facet.value == false || facet.value.nil? %>
+                <li>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id='new' name='new' value="<%= facet.value %>" class='facet-box new'> New <span class="count"><%= facet.count %></span></label>
+                    </div>
+                </li>
+            <% end %>
+        <% end %>
+        <script>
+            $('.new').change(function(){
+                if ($(this).is(':checked')){
+                    <% if search_path(new_params).include?('?') %>
+                        LoadPage('<%= search_path(new_params) %>&new=true')
+                    <% else %>
+                        LoadPage('<%= search_path(new_params) %>?new=true')
+                    <% end %>
+                }
+                else {
+                    LoadPage('<%= search_path(new_params) %>')
+                }
+            })
+            <% if params[:new] == 'true' || params[:new] == true %>
+                $('#new').prop('checked', true);
+            <% end %>
+        </script>
+    </ul>
+</div>
+<div class="filer-title"><h4 class="fz11"><a href="#filter-color" data-toggle="collapse">SHOP BY FRAME COLOR <span class="caret"></span></a></h4></div>
+<div id="filter-color" class="filter-content collapse in">
+    <div class="row">
+        <% colour_params = params.clone %>
+        <% colour_params = featured_params.except(:colour, :page) %>
+        <% @search.facet(:colour).rows.each do |facet| %>
+            <% unless facet.value.blank? %>
+                <% vals = facet.value.split('COLORSPLIT') %>
+                <div class="col-sm-4">
+                    <% if params[:colour].present? %>
+                        <a style='cursor:pointer' onclick="LoadPage('<%= search_path(colour_params) %>')" class="filter-option"><span class="colorsm" style='background-color: #<%= vals[1] %>'></span> <%= vals[0] %></a>
+                    <% else %>
+                        <% if search_path(new_params).include?('?') %>
+                            <a style='cursor:pointer' onclick="LoadPage('<%= search_path(colour_params) %>&colour=<%= facet.value %>')" class="filter-option"><span class="colorsm" style='background-color: #<%= vals[1] %>'></span> <%= vals[0] %></a>
+                        <% else %>
+                            <a style='cursor:pointer' onclick="LoadPage('<%= search_path(colour_params) %>?colour=<%= facet.value %>')" class="filter-option"><span class="colorsm" style='background-color: #<%= vals[1] %>'></span> <%= vals[0] %></a>
+                        <% end %>
+                    <% end %>
+                </div>
+            <% end %>
+        <% end %>
+    </div>
+</div>

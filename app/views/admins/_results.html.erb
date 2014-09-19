@@ -1,0 +1,68 @@
+<div class="tab-pane active" id="product-view">
+    <div class="products">
+        <div class="row row0">
+            <% @products.each do |product| %>
+            <% variants = Shoppe::Product.where(parent_id: product.id) %>
+            <div class="col-sm-4" style='border-right: 1px solid #ccc'>
+                <div class="product-item">
+                    <div class="ribbon">
+                        <% sale = false %>
+                        <% variants.each do |variant| %>
+                            <% if variant.on_sale? %>
+                                <% sale = true %>
+                            <% end %>
+                        <% end %>
+                        <% if sale == true %>
+                            <%= image_tag "sale-red.png", style: 'height: 70px; width: 70px;' %>
+                        <% elsif product.created_at > 30.days.ago %>
+                            <%= image_tag "new-green.png" %>
+                        <% end %>
+                    </div>
+                    <figure style='height: 160px'>
+                        <% if product.default_image.nil? %>
+
+                        <% else %>
+                            <%= image_tag product.default_image.path, class: "img-responsive", style: 'max-height: 160px' %>
+                        <% end %>
+
+                    </figure>
+                    <% if variants.any? == false %>
+                        <div class="colors">
+                            <span class="color" style='background-color: <%= product.hex_colour %>'></span>
+                        </div>
+                    <% else %>
+                        <div class="colors">
+                            <% variants.each do |variant| %>
+                                <span class="color" style='background-color: <%= variant.hex_colour %>'></span>
+                            <% end %>
+                        </div>
+                    <% end %>
+
+                    <div class="product-name"><%= product.name.upcase %></div>
+                    <div class="product-price">$<%= number_with_precision(product.price, precision: 2) %></div>
+                    <div class="product-meta">
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <%= link_to 'SEE MORE', view_product_path(slug: product.slug) %>
+                            </div>
+                            <div class="col-xs-7">
+                                <% if product.has_variants? %>
+                                    <% if customer_signed_in? && FavoriteProduct.where(customer_id: current_customer.id, product_id: [product.variants.pluck(:id).uniq]).any? %>
+                                        <a><span class="icon-love"></span></a>
+                                    <% end %>
+                                <% else %>
+                                    <% if customer_signed_in? && FavoriteProduct.where(customer_id: current_customer.id, product_id: product.id) %>
+                                        <a><span class="icon-love"></span></a>
+                                    <% end %>
+                                <% end %>
+                                <a><span class="icon-thumb"></span> <span class="count"><%= product.get_likes.size - product.get_dislikes.size %></span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% end %>
+        </div>
+    </div>
+    <div class='text-center'><%= will_paginate(@products) %></div>
+</div>

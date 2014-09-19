@@ -2637,6 +2637,26 @@ class AdminsController < ApplicationController
 		setting.save
 	end
 
+	def edit_registration
+		unless current_admin.authorized_to?('edit_general_settings')
+			flash[:error] = 'You are not allowed to view that.'
+			redirect_to '/admins'
+		end
+		@status = Setting.where(name: 'Active Registration').first.data
+	end
+
+	def update_registration
+		unless current_admin.authorized_to?('edit_general_settings')
+			flash[:error] = 'You are not allowed to view that.'
+			redirect_to '/admins'
+		end
+		@status = Setting.where(name: 'Active Registration').first
+		@status.data = params[:status]
+		@status.save
+		flash[:success] = 'Successfully updated registration status'
+		redirect_to edit_registration_path
+	end
+
 	def edit_timezone
 		unless current_admin.authorized_to?('edit_general_settings')
 			flash[:error] = 'You are not allowed to view that.'

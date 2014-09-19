@@ -32,6 +32,8 @@ free_trial_length = Setting.create(name: 'Web Free Trial Length', data: 30)
 payment_methods = Setting.create(name: 'Payout Methods', data: YAML.dump(['Cheque','Bank Transfer','Paypal','Wire Transfer']))
 payment_methods = Setting.create(name: 'Languages', data: YAML.dump("English\r\nLao\r\nThai\r\nKhmer\r\nKhmer"))
 
+registration = Setting.create(name: 'Active Registration', data: 'true')
+
 footer_content = Setting.create(name: 'Footer Content', data: YAML.dump([{name: '', html: ''},{name: '', html: ''},{name: '', html: ''},
 	{name: '', html: ''},{name: '', html: ''},{name: '', html: ''},'']))
 

@@ -1,0 +1,27 @@
+<div class="sidebar" id='filters'>
+    <%= render 'store/partials/search/filters' %>
+</div><!--sidebar-->
+<div class="right-content clearfix">
+    <div class="pull-left w100">
+        <div class="navbar navbar-product-header">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#product-view" data-toggle="tab"><span class="fa fa-th-large"></span> PRODUCT VIEW</a></li>
+            </ul>
+            <!--<div class="navbar-right">
+                <div class="form-inline">
+                    <div class="checkbox">
+                        <label><input type="checkbox" value=""> BIFOCAL ELIGIBLE</label>
+                    </div>
+                    <label>SORT BY</label>
+                    <select class="form-control">
+                        <option>FEATURED</option>
+                        <option>PRICE</option>
+                    </select>
+                </div>
+            </div>-->
+        </div>
+        <div class="tab-content" id='results'>
+            <%= render 'store/partials/search/results' %>
+        </div>
+    </div>
+</div>

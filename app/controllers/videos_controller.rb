@@ -624,14 +624,19 @@ class VideosController < ApplicationController
 	end
 
 	def remote_sign_in_for_video
-		user = User.authenticate(params[:email],params[:password])
-
-		if user.nil?
-			@error = 'Invalid email or password'
+		status = Setting.where(name: 'Active Registration').first.data
+		unless status == 'true'
+			@error = 'Sign in is currently not active'
 		else
-			sign_in(user, bypass: true)
-			flash[:success] = "Welcome back, #{user.name}"
-			@error = nil
+			user = User.authenticate(params[:email],params[:password])
+
+			if user.nil?
+				@error = 'Invalid email or password'
+			else
+				sign_in(user, bypass: true)
+				flash[:success] = "Welcome back, #{user.name}"
+				@error = nil
+			end
 		end
 	end
 

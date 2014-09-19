@@ -1,0 +1,40 @@
+<% content_for :top_level, 'Utilities' %>
+<% content_for :low_levels, YAML.dump(['General Settings','Registration Status']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <div class='col-md-6 col-sm-9 col-centered'>
+            <div class='row'>
+                <div class='col-sm-12'>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>Registration Status</h3>
+                        </div>
+                        <div class='panel-body text-center', style='font-size: 180%'>
+                            <% if @status == 'true' %>
+                                Active
+                            <% elsif @status == 'false' %>
+                                Inactive
+                            <% end %>
+                        </div>
+                    </div>
+                    <%= form_tag update_registration_path do %>
+                    <div class='panel panel-default'>
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>Set New Default</h3>
+                        </div>
+                        <div class='panel-body text-center', style='font-size: 180%'>
+                            <%= select_tag :status, options_for_select([['Active','true'],['Inactive','false']], @status), class: 'form-control' %>
+                        </div>
+                        <div class='panel-footer'>
+                            <%= submit_tag 'Update', class: 'btn btn-primary', style: 'width: 100%' %>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#reg_side').addClass('active')
+</script>
