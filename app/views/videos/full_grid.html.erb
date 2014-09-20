@@ -35,7 +35,7 @@
             <div class="panel panel-custom">
                 <div class="panel-heading">
                     <div class="icon-left"><span class="glyphicon glyphicon-heart"></span></div>
-                    <h3><%= grid.name %></h3>
+                    <h3><%= grid.name, full_grid_path(category_id: grid.id) %></h3>
                     <%= link_to raw('<span class="glyphicon glyphicon-th-large"></span> See All'), full_grid_path(category_id: grid.id), class: 'pull-right' %>
                 </div>
                 <div class="panel-body scroller">
@@ -137,17 +137,17 @@
 <% end %>
 
 <script>
-    $('.container').ready(function () {
+    $(document).ready(function () {
         $(".scroller").slick({
             infinite: true,
             slidesToShow: 6,
-            slidesToScroll: 4,
+            slidesToScroll: 5,
             responsive: [
                 {
                   breakpoint: 991,
                   settings: {
                     slidesToShow: 4,
-                    slidesToScroll: 2,
+                    slidesToScroll: 3,
                     infinite: true
                   }
                 },
@@ -155,7 +155,7 @@
                   breakpoint: 768,
                   settings: {
                     slidesToShow: 3,
-                    slidesToScroll: 1
+                    slidesToScroll: 2
                   }
                 },
                 {
