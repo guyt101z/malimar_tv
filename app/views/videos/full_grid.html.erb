@@ -35,7 +35,7 @@
             <div class="panel panel-custom">
                 <div class="panel-heading">
                     <div class="icon-left"><span class="glyphicon glyphicon-heart"></span></div>
-                    <h3><%= grid.name, full_grid_path(category_id: grid.id) %></h3>
+                    <h3><%= link_to grid.name, full_grid_path(category_id: grid.id) %></h3>
                     <%= link_to raw('<span class="glyphicon glyphicon-th-large"></span> See All'), full_grid_path(category_id: grid.id), class: 'pull-right' %>
                 </div>
                 <div class="panel-body scroller">
