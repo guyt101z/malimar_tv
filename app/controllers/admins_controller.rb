@@ -1259,12 +1259,12 @@ class AdminsController < ApplicationController
 						hash[:content_type] = params[:content_type]
 					end
 					hash[:home_page] = true
-					@grids = Grid.where(hash).order(weight: :desc)
+					@grids = Grid.where(hash).order(weight: :asc)
 					@grids = @grids.paginate(page: params[:page], per_page: 10)
 				end
 			else
 				@test = 'No Search'
-				@grids = Grid.where(home_page: true).order(weight: :desc)
+				@grids = Grid.where(home_page: true).order(weight: :asc)
 				@grids = @grids.paginate(page: params[:page], per_page: 10)
 			end
 		else
@@ -1273,7 +1273,7 @@ class AdminsController < ApplicationController
 	end
 	def all_grids
 		if current_admin.authorized_to?('update_videos')
-			@grids = Grid.all.order(weight: :desc)
+			@grids = Grid.all.order(weight: :asc)
 		else
 			flash[:error] = 'You are not authorized to view that'
 		end

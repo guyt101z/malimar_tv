@@ -596,7 +596,7 @@ class VideosController < ApplicationController
 	end
 
 	def landing
-		@grids = Grid.where(home_page: true).order(weight: :desc)
+		@grids = Grid.where(home_page: true).order(weight: :asc)
 
 		@front_page_array = Array.new
 

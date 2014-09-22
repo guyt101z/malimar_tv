@@ -102,7 +102,7 @@ class ApiController < ApplicationController
             else
                 feed = {item_count: 0, items: []}
 
-                grids = Grid.where(home_page: true).order(weight: :desc)
+                grids = Grid.where(home_page: true).order(weight: :asc)
                 device = Device.where(serial: request.headers['token']).first
 
                 grids.each do |grid|
