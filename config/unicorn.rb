@@ -6,4 +6,4 @@ stdout_path "#{root}/log/unicorn.log"
 
 listen "/tmp/unicorn.malimar-tv.sock"
 worker_processes 5
-timeout 60
+timeout 150
