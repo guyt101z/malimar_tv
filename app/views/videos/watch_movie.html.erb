@@ -26,11 +26,34 @@
 
             </div>
         </div>
+        <div class="w960 text-right">
+            <% if user_signed_in? && BrokenLink.already_submitted?(@movie.id, 'Movie', current_user.id, nil) == false %>
+                <%= link_to 'Broken Video?', submit_broken_link_path(video_id: @movie.id, video_type: 'Movie', user_id: current_user.id), class: 'btn btn-primary btn-bold btn-w180', remote: true, id: 'report_link', data: {disable_with: 'Submitting...'} %>
+            <% else %>
+                <%= link_to 'Broken Video?', '#', class: 'btn btn-primary btn-bold btn-w180', remote: true, id: 'report_link', disabled: 'disabled' %>
+            <% end %>
+        </div>
 
         <% @item = @movie %>
         <%= render 'videos/partials/similar_links' %>
     </div>
 </div><!--content-->
+
+
+<div class="modal fade" id="report_modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body p0">
+                <div class='row row0' id='report_modal_body' style='padding: 15px;'>
+
+                </div>
+            </div>
+            <div class='modal-footer'>
+                <a href='#' class='btn btn-primary btn-block' data-dismiss="modal">OK</a>
+            </div>
+        </div>
+    </div>
+</div><!--modal-->
 
 
 <script>
@@ -39,7 +62,7 @@ $('#episode_<%= @movie.id %>').addClass('active')
 jwplayer("video_wrapper").setup({
     sources: [
         {file: "<%= @movie.rtmp_url %>"},
-        <% if @channel.stream_url.include?('/playlist.m3u8') %>
+        <% if @movie.stream_url.include?('/playlist.m3u8') %>
         {file: "<%= @movie.stream_url %>"}
         <% else %>
         {file: "<%= @movie.stream_url %>/playlist.m3u8"}
@@ -70,27 +93,7 @@ jwplayer("video_wrapper").setup({
 </script>
 <% if (user_signed_in? && current_user.web_premium?) || admin_signed_in?  %>
     <script>
-        jwplayer().onSeek(function(){
-            jwplayer().play(true);
-        });
-        % if @movie_update.present? && params[:resume] != 'false' && user_signed_in? %>
-            jwplayer().seek(<%= @movie_update.time %>)
-        <% else %>
-            jwplayer().play()
-        <% end %>
-        jwplayer().onComplete(function(){
-            $.ajax({
-                url: '/mark_movie_complete?movie_id=<%= @movie.id %>'
-            })
-        })
-
-        jwplayer().onTime(function(){
-            if (Math.round(jwplayer().getPosition() * 10) % 50 == 0){
-                $.ajax({
-                    url: '/update_movie_time?movie_id=<%= @movie.id %>&time='+jwplayer().getPosition()
-                })
-            }
-        })
+        jwplayer().play()
     </script>
 <% elsif user_signed_in? && current_user.web_premium? == false && @channel.free == false %>
     <%= render('videos/partials/no_plan') %>

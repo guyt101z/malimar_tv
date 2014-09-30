@@ -21,7 +21,7 @@
                     </div>
                     <div class='col-sm-4 form-group'>
                         <label>Release Date</label>
-                        <%= text_field_tag :new_release_date, '', class: 'form-control', placeholder: 'Eg: 2014-07-29' %>
+                        <%= text_field_tag :new_release_date, '', class: 'form-control' %>
                     </div>
                     <div class='col-sm-8 form-group'>
                         <label>RTMP URL</label>
@@ -80,6 +80,10 @@
                         <label>Membership Level</label>
                         <%= select_tag :new_free, options_for_select([['',nil],['Free', 1],['Premium', 0]]), class: 'form-control' %>
                     </div>
+                    <div class='col-sm-6 form-group'>
+                        <label>Rating</label>
+                        <%= select_tag :new_rating, options_for_select([['',nil],'TV-Y','TV-Y7','TV-G','TV-PG','TV-14','TV-MA']), class: 'form-control' %>
+                    </div>
                 </div>
                 <div class='row'>
                     <div class='col-sm-6 form-group'>
@@ -106,3 +110,9 @@
         </div>
     </div>
 </div>
+
+<script>
+    $('#new_release_date').datepicker({
+        format: "MM d, yyyy"
+    })
+</script>

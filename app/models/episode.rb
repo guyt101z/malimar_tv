@@ -38,4 +38,30 @@ class Episode < ActiveRecord::Base
             return nil
         end
     end
+
+    def added_by_admin
+        if added_by.present?
+            admin = Admin.where(id: added_by).first
+            if admin.nil?
+                return '[DELETED]'
+            else
+                return admin.name
+            end
+        else
+            return 'Migration'
+        end
+    end
+
+    def edited_by_admin
+        if edited_by.present?
+            admin = Admin.where(id: edited_by).first
+            if admin.nil?
+                return '[DELETED]'
+            else
+                return admin.name
+            end
+        else
+            return 'Not Edited'
+        end
+    end
 end

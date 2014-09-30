@@ -26,10 +26,35 @@
 
             </div>
         </div>
+		<div class="w960 text-right">
+			<% if user_signed_in? && BrokenLink.already_submitted?(@channel.id, 'Channel', current_user.id, nil) == false %>
+				<%= link_to 'Broken Video?', submit_broken_link_path(video_id: @channel.id, video_type: 'Channel', user_id: current_user.id), class: 'btn btn-primary btn-bold btn-w180', remote: true, id: 'report_link', data: {disable_with: 'Submitting...'} %>
+			<% else %>
+				<%= link_to 'Broken Video?', '#', class: 'btn btn-primary btn-bold btn-w180', remote: true, id: 'report_link', disabled: 'disabled' %>
+			<% end %>
+		</div>
 		<% @item = @channel %>
         <%= render 'videos/partials/similar_links' %>
     </div>
 </div><!--content-->
+
+
+<div class="modal fade" id="report_modal">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-body p0">
+				<div class='row row0' id='report_modal_body' style='padding: 15px;'>
+
+				</div>
+			</div>
+			<div class='modal-footer'>
+				<a href='#' class='btn btn-primary btn-block' data-dismiss="modal">OK</a>
+			</div>
+		</div>
+	</div>
+</div><!--modal-->
+
+
 <script>
 $('#episode_<%= @channel.id %>').addClass('active')
 <% if @channel.rtmp_url.present? %>

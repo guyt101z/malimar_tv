@@ -48,4 +48,5 @@ $('#front_page-error').remove()
     })
     $('#details-title').html('Channel Details - <span class="text-success">Updated</span>')
     $('#movie_<%= @movie.id %>').html('<%= escape_javascript(render("admins/cms_partials/movie_list_item")) %>')
+    $('#edited_by').html("<%= @movie.edited_by_admin %><br/><small><%= @movie.updated_at.strftime('%B %-d, %Y at %H:%M') %></small>")
 <% end %>

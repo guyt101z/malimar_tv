@@ -1,3 +1,4 @@
 <% if @success == true %>
     $('#banner_preview').html('<%= image_tag @show.banner_url(:preview) %>')
+    $('#edited_by').html("<%= @show.edited_by_admin %><br/><small><%= @show.updated_at.strftime('%B %-d, %Y at %H:%M') %></small>")
 <% end %>

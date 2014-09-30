@@ -44,7 +44,7 @@
 
 		<% elsif params[:action] == 'live_channels' || params[:action] == 'movies' || params[:action] == 'shows' ||
 		params[:action] == 'home_grid' || params[:action] == 'all_grids' || params[:action] == 'view_grid' ||
-		params[:action] == 'new_grid' %>
+		params[:action] == 'new_grid' || params[:action] == 'broken_links' %>
 			<%= render 'admins/nav/sidenavs/video' %>
 
 		<% elsif params[:action] == 'new_vod_upload' || params[:action] == 'vod_uploads' || params[:action] == 'view_vod_upload' ||

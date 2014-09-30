@@ -8,9 +8,12 @@
 <div class='episode_list' id='episode_search_list' style='display: none;'></div>
 <div class='episode_list' id='episode_list'>
     <% @episodes.each do |episode| %>
-        <div class='episode_list_item' onclick='viewEpisode(<%= episode.id %>)' id='episode_<%= episode.id %>'>
-            <div class='number'># <%= episode.episode_number %> - <%= episode.title %></div>
-            <div class='release'>Released: <%= episode.release_date.strftime('%B %-d, %Y') %></div>
+        <div class='channel_list_item' onclick='viewEpisode(<%= episode.id %>)' id='episode_<%= episode.id %>'>
+            <div class='channel_name' style='left:5px'># <%= episode.episode_number %> - <%= episode.title %></div>
+            <div class='release' style='position: absolute; left:5px; bottom:3px;'>Released: <%= episode.release_date.strftime('%B %-d, %Y') %></div>
+            <% if episode.final? %>
+                <div class='premium_banner'><span class="label label-danger">FINAL</span></div>
+            <% end %>
         </div>
     <% end %>
 </div>

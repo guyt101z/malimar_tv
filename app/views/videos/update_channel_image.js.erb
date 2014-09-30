@@ -3,4 +3,5 @@
     $('#sd_image_preview').html('<%= image_tag @channel.image_url(:sd) %>')
     $('#channel_<%= @channel.id %>').children('.image_wrapper').html('<%= image_tag @channel.image_url(:preview) %>')
     $('#channel_search_<%= @channel.id %>').children('.image_wrapper').html('<%= image_tag @channel.image_url(:preview) %>')
+    $('#edited_by').html("<%= @channel.edited_by_admin %><br/><small><%= @channel.updated_at.strftime('%B %-d, %Y at %H:%M') %></small>")
 <% end %>

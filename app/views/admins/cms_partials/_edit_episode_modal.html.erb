@@ -11,6 +11,17 @@
             </div>
             <div class="modal-body">
                 <div class='row'>
+                    <div class='col-md-6'>
+                        <label class='unedited'>Added By:</label>
+                        <h5 style='margin:0' id='ep_added_by'></h5>
+                    </div>
+                    <div class='col-md-6'>
+                        <label class='unedited'>Last Edited By:</label>
+                        <h5 style='margin:0' id='ep_edited_by'></h5>
+                    </div>
+                </div>
+                <hr/>
+                <div class='row'>
                     <div class='col-sm-6 form-group'>
                         <label>Title</label>
                         <%= text_field_tag :edit_ep_title, '', class: 'form-control' %>
@@ -31,13 +42,17 @@
                     </div>
                 </div>
                 <div class='row'>
-                    <div class='col-sm-6 form-group'>
+                    <div class='col-sm-4 form-group'>
                         <label>Length</label>
                         <%= text_field_tag :edit_ep_length, '', class: 'form-control' %>
                     </div>
-                    <div class='col-sm-6 form-group'>
+                    <div class='col-sm-4 form-group'>
                         <label>Release Date</label>
-                        <%= text_field_tag :edit_ep_release_date, '', class: 'form-control', placeholder: 'Ex: '+Date.today.strftime("%Y-%m-%d") %>
+                        <%= text_field_tag :edit_ep_release_date, '', class: 'form-control' %>
+                    </div>
+                    <div class='col-sm-4 form-group'>
+                        <label>Final Episode?</label>
+                        <%= select_tag :edit_ep_final, options_for_select([['No',false],['Yes',true]]), class: 'form-control', placeholder: 'Ex: '+Date.today.strftime("%Y-%m-%d") %>
                     </div>
                 </div>
                 <div class='row'>
@@ -72,4 +87,9 @@ $("#new_ep_episode_number").keydown(function (e) {
         e.preventDefault();
     }
 });
+</script>
+<script>
+    $('#edit_ep_release_date').datepicker({
+        format: "MM d, yyyy"
+    })
 </script>

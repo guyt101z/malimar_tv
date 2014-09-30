@@ -4,6 +4,11 @@ class Grid < ActiveRecord::Base
     mount_uploader :image, MovieImageUploader
     mount_uploader :file, MigrationUploader
 
+    has_many :grid_items
+
+    serialize :items
+    serialize :grids
+
     validates_presence_of :file
     validates_presence_of :name
     validates_uniqueness_of :name

@@ -30,6 +30,8 @@ Rails.application.routes.draw do
         get 'mark_episode_complete' => 'time#mark_episode_complete'
         get 'mark_show_complete' => 'time#mark_show_complete'
 
+        get 'submit_broken_link' => 'videos#submit_broken_link'
+
 
         get 'update_movie_time' => 'time#update_movie'
         get 'mark_movie_complete' => 'time#mark_movie_complete'
@@ -241,6 +243,9 @@ Rails.application.routes.draw do
         get 'search_movies' => 'videos#search_movies'
         get 'admin_show_all_grids' => 'admins#show_all_grids'
         get 'admin_show_existing_grids' => 'admins#show_existing_grids'
+
+        get '/admins/videos/broken' => 'admins#broken_links', as: 'admin_broken_links'
+        get 'mark_broken_as_resolved' => 'admins#mark_broken_as_resolved'
 
         get '/admins/videos/grids/all' => 'admins#all_grids', as: 'admin_all_grids'
         get '/admins/videos/grids/home' => 'admins#home_grid', as: 'admin_home_grid'

@@ -11,6 +11,21 @@
                     </div>
                 </div>
                 <div class='panel-body'>
+                    <div class='row'>
+                        <div class='col-md-6'>
+                            <label class='unedited'>Added By:</label>
+                            <h5 style='margin:0'><%= @show.added_by_admin %><br/><small><%= @show.created_at.strftime('%B %-d, %Y at %H:%M') %></small></h5>
+                        </div>
+                        <div class='col-md-6'>
+                            <label class='unedited'>Last Edited By:</label>
+                            <% if @show.updated_at == @show.created_at || @show.edited_by.nil? %>
+                                <h5 style='margin:0' id='edited_by'>Not Edited</h5>
+                            <% else %>
+                                <h5 style='margin:0' id='edited_by'><%= @show.edited_by_admin %><br/><small><%= @show.updated_at.strftime('%B %-d, %Y at %H:%M') %></small></h5>
+                            <% end %>
+                        </div>
+                    </div>
+                    <hr/>
                     <%= form_tag update_show_path, remote: true, id: 'update_channel_form' do %>
                     <%= hidden_field_tag :id, @show.id %>
                     <div class='row'>
@@ -45,18 +60,18 @@
                         </div>
                         <div class='col-sm-6 form-group'>
                             <label class='unedited'>Content Quality</label>
-                            <%= select_tag :content_quality, options_for_select([['High Definition', 'HD'],['Standard Definition', 'SD']], @show.content_quality), class: 'form-control edit_channel' %>
+                            <%= select_tag :content_quality, options_for_select([['',nil],['High Definition', 'HD'],['Standard Definition', 'SD']], @show.content_quality), class: 'form-control edit_channel' %>
                         </div>
                         <div class='col-md-12 form-group'>
                             <%
-                                grid_options = [['Choose a grid',nil]]
+                                grid_options = Array.new
                                 grids = Grid.where(class_type: 'Show')
                                 grids.each do |grid|
                                     grid_options.push([grid.name, grid.id])
                                 end
                             %>
                             <label class='unedited'>Grid</label>
-                            <%= select_tag :grid_id, options_for_select(grid_options,@show.grid_id), class: 'form-control edit_channel' %>
+                            <%= select_tag 'grids[]', options_for_select(grid_options,@show.grid_item_ids), class: 'form-control edit_channel', multiple: 'multiple' %>
                         </div>
                     </div>
                     <div class='row'>
@@ -68,7 +83,13 @@
                             <label class='unedited'>Membership Level</label>
                             <%= select_tag :free, options_for_select([['Free', true],['Premium', false]], @show.free), class: 'form-control edit_channel' %>
                         </div>
-                        <div class='col-md-4 form-group'>
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-6 form-group'>
+                            <label class='unedited'>Rating</label>
+                            <%= select_tag :rating, options_for_select([['',nil],'TV-Y','TV-Y7','TV-G','TV-PG','TV-14','TV-MA'], @show.rating), class: 'form-control edit_channel' %>
+                        </div>
+                        <div class='col-md-6 form-group'>
                             <label class='unedited'>Adult Content</label>
                             <%= select_tag :adult, options_for_select([['No',false],['Yes',true]],@show.adult), class: 'form-control edit_channel' %>
                         </div>

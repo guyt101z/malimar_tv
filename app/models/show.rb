@@ -197,4 +197,34 @@ class Show < ActiveRecord::Base
     def feed_type
         return 'Show'
     end
+
+    def grid_item_ids
+        return GridItem.where(video_type: 'Show', video_id: id).pluck(:grid_id).uniq
+    end
+
+    def added_by_admin
+        if added_by.present?
+            admin = Admin.where(id: added_by).first
+            if admin.nil?
+                return '[DELETED]'
+            else
+                return admin.name
+            end
+        else
+            return 'Migration'
+        end
+    end
+
+    def edited_by_admin
+        if edited_by.present?
+            admin = Admin.where(id: edited_by).first
+            if admin.nil?
+                return '[DELETED]'
+            else
+                return admin.name
+            end
+        else
+            return 'Not Edited'
+        end
+    end
 end

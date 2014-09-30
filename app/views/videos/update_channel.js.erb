@@ -40,4 +40,5 @@ $('#stream_name-error').remove()
     })
     $('#details-title').html('Channel Details - <span class="text-success">Updated</span>')
     $('#channel_<%= @channel.id %>').html('<%= escape_javascript(render("admins/cms_partials/channel_list_item")) %>')
+    $('#edited_by').html("<%= @channel.edited_by_admin %><br/><small><%= @channel.updated_at.strftime('%B %-d, %Y at %H:%M') %></small>")
 <% end %>

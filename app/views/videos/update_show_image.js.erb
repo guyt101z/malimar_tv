@@ -3,4 +3,5 @@
     $('#sd_image_preview').html('<%= image_tag @show.image_url(:sd) %>')
     $('#show_<%= @show.id %>').children('.image_wrapper').html('<%= image_tag @show.image_url(:preview) %>')
     $('#show_search_<%= @show.id %>').children('.image_wrapper').html('<%= image_tag @show.image_url(:preview) %>')
+    $('#edited_by').html("<%= @show.edited_by_admin %><br/><small><%= @show.updated_at.strftime('%B %-d, %Y at %H:%M') %></small>")
 <% end %>

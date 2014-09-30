@@ -1,0 +1,122 @@
+<% content_for :top_level, 'Video CMS' %>
+<% content_for :low_levels, YAML.dump(['Broken Links']) %>
+<div id="left-scroll" class="nano">
+    <div class="nano-content">
+        <% i = 0 %>
+        <% @bls[:movie].each do |m_id, count| %>
+            <% movie = Movie.where(id: m_id).first %>
+            <% unless movie.nil? %>
+                <div class='row' id='movie_<%= i %>'>
+                    <div class='col-md-6 col-sm-8'>
+                        <div class='panel panel-default'>
+                            <div class='panel-heading' style='position:relative'>
+                                <h3 class='panel-title'><%= movie.name %> - (<%= pluralize(count, 'Report') %>)</h3>
+                                <div class='upload_image_heading'>
+                                    <button class="btn btn-success btn-sm" onclick='mark_complete("Movie", <%= movie.id.to_s %>, "movie_<%= i.to_s %>")'>Mark as Resolved</button>
+                                </div>
+                            </div>
+                            <div class='panel-body'>
+                                <strong>First Reported:</strong> <%= BrokenLink.where(video_type: 'Movie', video_id: movie.id).first.created_at.strftime('%B %-d, %Y') %>
+                                <div class='row'>
+                                    <div style="margin-top: 10px">
+                                        <div class='col-xs-6 text-center'>
+                                            <%= link_to 'View Movie Page (Front End)', movie.watch_url, target: '_blank' %>
+                                        </div>
+                                        <div class='col-xs-6 text-center'>
+                                            <%= link_to 'Edit Movie (Back End)', movies_path(id: movie.id) %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% end %>
+            <% i += 1 %>
+        <% end %>
+
+        <% i = 0 %>
+        <% @bls[:channel].each do |c_id, count| %>
+            <% channel = Channel.where(id: c_id).first %>
+            <% unless channel.nil? %>
+                <div class='row' id='channel_<%= i %>'>
+                    <div class='col-md-6 col-sm-8'>
+                        <div class='panel panel-default'>
+                            <div class='panel-heading' style='position:relative'>
+                                <h3 class='panel-title'><%= channel.name %> - (<%= pluralize(count, 'Report') %>)</h3>
+                                <div class='upload_image_heading'>
+                                    <button class="btn btn-success btn-sm" onclick='mark_complete("Channel", <%= channel.id.to_s %>, "channel_<%= i.to_s %>")'>Mark as Resolved</button>
+                                </div>
+                            </div>
+                            <div class='panel-body'>
+                                <strong>First Reported:</strong> <%= BrokenLink.where(video_type: 'Channel', video_id: channel.id).first.created_at.strftime('%B %-d, %Y') %>
+                                <div class='row'>
+                                    <div style="margin-top: 10px">
+                                        <div class='col-xs-6 text-center'>
+                                            <%= link_to 'View Channel Page (Front End)', channel.watch_url, target: '_blank' %>
+                                        </div>
+                                        <div class='col-xs-6 text-center'>
+                                            <%= link_to 'Edit Channel (Back End)', live_channels_path(id: channel.id) %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% end %>
+            <% i += 1 %>
+        <% end %>
+
+        <% @bls[:show].each do |e_id, count| %>
+            <% episode = Episode.where(episode_number: e_id).first %>
+            <% unless episode.nil? %>
+                <% show = Show.where(id: episode.show_id).first %>
+                <% unless show.nil? %>
+                    <div class='row' id='show_<%= i %>'>
+                        <div class='col-md-6 col-sm-8'>
+                            <div class='panel panel-default'>
+                                <div class='panel-heading' style='position:relative'>
+                                    <h3 class='panel-title'><%= show.name %> (Episode: <%= episode.episode_number %>) - (<%= pluralize(count, 'Report') %>)</h3>
+                                    <div class='upload_image_heading'>
+                                        <button class="btn btn-success btn-sm" onclick='mark_complete_show("Show", <%= episode.show_id.to_s %>, <%= episode.episode_number.to_s %>, "show_<%= i.to_s %>")'>Mark as Resolved</button>
+                                    </div>
+                                </div>
+                                <div class='panel-body'>
+                                    <strong>First Reported:</strong> <%= BrokenLink.where(video_type: 'Show', video_id: episode.show_id, episode_number: episode.episode_number).first.created_at.strftime('%B %-d, %Y') %>
+                                    <div class='row'>
+                                        <div style="margin-top: 10px">
+                                            <div class='col-xs-6 text-center'>
+                                                <%= link_to 'View Show Page (Front End)', episode.watch_url, target: '_blank' %>
+                                            </div>
+                                            <div class='col-xs-6 text-center'>
+                                                <%= link_to 'Edit Show (Back End)', tv_shows_path(id: episode.show_id) %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% end %>
+            <% end %>
+        <% end %>
+    </div>
+</div>
+<script>
+    $('#broken_links').addClass('active')
+
+    function mark_complete(type, id, box_id){
+        $.ajax({
+            url: '/mark_broken_as_resolved?video_type='+type+'&video_id='+id
+        })
+        $('#'+box_id).remove()
+    }
+
+    function mark_complete_show(type, id, number, box_id){
+        $.ajax({
+            url: '/mark_broken_as_resolved?video_type='+type+'&video_id='+id+'&episode_number='+number
+        })
+        $('#'+box_id).remove()
+    }
+</script>

@@ -41,7 +41,7 @@
     height: 30px;
     width: 40px;
     text-align: center;
-    line-height: 30px;
+    line-height: 35px;
     color: #333;
     background-color: #ddd;
     font-size: 24px;
@@ -52,7 +52,7 @@
     height: 30px;
     top: 10px;
     left: 63px;
-    line-height: 30px;
+    line-height: 33px;
     color: #bbb;
     z-index: 2;
     background-color: transparent;
@@ -142,7 +142,7 @@
     right: 0;
     height: 100%;
     width: calc(100% - 300px);
-    background-color: #fff;
+    background-color: #cacaca;
 }
 .channel_title {
     position: absolute;
@@ -163,7 +163,7 @@
     left: 0;
     width: 100%;
     height: calc(100% - 50px);
-    background-color: #fff;
+    background-color: #cacaca;
     padding: 5px 15px;
     overflow-y: scroll;
     padding-bottom: 60px;
@@ -199,7 +199,7 @@
     left: 0;
     width: calc(100% - 300px);
     height: calc(100% - 50px);
-    background-color: #fff;
+    background-color: #cacaca;
     padding: 5px 15px;
     overflow-y: scroll;
     padding-bottom: 60px;
@@ -241,7 +241,7 @@
     height: 30px;
     width: 40px;
     text-align: center;
-    line-height: 30px;
+    line-height: 35px;
     color: #333;
     background-color: #ddd;
     font-size: 24px;
@@ -252,7 +252,7 @@
     height: 30px;
     top: 10px;
     left: 63px;
-    line-height: 30px;
+    line-height: 33px;
     color: #bbb;
     z-index: 2;
     background-color: transparent;

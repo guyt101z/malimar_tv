@@ -6,7 +6,7 @@
                     <div class="pull-left mr30"><%= image_tag @show.image_url(:preview), class: "media-object", style: 'height: 50px' %></div>
                     <div class="media-body">
                         <h3 class="name"><%= @show.name %></h3>
-                        Episode <%= @episode.episode_number %>
+                        Episode <%= @episode.episode_number %><% if @episode.final? %> - FINAL<% end %>
                     </div>
                 </div>
             </div>
@@ -27,13 +27,33 @@
 
             </div>
         </div>
+        <div class="w960 text-right">
+            <% if user_signed_in? && BrokenLink.already_submitted?(@show.id, 'Channel', current_user.id, @episode.episode_number) == false %>
+                <%= link_to 'Broken Video?', submit_broken_link_path(video_id: @show.id, video_type: 'Show', user_id: current_user.id, episode_number: @episode.episode_number), class: 'btn btn-primary btn-bold btn-w180', remote: true, id: 'report_link', data: {disable_with: 'Submitting...'} %>
+            <% else %>
+                <%= link_to 'Broken Video?', '#', class: 'btn btn-primary btn-bold btn-w180', remote: true, id: 'report_link', disabled: 'disabled' %>
+            <% end %>
+        </div>
         <% @item = @channel %>
         <%= render 'videos/partials/similar/shows' %>
     </div>
 </div><!--content-->
 
 
+<div class="modal fade" id="report_modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body p0">
+                <div class='row row0' id='report_modal_body' style='padding: 15px;'>
 
+                </div>
+            </div>
+            <div class='modal-footer'>
+                <a href='#' class='btn btn-primary btn-block' data-dismiss="modal">OK</a>
+            </div>
+        </div>
+    </div>
+</div><!--modal-->
 
 
 

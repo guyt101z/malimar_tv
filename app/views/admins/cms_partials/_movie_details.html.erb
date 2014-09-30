@@ -11,6 +11,21 @@
                     </div>
                 </div>
                 <div class='panel-body'>
+                    <div class='row'>
+                        <div class='col-md-6'>
+                            <label class='unedited'>Added By:</label>
+                            <h5 style='margin:0'><%= @movie.added_by_admin %><br/><small><%= @movie.created_at.strftime('%B %-d, %Y at %H:%M') %></small></h5>
+                        </div>
+                        <div class='col-md-6'>
+                            <label class='unedited'>Last Edited By:</label>
+                            <% if @movie.updated_at == @movie.created_at || @movie.edited_by.nil? %>
+                                <h5 style='margin:0' id='edited_by'>Not Edited</h5>
+                            <% else %>
+                                <h5 style='margin:0' id='edited_by'><%= @movie.edited_by_admin %><br/><small><%= @movie.updated_at.strftime('%B %-d, %Y at %H:%M') %></small></h5>
+                            <% end %>
+                        </div>
+                    </div>
+                    <hr/>
                     <%= form_tag update_movie_path, remote: true, id: 'update_channel_form' do %>
                     <%= hidden_field_tag :id, @movie.id %>
                     <div class='row'>
@@ -30,7 +45,7 @@
                         </div>
                         <div class='col-sm-4 form-group'>
                             <label>Release Date</label>
-                            <%= text_field_tag :release_date, @movie.release_date, class: 'form-control', placeholder: 'Eg: 2014-07-29' %>
+                            <%= text_field_tag :release_date, @movie.release_date.strftime('%B %-d, %Y'), class: 'form-control' %>
                         </div>
                         <div class='col-sm-8 form-group'>
                             <label>RTMP URL</label>
@@ -46,14 +61,14 @@
                         </div>
                         <div class='col-md-12 form-group'>
                             <%
-                                grid_options = [['Choose a grid',nil]]
+                                grid_options = Array.new
                                 grids = Grid.where(class_type: 'Movie')
                                 grids.each do |grid|
                                     grid_options.push([grid.name, grid.id])
                                 end
                             %>
                             <label class='unedited'>Grid</label>
-                            <%= select_tag :grid_id, options_for_select(grid_options,@movie.grid_id), class: 'form-control edit_channel' %>
+                            <%= select_tag 'grids[]', options_for_select(grid_options,@movie.grid_item_ids), class: 'form-control edit_channel', multiple: 'multiple' %>
                         </div>
                     </div>
                     <label class='unedited' id='checkbox_label'>Available on:</label>
@@ -78,10 +93,14 @@
                         </div>
                         <div class='col-sm-6 form-group'>
                             <label class='unedited'>Content Quality</label>
-                            <%= select_tag :content_quality, options_for_select([['High Definition', 'HD'],['Standard Definition', 'SD']], @movie.content_quality), class: 'form-control edit_channel' %>
+                            <%= select_tag :content_quality, options_for_select([['',nil],['High Definition', 'HD'],['Standard Definition', 'SD']], @movie.content_quality), class: 'form-control edit_channel' %>
                         </div>
                     </div>
                     <div class='row'>
+                        <div class='col-sm-6 form-group'>
+                            <label class='unedited'>Rating</label>
+                            <%= select_tag :rating, options_for_select([['',nil],'TV-Y','TV-Y7','TV-G','TV-PG','TV-14','TV-MA'], @movie.rating), class: 'form-control edit_channel' %>
+                        </div>
                         <div class='col-sm-6 form-group'>
                             <label class='unedited'>Membership Level</label>
                             <%= select_tag :free, options_for_select([['Free', true],['Premium', false]], @movie.free), class: 'form-control edit_channel' %>
@@ -226,5 +245,10 @@
     })
     $('.edit_channel_checkbox').change(function(){
         $('#checkbox_label.unedited').append(' - <span class="edited-tag">Edited</span>').removeClass('unedited').addClass('edited')
+    })
+</script>
+<script>
+    $('#release_date').datepicker({
+        format: "MM d, yyyy"
     })
 </script>

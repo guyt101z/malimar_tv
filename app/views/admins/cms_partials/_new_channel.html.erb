@@ -62,13 +62,17 @@
                     </div>
                 </div>
                 <div class='row'>
-                    <div class='col-sm-6 form-group'>
+                    <div class='col-sm-4 form-group'>
                         <label>Content Type</label>
                         <%= select_tag :new_content_type, options_for_select([['',nil],'Audio','Video']), class: 'form-control' %>
                     </div>
-                    <div class='col-sm-6 form-group'>
+                    <div class='col-sm-4 form-group'>
                         <label>Content Quality</label>
                         <%= select_tag :new_content_quality, options_for_select([['',nil],['High Definition', 'HD'],['Standard Definition', 'SD']]), class: 'form-control' %>
+                    </div>
+                    <div class='col-sm-4 form-group'>
+                        <label>Rating</label>
+                        <%= select_tag :new_rating, options_for_select([['',nil],'TV-Y','TV-Y7','TV-G','TV-PG','TV-14','TV-MA']), class: 'form-control' %>
                     </div>
                 </div>
                 <div class='row'>

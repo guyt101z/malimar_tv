@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140917014816) do
+ActiveRecord::Schema.define(version: 20140930003306) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -103,6 +103,15 @@ ActiveRecord::Schema.define(version: 20140917014816) do
     t.boolean  "error"
   end
 
+  create_table "broken_links", force: true do |t|
+    t.integer  "video_id"
+    t.string   "video_type"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "episode_number"
+  end
+
   create_table "categories", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -141,6 +150,9 @@ ActiveRecord::Schema.define(version: 20140917014816) do
     t.boolean  "adult"
     t.integer  "grid_id"
     t.string   "slug"
+    t.integer  "added_by"
+    t.integer  "edited_by"
+    t.string   "rating"
   end
 
   create_table "client_migration_items", force: true do |t|
@@ -226,10 +238,21 @@ ActiveRecord::Schema.define(version: 20140917014816) do
     t.integer  "length"
     t.integer  "show_id"
     t.string   "rtmp_url"
+    t.boolean  "final"
+    t.integer  "added_by"
+    t.integer  "edited_by"
   end
 
   create_table "genres", force: true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "grid_items", force: true do |t|
+    t.integer  "video_id"
+    t.string   "video_type"
+    t.integer  "grid_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -332,6 +355,9 @@ ActiveRecord::Schema.define(version: 20140917014816) do
     t.boolean  "adult"
     t.integer  "grid_id"
     t.string   "slug"
+    t.integer  "added_by"
+    t.integer  "edited_by"
+    t.string   "rating"
   end
 
   create_table "note_files", force: true do |t|
@@ -437,6 +463,9 @@ ActiveRecord::Schema.define(version: 20140917014816) do
     t.boolean  "adult"
     t.integer  "grid_id"
     t.string   "slug"
+    t.integer  "added_by"
+    t.integer  "edited_by"
+    t.string   "rating"
   end
 
   create_table "support_attachments", force: true do |t|

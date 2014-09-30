@@ -4,8 +4,16 @@ $('#edit_ep_title').val('<%= @episode.title %>')
 $('#edit_ep_episode_number').val('<%= @episode.episode_number %>')
 $('#edit_ep_stream_url').val('<%= @episode.stream_url %>')
 $('#edit_ep_rtmp_url').val('<%= @episode.rtmp_url %>')
-$('#edit_ep_release_date').val('<%= @episode.release_date %>')
+$('#edit_ep_release_date').val('<%= @episode.release_date.strftime("%B %-d, %Y") %>')
 $('#edit_ep_synopsis').val('<%= escape_javascript(@episode.synopsis) %>')
 $('#edit_ep_length').val('<%= @episode.length %>')
+$('#edit_ep_final').val('<%= @episode.final %>')
 $('#del_ep_btn').attr('href', '<%= delete_episode_path(id: @episode.id) %>')
 $('#edit_episode_modal').modal('show')
+
+<% if @episode.edited_by.nil? %>
+    $('#ep_edited_by').html("<%= @episode.edited_by_admin %>")
+<% else %>
+    $('#ep_edited_by').html("<%= @episode.edited_by_admin %><br/><small><%= @episode.updated_at.strftime('%B %-d, %Y at %H:%M') %></small>")
+<% end %>
+$('#ep_added_by').html("<%= @episode.added_by_admin %><br/><small><%= @episode.created_at.strftime('%B %-d, %Y at %H:%M') %></small>")

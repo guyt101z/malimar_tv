@@ -19,6 +19,7 @@
  *= require animate
  *= require notifications
  *= require new_admin_style
+ *= require datetimepicker
  */
 .code-editor {
     font-size: 75%;

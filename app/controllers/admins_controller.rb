@@ -1172,21 +1172,21 @@ class AdminsController < ApplicationController
 
 	def live_channels
 		if current_admin.authorized_to?('update_videos')
-			@channels = Channel.all.order(name: :asc)
+			@channels = Channel.all.order(created_at: :desc)
 		else
 			flash[:error] = 'You are not authorized to view that'
 		end
 	end
 	def shows
 		if current_admin.authorized_to?('update_videos')
-			@shows = Show.all.order(name: :asc)
+			@shows = Show.all.order(created_at: :desc)
 		else
 			flash[:error] = 'You are not authorized to view that'
 		end
 	end
 	def movies
 		if current_admin.authorized_to?('update_videos')
-			@movies = Movie.all.order(name: :asc)
+			@movies = Movie.all.order(created_at: :desc)
 		else
 			flash[:error] = 'You are not authorized to view that'
 		end
@@ -3670,6 +3670,46 @@ class AdminsController < ApplicationController
 		send_data pdf.render, filename: "test.pdf", :type => "application/pdf", :disposition => "inline"
 
 
+	end
+
+	def broken_links
+		@show_ids = Show.all.pluck(:id).uniq
+		@movie_ids = Movie.all.pluck(:id).uniq
+		@channel_ids = Channel.all.pluck(:id).uniq
+		@bl_links = BrokenLink.all.pluck(:id).uniq
+		bls = BrokenLink.all
+
+		@bls = {channel: Hash.new, movie: Hash.new, show: Hash.new}
+
+		bls.each do |bl|
+			if bl.video_type == 'Channel'
+				if @bls[:channel].has_key?(bl.video_id)
+					@bls[:channel][bl.video_id] += 1
+				else
+					@bls[:channel][bl.video_id] = 1
+				end
+			elsif bl.video_type == 'Movie'
+				if @bls[:movie].has_key?(bl.video_id)
+					@bls[:movie][bl.video_id] += 1
+				else
+					@bls[:movie][bl.video_id] = 1
+				end
+			elsif bl.video_type == 'Show'
+				if @bls[:show].has_key?(bl.episode_number)
+					@bls[:show][bl.episode_number] += 1
+				else
+					@bls[:show][bl.episode_number] = 1
+				end
+			end
+		end
+	end
+
+	def mark_broken_as_resolved
+		if params[:video_type] == 'Show'
+			BrokenLink.where(video_type: 'Show', video_id: params[:video_id], episode_number: params[:episode_number]).destroy_all
+		else
+			BrokenLink.where(video_type: params[:video_type], video_id: params[:video_id]).destroy_all
+		end
 	end
 
 	private

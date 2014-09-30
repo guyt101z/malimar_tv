@@ -30,7 +30,72 @@
                 elsif grid.sort == 'New Arrivals/Episodes'
                     items = Movie.where(grid_id: grid.id).order(created_at: :desc)
                 end
-            end %>
+            end
+
+            if grid.class_type == 'Show'
+                grid_items = Array.new
+                grid.grid_items.each do |item|
+                    unless item.video.nil?
+                        grid_items.push(item.video)
+                    end
+                end
+                items = []
+                if grid_items.any?
+                    if grid.sort == 'Alphabetical'
+                        items = grid_items.sort_by{|a| a.name}
+                    elsif grid.sort == 'Random'
+                        items = grid_items.shuffle!
+                    else
+                        sort_hash = Hash.new
+                        grid_items.each do |item|
+                            sort_hash[item.id] = item.newest_episode
+                        end
+                        sort_hash.sort_by {|_key, value| value}
+
+                        items = Array.new
+                        sort_hash.each do |k,v|
+                            items.push(Show.find(k))
+                        end
+
+                    end
+                end
+            elsif grid.class_type == 'Channel'
+                grid_items = Array.new
+                grid.grid_items.each do |item|
+                    unless item.video.nil?
+                        grid_items.push(item.video)
+                    end
+                end
+                items = []
+                if grid_items.any?
+                    if grid.sort == 'Alphabetical'
+                        items = grid_items.sort_by{|a| a.name}
+                    elsif grid.sort == 'Random'
+                        items = grid_items.shuffle!
+                    elsif grid.sort == 'New Arrivals/Episodes'
+                        items = (grid_items.sort_by{|a| a.created_at}).reverse
+                    end
+                end
+            elsif grid.class_type == 'Movie'
+                grid_items = Array.new
+                @parent_grid.grid_items.each do |item|
+                    unless item.video.nil?
+                        grid_items.push(item.video)
+                    end
+                end
+                items = []
+                if grid_items.any?
+                    if grid.sort == 'Alphabetical'
+                        items = grid_items.sort_by{|a| a.name}
+                    elsif grid.sort == 'Random'
+                        items = grid_items.shuffle!
+                    elsif grid.sort == 'New Arrivals/Episodes'
+                        items = (grid_items.sort_by{|a| a.created_at}).reverse
+                    end
+                end
+            end
+
+            %>
 
             <div class="panel panel-custom">
                 <div class="panel-heading">
@@ -65,23 +130,67 @@
         <% end %>
 
         <%
-        if @grid.class_type == 'Show'
-            items = Show.where(grid_id: @grid.id)
-        elsif @grid.class_type == 'Channel'
-            if @grid.sort == 'Alphabetical'
-                items = Channel.where(grid_id: @grid.id).order(name: :asc)
-            elsif @grid.sort == 'Random'
-                items = Channel.where(grid_id: @grid.id).shuffle
-            elsif @grid.sort == 'New Arrivals/Episodes'
-                items = Channel.where(grid_id: @grid.id).order(created_at: :desc)
+        @parent_grid = @grid.clone
+        if @parent_grid.class_type == 'Show'
+            grid_items = Array.new
+            @parent_grid.grid_items.each do |item|
+                unless item.video.nil?
+                    grid_items.push(item.video)
+                end
             end
-        elsif @grid.class_type == 'Movie'
-            if @grid.sort == 'Alphabetical'
-                items = Movie.where(grid_id: @grid.id).order(name: :asc)
-            elsif @grid.sort == 'Random'
-                items = Movie.where(grid_id: @grid.id).shuffle
-            elsif @grid.sort == 'New Arrivals/Episodes'
-                items = Movie.where(grid_id: @grid.id).order(created_at: :desc)
+            items = []
+            if grid_items.any?
+                if @parent_grid.sort == 'Alphabetical'
+                    items = grid_items.sort_by{|a| a.name}
+                elsif @parent_grid.sort == 'Random'
+                    items = grid_items.shuffle!
+                else
+                    sort_hash = Hash.new
+                    grid_items.each do |item|
+                        sort_hash[item.id] = item.newest_episode
+                    end
+                    sort_hash.sort_by {|_key, value| value}
+
+                    items = Array.new
+                    sort_hash.each do |k,v|
+                        items.push(Show.find(k))
+                    end
+
+                end
+            end
+        elsif @parent_grid.class_type == 'Channel'
+            grid_items = Array.new
+            @parent_grid.grid_items.each do |item|
+                unless item.video.nil?
+                    grid_items.push(item.video)
+                end
+            end
+            items = []
+            if grid_items.any?
+                if @parent_grid.sort == 'Alphabetical'
+                    items = grid_items.sort_by{|a| a.name}
+                elsif @parent_grid.sort == 'Random'
+                    items = grid_items.shuffle!
+                elsif @parent_grid.sort == 'New Arrivals/Episodes'
+                    items = (grid_items.sort_by{|a| a.created_at}).reverse
+                end
+            end
+        elsif @parent_grid.class_type == 'Movie'
+            grid_items = Array.new
+            @parent_grid.grid_items.each do |item|
+                unless item.video.nil?
+                    grid_items.push(item.video)
+                end
+            end
+            items = []
+            if grid_items.any?
+                if @parent_grid.sort == 'Alphabetical'
+                    items = grid_items.sort_by{|a| a.name}
+                elsif @parent_grid.sort == 'Random'
+                    items = grid_items.shuffle!
+                elsif @parent_grid.sort == 'New Arrivals/Episodes'
+                    items = (grid_items.sort_by{|a| a.created_at}).reverse
+                end
             end
         end
         %>

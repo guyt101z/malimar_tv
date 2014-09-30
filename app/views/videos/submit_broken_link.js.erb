@@ -1,0 +1,13 @@
+<% if @success == true %>
+    $('#report_link').attr('disabled','disabled')
+
+    $('#report_link').attr('href', '#')
+
+    $('#report_modal_body').html("<div class='text-center'><span style='font-size: 120%; margin-bottom: 15px' class='text-success'>Thank you</span><br/>We will investigate as soon as possible</div>")
+
+    $('#report_modal').modal('show')
+<% else %>
+    $('#report_modal_body').html("<div class='text-center'><span style='font-size: 120%; margin-bottom: 15px' class='text-danger'>Error</span><br/>We encountered an error submitting your report</div>")
+
+    $('#report_modal').modal('show')
+<% end %>

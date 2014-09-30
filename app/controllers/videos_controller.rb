@@ -31,8 +31,17 @@ class VideosController < ApplicationController
 			@channel.actors = params[:new_actors]
 			@channel.stream_name = params[:new_stream_name]
 			@channel.adult = params[:new_adult]
-			@channel.grid_id = params[:new_grid_id]
+			@channel.rating = params[:new_rating]
+			@channel.added_by = current_admin.id
 			if @channel.save
+				if params[:new_grids].present?
+					params[:new_grids].each do |g|
+						grid_item = GridItem.new(video_type: 'Channel', grid_id: g.to_i, video_id: @channel.id)
+						grid_item.save
+					end
+				end
+
+
 				Channel.reindex
 				AdminActivity.create(admin_id: current_admin.id,
 									data: YAML.dump({
@@ -66,8 +75,18 @@ class VideosController < ApplicationController
 			@channel.stream_name = params[:stream_name]
 			@channel.front_page = params[:front_page]
 			@channel.adult = params[:adult]
-			@channel.grid_id = params[:grid_id]
+			@channel.rating = params[:rating]
+			@channel.edited_by = current_admin.id
 			if @channel.save
+				GridItem.where(video_type: 'Channel', video_id: @channel.id).destroy_all
+
+
+				if params[:grids].present?
+					params[:grids].each do |g|
+						grid_item = GridItem.new(video_type: 'Channel', grid_id: g.to_i, video_id: @channel.id)
+						grid_item.save
+					end
+				end
 				Channel.reindex
 				AdminActivity.create(admin_id: current_admin.id,
 									data: YAML.dump({
@@ -167,7 +186,15 @@ class VideosController < ApplicationController
 			@movie.release_date = params[:new_release_date]
 			@movie.adult = params[:new_adult]
 			@movie.grid_id = params[:new_grid_id]
+			@movie.rating = params[:new_rating]
+			@movie.added_by = current_admin.id
 			if @movie.save
+				if params[:new_grids].present?
+					params[:new_grids].each do |g|
+						grid_item = GridItem.new(video_type: 'Movie', grid_id: g.to_i, video_id: @movie.id)
+						grid_item.save
+					end
+				end
 				Movie.reindex
 				AdminActivity.create(admin_id: current_admin.id,
 									data: YAML.dump({
@@ -202,7 +229,17 @@ class VideosController < ApplicationController
 			@movie.front_page = params[:front_page]
 			@movie.adult = params[:adult]
 			@movie.grid_id = params[:grid_id]
+			@movie.rating = params[:rating]
+			@movie.edited_by = current_admin.id
 			if @movie.save
+				GridItem.where(video_type: 'Movie', video_id: @movie.id).destroy_all
+
+				if params[:grids].present?
+					params[:grids].each do |g|
+						grid_item = GridItem.new(video_type: 'Movie', grid_id: g.to_i, video_id: @movie.id)
+						grid_item.save
+					end
+				end
 				Movie.reindex
 				AdminActivity.create(admin_id: current_admin.id,
 									data: YAML.dump({
@@ -300,7 +337,15 @@ class VideosController < ApplicationController
 			@show.actors = params[:new_actors]
 			@show.adult = params[:new_adult]
 			@show.grid_id = params[:new_grid_id]
+			@show.rating = params[:new_rating]
+			@show.added_by = current_admin.id
 			if @show.save
+				if params[:new_grids].present?
+					params[:new_grids].each do |g|
+						grid_item = GridItem.new(video_type: 'Show', grid_id: g.to_i, video_id: @show.id)
+						grid_item.save
+					end
+				end
 				Show.reindex
 				AdminActivity.create(admin_id: current_admin.id,
 									data: YAML.dump({
@@ -332,7 +377,17 @@ class VideosController < ApplicationController
 			@show.front_page = params[:front_page]
 			@show.adult = params[:adult]
 			@show.grid_id = params[:grid_id]
+			@show.rating = params[:rating]
+			@show.edited_by = current_admin.id
 			if @show.save
+				GridItem.where(video_type: 'Show', video_id: @show.id).destroy_all
+
+				if params[:grids].present?
+					params[:grids].each do |g|
+						grid_item = GridItem.new(video_type: 'Show', grid_id: g.to_i, video_id: @show.id)
+						grid_item.save
+					end
+				end
 				Show.reindex
 				AdminActivity.create(admin_id: current_admin.id,
 									data: YAML.dump({
@@ -420,8 +475,20 @@ class VideosController < ApplicationController
 			@episode.release_date = params[:new_ep_release_date]
 			@episode.synopsis = params[:new_ep_synopsis]
 			@episode.length = params[:new_ep_length]
+			@episode.final = params[:new_ep_final]
+			@episode.added_by = current_admin.id
 			if @episode.save
 				@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
+
+				if @episode.final?
+					@episodes.each do |e|
+						unless e.id == @episode.id
+							e.final = false
+							e.save
+						end
+					end
+				end
+
 				AdminActivity.create(admin_id: current_admin.id,
 									data: YAML.dump({
 										type: 'New Episode',
@@ -455,8 +522,19 @@ class VideosController < ApplicationController
 			@episode.release_date = params[:edit_ep_release_date]
 			@episode.synopsis = params[:edit_ep_synopsis]
 			@episode.length = params[:edit_ep_length]
+			@episode.final = params[:edit_ep_final]
+			@episode.edited_by = current_admin.id
 			if @episode.save
 				@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
+
+				if @episode.final?
+					@episodes.each do |e|
+						unless e.id == @episode.id
+							e.final = false
+							e.save
+						end
+					end
+				end
 
 				AdminActivity.create(admin_id: current_admin.id,
 									data: YAML.dump({
@@ -637,6 +715,28 @@ class VideosController < ApplicationController
 				flash[:success] = "Welcome back, #{user.name}"
 				@error = nil
 			end
+		end
+	end
+
+	def submit_broken_link
+		if params[:video_type] == 'Show'
+			already_submitted = BrokenLink.already_submitted?(current_user.id, params[:video_id], params[:video_type], params[:episode_number])
+		else
+			already_submitted = BrokenLink.already_submitted?(current_user.id, params[:video_id], params[:video_type], nil)
+		end
+		unless already_submitted
+			if params[:video_type] == 'Show'
+				link = BrokenLink.new(user_id: current_user.id, video_id: params[:video_id], video_type: params[:video_type], episode_number: params[:episode_number])
+			else
+				link = BrokenLink.new(user_id: current_user.id, video_id: params[:video_id], video_type: params[:video_type])
+			end
+			if link.save
+				@success = true
+			else
+				@success = false
+			end
+		else
+			@success = false
 		end
 	end
 

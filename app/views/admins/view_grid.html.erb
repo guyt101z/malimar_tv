@@ -99,11 +99,11 @@
                 </div>
             </div>
             <% end %>
+            <%= render 'admins/cms_partials/view_grid_details' %>
             <%= form_tag admin_update_grid_image_path, style: 'display:none', remote: true do %>
                 <%= file_field_tag :image, style: 'display:none' %>
                 <%= hidden_field_tag :id, @grid.id %>
             <% end %>
-            <%= render 'admins/cms_partials/view_grid_details' %>
         </div>
 
     </div>
