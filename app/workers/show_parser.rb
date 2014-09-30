@@ -35,6 +35,7 @@ class ShowParser
 
             if Show.where(name: show.name).count < 1
                 if show.save
+                    GridItem.create(grid_id: grid_id, video_id: show.id, video_type: 'Show')
                     Resque.enqueue(EpisodeParser, show.id, item['feed'], grid_id)
                     migration_item.status = 'Complete'
                     migration_item.completed = true

@@ -75,6 +75,7 @@ class ChannelParser
 
             if Channel.where(stream_url: channel.stream_url).count < 1
                 if channel.save
+                    GridItem.create(grid_id: grid_id, video_id: channel.id, video_type: 'Channel')
                     migration_item.destroy
                 else
                     migration_item.status = 'Error'

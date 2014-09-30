@@ -63,6 +63,7 @@ class MovieParser
 
             movie.remote_image_url = item['hdImg']
             if movie.save
+                GridItem.create(grid_id: grid_id, video_id: movie.id, video_type: 'Movie')
                 migration_item.status = 'Complete'
                 migration_item.completed = true
                 migration_item.save
