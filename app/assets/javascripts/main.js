@@ -25,6 +25,7 @@
 //= require dataTables_bootstrap
 //= require_directory ./main
 //= require jwplayer
+//= require jwplayer_html5
 
 
 /**
