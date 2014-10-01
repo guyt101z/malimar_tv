@@ -308,7 +308,7 @@
 </body>
 <% end %>
 <script>
-alert('<%= request.inspect %>')
+alert('<%= escape_javascript(request.inspect).html_safe %>')
 </script>
 
 <script id='template-upload'>
