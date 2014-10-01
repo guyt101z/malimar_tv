@@ -2,6 +2,8 @@
 <html>
 <head>
 	<title>Malimar TV</title>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:600,400,300,700' rel='stylesheet' type='text/css'>
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 	<% if params[:controller] == 'admins' || params[:controller] == 'sales_reps' || params[:controller] == 'feed' ||
 		request.original_url.end_with?('admins/sign_in', 'admins/password/new', 'admins/password', 'sales_representatives/sign_in', 'sales_representatives/password/new', 'sales_representatives/password', 'sales_representatives/password/edit') ||
@@ -9,21 +11,17 @@
 		params[:controller] == 'transactions' || params[:controller] == 'support' || params[:controller] == 'vod_migrations' %>
 		<%= stylesheet_link_tag    'admin', media: 'all', 'data-turbolinks-track' => true %>
 		<%= javascript_include_tag 'admin_rep', 'data-turbolinks-track' => true %>
+		<link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
+		<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+		<script src="//cdn.oesmith.co.uk/morris-0.4.3.min.js"></script>
 	<% else %>
 		<%= stylesheet_link_tag    'main', media: 'all', 'data-turbolinks-track' => true %>
 		<%= javascript_include_tag 'main', 'data-turbolinks-track' => true %>
 	<% end %>
 
-	<link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
-	<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-	<script src="http://cdn.oesmith.co.uk/morris-0.4.3.min.js"></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js'></script>
 
-    <script src='/jwplayer/jwplayer.js'></script>
     <script type='text/javascript'>jwplayer.key = 'SkTelUdJ7DU2z068gn4mt6/EhKvLHRJnoBeHqf2IqNg='</script>
-
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:600,400,300,700' rel='stylesheet' type='text/css'>
-	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 	<%= csrf_meta_tags %>
 </head>
 <% if params[:controller] == 'admins' || params[:controller] == 'feed' || request.original_url.end_with?('admins/sign_in', 'admins/password/new', 'admins/password') || request.original_url.include?('admins/password/edit') ||
