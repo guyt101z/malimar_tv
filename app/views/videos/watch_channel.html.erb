@@ -57,24 +57,17 @@
 
 <script>
 $('#episode_<%= @channel.id %>').addClass('active')
-var ua = navigator.userAgent.toLowerCase();
-var isAndroid = ua.indexOf("android") > -1;
-if (isAndroid){
-	$('#video_wrapper').html('<video width="100%" height="550"><source src="<%= @channel.hls_stream %>?token=<%= @token %> type="application/x-mpegURL"></video>')
-}
-else {
-	jwplayer("video_wrapper").setup({
-		sources: [
-			{file: "<%= @channel.hls_stream %>?token=<%= @token %>"},
-			{file: "<%= @channel.rtmp_stream %>?token=<%= @token %>"}
-		],
-		image: "<%= @channel.image_url %>",
-		title:"<%= @channel.name %>",
-		width: '100%',
-		androidhls: true,
-		height: 550
-	});
-}
+jwplayer("video_wrapper").setup({
+	sources: [
+		{file: "<%= @channel.hls_stream %>?token=<%= @token %>"},
+		{file: "<%= @channel.rtmp_stream %>?token=<%= @token %>"}
+	],
+	image: "<%= @channel.image_url %>",
+	title:"<%= @channel.name %>",
+	width: '100%',
+	androidhls: true,
+	height: 550
+});
 </script>
 <% if (user_signed_in? && current_user.web_premium?) || admin_signed_in?  %>
 	<script>
