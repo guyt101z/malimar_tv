@@ -9,7 +9,7 @@ class VodMigrationsController < ApplicationController
                 flash[:notice] = "File uploaded"
                 redirect_to '/admins'
             else
-                flash[:notice] = @grid.errors.full_messages.join(". ") + ". #{params[:file]}"
+                flash[:notice] = 'Error occurred saving migration, please try again'
                 redirect_to '/admins'
             end
         else

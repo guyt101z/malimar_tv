@@ -2,6 +2,7 @@ $('#name-error').remove()
 $('#free-error').remove()
 $('#content_type-error').remove()
 $('#content_quality-error').remove()
+$('#url-error').remove()
 $('#bitrate-error').remove()
 <% if @show.errors.any? %>
     <% if @show.errors[:name].present? %>
@@ -18,6 +19,9 @@ $('#bitrate-error').remove()
     <% end %>
     <% if @show.errors[:bitrate].present? %>
         $('#bitrate').after('<div class="text-danger" id="bitrate-error">Bitrate <%= @show.errors[:bitrate].join(", ") %>.</div>')
+    <% end %>
+    <% if @show.errors[:url].present? %>
+        $('#url').after('<div class="text-danger" id="bitrate-error">Stream URL <%= @show.errors[:url].join(", ") %>.</div>')
     <% end %>
     $('#details-title').html('Show Details - <span class="text-danger">Not Updated</span>')
 <% else %>

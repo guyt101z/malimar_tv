@@ -217,4 +217,16 @@ class Channel < ActiveRecord::Base
             return 'Not Edited'
         end
     end
+
+    def hls_stream
+        if disable_playlist?
+            return "http://#{stream_url}"
+        else
+            return "http://#{stream_url}/playlist.m3u8"
+        end
+    end
+
+    def rtmp_stream
+        return "rtmp://#{stream_url}"
+    end
 end

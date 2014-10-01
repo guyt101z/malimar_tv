@@ -44,10 +44,14 @@ $('#new_length-error').remove()
     $('#new_actors').val('')
     $('#new_genres').val('')
     $('#new_free').val('')
-    $('#new_free').val('')
+    $('#new_rating').val('')
     $('#new_roku').removeAttr('checked')
     $('#new_web').removeAttr('checked')
     $('#new_ios').removeAttr('checked')
     $('#new_android').removeAttr('checked')
+
+    $('#new_adult').val('false')
+    $('#new_disable_playlist').val('false')
+
     $('#movie_<%= @movie.id %>').click()
 <% end %>

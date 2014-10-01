@@ -15,8 +15,21 @@ class EpisodeParser
                 episode.episode_number = item['episodeNumber'].to_i
                 episode.length = item['length'].to_i
                 episode.release_date = Date.strptime(item['releaseDate'], "%d-%B-%Y")
-                episode.stream_url = item['media']['streamUrl']
                 if episode.save(:validate => false)
+                    url = item['media']['streamUrl'].split('/')
+                    if url.count < 9
+                        show.url = [url[3],url[3],url[4],url[5]].join('/')
+                    else
+                        show.url = [url[3],url[3],url[4],url[5],url[6]].join('/')
+                    end
+                    if url.end_with?('/playlist.m3u8')
+                        show.disable_playlist = false
+                    else
+                        show.disable_playlist = true
+                    end
+
+                    show.save
+
                     migration_item.status = 'Complete'
                     migration_item.completed = true
                     migration_item.save

@@ -16,16 +16,16 @@
                 </div>
                 <div class='row'>
                     <div class='col-sm-8 form-group'>
-                        <label>HLS URL</label>
+                        <label>Stream Base URL</label>
                         <%= text_field_tag :new_stream_url, '', class: 'form-control' %>
                     </div>
                     <div class='col-sm-4 form-group'>
                         <label>Stream Name</label>
                         <%= text_field_tag :new_stream_name, '', class: 'form-control' %>
                     </div>
-                    <div class='col-sm-8 form-group'>
-                        <label>RTMP URL</label>
-                        <%= text_field_tag :new_rtmp_url, '', class: 'form-control' %>
+                    <div class='col-sm-4 form-group'>
+                        <label class='unedited'>Disable playlist?</label>
+                            <%= select_tag :new_disable_playlist, options_for_select([['No',false],['Yes',true]]), class: 'form-control edit_channel' %>
                     </div>
                     <div class='col-sm-4 form-group'>
                         <label>Adult Content</label>

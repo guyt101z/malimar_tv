@@ -44,6 +44,15 @@ class ChannelParser
                 end
                 name_array.reverse!
                 channel.stream_name = name_array.join('')
+                if channel.stream_url.start_with?('http://')
+                    channel.stream_url.gsub!('http://','')
+                end
+                if channel.stream_url.start_with?('rtmp://')
+                    channel.stream_url.gsub!('rtmp://','')
+                end
+                if channel.stream_url.end_with?('/playlist.m3u8')
+                    channel.stream_url.gsub!('/playlist.m3u8','')
+                end
             end
 
             channel.genres = ""

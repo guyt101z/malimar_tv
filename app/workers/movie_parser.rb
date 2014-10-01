@@ -33,6 +33,13 @@ class MovieParser
 
                 movie.content_quality = item['media']['streamQuality']
                 movie.stream_url = item['media']['streamUrl']
+                if movie.stream_url.start_with?('http://')
+                    movie.stream_url.gsub!('http://','')
+                end
+                if movie.stream_url.end_with?('rtmp://')
+                    movie.stream_url.gsub!('rtmp://','')
+                end
+
                 movie.bitrate = item['media']['streamBitrate']
             end
             movie.length = 0

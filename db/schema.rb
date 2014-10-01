@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140930161126) do
+ActiveRecord::Schema.define(version: 20140930220443) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(version: 20140930161126) do
     t.integer  "added_by"
     t.integer  "edited_by"
     t.string   "rating"
+    t.boolean  "disable_playlist"
   end
 
   create_table "client_migration_items", force: true do |t|
@@ -358,6 +359,7 @@ ActiveRecord::Schema.define(version: 20140930161126) do
     t.integer  "added_by"
     t.integer  "edited_by"
     t.string   "rating"
+    t.boolean  "disable_playlist"
   end
 
   create_table "note_files", force: true do |t|

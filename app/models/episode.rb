@@ -1,9 +1,9 @@
 class Episode < ActiveRecord::Base
-    attr_accessible :show_id, :title, :episode_number, :stream_url, :release_date, :synopsis, :length
+    attr_accessible :show_id, :title, :episode_number, :release_date, :synopsis, :length
 
-    validates_presence_of :show_id, :episode_number, :stream_url, :release_date, :length
+    validates_presence_of :show_id, :episode_number, :release_date, :length
 
-    belongs_to :channel
+    belongs_to :show
 
     def matches?(search_term)
         searchable_string = title.downcase
@@ -62,6 +62,48 @@ class Episode < ActiveRecord::Base
             end
         else
             return 'Not Edited'
+        end
+    end
+
+    def hls_stream
+        filename = show.name.gsub(/[^a-z0-9]/i, '')
+
+        if show.add_ep_num?
+            filename += "-#{episode_number.to_s}"
+        end
+        if show.add_ep_num?
+            filename += "-#{release_date.strftime('%-d-%b-%Y')}"
+        end
+
+        if show.disable_playlist?
+            if show.hls_stream.end_with?('/')
+                return "#{show.hls_stream}#{filename}"
+            else
+                return "#{show.hls_stream}/#{filename}"
+            end
+        else
+            if show.hls_stream.end_with?('/')
+                return "#{show.hls_stream}#{filename}/playlist.m3u8"
+            else
+                return "#{show.hls_stream}/#{filename}/playlist.m3u8"
+            end
+        end
+    end
+
+    def rtmp_stream
+        filename = show.name.gsub(/[^a-z0-9]/i, '')
+
+        if show.add_ep_num?
+            filename += "-#{episode_number.to_s}"
+        end
+        if show.add_ep_num?
+            filename += "-#{release_date.strftime('%-d-%b-%Y')}"
+        end
+
+        if show.rtmp_stream.end_with?('/')
+            return "#{show.rtmp_stream}#{filename}"
+        else
+            return "#{show.rtmp_stream}/#{filename}"
         end
     end
 end

@@ -14,6 +14,25 @@
                         <%= text_field_tag :new_name, '', class: 'form-control' %>
                     </div>
                 </div>
+                <label>Episode URL Options:</label>
+                <div class='row'>
+                    <div class='col-md-12 form-group'>
+                        <label class='unedited'>Stream Base URL</label>
+                        <%= text_field_tag :new_url, '', class: 'form-control edit_channel' %>
+                    </div>
+                    <div class='col-md-4 col-xs-6 form-group'>
+                        <label class='unedited'>Disable playlist?</label>
+                        <%= select_tag :new_disable_playlist, options_for_select([['No',false],['Yes',true]]), class: 'form-control edit_channel' %>
+                    </div>
+                    <div class='col-md-4 col-xs-6 form-group'>
+                        <label class='unedited'>Add Date?</label>
+                        <%= select_tag :new_add_date, options_for_select([['No',false],['Yes',true]]), class: 'form-control edit_channel' %>
+                    </div>
+                    <div class='col-md-4 col-xs-6 form-group'>
+                        <label class='unedited'>Add Episode Number?</label>
+                        <%= select_tag :new_add_ep_num, options_for_select([['No',false],['Yes',true]]), class: 'form-control edit_channel' %>
+                    </div>
+                </div>
                 <div class='row'>
                     <div class='col-md-3 col-xs-6 form-group'>
                         <label>Available on:</label><br/>

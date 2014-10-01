@@ -21,6 +21,9 @@
  *= require new_admin_style
  *= require datetimepicker
  */
+ .modal-content {
+    border-radius: 0;
+ }
 .code-editor {
     font-size: 75%;
     font-family: 'Monaco';

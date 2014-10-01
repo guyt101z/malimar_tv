@@ -59,15 +59,9 @@
 
 <script>
 $('#episode_<%= @episode.id %>').addClass('active')
-<% if @episode.rtmp_url.present? %>
 jwplayer("video_wrapper").setup({
     sources: [
-        {file: "<%= @episode.rtmp_url %>"},
-        <% if @channel.stream_url.include?('/playlist.m3u8') %>
-        {file: "<%= @episode.stream_url %>"}
-        <% else %>
-        {file: "<%= @episode.stream_url %>/playlist.m3u8"}
-        <% end %>
+        {file: "<%= @episode.hls_stream %>"}
     ],
     image: "<%= @show.image_url %>",
     title:"<%= @episode.title %>",
@@ -75,22 +69,6 @@ jwplayer("video_wrapper").setup({
     height: 550,
     primary: 'flash'
 });
-<% else %>
-jwplayer("video_wrapper").setup({
-    sources: [
-        <% if @episode.stream_url.include?('/playlist.m3u8') %>
-        {file: "<%= @episode.stream_url %>"}
-        <% else %>
-        {file: "<%= @episode.stream_url %>/playlist.m3u8"}
-        <% end %>
-    ],
-    image: "<%= @show.image_url %>",
-    title:"<%= @episode.title %>",
-    width: '100%',
-    height: 550,
-    primary: 'flash'
-});
-<% end %>
 </script>
 <% if (user_signed_in? && current_user.web_premium?) || admin_signed_in?  %>
     <script>

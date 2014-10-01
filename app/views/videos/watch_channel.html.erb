@@ -57,15 +57,9 @@
 
 <script>
 $('#episode_<%= @channel.id %>').addClass('active')
-<% if @channel.rtmp_url.present? %>
 jwplayer("video_wrapper").setup({
 	sources: [
-		{file: "<%= @channel.rtmp_url %>"},
-		<% if @channel.stream_url.include?('/playlist.m3u8') %>
-		{file: "<%= @channel.stream_url %>?token=<%= @token %>"}
-		<% else %>
-		{file: "<%= @channel.stream_url %>/playlist.m3u8?token=<%= @token %>"}
-		<% end %>
+		{file: "<%= @channel.hls_stream %>?token=<%= @token %>"}
 	],
 	image: "<%= @channel.image_url %>",
 	title:"<%= @channel.name %>",
@@ -73,22 +67,6 @@ jwplayer("video_wrapper").setup({
 	height: 550,
 	primary: 'flash'
 });
-<% else %>
-jwplayer("video_wrapper").setup({
-	sources: [
-		<% if @channel.stream_url.include?('/playlist.m3u8') %>
-		{file: "<%= @channel.stream_url %>?token=<%= @token %>"}
-		<% else %>
-		{file: "<%= @channel.stream_url %>/playlist.m3u8?token=<%= @token %>"}
-		<% end %>
-	],
-	image: "<%= @channel.image_url %>",
-	title:"<%= @channel.name %>",
-	width: '100%',
-	height: 550,
-	primary: 'flash'
-});
-<% end %>
 </script>
 <% if (user_signed_in? && current_user.web_premium?) || admin_signed_in?  %>
 	<script>

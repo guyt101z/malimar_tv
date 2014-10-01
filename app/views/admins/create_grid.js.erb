@@ -2,6 +2,7 @@ $('#name-error').remove()
 $('#weight-error').remove()
 
 <% if @grid.errors.any? %>
+	alert('<%= @grid.errors.full_messages.join(" | ") %>')
     <% if @grid.errors[:name].any? %>
         $('#name').after('<div class="text-danger" id="name-error">Name <%= @grid.errors[:name].join(", ") %></div>')
     <% end %>

@@ -21,9 +21,18 @@ class VideosController < ApplicationController
 			@channel.android = params[:new_android]
 			@channel.web = params[:new_web]
 			@channel.free = params[:new_free]
+			if params[:new_stream_url].present? && params[:new_stream_url].start_with?('http://')
+				params[:new_stream_url].gsub!('http://','')
+			end
+			if params[:new_stream_url].present? && params[:new_stream_url].start_with?('rtmp://')
+				params[:new_stream_url].gsub!('rtmp://','')
+			end
+			if params[:new_stream_url].present? && params[:new_stream_url].end_with?('/playlist.m3u8')
+				params[:new_stream_url].gsub!('/playlist.m3u8','')
+			end
 			@channel.stream_url = params[:new_stream_url]
-			@channel.rtmp_url = params[:new_rtmp_url]
 			@channel.content_type = params[:new_content_type]
+			@channel.disable_playlist = params[:new_disable_playlist]
 			@channel.content_quality = params[:new_content_quality]
 			@channel.bitrate = params[:new_bitrate]
 			@channel.synopsis = params[:new_synopsis]
@@ -64,9 +73,18 @@ class VideosController < ApplicationController
 			@channel.android = params[:android]
 			@channel.web = params[:web]
 			@channel.free = params[:free]
+			if params[:stream_url].present? && params[:stream_url].start_with?('http://')
+				params[:stream_url].gsub!('http://','')
+			end
+			if params[:stream_url].present? && params[:stream_url].start_with?('rtmp://')
+				params[:stream_url].gsub!('rtmp://','')
+			end
+			if params[:stream_url].present? && params[:stream_url].end_with?('/playlist.m3u8')
+				params[:stream_url].gsub!('/playlist.m3u8','')
+			end
 			@channel.stream_url = params[:stream_url]
-			@channel.rtmp_url = params[:rtmp_url]
 			@channel.content_type = params[:content_type]
+			@channel.disable_playlist = params[:disable_playlist]
 			@channel.content_quality = params[:content_quality]
 			@channel.bitrate = params[:bitrate]
 			@channel.synopsis = params[:synopsis]
@@ -175,8 +193,17 @@ class VideosController < ApplicationController
 			@movie.android = params[:new_android]
 			@movie.web = params[:new_web]
 			@movie.free = params[:new_free]
+			if params[:new_stream_url].present? && params[:new_stream_url].start_with?('http://')
+				params[:new_stream_url].gsub!('http://','')
+			end
+			if params[:new_stream_url].present? && params[:new_stream_url].start_with?('rtmp://')
+				params[:new_stream_url].gsub!('rtmp://','')
+			end
+			if params[:new_stream_url].present? && params[:new_stream_url].end_with?('/playlist.m3u8')
+				params[:new_stream_url].gsub!('/playlist.m3u8','')
+			end
 			@movie.stream_url = params[:new_stream_url]
-			@movie.rtmp_url = params[:new_rtmp_url]
+			@movie.disable_playlist = params[:new_disable_playlist]
 			@movie.content_quality = params[:new_content_quality]
 			@movie.bitrate = params[:new_bitrate]
 			@movie.synopsis = params[:new_synopsis]
@@ -217,8 +244,17 @@ class VideosController < ApplicationController
 			@movie.android = params[:android]
 			@movie.web = params[:web]
 			@movie.free = params[:free]
+			if params[:stream_url].present? && params[:stream_url].start_with?('http://')
+				params[:stream_url].gsub!('http://','')
+			end
+			if params[:stream_url].present? && params[:stream_url].start_with?('rtmp://')
+				params[:stream_url].gsub!('rtmp://','')
+			end
+			if params[:stream_url].present? && params[:stream_url].end_with?('/playlist.m3u8')
+				params[:stream_url].gsub!('/playlist.m3u8','')
+			end
 			@movie.stream_url = params[:stream_url]
-			@movie.rtmp_url = params[:rtmp_url]
+			@movie.disable_playlist = params[:disable_playlist]
 			@movie.content_quality = params[:content_quality]
 			@movie.bitrate = params[:bitrate]
 			@movie.synopsis = params[:synopsis]
@@ -337,7 +373,19 @@ class VideosController < ApplicationController
 			@show.actors = params[:new_actors]
 			@show.adult = params[:new_adult]
 			@show.grid_id = params[:new_grid_id]
-			@show.rating = params[:new_rating]
+			@show.disable_playlist = params[:new_disable_playlist]
+			@show.add_date = params[:new_add_date]
+			@show.add_ep_num = params[:new_add_ep_num]
+			if params[:new_url].present? && params[:new_url].start_with?('http://')
+				params[:new_url].gsub!('http://','')
+			end
+			if params[:new_url].present? && params[:new_url].start_with?('rtmp://')
+				params[:new_url].gsub!('rtmp://','')
+			end
+			if params[:new_url].present? && params[:new_url].end_with?('/playlist.m3u8')
+				params[:new_url].gsub!('/playlist.m3u8','')
+			end
+			@show.url = params[:new_url]
 			@show.added_by = current_admin.id
 			if @show.save
 				if params[:new_grids].present?
@@ -378,6 +426,19 @@ class VideosController < ApplicationController
 			@show.adult = params[:adult]
 			@show.grid_id = params[:grid_id]
 			@show.rating = params[:rating]
+			@show.disable_playlist = params[:disable_playlist]
+			@show.add_date = params[:add_date]
+			@show.add_ep_num = params[:add_ep_num]
+			if params[:url].present? && params[:url].start_with?('http://')
+				params[:url].gsub!('http://','')
+			end
+			if params[:url].present? && params[:url].start_with?('rtmp://')
+				params[:url].gsub!('rtmp://','')
+			end
+			if params[:url].present? && params[:url].end_with?('/playlist.m3u8')
+				params[:url].gsub!('/playlist.m3u8','')
+			end
+			@show.url = params[:url]
 			@show.edited_by = current_admin.id
 			if @show.save
 				GridItem.where(video_type: 'Show', video_id: @show.id).destroy_all
@@ -470,8 +531,6 @@ class VideosController < ApplicationController
 			@episode.show_id = @show.id
 			@episode.title = params[:new_ep_title]
 			@episode.episode_number = params[:new_ep_episode_number]
-			@episode.stream_url = params[:new_ep_stream_url]
-			@episode.rtmp_url = params[:new_ep_rtmp_url]
 			@episode.release_date = params[:new_ep_release_date]
 			@episode.synopsis = params[:new_ep_synopsis]
 			@episode.length = params[:new_ep_length]
@@ -517,8 +576,6 @@ class VideosController < ApplicationController
 			@episode.show_id = @show.id
 			@episode.title = params[:edit_ep_title]
 			@episode.episode_number = params[:edit_ep_episode_number]
-			@episode.stream_url = params[:edit_ep_stream_url]
-			@episode.rtmp_url = params[:edit_ep_rtmp_url]
 			@episode.release_date = params[:edit_ep_release_date]
 			@episode.synopsis = params[:edit_ep_synopsis]
 			@episode.length = params[:edit_ep_length]

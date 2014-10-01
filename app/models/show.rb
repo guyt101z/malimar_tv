@@ -1,7 +1,7 @@
 class Show < ActiveRecord::Base
     attr_accessible :name, :free, :image, :roku, :ios, :android, :web, :rtmp_url, :grid_id, :slug
 
-    validates_presence_of :name, :bitrate
+    validates_presence_of :name, :bitrate, :url
     validates_inclusion_of :free, in: [true,false], message: 'must be selected'
     validates_inclusion_of :content_type, in: ['Audio','Video'], message: 'must be selected'
     validates_inclusion_of :content_quality, in: ['HD','SD'], message: 'must be selected'
@@ -226,5 +226,13 @@ class Show < ActiveRecord::Base
         else
             return 'Not Edited'
         end
+    end
+
+    def hls_stream
+        return "http://#{url}"
+    end
+
+    def rtmp_stream
+        return "rtmp://#{url}"
     end
 end
