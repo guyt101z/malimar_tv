@@ -60,7 +60,7 @@ $('#episode_<%= @channel.id %>').addClass('active')
 var ua = navigator.userAgent.toLowerCase();
 var isAndroid = ua.indexOf("android") > -1;
 if (isAndroid){
-	$('#video_wrapper').html('<video width="100%" height="550"><source src="<%= @channel.hls_stream %>?token=<%= @token %> type="application/vnd.apple.mpegurl"></video>')
+	$('#video_wrapper').html('<video width="100%" height="550"><source src="<%= @channel.hls_stream %>?token=<%= @token %> type="application/x-mpegURL"></video>')
 }
 else {
 	jwplayer("video_wrapper").setup({
