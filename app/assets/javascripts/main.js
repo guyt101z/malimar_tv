@@ -24,6 +24,7 @@
 //= require dataTables
 //= require dataTables_bootstrap
 //= require_directory ./main
+//= require jwplayer
 
 
 /**
