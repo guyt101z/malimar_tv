@@ -61,7 +61,8 @@
 $('#episode_<%= @episode.id %>').addClass('active')
 jwplayer("video_wrapper").setup({
     sources: [
-        {file: "<%= @episode.hls_stream %>"}
+        {file: "<%= @episode.hls_stream %>"},
+        {file: "<%= @episode.rtmp_stream %>"}
     ],
     image: "<%= @show.image_url %>",
     title:"<%= @episode.title %>",

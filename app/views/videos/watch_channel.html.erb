@@ -59,7 +59,8 @@
 $('#episode_<%= @channel.id %>').addClass('active')
 jwplayer("video_wrapper").setup({
 	sources: [
-		{file: "<%= @channel.hls_stream %>?token=<%= @token %>"}
+		{file: "<%= @channel.hls_stream %>?token=<%= @token %>"},
+		{file: "<%= @channel.rtmp_stream %>?token=<%= @token %>"}
 	],
 	image: "<%= @channel.image_url %>",
 	title:"<%= @channel.name %>",
