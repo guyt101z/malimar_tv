@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Malimar TV</title>
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 	<% if params[:controller] == 'admins' || params[:controller] == 'sales_reps' || params[:controller] == 'feed' ||
 		request.original_url.end_with?('admins/sign_in', 'admins/password/new', 'admins/password', 'sales_representatives/sign_in', 'sales_representatives/password/new', 'sales_representatives/password', 'sales_representatives/password/edit') ||
 		request.original_url.include?('admins/password/edit') || request.original_url.include?('sales_representatives/password/edit') ||
@@ -23,7 +24,6 @@
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:600,400,300,700' rel='stylesheet' type='text/css'>
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 	<%= csrf_meta_tags %>
 </head>
 <% if params[:controller] == 'admins' || params[:controller] == 'feed' || request.original_url.end_with?('admins/sign_in', 'admins/password/new', 'admins/password') || request.original_url.include?('admins/password/edit') ||
