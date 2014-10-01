@@ -12,7 +12,6 @@
  * file per style scope.
  *
  *= require_self
- *= require bootstrap
  *= require style
  *= require style1
  *= require user_support_styles
