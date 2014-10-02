@@ -14,7 +14,7 @@ class ChannelParser
             test_slug = "#{new_name.gsub(' ','-')}"
             other_channels = Channel.where(slug: test_slug)
             if other_channels.any?
-                test_slug = "#{new_name.gsub(' ','-')}-#{id.to_s}-channel"
+                test_slug = "#{new_name.gsub(' ','-')}-#{grid_id.to_s}-channel"
                 channel.slug = test_slug
             else
                 channel.slug = test_slug
@@ -43,34 +43,41 @@ class ChannelParser
                     end
                 end
                 name_array.reverse!
+                url = channel.stream_url
                 channel.stream_name = name_array.join('')
-                if channel.stream_url.start_with?('http://')
-                    channel.stream_url.gsub!('http://','')
+                if url.start_with?('http://')
+                    url.gsub!('http://','')
                 end
-                if channel.stream_url.start_with?('rtmp://')
-                    channel.stream_url.gsub!('rtmp://','')
+                if url.start_with?('rtmp://')
+                    url.gsub!('rtmp://','')
                 end
-                if channel.stream_url.end_with?('/playlist.m3u8')
-                    channel.stream_url.gsub!('/playlist.m3u8','')
+                if url.end_with?('/playlist.m3u8')
+                    url.gsub!('/playlist.m3u8','')
                 end
+
+                channel.stream_url = url
             end
 
             channel.genres = ""
 
-            unless item['genres']['genre'].blank?
-                item['genres']['genre'].each do |genre|
-                    unless genre.nil?
-                        channel.genres += "#{genre}\r\n"
+            if item.has_key?('genres')
+                unless item['genres']['genre'].blank?
+                    item['genres']['genre'].each do |genre|
+                        unless genre.nil?
+                            channel.genres += "#{genre}\r\n"
+                        end
                     end
                 end
             end
 
             channel.actors = ""
 
-            unless item['actors']['actor'].blank?
-                item['actors']['actor'].each do |actor|
-                    unless actor.nil?
-                        channel.actors += "#{actor}\r\n"
+            if item.has_key?('actors')
+                unless item['actors']['actor'].blank?
+                    item['actors']['actor'].each do |actor|
+                        unless actor.nil?
+                            channel.actors += "#{actor}\r\n"
+                        end
                     end
                 end
             end
@@ -89,7 +96,7 @@ class ChannelParser
                 else
                     migration_item.status = 'Error'
                     migration_item.completed = true
-                    migration_item.error = 'Channel could not be saved: '+channel.errors.full_messages.join(', ')
+                    migration_item.error = 'Channel could not be saved: '+item.inspect
                     migration_item.save
                 end
             else
@@ -101,7 +108,7 @@ class ChannelParser
         rescue => e
             migration_item.status = 'Error'
             migration_item.completed = true
-            migration_item.error = 'Exception raised (Channel): '+ e.message
+            migration_item.error = 'Exception raised (Channel): '+ e.message + ' | ' + e.backtrace[0]
             migration_item.save
         end
     end

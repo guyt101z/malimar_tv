@@ -45,20 +45,24 @@ class MovieParser
             movie.length = 0
             movie.genres = ""
 
-            unless item['genres']['genre'].blank?
-                item['genres']['genre'].each do |genre|
-                    unless genre.nil?
-                        movie.genres += "#{genre}\r\n"
+            if item.has_key?('genres')
+                unless item['genres']['genre'].blank?
+                    item['genres']['genre'].each do |genre|
+                        unless genre.nil?
+                            movie.genres += "#{genre}\r\n"
+                        end
                     end
                 end
             end
 
             movie.actors = ""
 
-            unless item['actors']['actor'].blank?
-                item['actors']['actor'].each do |actor|
-                    unless actor.nil?
-                        movie.actors += "#{actor}\r\n"
+            if item.has_key?('actors')
+                unless item['actors']['actor'].blank?
+                    item['actors']['actor'].each do |actor|
+                        unless actor.nil?
+                            movie.actors += "#{actor}\r\n"
+                        end
                     end
                 end
             end
