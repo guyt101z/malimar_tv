@@ -280,3 +280,23 @@ h5.member-level {
 .scroller {
     overflow: hidden;
 }
+
+.mobile_player {
+    padding-top: 150px;
+    height:550px; 
+    width: 100%; 
+    background-color: #000; 
+    position:relative;
+}
+.mobile_player .play_icon_lg {
+    margin: auto;
+    height: 100px;
+    width: 100px;
+}
+.mobile_player .play_icon_lg img {
+    height: 100px;
+    width: 100px;
+}
+.mobile_player .mobile_bg_img {
+    height: 550px;
+}

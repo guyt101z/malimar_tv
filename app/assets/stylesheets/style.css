@@ -238,6 +238,7 @@ height: 64px;
 width: 64px;
 z-index: 5;
 display:none;
+webkit-backface-visibility: hidden;
 -webkit-transition: display 0.2s ease-out;
 -moz-transition: display 0.2s ease-out;
 -o-transition: display 0.2s ease-out;
