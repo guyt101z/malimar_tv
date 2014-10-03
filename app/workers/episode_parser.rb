@@ -18,14 +18,14 @@ class EpisodeParser
                 if episode.save(:validate => false)
                     url = item['media']['streamUrl'].split('/')
                     if url.count < 9
-                        show.url = [url[3],url[3],url[4],url[5]].join('/')
+                        show.url = [url[2],url[3],url[4],url[5]].join('/')
                         if url.last == 'playlist.m3u8'
                             show.disable_playlist = false
                         else
                             show.disable_playlist = true
                         end
                     else
-                        show.url = [url[3],url[3],url[4],url[5],url[6]].join('/')
+                        show.url = [url[2],url[3],url[4],url[5],url[6]].join('/')
                         if url.last == 'playlist.m3u8'
                             show.disable_playlist = false
                         else
