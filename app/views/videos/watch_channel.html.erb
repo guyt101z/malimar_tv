@@ -78,6 +78,8 @@ else {
 		title:"<%= @channel.name %>",
 		width: '100%',
 		androidhls: true,
+        flashplayer: <%=asset_path('jwplayer/jwplayer.flash.swf')%>,
+        primary: 'flash',
 		height: 550
 	});
 }
