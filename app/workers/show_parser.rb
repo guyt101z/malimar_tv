@@ -30,6 +30,7 @@ class ShowParser
             show.web = true
             show.ios = true
             show.android = true
+            show.url = 'uploading_url'
 
             show.remote_image_url = item['hdImg']
 

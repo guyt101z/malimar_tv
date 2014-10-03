@@ -7,7 +7,7 @@ class AdminsController < ApplicationController
 	def index
 		@data = DailyData.where(date: Date.today).last
 		if @data.nil?
-			@data = DailyData.new(date: Date.today, ).last
+			@data = DailyData.new(date: Date.today)
 		end
 
 	end
