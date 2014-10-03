@@ -71,7 +71,7 @@ class Episode < ActiveRecord::Base
         if show.add_ep_num?
             filename += "-#{episode_number.to_s}"
         end
-        if show.add_ep_num?
+        if show.add_date?
             filename += "-#{release_date.strftime('%-d-%b-%Y')}"
         end
 
@@ -96,7 +96,7 @@ class Episode < ActiveRecord::Base
         if show.add_ep_num?
             filename += "-#{episode_number.to_s}"
         end
-        if show.add_ep_num?
+        if show.add_date?
             filename += "-#{release_date.strftime('%-d-%b-%Y')}"
         end
 
