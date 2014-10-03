@@ -19,13 +19,18 @@ class EpisodeParser
                     url = item['media']['streamUrl'].split('/')
                     if url.count < 9
                         show.url = [url[3],url[3],url[4],url[5]].join('/')
+                        if url.last == 'playlist.m3u8'
+                            show.disable_playlist = false
+                        else
+                            show.disable_playlist = true
+                        end
                     else
                         show.url = [url[3],url[3],url[4],url[5],url[6]].join('/')
-                    end
-                    if item['media']['streamUrl'].end_with?('/playlist.m3u8')
-                        show.disable_playlist = false
-                    else
-                        show.disable_playlist = true
+                        if url.last == 'playlist.m3u8'
+                            show.disable_playlist = false
+                        else
+                            show.disable_playlist = true
+                        end
                     end
 
                     show.save
