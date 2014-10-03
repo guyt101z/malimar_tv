@@ -22,7 +22,7 @@ class EpisodeParser
                     else
                         show.url = [url[3],url[3],url[4],url[5],url[6]].join('/')
                     end
-                    if url.end_with?('/playlist.m3u8')
+                    if item['media']['streamUrl'].end_with?('/playlist.m3u8')
                         show.disable_playlist = false
                     else
                         show.disable_playlist = true
