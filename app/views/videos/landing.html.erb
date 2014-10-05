@@ -101,7 +101,7 @@
     ajaxManager.run();
 
 
-
+    $(document).ready(function(){
     <% @grids.each do |grid| %>
         <% if grid.adult.nil? || grid.adult == false %>
             ajaxManager.addReq({
@@ -111,4 +111,5 @@
             })
         <% end %>
     <% end %>
+    })
 </script>
