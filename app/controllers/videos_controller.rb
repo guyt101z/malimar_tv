@@ -797,6 +797,10 @@ class VideosController < ApplicationController
 		end
 	end
 
+	def grid_view
+		@grid = Grid.find(params[:id])
+	end
+
 	private
 
 	def generate_token(stream_name)

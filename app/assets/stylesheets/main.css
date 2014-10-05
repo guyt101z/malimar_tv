@@ -300,3 +300,11 @@ h5.member-level {
 .mobile_player .mobile_bg_img {
     height: 550px;
 }
+
+.grid_loading {
+    width: 100%;
+    height: 306px;
+    line-height: 306px;
+    font-size: 70px;
+    color: #333;
+}

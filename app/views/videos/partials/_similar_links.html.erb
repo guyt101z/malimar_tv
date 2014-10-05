@@ -1,142 +1,22 @@
-<% if @item.grid_id.present? %>
+<% unless @item.grid_id.nil? %>
     <% grid = Grid.where(id: @item.grid_id).first %>
     <% unless grid.nil? %>
-        <% if (grid.adult.nil? || grid.adult == false) %>
-            <%
-            @parent_grid = grid.clone
-            @child_grids = Grid.where(grid_id: @parent_grid.id).order(weight: :asc)
-            if @parent_grid.class_type == 'Show'
-                grid_items = Array.new
-                @parent_grid.grid_items.each do |item|
-                    unless item.video.nil?
-                        grid_items.push(item.video)
-                    end
-                end
-                items = []
-                if grid_items.any?
-                    if @parent_grid.sort == 'Alphabetical'
-                        items = grid_items.sort_by{|a| a.name}
-                    elsif @parent_grid.sort == 'Random'
-                        items = grid_items.shuffle!
-                    else
-                        sort_hash = Hash.new
-                        grid_items.each do |item|
-                            sort_hash[item.id] = item.newest_episode
-                        end
-                        sort_hash.sort_by {|_key, value| value}
-
-                        items = Array.new
-                        sort_hash.each do |k,v|
-                            items.push(Show.find(k))
-                        end
-
-                    end
-                end
-            elsif @parent_grid.class_type == 'Channel'
-                grid_items = Array.new
-                @parent_grid.grid_items.each do |item|
-                    unless item.video.nil?
-                        grid_items.push(item.video)
-                    end
-                end
-                items = []
-                if grid_items.any?
-                    if @parent_grid.sort == 'Alphabetical'
-                        items = grid_items.sort_by{|a| a.name}
-                    elsif @parent_grid.sort == 'Random'
-                        items = grid_items.shuffle!
-                    elsif @parent_grid.sort == 'New Arrivals/Episodes'
-                        items = (grid_items.sort_by{|a| a.created_at}).reverse
-                    end
-                end
-            elsif @parent_grid.class_type == 'Movie'
-                grid_items = Array.new
-                @parent_grid.grid_items.each do |item|
-                    unless item.video.nil?
-                        grid_items.push(item.video)
-                    end
-                end
-                items = []
-                if grid_items.any?
-                    if @parent_grid.sort == 'Alphabetical'
-                        items = grid_items.sort_by{|a| a.name}
-                    elsif @parent_grid.sort == 'Random'
-                        items = grid_items.shuffle!
-                    elsif @parent_grid.sort == 'New Arrivals/Episodes'
-                        items = (grid_items.sort_by{|a| a.created_at}).reverse
-                    end
-                end
-            end
-            %>
-            <div class="panel panel-custom">
-                <div class="panel-heading">
-                    <div class="icon-left"><span class="glyphicon glyphicon-heart"></span></div>
-                    <h3><%= grid.name %></h3>
-                    <%= link_to raw('<span class="glyphicon glyphicon-th-large"></span> See All'), full_grid_path(category_id: grid.id), class: 'pull-right' %>
+        <div class="panel panel-custom">
+            <div class="panel-heading">
+                <div class="icon-left"><span class="glyphicon glyphicon-heart"></span></div>
+                <h3><%= link_to grid.name, full_grid_path(category_id: grid.id) %></h3>
+                <%= link_to raw('<span class="glyphicon glyphicon-th-large"></span> See All'), full_grid_path(category_id: grid.id), class: 'pull-right' %>
+            </div>
+            <div class="panel-body scroller" id='grid_<%= grid.id %>'>
+                <div class='grid_loading text-center'>
+                    <i class='fa fa-spin fa-spinner'></i>
+                    <script>
+                    $.ajax({
+                        url: '/grid_view?id=<%= grid.id %>'
+                    })
+                    </script>
                 </div>
-                <div class="panel-body scroller">
-                    <% @child_grids.each do |item| %>
-                        <% unless item.adult == true %>
-                        <div class="channel">
-                            <a href="<%= item.watch_url %>">
-                                <div class="channel-img">
-                                    <div class="hover-play"><%= image_tag 'hover-play.png' %></div>
-                                    <%= image_tag item.image_url(:hd), class: "grayscale" %>
-                                </div>
-                                <h4><%= item.name %></h4>
-                            </a>
-                        </div>
-                        <% end %>
-                    <% end %>
-                    <% items.each do |item| %>
-                        <% unless item.adult == true %>
-                        <div class="channel">
-                            <a href="<%= item.watch_url %>">
-                                <% if item.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
-                                <div class="channel-img">
-                                    <div class="hover-play"><%= image_tag 'hover-play.png' %></div>
-                                    <%= image_tag item.image_url(:hd), class: "grayscale" %>
-                                </div>
-                                <h4><%= item.name %></h4>
-                            </a>
-                        </div>
-                        <% end %>
-                    <% end %>
-                </div>
-            </div><!--pannel-->
-        <% end %>
+            </div>
+        </div>
     <% end %>
 <% end %>
-<script>
-    $(document).ready(function () {
-        $(".scroller").slick({
-            infinite: true,
-            slidesToShow: 6,
-            slidesToScroll: 5,
-            responsive: [
-                {
-                  breakpoint: 991,
-                  settings: {
-                    slidesToShow: 4,
-                    slidesToScroll: 3,
-                    infinite: true
-                  }
-                },
-                {
-                  breakpoint: 768,
-                  settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 2
-                  }
-                },
-                {
-                  breakpoint: 480,
-                  settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 2
-                  }
-                }
-            ]
-        });
-    });
-</script>

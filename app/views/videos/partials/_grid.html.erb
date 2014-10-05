@@ -1,0 +1,97 @@
+
+<% if (@grid.adult.nil? || @grid.adult == false) %>
+    <%
+    @grid = @grid.clone
+    @child_grids = Grid.where(grid_id: @grid.id).order(weight: :asc)
+    if @grid.class_type == 'Show'
+        grid_items = Array.new
+        @grid.grid_items.each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+        items = []
+        if grid_items.any?
+            if @grid.sort == 'Alphabetical'
+                items = grid_items.sort_by{|a| a.name}
+            elsif @grid.sort == 'Random'
+                items = grid_items.shuffle!
+            else
+                sort_hash = Hash.new
+                grid_items.each do |item|
+                    sort_hash[item.id] = item.newest_episode
+                end
+                sort_hash.sort_by {|_key, value| value}
+
+                items = Array.new
+                sort_hash.each do |k,v|
+                    items.push(Show.find(k))
+                end
+
+            end
+        end
+    elsif @grid.class_type == 'Channel'
+        grid_items = Array.new
+        @grid.grid_items.each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+        items = []
+        if grid_items.any?
+            if @grid.sort == 'Alphabetical'
+                items = grid_items.sort_by{|a| a.name}
+            elsif @grid.sort == 'Random'
+                items = grid_items.shuffle!
+            elsif @grid.sort == 'New Arrivals/Episodes'
+                items = (grid_items.sort_by{|a| a.created_at}).reverse
+            end
+        end
+    elsif @grid.class_type == 'Movie'
+        grid_items = Array.new
+        @grid.grid_items.each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+        items = []
+        if grid_items.any?
+            if @grid.sort == 'Alphabetical'
+                items = grid_items.sort_by{|a| a.name}
+            elsif @grid.sort == 'Random'
+                items = grid_items.shuffle!
+            elsif @grid.sort == 'New Arrivals/Episodes'
+                items = (grid_items.sort_by{|a| a.created_at}).reverse
+            end
+        end
+    end
+    %>
+    <%= @test %>
+    <% @child_grids.each do |item| %>
+        <% unless item.adult == true %>
+            <div class="channel">
+                <a href="<%= item.watch_url %>">
+                    <div class="channel-img">
+                        <div class="hover-play"><%= image_tag 'hover-play.png' %></div>
+                        <%= image_tag item.image_url(:hd), class: "grayscale" %>
+                    </div>
+                    <h4><%= item.name %></h4>
+                </a>
+            </div>
+        <% end %>
+    <% end %>
+    <% items.each do |item| %>
+        <% unless item.adult == true %>
+            <div class="channel">
+                <a href="<%= item.watch_url %>">
+                    <% if item.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
+                    <div class="channel-img">
+                        <div class="hover-play"><%= image_tag 'hover-play.png' %></div>
+                        <%= image_tag item.image_url(:hd), class: "grayscale" %>
+                    </div>
+                    <h4><%= item.name %></h4>
+                </a>
+            </div>
+        <% end %>
+    <% end %>
+<% end %>

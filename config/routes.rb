@@ -24,6 +24,8 @@ Rails.application.routes.draw do
         post 'remote_sign_in' => 'users#remote_sign_in'
 
         get 'subscribe_newsletter_footer' => 'users#subscribe_newsletter_footer'
+
+        get 'grid_view' => 'videos#grid_view'
   	# User Methods
     authenticate :user do
         get 'update_show_time' => 'time#update_show'
