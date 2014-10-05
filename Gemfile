@@ -75,4 +75,6 @@ gem 'activemerchant'
 
 gem 'faker'
 
+gem 'multi_fetch_fragments'
+
 gem 'rack-cache'

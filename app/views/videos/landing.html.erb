@@ -50,9 +50,6 @@
                         <div class='grid_loading text-center'>
                             <i class='fa fa-spin fa-spinner'></i>
                             <script>
-                            $.ajax({
-                                url: '/grid_view?id=<%= grid.id %>'
-                            })
                             </script>
                         </div>
                     </div>
@@ -61,3 +58,57 @@
         <% end %>
     </div>
 </div><!--content-->
+<script>
+    var ajaxManager = (function() {
+        var requests = [];
+
+        return {
+            addReq:  function(opt) {
+                requests.push(opt);
+            },
+            removeReq:  function(opt) {
+                if( $.inArray(opt, requests) > -1 )
+                    requests.splice($.inArray(opt, requests), 1);
+            },
+            run: function() {
+                var self = this,
+                    oriSuc;
+
+                if( requests.length ) {
+                    oriSuc = requests[0].complete;
+
+                    requests[0].complete = function() {
+                        if( typeof(oriSuc) === 'function' ) oriSuc();
+                        requests.shift();
+                        self.run.apply(self, []);
+                    };   
+
+                    $.ajax(requests[0]);
+                } 
+                else {
+                    self.tid = setTimeout(function() {
+                        self.run.apply(self, []);
+                    }, 1000);
+                }
+            },
+            stop:  function() {
+                requests = [];
+                clearTimeout(this.tid);
+            }
+        };
+    }());
+
+    ajaxManager.run();
+
+
+
+    <% @grids.each do |grid| %>
+        <% if grid.adult.nil? || grid.adult == false %>
+            ajaxManager.addReq({
+                type: 'GET',
+                url: '/grid_view',
+                data: {id: <%= grid.id %>}
+            })
+        <% end %>
+    <% end %>
+</script>
