@@ -12,7 +12,11 @@
                     <i class='fa fa-spin fa-spinner'></i>
                     <script>
                     $.ajax({
-                        url: '/grid_view?id=<%= grid.id %>'
+                        <% if Rails.env.development? %>
+                            url: '/grid_view?id=<%= grid.id %>'
+                        <% else %>
+                            url: 'https://malimar-lb-141435076.us-west-2.elb.amazonaws.com/grid_view?id=<%= grid.id %>',
+                        <% end %>
                     })
                     </script>
                 </div>
