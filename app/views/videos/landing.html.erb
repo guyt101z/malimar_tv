@@ -106,11 +106,7 @@
         <% if grid.adult.nil? || grid.adult == false %>
             ajaxManager.addReq({
                 type: 'GET',
-                <% if Rails.env.development? %>
-                    url: '/grid_view'
-                <% else %>
-                    url: 'https://malimar-lb-141435076.us-west-2.elb.amazonaws.com/grid_view',
-                <% end %>
+                url: '/grid_view',
                 data: {id: <%= grid.id %>}
             })
         <% end %>

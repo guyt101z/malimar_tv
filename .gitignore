@@ -19,3 +19,4 @@
 /public/xml/*
 /serials/*
 /test/*
+/config/database.yml
