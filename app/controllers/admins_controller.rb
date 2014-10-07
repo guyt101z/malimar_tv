@@ -971,6 +971,7 @@ class AdminsController < ApplicationController
 			@user.phone_2 = phone_2
 			@user.phone_3 = phone_3
 			@user.refer_code = params[:refer_code]
+			@user.adult = params[:adult]
 
 			@user.save
 		else

@@ -94,6 +94,10 @@
                                 <label>Referral Code</label>
                                 <%= text_field_tag :refer_code, @user.refer_code, class: 'form-control' %>
                             </div>
+                            <div class='col-md-6 form-group'>
+                                <label>Adult Content (Web)</label>
+                                <%= select_tag :adult, options_for_select([['No',false],['Yes',true]],@user.adult), class: 'form-control' %>
+                            </div>
                         </div>
                     </div>
                 </div>
