@@ -68,7 +68,7 @@
     %>
     <%= @test %>
     <% @child_grids.each do |item| %>
-        <% unless item.adult == true %>
+        <% unless (item.adult == true && ((user_signed_in? && current_user.adult == true))) || admin_signed_in? == false %>
             <div class="channel">
                 <a href="<%= item.watch_url %>">
                     <div class="channel-img">
@@ -81,7 +81,7 @@
         <% end %>
     <% end %>
     <% items.each do |item| %>
-        <% unless item.adult == true %>
+        <% unless (item.adult == true && ((user_signed_in? && current_user.adult == true))) || admin_signed_in? == false %>
             <div class="channel">
                 <a href="<%= item.watch_url %>">
                     <% if item.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>

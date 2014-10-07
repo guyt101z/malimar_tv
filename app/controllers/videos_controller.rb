@@ -673,11 +673,27 @@ class VideosController < ApplicationController
 	#######################################################################################
 	def watch_channel
 		@channel = Channel.where(slug: params[:channel_slug]).first
+
+		if @channel.adult?
+			unless (user_signed_in? && current_user.adult?) || admin_signed_in? 
+				flash[:error] = 'You are not permitted to watch adult content'
+				redirect_to '/'
+			end
+		end
+
 		@token = generate_token(@channel.stream_name)
 	end
 
 	def browse_episodes
 		@show = Show.where(slug: params[:show_slug]).first
+
+		if @show.adult?
+			unless (user_signed_in? && current_user.adult?) || admin_signed_in? 
+				flash[:error] = 'You are not permitted to watch adult content'
+				redirect_to '/'
+			end
+		end
+
 		@episodes = Episode.where(show_id: @show.id).order(episode_number: :desc)
 		unless params[:method].present? && params[:method] == 'all'
 			@episodes = @episodes.paginate(page: params[:page], per_page: 10)
@@ -685,6 +701,15 @@ class VideosController < ApplicationController
 	end
 	def watch_episode
 		@show = Show.where(slug: params[:show_slug]).first
+
+
+		if @show.adult?
+			unless (user_signed_in? && current_user.adult?) || admin_signed_in? 
+				flash[:error] = 'You are not permitted to watch adult content'
+				redirect_to '/'
+			end
+		end
+
 		@episode = Episode.where(show_id: @show.id, episode_number: params[:episode_number]).first
 		if user_signed_in?
 			show_update = ShowProgress.where(user_id: current_user.id, show_id: @show.id).first
@@ -715,6 +740,15 @@ class VideosController < ApplicationController
 
 	def watch_movie
 		@movie = Movie.where(slug: params[:movie_slug]).first
+
+
+		if @movie.adult?
+			unless (user_signed_in? && current_user.adult?) || admin_signed_in? 
+				flash[:error] = 'You are not permitted to watch adult content'
+				redirect_to '/'
+			end
+		end
+
 		if user_signed_in?
 			@movie_update = MovieProgress.where(user_id: current_user.id, movie_id: @movie.id).first
 		end
@@ -756,6 +790,12 @@ class VideosController < ApplicationController
 
 	def full_grid
 		@grid = Grid.find(params[:category_id])
+		if @grid.adult?
+			unless (user_signed_in? && current_user.adult?) || admin_signed_in? 
+				flash[:error] = 'You are not permitted to watch adult content'
+				redirect_to '/'
+			end
+		end
 	end
 
 	def remote_sign_in_for_video
