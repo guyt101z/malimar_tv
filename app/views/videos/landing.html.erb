@@ -103,7 +103,7 @@
 
     $(document).ready(function(){
     <% @grids.each do |grid| %>
-        <% if grid.adult.nil? || grid.adult == false %>
+        <% unless (grid.adult? && ((user_signed_in? && current_user.adult == true))) || admin_signed_in? == false %>
             ajaxManager.addReq({
                 type: 'GET',
                 url: '/grid_view',
