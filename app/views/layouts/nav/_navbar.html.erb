@@ -45,6 +45,8 @@
                 <li><%= link_to 'SIGN IN', new_user_session_path %></li>
                 <li><div class="sep hidden-xs"></div></li>
             </ul>
+            <% else %>
+                <li><%= link_to 'PAY SUBSCRIPTION', 'https://aseaniptv.com/pay-subscription' %></li>
             <% end %>
         </div>
     </div>
