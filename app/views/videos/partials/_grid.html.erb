@@ -1,5 +1,5 @@
 
-<% if (@grid.adult.nil? || @grid.adult == false) %>
+
     <%
     @grid = @grid.clone
     @child_grids = Grid.where(grid_id: @grid.id).order(weight: :asc)
@@ -92,4 +92,3 @@
             </div>
         <% end %>
     <% end %>
-<% end %>
