@@ -4,13 +4,13 @@ $('#grid_<%= @grid.id %>').html('<%= escape_javascript(render("videos/partials/g
 $("#grid_<%= @grid.id %>").slick({
             infinite: true,
             slidesToShow: 6,
-            slidesToScroll: 5,
+            slidesToScroll: 3,
             responsive: [
                 {
                   breakpoint: 991,
                   settings: {
                     slidesToShow: 4,
-                    slidesToScroll: 3,
+                    slidesToScroll: 2,
                     infinite: true
                   }
                 },
@@ -18,14 +18,14 @@ $("#grid_<%= @grid.id %>").slick({
                   breakpoint: 768,
                   settings: {
                     slidesToShow: 3,
-                    slidesToScroll: 2
+                    slidesToScroll: 1
                   }
                 },
                 {
                   breakpoint: 480,
                   settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 2
+                    slidesToShow: 3,
+                    slidesToScroll: 1
                   }
                 }
             ]
