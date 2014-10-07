@@ -125,7 +125,7 @@ class AdminsController < ApplicationController
 		@user.country = params[:country]
 		if params[:country] == 'CA'
 			@user.state = params[:province]
-		elsif @params[:country] == 'US'
+		elsif params[:country] == 'US'
 			@user.state = params[:state]
 		else
 			@user.state = params[:state_input]
