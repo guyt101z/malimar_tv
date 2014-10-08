@@ -101,13 +101,11 @@
 
     $(window).load(function(){
     <% @grids.each do |grid| %>
-        <% unless (grid.adult? && ((user_signed_in? && current_user.adult == true))) || admin_signed_in? == false %>
             ajaxManager.addReq({
                 type: 'GET',
                 url: '/grid_view',
                 data: {id: <%= grid.id %>}
             })
-        <% end %>
     <% end %>
     })
 </script>
