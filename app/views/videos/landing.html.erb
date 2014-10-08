@@ -1,11 +1,10 @@
 <div id="carousel-landing" class="carousel slide">
-  	<div class="carousel-inner">
-        <% @front_page_array.shuffle %>
-        <% i = 0 %>
+    <div class="carousel-inner">
+        <% @front_page_array.shuffle! %>
         <% @front_page_array.each do |item| %>
-            <% if i == 0 %><div class="item active"><% else %><div class='item'> %><% end %>
+            <div class="item">
                 <%= image_tag item.banner_url(:front_page) %>
-                <div class="">
+                <div class="carousel-caption">
                     <div class="container">
                         <h2><%= item.name %></h2>
                         <div class="row">
@@ -51,11 +50,6 @@
     </div>
 </div><!--content-->
 <script>
-    $('.carousel-inner').slick({
-        autoplay: true,
-        autoplaySpeed: 5000
-    })
-
     var ajaxManager = (function() {
         var requests = [];
 
@@ -106,6 +100,5 @@
                 data: {id: <%= grid.id %>}
             })
     <% end %>
-
     })
 </script>
