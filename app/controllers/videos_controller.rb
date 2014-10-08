@@ -781,9 +781,9 @@ class VideosController < ApplicationController
 		if user_signed_in? && current_user.adult == true
 			search_params[:adult] = true
 		end
-		@channels = Channel.search params[:search], where: search_params, fields: ['title^100','synopsis']
-		@shows = Show.search params[:search], where: search_params, fields: ['title^100','synopsis']
-		@movies = Movie.search params[:search], where: search_params, fields: ['title^100','synopsis']
+		@channels = Channel.search params[:search], where: search_params, fields: ['title^100','synopsis'], operator: 'or'
+		@shows = Show.search params[:search], where: search_params, fields: ['title^100','synopsis'], operator: 'or'
+		@movies = Movie.search params[:search], where: search_params, fields: ['title^100','synopsis'], operator: 'or'
 	end
 
 	def landing
