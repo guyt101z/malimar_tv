@@ -1,4 +1,4 @@
-$('#grid_<%= @grid.id %>').html('<%= escape_javascript(render("videos/partials/grid", cache: true)).html_safe %>')
+$('#grid_<%= @grid.id %>').html('<%= escape_javascript(render("videos/partials/grid")).html_safe %>')
 
 
 $("#grid_<%= @grid.id %>").slick({
