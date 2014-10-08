@@ -221,7 +221,7 @@
 </div>
 
 
-<% if (user_signed_in? && current_user.web_premium?) || admin_signed_in?  %>
+<% if (user_signed_in? && current_user.web_premium?) || admin_signed_in? || @grid.free?  %>
     <script>
         jwplayer().play()
     </script>
