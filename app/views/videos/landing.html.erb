@@ -39,7 +39,6 @@
             <%= render 'videos/partials/similar/continue_watching' %>
         <% end %>
         <% @grids.each do |grid| %>
-            <% unless (grid.adult? && ((user_signed_in? && current_user.adult == true))) || admin_signed_in? == false %>
                 <div class="panel panel-custom">
                     <div class="panel-heading">
                         <div class="icon-left"><span class="glyphicon glyphicon-heart"></span></div>
@@ -54,7 +53,6 @@
                         </div>
                     </div>
                 </div>
-            <% end %>
         <% end %>
     </div>
 </div><!--content-->
