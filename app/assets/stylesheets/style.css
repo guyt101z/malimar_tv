@@ -164,7 +164,7 @@ float:right;
 
 .carousel-inner > .item > img, .carousel-inner > .item > a > img{display:inline-block;max-width:none;}
 .item{width:100%;text-align: center;overflow: hidden;}
-.item > img{position: relative; max-width: 100%;}
+.item > img{position: relative; max-width: 100%;margin: auto;width: 100%;}
 .carousel-caption{left:0;bottom:0;right:0;background:rgba(17,17,17,0.7);text-align: left;font-size: 12.5px;padding:10px 0; z-index: 1000}
 .carousel-caption h2{font-weight: 300;margin:0 0 10px;}
 .carousel-caption .btn{text-shadow:inherit;}
