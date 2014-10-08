@@ -6,7 +6,7 @@
                     <div class="pull-left mr30"><%= image_tag @show.image_url(:preview), class: "media-object", style: 'height: 50px' %></div>
                     <div class="media-body">
                         <h3 class="name"><%= @show.name %></h3>
-                        Episode <%= @episode.episode_number %><% if @episode.final? %> - FINAL<% end %>
+                        Episode <%= @episode.episode_number %><% if @episode.final? %> - FINAL<% end %> - <%= @episode.release_date.strftime('%B %-d, %Y') %>
                     </div>
                 </div>
             </div>
