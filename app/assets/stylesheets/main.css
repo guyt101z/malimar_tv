@@ -167,10 +167,10 @@ h5.member-level {
 
 .navbar_search_results {
     position: absolute;
-    top: 31px;
-    left: 48px;
+    top: 41px;
+    left: 0;
+    width: 100%;
     background-color: #fff;
-    width: calc(100% - 78px);
     display: none;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
