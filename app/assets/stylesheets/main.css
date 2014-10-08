@@ -178,6 +178,9 @@ h5.member-level {
     max-height: 400px;
     overflow-y: scroll;
 }
+.dropdown:hover .dropdown-menu {
+    display: block;
+ }
 .navbar_search_results .search_placeholder {
     width: 100%;
     padding: 5px 15px;
