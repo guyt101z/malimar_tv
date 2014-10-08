@@ -25,12 +25,6 @@
             <% i += 1 %>
         <% end %>
     </div>
-    <a class="left carousel-control" href="#carousel-landing" role="button" data-slide="prev">
-        <span class="glyphicon glyphicon-chevron-left"></span>
-    </a>
-    <a class="right carousel-control" href="#carousel-landing" role="button" data-slide="next">
-        <span class="glyphicon glyphicon-chevron-right"></span>
-    </a>
 </div><!--carousel-->
 
 <div class="content">
@@ -57,7 +51,10 @@
     </div>
 </div><!--content-->
 <script>
-    $('.carousel-inner').slick()
+    $('.carousel-inner').slick({
+        autoplay: true,
+        autoplaySpeed: 5000
+    })
 
     var ajaxManager = (function() {
         var requests = [];
