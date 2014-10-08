@@ -84,7 +84,7 @@ else {
 }
 
 </script>
-<% if (user_signed_in? && current_user.web_premium?) || admin_signed_in?  %>
+<% if (user_signed_in? && current_user.web_premium?) || admin_signed_in? || @movie.free?  %>
     <script>
         jwplayer().play()
     </script>
