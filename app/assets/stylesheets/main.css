@@ -164,6 +164,22 @@ h5.member-level {
 	margin: 0;
 }
 
+.watch_progress{
+    position: absolute;
+    height: 10px;
+    top: 231px;
+    left: 0;
+    width: 100%;
+    padding: 0 10px;
+}
+.watch_progress .progress{
+    border-radius: 0;
+    height: 10px;
+    background-color: #fff;
+}
+.watch_progress .progress .progress-bar {
+    background-color: #14b9f0;
+}
 
 .navbar_search_results {
     position: absolute;

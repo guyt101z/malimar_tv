@@ -121,8 +121,8 @@ else {
             }
         })
     </script>
-<% elsif user_signed_in? && current_user.web_premium? == false && @channel.free == false %>
-    <%= render('videos/partials/no_plan') %>
+<% elsif user_signed_in? && current_user.web_premium? == false && @show.free == false %>
+    <%= render('videos/partials/no_plan_modal') %>
     <script>
         $('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
         $('#modal-no-plan').on('hidden.bs.modal', function () {

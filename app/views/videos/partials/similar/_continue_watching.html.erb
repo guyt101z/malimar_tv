@@ -12,7 +12,22 @@
                 <% if show != nil %>
                     <a href="<%= item.watch_url %>">
                         <% if show.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
-                        <div class="channel-img"><div class="hover-play"><%= image_tag 'hover-play.png' %></div><%= image_tag show.image_url(:hd), class: "grayscale" %></div>
+                        <div class="channel-img" style="position: relative;">
+                            <% episode = Episode.where(show_id: show.id, episode_number: item.episode_number).first %>
+
+                            <% if episode.present? && episode.length.to_i > 0 %>
+                                <% ep_progress = EpisodeProgress.where(show_progress_id: item.id, episode_id: episode.id).first %>
+
+                                <% if ep_progress.present? %>
+                                    <div class='watch_progress'>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="width: <%= ep_progress.time.to_i / episode.length.to_i %>%;"></div>
+                                        </div>
+                                    </div>
+                                <% end %>
+                            <% end %>
+                            <div class="hover-play" style="top: calc((100%/2) - 36px);"><%= image_tag 'hover-play.png' %></div><%= image_tag show.image_url(:hd), class: "grayscale" %>
+                        </div>
                         <h4><%= show.name %></h4>
                     </a>
                 <% end %>
@@ -21,7 +36,16 @@
                 <% if movie != nil %>
                     <a href="<%= item.watch_url %>">
                         <% if movie.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
-                        <div class="channel-img"><div class="hover-play"><%= image_tag 'hover-play.png' %></div><%= image_tag movie.image_url(:hd), class: "grayscale" %></div>
+                        <div class="channel-img" style="position: relative;">
+                            <% if movie.length.to_i > 0 && item.time.to_i > 0 %>
+                                <div class='watch_progress'>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="width: <%= item.time.to_i / movie.length.to_i %>%;"></div>
+                                    </div>
+                                </div>
+                            <% end %>
+                            <div class="hover-play" style="top: calc((100%/2) - 36px);"><%= image_tag 'hover-play.png' %></div><%= image_tag movie.image_url(:hd), class: "grayscale" %>
+                        </div>
                         <h4><%= movie.name %></h4>
                     </a>
                 <% end %>

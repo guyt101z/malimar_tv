@@ -9,7 +9,8 @@
                 <a href="<%= episode.watch_url %>">
                     <% if @show.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
                     <div class="channel-img"><div class="hover-play"><%= image_tag 'hover-play.png' %></div><%= image_tag @show.image_url(:hd), class: "grayscale" %></div>
-                    <h4>Episode <%= episode.episode_number %></h4>
+                    <h4 style="margin-bottom: 3px">Episode <%= episode.episode_number %></h4>
+                    <div class='ep_date' style="margin-bottom: 3px"><%= episode.release_date.strftime('%B %-d %Y') %></div>
                 </a>
             </div>
         <% end %>
