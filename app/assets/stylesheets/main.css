@@ -327,3 +327,6 @@ h5.member-level {
     font-size: 70px;
     color: #333;
 }
+.container-fluid {
+    max-width: 1440px;
+}

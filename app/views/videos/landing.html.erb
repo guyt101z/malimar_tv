@@ -25,8 +25,7 @@
     </div>
 </div><!--carousel-->
 
-<div class="content">
-	<div class="container">
+	<div class="container-fluid">
         <% if user_signed_in? && current_user.has_in_progress? %>
             <%= render 'videos/partials/similar/continue_watching' %>
         <% end %>
@@ -47,7 +46,6 @@
                 </div>
         <% end %>
     </div>
-</div><!--content-->
 <% if params[:show_premium_modal].present? %>
 <div class="modal fade in" id="modal-premium" aria-hidden="false">
     <div class="modal-dialog" style='margin-top: 150px'>

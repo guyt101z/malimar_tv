@@ -1,5 +1,5 @@
 <div class="navbar yamm navbar-inverse navbar-fixed-top" id='main-header-1'>
-    <div class="container">
+    <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -22,7 +22,7 @@
                 </li>
             </ul>
             <div class="sep hidden-xs hidden-sm"></div>
-            <div class="navbar-form navbar-left hidden-sm" role="search" style='position:relative'>
+            <div class="navbar-form navbar-left hidden-sm" role="search" style='position:absolute; width: 270px; left: calc(50% - 135px)'>
                 <div class="form-group">
                     <span class="glyphicon glyphicon-search"></span>
                     <%= text_field_tag :video_search, '', class: 'form-control', placeholder: 'What are you looking to watch?', autocomplete: 'off' %>
@@ -41,7 +41,7 @@
 </div><!--navbar-->
 
 <div class="navbar navbar-default hidden-xs navbar-fixed-top" style='top: 50px; z-index: 10;' id='main-header-2'>
-	<div class="container">
+	<div class="container-fluid">
     	<ul class="nav nav-justified">
         	<li id='profile'><%= link_to 'Profile', account_path %></li>
         	<li id='devices_nav'><%= link_to 'My Devices', my_devices_path %></li>

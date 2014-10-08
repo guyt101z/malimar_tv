@@ -19,25 +19,23 @@
         </div>
     </div>
 </div><!--splash-->
-<div class="content">
-    <div class="container">
-        <div class="w960">
-            <div class="video-container" id='video_wrapper'>
+<div class="container-fluid">
+    <div class="w960">
+        <div class="video-container" id='video_wrapper'>
 
-            </div>
         </div>
-        <div class="w960 text-right">
-            <% if user_signed_in? && BrokenLink.already_submitted?(@movie.id, 'Movie', current_user.id, nil) == false %>
-                <%= link_to 'Broken Video?', submit_broken_link_path(video_id: @movie.id, video_type: 'Movie', user_id: current_user.id), class: 'btn btn-primary btn-bold btn-w180', remote: true, id: 'report_link', data: {disable_with: 'Submitting...'} %>
-            <% else %>
-                <%= link_to 'Broken Video?', '#', class: 'btn btn-primary btn-bold btn-w180', remote: true, id: 'report_link', disabled: 'disabled' %>
-            <% end %>
-        </div>
-
-        <% @item = @movie %>
-        <%= render 'videos/partials/similar_links' %>
     </div>
-</div><!--content-->
+    <div class="w960 text-right">
+        <% if user_signed_in? && BrokenLink.already_submitted?(@movie.id, 'Movie', current_user.id, nil) == false %>
+            <%= link_to 'Broken Video?', submit_broken_link_path(video_id: @movie.id, video_type: 'Movie', user_id: current_user.id), class: 'btn btn-primary btn-bold btn-w180', remote: true, id: 'report_link', data: {disable_with: 'Submitting...'} %>
+        <% else %>
+            <%= link_to 'Broken Video?', '#', class: 'btn btn-primary btn-bold btn-w180', remote: true, id: 'report_link', disabled: 'disabled' %>
+        <% end %>
+    </div>
+
+    <% @item = @movie %>
+    <%= render 'videos/partials/similar_links' %>
+</div>
 
 
 <div class="modal fade" id="report_modal">
