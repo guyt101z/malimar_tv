@@ -676,7 +676,7 @@ class VideosController < ApplicationController
 
 		activation_status = Setting.where(name: 'Active Registration').first.data
 
-		if @channel.free == false && activation_status == false
+		if @channel.free == false && (activation_status == 'false' || activation_status == false)
 			redirect_to root_url(show_premium_modal: true)
 		end
 
@@ -693,7 +693,9 @@ class VideosController < ApplicationController
 	def browse_episodes
 		@show = Show.where(slug: params[:show_slug]).first
 
-		if @show.free == false && activation_status == false
+		activation_status = Setting.where(name: 'Active Registration').first.data
+
+		if @show.free == false && (activation_status == 'false' || activation_status == false)
 			redirect_to root_url(show_premium_modal: true)
 		end
 
@@ -712,7 +714,9 @@ class VideosController < ApplicationController
 	def watch_episode
 		@show = Show.where(slug: params[:show_slug]).first
 
-		if @show.free == false && activation_status == false
+		activation_status = Setting.where(name: 'Active Registration').first.data
+
+		if @show.free == false && (activation_status == 'false' || activation_status == false)
 			redirect_to root_url(show_premium_modal: true)
 		end
 
@@ -754,7 +758,9 @@ class VideosController < ApplicationController
 	def watch_movie
 		@movie = Movie.where(slug: params[:movie_slug]).first
 
-		if @movie.free == false && activation_status == false
+		activation_status = Setting.where(name: 'Active Registration').first.data
+
+		if @movie.free == false && (activation_status == 'false' || activation_status == false)
 			redirect_to root_url(show_premium_modal: true)
 		end
 
@@ -806,6 +812,13 @@ class VideosController < ApplicationController
 
 	def full_grid
 		@grid = Grid.find(params[:category_id])
+
+		activation_status = Setting.where(name: 'Active Registration').first.data
+
+		if @grid.free == false && (activation_status == 'false' || activation_status == false)
+			redirect_to root_url(show_premium_modal: true)
+		end
+
 		if @grid.adult?
 			unless (user_signed_in? && current_user.adult?) || admin_signed_in? 
 				flash[:error] = 'You are not permitted to watch adult content'
