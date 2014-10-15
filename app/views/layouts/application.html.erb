@@ -15,11 +15,11 @@
 	<% else %>
 		<%= stylesheet_link_tag    'main', media: 'all', 'data-turbolinks-track' => true %>
 		<%= javascript_include_tag 'main', 'data-turbolinks-track' => true %>
+    	<script type='text/javascript'>jwplayer.key = 'SkTelUdJ7DU2z068gn4mt6/EhKvLHRJnoBeHqf2IqNg='</script>
 	<% end %>
 
     <script src='//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js'></script>
 
-    <script type='text/javascript'>jwplayer.key = 'SkTelUdJ7DU2z068gn4mt6/EhKvLHRJnoBeHqf2IqNg='</script>
 	<%= csrf_meta_tags %>
 </head>
 <% if params[:controller] == 'admins' || params[:controller] == 'feed' || request.original_url.end_with?('admins/sign_in', 'admins/password/new', 'admins/password') || request.original_url.include?('admins/password/edit') ||
