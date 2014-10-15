@@ -78,7 +78,122 @@
 				'</div>'
 			});
         <% end %>
-			setHeight();
+        	var loaded = false;
+
+        	function loadPage(){
+        		setHeight();
+	            $(function(){
+					$(window).on('resize', function() {
+						setHeight();
+					});
+					$('[data-toggle="sidebar"]').click(function(){
+						if( $('.sidebar').is(':visible') ) {
+							$('.sidebar').animate({ 'left': '-220px' }, 'slow', function(){
+								$('.sidebar').hide();
+							});
+							$('.content').animate({ 'left': '0px' }, 'slow');
+						}
+						else {
+							$('.sidebar').show();
+							$('.sidebar').animate({ 'left': '15px' }, 'slow');
+							$('.content').animate({ 'left': '220px' }, 'slow');
+						}
+					});
+					$('[data-toggle="popover"]').popover();
+					/*$.growl({
+						message: '<div class="notif-left"><img src="img/img-circle-user.png"></div><div class="notif-right"><div class="fz16">Zoe Moulder </div><div class="fz12-5">registered to the site</div></div>'
+					},{
+						type: "notif",
+						placement: {
+							from: "bottom",
+							align: "right"
+						},
+						template: '<div data-growl="container" class="alert" role="alert">' +
+							'<button type="button" class="close" data-growl="dismiss">' +
+								'<span aria-hidden="true">×</span>' +
+								'<span class="sr-only">Close</span>' +
+							'</button>' +
+							'<div data-growl="message"></div>' +
+						'</div>'
+					});*/
+	            });
+
+				function setHeight(){
+					$('#left-scroll').css('height', $('.content').height())
+					$('#right-scroll').css('height', $('.content').height() - 190)
+					$(".nano").nanoScroller();
+				}
+				$('body').on('click', function (e) {
+				    $('[data-toggle="popover"]').each(function () {
+				        //the 'is' for buttons that trigger popups
+				        //the 'has' for icons within a button that triggers a popup
+				        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+				            $(this).popover('hide');
+				        }
+				    });
+				});
+        	}
+        	$(document).on('page:before-load', function(){
+				if (!loaded)
+        			loadPage();
+        		loaded = true;
+        	})
+        	$(document).ready(function(){
+        		if (!loaded)
+        			loadPage();
+        		loaded = true;
+        	})
+        </script>
+</body>
+<% elsif params[:controller] == 'sales_reps' || request.original_url.end_with?('sales_representatives/sign_in', 'sales_representatives/password/new', 'sales_representatives/password') || request.original_url.include?('sales_representatives/password/edit') || (params[:controller] == 'support' && params[:action].include?('sales_rep')) %>
+<body>
+	<% if sales_representative_signed_in? %><%= render 'sales_reps/nav/navbar' %><% end %>
+
+	<% unless request.original_url.end_with?('sales_representatives/sign_in', 'sales_representatives/password/new', 'sales_representatives/password') || request.original_url.include?('sales_representatives/password/edit') %>
+		<div class='main'>
+			<div class='container-fluid'>
+				<% if sales_representative_signed_in? %><%= render 'sales_reps/nav/sidenav' %><% end %>
+				<div class='content'>
+					<%= yield %>
+				</div>
+			</div>
+			<div class="footer">
+				<div class="row">
+					<div class="col-sm-6">Malimar TV Sales Portal 1.0</div>
+					<div class="col-sm-6 text-right">Powered by <%= link_to image_tag("vm.png"), 'http://variationmedia.com' %></div>
+				</div>
+			</div>
+		</div>
+	<% else %>
+		<div class='container-fluid'>
+			<%= yield %>
+		</div>
+	<% end %>
+	<script>
+		<% flash.each do |name, msg| -%>
+			<% icons = {error: 'exclamation-circle', success: 'check-circle', alert: 'info-circle', notice: 'info-circle'} %>
+
+			$.growl({
+				message: '<div class="notif-left"><i class="fa fa-<%= icons[name.to_sym] %> fa-fw"></i></div><div class="notif-right"><div class="fz16"><%= name.capitalize %></div><div class="fz12-5"><%= msg %></div></div>'
+			},{
+				type: "notif",
+				placement: {
+					from: "bottom",
+					align: "right"
+				},
+				template: '<div data-growl="container" class="alert" role="alert">' +
+					'<button type="button" class="close" data-growl="dismiss">' +
+						'<span aria-hidden="true">×</span>' +
+						'<span class="sr-only">Close</span>' +
+					'</button>' +
+					'<div data-growl="message" class="notif-wrapper"></div>' +
+				'</div>'
+			});
+		<% end %>
+		var loaded = false;
+
+    	function loadPage(){
+    		setHeight();
             $(function(){
 				$(window).on('resize', function() {
 					setHeight();
@@ -129,104 +244,17 @@
 			        }
 			    });
 			});
-        </script>
-</body>
-<% elsif params[:controller] == 'sales_reps' || request.original_url.end_with?('sales_representatives/sign_in', 'sales_representatives/password/new', 'sales_representatives/password') || request.original_url.include?('sales_representatives/password/edit') || (params[:controller] == 'support' && params[:action].include?('sales_rep')) %>
-<body>
-	<% if sales_representative_signed_in? %><%= render 'sales_reps/nav/navbar' %><% end %>
-
-	<% unless request.original_url.end_with?('sales_representatives/sign_in', 'sales_representatives/password/new', 'sales_representatives/password') || request.original_url.include?('sales_representatives/password/edit') %>
-		<div class='main'>
-			<div class='container-fluid'>
-				<% if sales_representative_signed_in? %><%= render 'sales_reps/nav/sidenav' %><% end %>
-				<div class='content'>
-					<%= yield %>
-				</div>
-			</div>
-			<div class="footer">
-				<div class="row">
-					<div class="col-sm-6">Malimar TV Sales Portal 1.0</div>
-					<div class="col-sm-6 text-right">Powered by <%= link_to image_tag("vm.png"), 'http://variationmedia.com' %></div>
-				</div>
-			</div>
-		</div>
-	<% else %>
-		<div class='container-fluid'>
-			<%= yield %>
-		</div>
-	<% end %>
-	<script>
-		<% flash.each do |name, msg| -%>
-			<% icons = {error: 'exclamation-circle', success: 'check-circle', alert: 'info-circle', notice: 'info-circle'} %>
-
-			$.growl({
-				message: '<div class="notif-left"><i class="fa fa-<%= icons[name.to_sym] %> fa-fw"></i></div><div class="notif-right"><div class="fz16"><%= name.capitalize %></div><div class="fz12-5"><%= msg %></div></div>'
-			},{
-				type: "notif",
-				placement: {
-					from: "bottom",
-					align: "right"
-				},
-				template: '<div data-growl="container" class="alert" role="alert">' +
-					'<button type="button" class="close" data-growl="dismiss">' +
-						'<span aria-hidden="true">×</span>' +
-						'<span class="sr-only">Close</span>' +
-					'</button>' +
-					'<div data-growl="message" class="notif-wrapper"></div>' +
-				'</div>'
-			});
-		<% end %>
-		setHeight();
-		$(function()
-			$(window).on('resize', function() {
-				setHeight();
-			});
-			$('[data-toggle="sidebar"]').click(function(){
-				if( $('.sidebar').is(':visible') ) {
-					$('.sidebar').animate({ 'left': '-220px' }, 'slow', function(){
-						$('.sidebar').hide();
-					});
-					$('.content').animate({ 'left': '0px' }, 'slow');
-				}
-				else {
-					$('.sidebar').show();
-					$('.sidebar').animate({ 'left': '15px' }, 'slow');
-					$('.content').animate({ 'left': '220px' }, 'slow');
-				}
-			});
-			$('[data-toggle="popover"]').popover();
-			/*$.growl({
-				message: '<div class="notif-left"><img src="img/img-circle-user.png"></div><div class="notif-right"><div class="fz16">Zoe Moulder </div><div class="fz12-5">registered to the site</div></div>'
-			},{
-				type: "notif",
-				placement: {
-					from: "bottom",
-					align: "right"
-				},
-				template: '<div data-growl="container" class="alert" role="alert">' +
-					'<button type="button" class="close" data-growl="dismiss">' +
-						'<span aria-hidden="true">×</span>' +
-						'<span class="sr-only">Close</span>' +
-					'</button>' +
-					'<div data-growl="message"></div>' +
-				'</div>'
-			});*/
-		});
-
-		function setHeight(){
-			$('#left-scroll').css('height', $('.content').height())
-			$('#right-scroll').css('height', $('.content').height() - 190)
-			$(".nano").nanoScroller();
-		}
-		$('body').on('click', function (e) {
-			$('[data-toggle="popover"]').each(function () {
-				//the 'is' for buttons that trigger popups
-				//the 'has' for icons within a button that triggers a popup
-				if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-					$(this).popover('hide');
-				}
-			});
-		});
+    	}
+    	$(document).on('page:before-load', function(){
+			if (!loaded)
+    			loadPage();
+    		loaded = true;
+    	})
+    	$(document).ready(function(){
+    		if (!loaded)
+    			loadPage();
+    		loaded = true;
+    	})
 	</script>
 </body>
 <% else %>
