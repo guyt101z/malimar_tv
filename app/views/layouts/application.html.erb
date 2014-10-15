@@ -2,7 +2,6 @@
 <html>
 <head>
 	<title>Malimar TV</title>
-	<script type="text/javascript" src='//code.jquery.com/jquery-2.1.1.min.js'></script>
 	<link href='//fonts.googleapis.com/css?family=Open+Sans:600,400,300,700' rel='stylesheet' type='text/css'>
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
@@ -16,11 +15,11 @@
 	<% else %>
 		<%= stylesheet_link_tag    'main', media: 'all', 'data-turbolinks-track' => true %>
 		<%= javascript_include_tag 'main', 'data-turbolinks-track' => true %>
-    	<script type='text/javascript'>jwplayer.key = 'SkTelUdJ7DU2z068gn4mt6/EhKvLHRJnoBeHqf2IqNg='</script>
 	<% end %>
 
     <script src='//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js'></script>
 
+    <script type='text/javascript'>jwplayer.key = 'SkTelUdJ7DU2z068gn4mt6/EhKvLHRJnoBeHqf2IqNg='</script>
 	<%= csrf_meta_tags %>
 </head>
 <% if params[:controller] == 'admins' || params[:controller] == 'feed' || request.original_url.end_with?('admins/sign_in', 'admins/password/new', 'admins/password') || request.original_url.include?('admins/password/edit') ||
@@ -79,7 +78,7 @@
 				'</div>'
 			});
         <% end %>
-    		setHeight();
+			setHeight();
             $(function(){
 				$(window).on('resize', function() {
 					setHeight();
@@ -177,71 +176,57 @@
 				'</div>'
 			});
 		<% end %>
-		var loaded = false;
-
-    	function loadPage(){
-    		setHeight();
-            $(function(){
-				$(window).on('resize', function() {
-					setHeight();
-				});
-				$('[data-toggle="sidebar"]').click(function(){
-					if( $('.sidebar').is(':visible') ) {
-						$('.sidebar').animate({ 'left': '-220px' }, 'slow', function(){
-							$('.sidebar').hide();
-						});
-						$('.content').animate({ 'left': '0px' }, 'slow');
-					}
-					else {
-						$('.sidebar').show();
-						$('.sidebar').animate({ 'left': '15px' }, 'slow');
-						$('.content').animate({ 'left': '220px' }, 'slow');
-					}
-				});
-				$('[data-toggle="popover"]').popover();
-				/*$.growl({
-					message: '<div class="notif-left"><img src="img/img-circle-user.png"></div><div class="notif-right"><div class="fz16">Zoe Moulder </div><div class="fz12-5">registered to the site</div></div>'
-				},{
-					type: "notif",
-					placement: {
-						from: "bottom",
-						align: "right"
-					},
-					template: '<div data-growl="container" class="alert" role="alert">' +
-						'<button type="button" class="close" data-growl="dismiss">' +
-							'<span aria-hidden="true">×</span>' +
-							'<span class="sr-only">Close</span>' +
-						'</button>' +
-						'<div data-growl="message"></div>' +
-					'</div>'
-				});*/
-            });
-
-			function setHeight(){
-				$('#left-scroll').css('height', $('.content').height())
-				$('#right-scroll').css('height', $('.content').height() - 190)
-				$(".nano").nanoScroller();
-			}
-			$('body').on('click', function (e) {
-			    $('[data-toggle="popover"]').each(function () {
-			        //the 'is' for buttons that trigger popups
-			        //the 'has' for icons within a button that triggers a popup
-			        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-			            $(this).popover('hide');
-			        }
-			    });
+		setHeight();
+		$(function()
+			$(window).on('resize', function() {
+				setHeight();
 			});
-    	}
-    	$(document).on('page:before-load', function(){
-			if (!loaded)
-    			loadPage();
-    		loaded = true;
-    	})
-    	$(document).ready(function(){
-    		if (!loaded)
-    			loadPage();
-    		loaded = true;
-    	})
+			$('[data-toggle="sidebar"]').click(function(){
+				if( $('.sidebar').is(':visible') ) {
+					$('.sidebar').animate({ 'left': '-220px' }, 'slow', function(){
+						$('.sidebar').hide();
+					});
+					$('.content').animate({ 'left': '0px' }, 'slow');
+				}
+				else {
+					$('.sidebar').show();
+					$('.sidebar').animate({ 'left': '15px' }, 'slow');
+					$('.content').animate({ 'left': '220px' }, 'slow');
+				}
+			});
+			$('[data-toggle="popover"]').popover();
+			/*$.growl({
+				message: '<div class="notif-left"><img src="img/img-circle-user.png"></div><div class="notif-right"><div class="fz16">Zoe Moulder </div><div class="fz12-5">registered to the site</div></div>'
+			},{
+				type: "notif",
+				placement: {
+					from: "bottom",
+					align: "right"
+				},
+				template: '<div data-growl="container" class="alert" role="alert">' +
+					'<button type="button" class="close" data-growl="dismiss">' +
+						'<span aria-hidden="true">×</span>' +
+						'<span class="sr-only">Close</span>' +
+					'</button>' +
+					'<div data-growl="message"></div>' +
+				'</div>'
+			});*/
+		});
+
+		function setHeight(){
+			$('#left-scroll').css('height', $('.content').height())
+			$('#right-scroll').css('height', $('.content').height() - 190)
+			$(".nano").nanoScroller();
+		}
+		$('body').on('click', function (e) {
+			$('[data-toggle="popover"]').each(function () {
+				//the 'is' for buttons that trigger popups
+				//the 'has' for icons within a button that triggers a popup
+				if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+					$(this).popover('hide');
+				}
+			});
+		});
 	</script>
 </body>
 <% else %>
