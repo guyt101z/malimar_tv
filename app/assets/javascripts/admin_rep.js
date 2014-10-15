@@ -26,21 +26,8 @@
 //= require jquery-fileupload/vendor/tmpl
 //= require_directory ./admin_rep
 
-var js_loaded = false;
-
-$(document).on('page:before-load', function(){
-  if (!js_loaded)
-    loadJS();
-  js_loaded = true;
-});
-$(document).ready(function(){
-  if (!js_loaded)
-    loadJS();
-  js_loaded = true;
-});
 
 
-function loadJS(){
   function addNotification(type, message, name, icon) {
   //    icons = {error: 'exclamation-circle', success: 'check-circle', alert: 'info-circle', notice: 'info-circle'}
       $.growl({
@@ -260,4 +247,3 @@ function loadJS(){
     document.createElement("abbr");
     document.createElement("time");
   }));
-}
