@@ -56,7 +56,7 @@ gem 'will_paginate'
 
 gem 'random_data'
 gem 'payday'
-
+gem 'jquery-turbolinks'
 gem 'country_select'
 
 gem 'redis'
