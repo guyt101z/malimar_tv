@@ -32,12 +32,12 @@ $(document).on('page:before-load', function(){
   if (!js_loaded)
     loadJS();
   js_loaded = true;
-})  
+});
 $(document).ready(function(){
   if (!js_loaded)
     loadJS();
   js_loaded = true;
-})
+});
 
 
 function loadJS(){
