@@ -220,9 +220,9 @@ class Channel < ActiveRecord::Base
 
     def hls_stream
         if disable_playlist?
-            return "http://#{stream_url}"
+            return "https://#{stream_url}"
         else
-            return "http://#{stream_url}/playlist.m3u8"
+            return "https://#{stream_url}/playlist.m3u8"
         end
     end
 
