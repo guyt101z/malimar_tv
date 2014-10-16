@@ -72,14 +72,16 @@
         }
     })
 
-    function viewChannel(id){
-        $('.channel_list_item').removeClass('active')
-        $('#movie_'+id).addClass('active')
-        $('#movie_search_'+id).addClass('active')
-        $.ajax({
-            url: '/view_movie?id='+id
-        })
-    }
+    $(document).ready(function(){
+        function viewChannel(id){
+            $('.channel_list_item').removeClass('active')
+            $('#movie_'+id).addClass('active')
+            $('#movie_search_'+id).addClass('active')
+            $.ajax({
+                url: '/view_movie?id='+id
+            })
+        }
+    })
     <% if params[:id].present? %>
         viewChannel(<%= params[:id] %>)
     <% end %>
