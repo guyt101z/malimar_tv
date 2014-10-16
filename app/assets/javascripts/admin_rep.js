@@ -11,8 +11,8 @@
 // about supported directives.
 //
 //= require jquery
+//= require jquery.turbolinks
 //= require jquery_ujs
-//= require turbolinks
 //= require bootstrap
 //= require Autolinker
 //= require timeago
@@ -25,6 +25,7 @@
 //= require jquery-fileupload/basic
 //= require jquery-fileupload/vendor/tmpl
 //= require_directory ./admin_rep
+//= require turbolinks
 
 function addNotification(type, message, name, icon) {
 //    icons = {error: 'exclamation-circle', success: 'check-circle', alert: 'info-circle', notice: 'info-circle'}

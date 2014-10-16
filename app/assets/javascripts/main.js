@@ -11,9 +11,9 @@
 // about supported directives.
 //
 //= require jquery
+//= require jquery.turbolinks
 //= require jquery_ujs
 //= require slick
-//= require turbolinks
 //= require bootstrap
 //= require Autolinker
 //= require timeago
@@ -26,6 +26,7 @@
 //= require_directory ./main
 //= require jwplayer
 //= require jwplayer_html5
+//= require turbolinks
 
 
 /**
