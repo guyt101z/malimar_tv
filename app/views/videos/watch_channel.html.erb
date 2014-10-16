@@ -54,7 +54,7 @@
 
 
 <script>
-$(document).on('page:load', function(){
+$(document).ready(function(){
 	var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
 	if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
@@ -94,12 +94,12 @@ $(document).on('page:load', function(){
 </script>
 <% if (user_signed_in? && current_user.web_premium?) || admin_signed_in? || @channel.free? %>
 	<script>
-		$(document).on('page:load', function(){jwplayer().play()})
+		$(document).ready(function(){jwplayer().play()})
 	</script>
 <% elsif user_signed_in? && current_user.web_premium? == false && @channel.free == false %>
 	<%= render('videos/partials/no_plan') %>
 	<script>
-	$(document).on('page:load', function(){
+	$(document).ready(function(){
 		$('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
 		$('#modal-no-plan').on('hidden.bs.modal', function () {
 			window.location = '/'
@@ -111,7 +111,7 @@ $(document).on('page:load', function(){
 <% else %>
 	<%= render('videos/partials/sign_in_modal_channel') %>
 	<script>
-	$(document).on('page:load', function(){
+	$(document).ready(function(){
 		$('#modal-login').modal({show: true, keyboard: false, backdrop: 'static'})
 		$('#modal-login').on('hidden.bs.modal', function () {
 			window.location = '/'
@@ -120,5 +120,5 @@ $(document).on('page:load', function(){
 	</script>
 <% end %>
 <script>
-	$(document).on('page:load', function(){centerIcon();})
+	$(document).ready(function(){centerIcon();})
 </script>
