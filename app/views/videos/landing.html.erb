@@ -128,30 +128,12 @@ $(document).ready(function(){
 
     ajaxManager.run();
 
-    var grids_loaded = false
-    $(document).ready(function(){
-        if (!grids_loaded){
-            <% @grids.each do |grid| %>
-                    ajaxManager.addReq({
-                        type: 'GET',
-                        url: '/grid_view',
-                        data: {id: <%= grid.id %>}
-                    })
-            <% end %>
-            grids_loaded = true
-        }
-    })
-    $(document).on('page:load', function(){
-        if (!grids_loaded){
-            <% @grids.each do |grid| %>
-                    ajaxManager.addReq({
-                        type: 'GET',
-                        url: '/grid_view',
-                        data: {id: <%= grid.id %>}
-                    })
-            <% end %>
-            grids_loaded = true
-        }
-    })
+    <% @grids.each do |grid| %>
+            ajaxManager.addReq({
+                type: 'GET',
+                url: '/grid_view',
+                data: {id: <%= grid.id %>}
+            })
+    <% end %>
 })
 </script>
