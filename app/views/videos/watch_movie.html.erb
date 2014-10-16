@@ -57,7 +57,7 @@
 <%= render('videos/partials/no_plan_modal') %>
 
 <script>
-$(document).ready(function(){
+$(function (){
     var userAgent = navigator.userAgent || navigator.vendor || window.opera;
     if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
         $('#video_wrapper').html('<div id="mobile_player" class="mobile_player"><%= image_tag @movie.image_url, id: "mobile_bg_img", class: "mobile_bg_img" %><%= link_to image_tag("hover-play.png"), "#{@movie.hls_stream}", class: "play_icon_lg", id: "play_icon_lg" %></div>')
