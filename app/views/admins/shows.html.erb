@@ -38,7 +38,7 @@
     View the CMS from a larger screened device
 </div>
 <%= render 'admins/cms_partials/new_show' %>
-<script type="text/javascript">
+<script type="text/javascript" data-cfasync="false">
     $('#show_search').focus(function(){
         $('#show_placeholder').animate({
             'left':22
@@ -73,16 +73,14 @@
         }
     })
 
-    $(document).ready(function(){
-        function viewShow(id){
-            $('.channel_list_item').removeClass('active')
-            $('#show_'+id).addClass('active')
-            $('#show_search_'+id).addClass('active')
-            $.ajax({
-                url: '/view_show?id='+id
-            })
-        }
-    })
+    function viewShow(id){
+        $('.channel_list_item').removeClass('active')
+        $('#show_'+id).addClass('active')
+        $('#show_search_'+id).addClass('active')
+        $.ajax({
+            url: '/view_show?id='+id
+        })
+    }
     <% if params[:id].present? %>
         viewShow(<%= params[:id] %>)
     <% end %>

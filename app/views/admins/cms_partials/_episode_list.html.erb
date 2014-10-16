@@ -17,7 +17,7 @@
         </div>
     <% end %>
 </div>
-<script type="text/javascript">
+<script type="text/javascript" data-cfasync="false">
     $('#episode_search').focus(function(){
         $('#episode_placeholder').animate({
             'left':22
@@ -53,11 +53,9 @@
     })
     $('.add_episode').tooltip()
 
-    $(document).ready(function(){
-        function viewEpisode(id) {
-            $.ajax({
-                url: '/view_episode?id='+id
-            })
-        }
-    })
+    function viewEpisode(id) {
+        $.ajax({
+            url: '/view_episode?id='+id
+        })
+    }
 </script>

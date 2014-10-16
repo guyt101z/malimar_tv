@@ -37,7 +37,7 @@
     View the CMS from a larger screened device
 </div>
 <%= render 'admins/cms_partials/new_movie' %>
-<script type="text/javascript">
+<script type="text/javascript" data-cfasync="false">
     $('#channel_search').focus(function(){
         $('#channel_placeholder').animate({
             'left':22
@@ -72,16 +72,15 @@
         }
     })
 
-    $(document).ready(function(){
-        function viewChannel(id){
-            $('.channel_list_item').removeClass('active')
-            $('#movie_'+id).addClass('active')
-            $('#movie_search_'+id).addClass('active')
-            $.ajax({
-                url: '/view_movie?id='+id
-            })
-        }
-    })
+  
+    function viewChannel(id){
+        $('.channel_list_item').removeClass('active')
+        $('#movie_'+id).addClass('active')
+        $('#movie_search_'+id).addClass('active')
+        $.ajax({
+            url: '/view_movie?id='+id
+        })
+    }
     <% if params[:id].present? %>
         viewChannel(<%= params[:id] %>)
     <% end %>
