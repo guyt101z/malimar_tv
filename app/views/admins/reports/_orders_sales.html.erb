@@ -14,26 +14,54 @@
     end
 %>
 <script>
-    var chart = Morris.Line({
-        element: 'reports',
-        data: [
-            <% data_array.each_with_index do |data, i| %>
-                <% days = 30 - i %>
-                {
-                    y: '<%= (Date.today - days.days).strftime("%Y-%m-%d") %>',
-                    a: <%= data.transactions_completed %>,
-                    b: <%= data.transactions_paid %>
-                },
-            <% end %>
-        ],
-        xkey: 'y',
-        ykeys: ['a','b'],
-        labels: ['Orders Submitted','Orders Paid'],
-        lineColors: ['#D8DB00','#73DEA9'],
-        resize: true,
-        hideHover: true,
-        pointSize: 0,
-        smooth: false,
-        lineWidth: 2
-      });
+    
+
+    $(document).ready(function(){
+        var chart = Morris.Line({
+            element: 'reports',
+            data: [
+                <% data_array.each_with_index do |data, i| %>
+                    <% days = 30 - i %>
+                    {
+                        y: '<%= (Date.today - days.days).strftime("%Y-%m-%d") %>',
+                        a: <%= data.transactions_completed %>,
+                        b: <%= data.transactions_paid %>
+                    },
+                <% end %>
+            ],
+            xkey: 'y',
+            ykeys: ['a','b'],
+            labels: ['Orders Submitted','Orders Paid'],
+            lineColors: ['#D8DB00','#73DEA9'],
+            resize: true,
+            hideHover: true,
+            pointSize: 0,
+            smooth: false,
+            lineWidth: 2
+        });
+    })
+    $(document).on('page:load', function(){
+        var chart = Morris.Line({
+            element: 'reports',
+            data: [
+                <% data_array.each_with_index do |data, i| %>
+                    <% days = 30 - i %>
+                    {
+                        y: '<%= (Date.today - days.days).strftime("%Y-%m-%d") %>',
+                        a: <%= data.transactions_completed %>,
+                        b: <%= data.transactions_paid %>
+                    },
+                <% end %>
+            ],
+            xkey: 'y',
+            ykeys: ['a','b'],
+            labels: ['Orders Submitted','Orders Paid'],
+            lineColors: ['#D8DB00','#73DEA9'],
+            resize: true,
+            hideHover: true,
+            pointSize: 0,
+            smooth: false,
+            lineWidth: 2
+        });
+    })
 </script>
