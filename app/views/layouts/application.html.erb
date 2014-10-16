@@ -79,7 +79,10 @@
 				'</div>'
 			});
         <% end %>
-			setHeight();
+        	$(document).ready(function(){
+        		setHeight();
+        	})
+			
             $(function(){
 				$(window).on('resize', function() {
 					setHeight();
@@ -177,7 +180,9 @@
 				'</div>'
 			});
 		<% end %>
-		setHeight();
+    	$(document).ready(function(){
+    		setHeight();
+    	})
 		$(function()
 			$(window).on('resize', function() {
 				setHeight();
