@@ -14,25 +14,51 @@
     end
 %>
 <script>
-    var chart = Morris.Line({
-        element: 'reports',
-        data: [
-            <% data_array.each_with_index do |data, i| %>
-                <% days = 30 - i %>
-                {
-                    y: '<%= (Date.today - days.days).strftime("%Y-%m-%d") %>',
-                    a: <%= data.new_sign_ups %>
-                },
-            <% end %>
-        ],
-        xkey: 'y',
-        ykeys: ['a'],
-        labels: ['New Sign Ups'],
-        lineColors: ['#73DEA9'],
-        resize: true,
-        hideHover: true,
-        pointSize: 0,
-        smooth: false,
-        lineWidth: 2
-      });
+    $(document).ready(function(){
+        var chart = Morris.Line({
+            element: 'reports',
+            data: [
+                <% data_array.each_with_index do |data, i| %>
+                    <% days = 30 - i %>
+                    {
+                        y: '<%= (Date.today - days.days).strftime("%Y-%m-%d") %>',
+                        a: <%= data.new_sign_ups %>
+                    },
+                <% end %>
+            ],
+            xkey: 'y',
+            ykeys: ['a'],
+            labels: ['New Sign Ups'],
+            lineColors: ['#73DEA9'],
+            resize: true,
+            hideHover: true,
+            pointSize: 0,
+            smooth: false,
+            lineWidth: 2
+        });
+    })
+    $(document).on('page:load', function(){
+        var chart = Morris.Line({
+            element: 'reports',
+            data: [
+                <% data_array.each_with_index do |data, i| %>
+                    <% days = 30 - i %>
+                    {
+                        y: '<%= (Date.today - days.days).strftime("%Y-%m-%d") %>',
+                        a: <%= data.new_sign_ups %>
+                    },
+                <% end %>
+            ],
+            xkey: 'y',
+            ykeys: ['a'],
+            labels: ['New Sign Ups'],
+            lineColors: ['#73DEA9'],
+            resize: true,
+            hideHover: true,
+            pointSize: 0,
+            smooth: false,
+            lineWidth: 2
+        });
+    })
+    
 </script>
