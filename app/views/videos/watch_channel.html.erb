@@ -56,6 +56,8 @@
 <%= render('videos/partials/no_plan_modal') %>
 
 <script>
+var vid_loaded = false
+
 $(function (){
     if(!vid_loaded){
 		var userAgent = navigator.userAgent || navigator.vendor || window.opera;
