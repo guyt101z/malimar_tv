@@ -73,14 +73,14 @@
         }
     })
 
-    function viewShow(id){
-        $('.channel_list_item').removeClass('active')
-        $('#show_'+id).addClass('active')
-        $('#show_search_'+id).addClass('active')
-        $.ajax({
-            url: '/view_show?id='+id
-        })
-    }
+        function viewShow(id){
+            $('.channel_list_item').removeClass('active')
+            $('#show_'+id).addClass('active')
+            $('#show_search_'+id).addClass('active')
+            $.ajax({
+                url: '/view_show?id='+id
+            })
+        }
     <% if params[:id].present? %>
         viewShow(<%= params[:id] %>)
     <% end %>
