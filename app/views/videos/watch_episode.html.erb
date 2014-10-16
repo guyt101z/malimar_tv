@@ -59,161 +59,82 @@
 <script>
 var vid_loaded = false
 
-$(function (){
-    if(!vid_loaded){
-        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
-            $('#video_wrapper').html('<div id="mobile_player" class="mobile_player"><%= image_tag @show.image_url, id: "mobile_bg_img", class: "mobile_bg_img" %><%= link_to image_tag("hover-play.png"), "#{@episode.hls_stream}", class: "play_icon_lg", id: "play_icon_lg" %></div>')
-            $(window).load(function(){
+ready = function() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
+        $('#video_wrapper').html('<div id="mobile_player" class="mobile_player"><%= image_tag @show.image_url, id: "mobile_bg_img", class: "mobile_bg_img" %><%= link_to image_tag("hover-play.png"), "#{@episode.hls_stream}", class: "play_icon_lg", id: "play_icon_lg" %></div>')
+        $(window).load(function(){
+            centerIcon();
+            $(window).resize(function(){
                 centerIcon();
-                $(window).resize(function(){
-                    centerIcon();
-                })
             })
-        }
-        else {
-            jwplayer("video_wrapper").setup({
-                sources: [
-                    {file: "<%= @episode.hls_stream %>"},
-                    {file: "<%= @episode.rtmp_stream %>"}
-                ],
-                image: "<%= @show.image_url %>",
-                title:"<%= @episode.title %>",
-                width: '100%',
-                height: 550,
-                androidhls: true,
-                flashplayer: '<%=asset_path('jwplayer/jwplayer.flash.swf')%>',
-                primary: 'flash'
+        })
+    }
+    else {
+        jwplayer("video_wrapper").setup({
+            sources: [
+                {file: "<%= @episode.hls_stream %>"},
+                {file: "<%= @episode.rtmp_stream %>"}
+            ],
+            image: "<%= @show.image_url %>",
+            title:"<%= @episode.title %>",
+            width: '100%',
+            height: 550,
+            androidhls: true,
+            flashplayer: '<%=asset_path('jwplayer/jwplayer.flash.swf')%>',
+            primary: 'flash'
+        });
+    }
+
+    <% if (user_signed_in? && current_user.web_premium?) || admin_signed_in? || @show.free?  %>
+        <% if @episode_update.present? && params[:resume] != 'false' && user_signed_in? %>
+            jwplayer().onSeek(function(){
+                jwplayer().play(true);
             });
-        }
+                jwplayer().seek(<%= @episode_update.time %>)
 
-        <% if (user_signed_in? && current_user.web_premium?) || admin_signed_in? || @show.free?  %>
-            <% if @episode_update.present? && params[:resume] != 'false' && user_signed_in? %>
-                jwplayer().onSeek(function(){
-                    jwplayer().play(true);
-                });
-                    jwplayer().seek(<%= @episode_update.time %>)
-
-            <% else %>
-                jwplayer().play()
-            <% end %>
-            <% unless @episode.last_episode? %>
-                jwplayer().onComplete(function(){
-                    $.ajax({
-                        url: '/mark_episode_complete?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>'
-                    }).complete(function(){
-                        window.location = '<%= watch_episode_path(show_slug: @show.slug, episode_number: @episode.next_episode, resume: false) %>'
-                    })
-                })
-            <% else %>
-                jwplayer().onComplete(function(){
-                    $.ajax({
-                        url: '/mark_show_complete?show_id=<%= @show.id %>'
-                    }).complete(function(){
-                        window.location = '<%= browse_episodes_path(show_slug: @show.slug) %>'
-                    })
-                })
-            <% end %>
-            jwplayer().onTime(function(){
-                if (Math.round(jwplayer().getPosition() * 10) % 50 == 0){
-                    $.ajax({
-                        url: '/update_show_time?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>&time='+jwplayer().getPosition()
-                    })
-                }
-            })
-        <% elsif user_signed_in? && current_user.web_premium? == false && @show.free == false %>
-            $('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
-            $('#modal-no-plan').on('hidden.bs.modal', function () {
-                window.location = '/'
-            })
-
-        <% elsif user_signed_in? %>
         <% else %>
-            $('#modal-login').modal({show: true, keyboard: false, backdrop: 'static'})
-            $('#modal-login').on('hidden.bs.modal', function () {
-                window.location = '/'
+            jwplayer().play()
+        <% end %>
+        <% unless @episode.last_episode? %>
+            jwplayer().onComplete(function(){
+                $.ajax({
+                    url: '/mark_episode_complete?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>'
+                }).complete(function(){
+                    window.location = '<%= watch_episode_path(show_slug: @show.slug, episode_number: @episode.next_episode, resume: false) %>'
+                })
+            })
+        <% else %>
+            jwplayer().onComplete(function(){
+                $.ajax({
+                    url: '/mark_show_complete?show_id=<%= @show.id %>'
+                }).complete(function(){
+                    window.location = '<%= browse_episodes_path(show_slug: @show.slug) %>'
+                })
             })
         <% end %>
-        vid_loaded = true
-    }
-});
-
-$(document).on('page:load', function(){
-    if(!vid_loaded){
-        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
-            $('#video_wrapper').html('<div id="mobile_player" class="mobile_player"><%= image_tag @show.image_url, id: "mobile_bg_img", class: "mobile_bg_img" %><%= link_to image_tag("hover-play.png"), "#{@episode.hls_stream}", class: "play_icon_lg", id: "play_icon_lg" %></div>')
-            $(window).load(function(){
-                centerIcon();
-                $(window).resize(function(){
-                    centerIcon();
+        jwplayer().onTime(function(){
+            if (Math.round(jwplayer().getPosition() * 10) % 50 == 0){
+                $.ajax({
+                    url: '/update_show_time?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>&time='+jwplayer().getPosition()
                 })
-            })
-        }
-        else {
-            jwplayer("video_wrapper").setup({
-                sources: [
-                    {file: "<%= @episode.hls_stream %>"},
-                    {file: "<%= @episode.rtmp_stream %>"}
-                ],
-                image: "<%= @show.image_url %>",
-                title:"<%= @episode.title %>",
-                width: '100%',
-                height: 550,
-                androidhls: true,
-                flashplayer: '<%=asset_path('jwplayer/jwplayer.flash.swf')%>',
-                primary: 'flash'
-            });
-        }
+            }
+        })
+    <% elsif user_signed_in? && current_user.web_premium? == false && @show.free == false %>
+        $('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
+        $('#modal-no-plan').on('hidden.bs.modal', function () {
+            window.location = '/'
+        })
 
-        <% if (user_signed_in? && current_user.web_premium?) || admin_signed_in? || @show.free?  %>
-            <% if @episode_update.present? && params[:resume] != 'false' && user_signed_in? %>
-                jwplayer().onSeek(function(){
-                    jwplayer().play(true);
-                });
-                    jwplayer().seek(<%= @episode_update.time %>)
+    <% elsif user_signed_in? %>
+    <% else %>
+        $('#modal-login').modal({show: true, keyboard: false, backdrop: 'static'})
+        $('#modal-login').on('hidden.bs.modal', function () {
+            window.location = '/'
+        })
+    <% end %>
+};
 
-            <% else %>
-                jwplayer().play()
-            <% end %>
-            <% unless @episode.last_episode? %>
-                jwplayer().onComplete(function(){
-                    $.ajax({
-                        url: '/mark_episode_complete?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>'
-                    }).complete(function(){
-                        window.location = '<%= watch_episode_path(show_slug: @show.slug, episode_number: @episode.next_episode, resume: false) %>'
-                    })
-                })
-            <% else %>
-                jwplayer().onComplete(function(){
-                    $.ajax({
-                        url: '/mark_show_complete?show_id=<%= @show.id %>'
-                    }).complete(function(){
-                        window.location = '<%= browse_episodes_path(show_slug: @show.slug) %>'
-                    })
-                })
-            <% end %>
-            jwplayer().onTime(function(){
-                if (Math.round(jwplayer().getPosition() * 10) % 50 == 0){
-                    $.ajax({
-                        url: '/update_show_time?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>&time='+jwplayer().getPosition()
-                    })
-                }
-            })
-        <% elsif user_signed_in? && current_user.web_premium? == false && @show.free == false %>
-            $('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
-            $('#modal-no-plan').on('hidden.bs.modal', function () {
-                window.location = '/'
-            })
 
-        <% elsif user_signed_in? %>
-        <% else %>
-            $('#modal-login').modal({show: true, keyboard: false, backdrop: 'static'})
-            $('#modal-login').on('hidden.bs.modal', function () {
-                window.location = '/'
-            })
-        <% end %>
-        vid_loaded = true
-    }
-});
+$(document).ready(ready);
 </script>

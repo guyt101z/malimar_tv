@@ -60,7 +60,6 @@ var vid_loaded = false
 
 
 ready = function() {
-	alert('test')
 	var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
 	if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
@@ -117,6 +116,4 @@ ready = function() {
 };
 
 $(document).ready(ready);
-$(document).on('page:load', ready);
-ready
 </script>
