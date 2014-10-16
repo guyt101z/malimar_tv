@@ -11,7 +11,6 @@
 // about supported directives.
 //
 //= require jquery
-//= require jquery.turbolinks
 //= require jquery_ujs
 //= require slick
 //= require bootstrap
@@ -26,7 +25,6 @@
 //= require_directory ./main
 //= require jwplayer
 //= require jwplayer_html5
-//= require turbolinks
 
 
 /**
