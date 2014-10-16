@@ -57,58 +57,120 @@
 
 <script>
 $(function (){
-	var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    if(!vid_loaded){
+		var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
-	if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
-		$('#video_wrapper').html('<div id="mobile_player" class="mobile_player"><%= image_tag @channel.image_url, id: "mobile_bg_img", class: "mobile_bg_img" %><%= link_to image_tag("hover-play.png"), "#{@channel.hls_stream}?token=#{@token}", class: "play_icon_lg", id: "play_icon_lg" %></div>')
-		$(window).load(function(){
-			centerIcon();
-			$(window).resize(function(){
+		if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
+			$('#video_wrapper').html('<div id="mobile_player" class="mobile_player"><%= image_tag @channel.image_url, id: "mobile_bg_img", class: "mobile_bg_img" %><%= link_to image_tag("hover-play.png"), "#{@channel.hls_stream}?token=#{@token}", class: "play_icon_lg", id: "play_icon_lg" %></div>')
+			$(window).load(function(){
 				centerIcon();
+				$(window).resize(function(){
+					centerIcon();
+				})
 			})
-		})
-	}
-	else {
-	    jwplayer("video_wrapper").setup({
-			sources: [
-				{file: "<%= @channel.hls_stream %>?token=<%= @token %>"},
-				{file: "<%= @channel.rtmp_stream %>?token=<%= @token %>"}
-			],
-			image: "<%= @channel.image_url %>",
-			title:"<%= @channel.name %>",
-			width: '100%',
-			androidhls: true,
-	        flashplayer: '<%=asset_path('jwplayer/jwplayer.flash.swf')%>',
-	        primary: 'flash',
-			height: 550
-		});
-	}
+		}
+		else {
+		    jwplayer("video_wrapper").setup({
+				sources: [
+					{file: "<%= @channel.hls_stream %>?token=<%= @token %>"},
+					{file: "<%= @channel.rtmp_stream %>?token=<%= @token %>"}
+				],
+				image: "<%= @channel.image_url %>",
+				title:"<%= @channel.name %>",
+				width: '100%',
+				androidhls: true,
+		        flashplayer: '<%=asset_path('jwplayer/jwplayer.flash.swf')%>',
+		        primary: 'flash',
+				height: 550
+			});
+		}
 
-	function centerIcon(){
-		$('#play_icon_lg').css("position","absolute");
-	    $('#play_icon_lg').css("top", Math.max(0, (($('#mobile_player').height() - $('#play_icon_lg').outerHeight()) / 2)))
-	    $('#play_icon_lg').css("left", Math.max(0, (($('#mobile_player').width() - $('#play_icon_lg').outerWidth()) / 2)))
-		$('#mobile_bg_img').css("position","absolute");
-	    $('#mobile_bg_img').css("top", 0)
-	    $('#mobile_bg_img').css("left", ($('#mobile_player').width() - $('#mobile_bg_img').width()) / 2)
-	}
+		function centerIcon(){
+			$('#play_icon_lg').css("position","absolute");
+		    $('#play_icon_lg').css("top", Math.max(0, (($('#mobile_player').height() - $('#play_icon_lg').outerHeight()) / 2)))
+		    $('#play_icon_lg').css("left", Math.max(0, (($('#mobile_player').width() - $('#play_icon_lg').outerWidth()) / 2)))
+			$('#mobile_bg_img').css("position","absolute");
+		    $('#mobile_bg_img').css("top", 0)
+		    $('#mobile_bg_img').css("left", ($('#mobile_player').width() - $('#mobile_bg_img').width()) / 2)
+		}
 
-	<% if (user_signed_in? && current_user.web_premium?) || admin_signed_in? || @channel.free? %>
-			jwplayer().play()
-	<% elsif user_signed_in? && current_user.web_premium? == false && @channel.free == false %>
-		<%= render('videos/partials/no_plan') %>
-			$('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
-			$('#modal-no-plan').on('hidden.bs.modal', function () {
-				window.location = '/'
+		<% if (user_signed_in? && current_user.web_premium?) || admin_signed_in? || @channel.free? %>
+				jwplayer().play()
+		<% elsif user_signed_in? && current_user.web_premium? == false && @channel.free == false %>
+			<%= render('videos/partials/no_plan') %>
+				$('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
+				$('#modal-no-plan').on('hidden.bs.modal', function () {
+					window.location = '/'
+				})
+
+		<% elsif user_signed_in? %>
+		<% else %>
+				$('#modal-login').modal({show: true, keyboard: false, backdrop: 'static'})
+				$('#modal-login').on('hidden.bs.modal', function () {
+					window.location = '/'
+				})
+		<% end %>
+		centerIcon();
+		vid_loaded = true
+	}
+});
+
+$(document).on('page:load', function(){
+    if(!vid_loaded){
+		var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+		if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
+			$('#video_wrapper').html('<div id="mobile_player" class="mobile_player"><%= image_tag @channel.image_url, id: "mobile_bg_img", class: "mobile_bg_img" %><%= link_to image_tag("hover-play.png"), "#{@channel.hls_stream}?token=#{@token}", class: "play_icon_lg", id: "play_icon_lg" %></div>')
+			$(window).load(function(){
+				centerIcon();
+				$(window).resize(function(){
+					centerIcon();
+				})
 			})
+		}
+		else {
+		    jwplayer("video_wrapper").setup({
+				sources: [
+					{file: "<%= @channel.hls_stream %>?token=<%= @token %>"},
+					{file: "<%= @channel.rtmp_stream %>?token=<%= @token %>"}
+				],
+				image: "<%= @channel.image_url %>",
+				title:"<%= @channel.name %>",
+				width: '100%',
+				androidhls: true,
+		        flashplayer: '<%=asset_path('jwplayer/jwplayer.flash.swf')%>',
+		        primary: 'flash',
+				height: 550
+			});
+		}
 
-	<% elsif user_signed_in? %>
-	<% else %>
-			$('#modal-login').modal({show: true, keyboard: false, backdrop: 'static'})
-			$('#modal-login').on('hidden.bs.modal', function () {
-				window.location = '/'
-			})
-	<% end %>
-	centerIcon();
+		function centerIcon(){
+			$('#play_icon_lg').css("position","absolute");
+		    $('#play_icon_lg').css("top", Math.max(0, (($('#mobile_player').height() - $('#play_icon_lg').outerHeight()) / 2)))
+		    $('#play_icon_lg').css("left", Math.max(0, (($('#mobile_player').width() - $('#play_icon_lg').outerWidth()) / 2)))
+			$('#mobile_bg_img').css("position","absolute");
+		    $('#mobile_bg_img').css("top", 0)
+		    $('#mobile_bg_img').css("left", ($('#mobile_player').width() - $('#mobile_bg_img').width()) / 2)
+		}
+
+		<% if (user_signed_in? && current_user.web_premium?) || admin_signed_in? || @channel.free? %>
+				jwplayer().play()
+		<% elsif user_signed_in? && current_user.web_premium? == false && @channel.free == false %>
+			<%= render('videos/partials/no_plan') %>
+				$('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
+				$('#modal-no-plan').on('hidden.bs.modal', function () {
+					window.location = '/'
+				})
+
+		<% elsif user_signed_in? %>
+		<% else %>
+				$('#modal-login').modal({show: true, keyboard: false, backdrop: 'static'})
+				$('#modal-login').on('hidden.bs.modal', function () {
+					window.location = '/'
+				})
+		<% end %>
+		centerIcon();
+		vid_loaded = true
+	}
 });
 </script>
