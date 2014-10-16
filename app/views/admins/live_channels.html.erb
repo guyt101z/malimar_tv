@@ -37,7 +37,7 @@
 	View the CMS from a larger screened device
 </div>
 <%= render 'admins/cms_partials/new_channel' %>
-<script type="text/javascript">
+<script type="text/javascript" data-cfasync="false">
 	$('#channel_search').focus(function(){
 		$('#channel_placeholder').animate({
 			'left':22
@@ -72,7 +72,6 @@
 		}
 	})
 
-	$(document).ready(function(){
 		function viewChannel(id){
 			$('.channel_list_item').removeClass('active')
 			$('#channel_'+id).addClass('active')
@@ -81,7 +80,6 @@
 				url: '/view_channel?id='+id
 			})
 		}
-	})
 
 	<% if params[:id].present? %>
 		viewChannel(<%= params[:id] %>)
