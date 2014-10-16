@@ -1,34 +1,44 @@
 <script>
+var plans_loaded = false
+
 $(document).ready(function(){
-    var chart2 = Morris.Bar({
-        element: 'reports_2',
-        data: [
-        <% @plans.each do |k, plan| %>
-          { y: '<%= plan.name %>', a: <%= @plan_totals[k] %> },
-        <% end %>
-        ],
-        xkey: 'y',
-        ykeys: ['a'],
-        labels: ['Transactions'],
-        resize: true,
-        barColors: ['#73DEA9'],
-        hideHover: true
-    });
+    if(!plans_loaded){
+        var chart2 = Morris.Bar({
+            element: 'reports_2',
+            data: [
+            <% @plans.each do |k, plan| %>
+              { y: '<%= plan.name %>', a: <%= @plan_totals[k] %> },
+            <% end %>
+            ],
+            xkey: 'y',
+            ykeys: ['a'],
+            labels: ['Transactions'],
+            resize: true,
+            barColors: ['#73DEA9'],
+            hideHover: true
+        });
+        plans_loaded = true
+    }
+    
 })
 $(document).on('page:load', function(){
-    var chart2 = Morris.Bar({
-        element: 'reports_2',
-        data: [
-        <% @plans.each do |k, plan| %>
-          { y: '<%= plan.name %>', a: <%= @plan_totals[k] %> },
-        <% end %>
-        ],
-        xkey: 'y',
-        ykeys: ['a'],
-        labels: ['Transactions'],
-        resize: true,
-        barColors: ['#73DEA9'],
-        hideHover: true
-    });
+    if(!plans_loaded){
+        var chart2 = Morris.Bar({
+            element: 'reports_2',
+            data: [
+            <% @plans.each do |k, plan| %>
+              { y: '<%= plan.name %>', a: <%= @plan_totals[k] %> },
+            <% end %>
+            ],
+            xkey: 'y',
+            ykeys: ['a'],
+            labels: ['Transactions'],
+            resize: true,
+            barColors: ['#73DEA9'],
+            hideHover: true
+        });
+        plans_loaded = true
+    }
+    
 })
 </script>
