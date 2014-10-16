@@ -102,10 +102,13 @@
 <%= render('support/partials/support_modal_admin') %>
 
 <script type="text/javascript">
-function viewTicket(id) {
-    window.location = '/admins/support/ticket/'+id
-}
+$(document).on('page:load', function(){
+    function viewTicket(id) {
+        window.location = '/admins/support/ticket/'+id
+    }
 
-$('#archived').addClass('active')
-$('#case_table').dataTable();
+    $('#archived').addClass('active')
+    $('#case_table').dataTable();
+})
+
 </script>

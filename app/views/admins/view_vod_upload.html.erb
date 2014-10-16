@@ -59,6 +59,8 @@
     </div>
 </div>
 <script>
-    $('#all_vod').addClass('active')
-    $('#migrations').dataTable()
+    $(document).on('page:load', function(){
+        $('#all_vod').addClass('active')
+        $('#migrations').dataTable()
+    })
 </script>

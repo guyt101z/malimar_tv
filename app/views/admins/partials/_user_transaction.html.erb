@@ -106,6 +106,7 @@
 </div>
 <% end %>
 <script>
+$(document).on('page:load', function(){
     $('#payment_type').change(function(){
         if ($('#payment_type').val() == 'Credit Card'){
             $('#credit_form').show()
@@ -203,4 +204,5 @@
             $('#end_day').append('<option value='+day+'>'+day+'</option>')
         })
     })
+})
 </script>

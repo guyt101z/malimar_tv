@@ -89,7 +89,9 @@
     </div>
 </div>
 <script>
-$('#tx_table').dataTable();
-$('#tx_table_filter').html('<label>Filter Results:<input type="search" class="form-control input-sm" aria-controls="tx_table"></label>')
-$('#withdrawals').addClass('active')
+$(document).on('page:load', function(){
+    $('#tx_table').dataTable();
+    $('#tx_table_filter').html('<label>Filter Results:<input type="search" class="form-control input-sm" aria-controls="tx_table"></label>')
+    $('#withdrawals').addClass('active')
+})
 </script>

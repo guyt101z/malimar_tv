@@ -40,5 +40,5 @@
     </div>
 </div>
 <script>
-    $('#payments_table').dataTable()
+    $(document).on('page:load', function(){$('#payments_table').dataTable()})
 </script>

@@ -276,6 +276,7 @@
             </div>
             <%= render 'admins/partials/transactions_details_modal' %>
             <script type="text/javascript">
+            $(document).on('page:load', function(){
                 $('#transactions_link').addClass('active')
                 $.ajax({
                     url: '<%= admin_rep_pending_balance_path(rep_id: @rep.id) %>'
@@ -379,6 +380,7 @@
                 });
                 $('#wd_table').dataTable();
                 $('#user_table').dataTable();
+            })
             </script>
         </div>
     </div>

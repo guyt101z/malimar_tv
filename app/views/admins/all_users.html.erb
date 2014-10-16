@@ -113,8 +113,10 @@
 </div>
 
 <script>
-    $('#user_table').dataTable({
-        "aaSorting": [[0,'desc']]
+    $(document).on('page:load', function(){
+        $('#user_table').dataTable({
+            "aaSorting": [[0,'desc']]
+        })
+        $('#all_users').addClass('active')
     })
-    $('#all_users').addClass('active')
 </script>
