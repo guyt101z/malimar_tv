@@ -53,38 +53,38 @@
     </div>
 </div><!--modal-->
 
-
+<%= render('videos/partials/sign_in_modal_show') %>
+<%= render('videos/partials/no_plan') %>
 
 <script>
-var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
-    $('#video_wrapper').html('<div id="mobile_player" class="mobile_player"><%= image_tag @show.image_url, id: "mobile_bg_img", class: "mobile_bg_img" %><%= link_to image_tag("hover-play.png"), "#{@episode.hls_stream}", class: "play_icon_lg", id: "play_icon_lg" %></div>')
-    $(window).load(function(){
-        centerIcon();
-        $(window).resize(function(){
+$(document).ready(function(){
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
+        $('#video_wrapper').html('<div id="mobile_player" class="mobile_player"><%= image_tag @show.image_url, id: "mobile_bg_img", class: "mobile_bg_img" %><%= link_to image_tag("hover-play.png"), "#{@episode.hls_stream}", class: "play_icon_lg", id: "play_icon_lg" %></div>')
+        $(window).load(function(){
             centerIcon();
+            $(window).resize(function(){
+                centerIcon();
+            })
         })
-    })
-}
-else {
-    jwplayer("video_wrapper").setup({
-        sources: [
-            {file: "<%= @episode.hls_stream %>"},
-            {file: "<%= @episode.rtmp_stream %>"}
-        ],
-        image: "<%= @show.image_url %>",
-        title:"<%= @episode.title %>",
-        width: '100%',
-        height: 550,
-        androidhls: true,
-        flashplayer: '<%=asset_path('jwplayer/jwplayer.flash.swf')%>',
-        primary: 'flash'
-    });
-}
+    }
+    else {
+        jwplayer("video_wrapper").setup({
+            sources: [
+                {file: "<%= @episode.hls_stream %>"},
+                {file: "<%= @episode.rtmp_stream %>"}
+            ],
+            image: "<%= @show.image_url %>",
+            title:"<%= @episode.title %>",
+            width: '100%',
+            height: 550,
+            androidhls: true,
+            flashplayer: '<%=asset_path('jwplayer/jwplayer.flash.swf')%>',
+            primary: 'flash'
+        });
+    }
 
-</script>
-<% if (user_signed_in? && current_user.web_premium?) || admin_signed_in? || @show.free?  %>
-    <script>
+    <% if (user_signed_in? && current_user.web_premium?) || admin_signed_in? || @show.free?  %>
         <% if @episode_update.present? && params[:resume] != 'false' && user_signed_in? %>
             jwplayer().onSeek(function(){
                 jwplayer().play(true);
@@ -118,23 +118,18 @@ else {
                 })
             }
         })
-    </script>
-<% elsif user_signed_in? && current_user.web_premium? == false && @show.free == false %>
-    <%= render('videos/partials/no_plan_modal') %>
-    <script>
+    <% elsif user_signed_in? && current_user.web_premium? == false && @show.free == false %>
         $('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
         $('#modal-no-plan').on('hidden.bs.modal', function () {
             window.location = '/'
         })
-    </script>
 
-<% elsif user_signed_in? %>
-<% else %>
-    <%= render('videos/partials/sign_in_modal_show') %>
-    <script>
+    <% elsif user_signed_in? %>
+    <% else %>
         $('#modal-login').modal({show: true, keyboard: false, backdrop: 'static'})
         $('#modal-login').on('hidden.bs.modal', function () {
             window.location = '/'
         })
-    </script>
-<% end %>
+    <% end %>
+});
+</script>
