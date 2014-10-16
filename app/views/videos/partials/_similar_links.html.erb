@@ -11,9 +11,11 @@
                 <div class='grid_loading text-center'>
                     <i class='fa fa-spin fa-spinner'></i>
                     <script>
-                    $.ajax({
-                        url: '/grid_view?id=<%= grid.id %>'
-                    })
+                    $(document).on('page:load', function(){
+                        $.ajax({
+                            url: '/grid_view?id=<%= grid.id %>'
+                        })
+                    }
                     </script>
                 </div>
             </div>

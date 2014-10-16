@@ -56,75 +56,80 @@
 
 
 <script>
-var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
-    $('#video_wrapper').html('<div id="mobile_player" class="mobile_player"><%= image_tag @show.image_url, id: "mobile_bg_img", class: "mobile_bg_img" %><%= link_to image_tag("hover-play.png"), "#{@episode.hls_stream}", class: "play_icon_lg", id: "play_icon_lg" %></div>')
-    $(window).load(function(){
-        centerIcon();
-        $(window).resize(function(){
+$(document).on('page:load', function(){
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
+        $('#video_wrapper').html('<div id="mobile_player" class="mobile_player"><%= image_tag @show.image_url, id: "mobile_bg_img", class: "mobile_bg_img" %><%= link_to image_tag("hover-play.png"), "#{@episode.hls_stream}", class: "play_icon_lg", id: "play_icon_lg" %></div>')
+        $(window).load(function(){
             centerIcon();
+            $(window).resize(function(){
+                centerIcon();
+            })
         })
-    })
-}
-else {
-    jwplayer("video_wrapper").setup({
-        sources: [
-            {file: "<%= @episode.hls_stream %>"},
-            {file: "<%= @episode.rtmp_stream %>"}
-        ],
-        image: "<%= @show.image_url %>",
-        title:"<%= @episode.title %>",
-        width: '100%',
-        height: 550,
-        androidhls: true,
-        flashplayer: '<%=asset_path('jwplayer/jwplayer.flash.swf')%>',
-        primary: 'flash'
-    });
-}
-
+    }
+    else {
+        jwplayer("video_wrapper").setup({
+            sources: [
+                {file: "<%= @episode.hls_stream %>"},
+                {file: "<%= @episode.rtmp_stream %>"}
+            ],
+            image: "<%= @show.image_url %>",
+            title:"<%= @episode.title %>",
+            width: '100%',
+            height: 550,
+            androidhls: true,
+            flashplayer: '<%=asset_path('jwplayer/jwplayer.flash.swf')%>',
+            primary: 'flash'
+        });
+    }
+})
 </script>
 <% if (user_signed_in? && current_user.web_premium?) || admin_signed_in? || @show.free?  %>
     <script>
-        <% if @episode_update.present? && params[:resume] != 'false' && user_signed_in? %>
-            jwplayer().onSeek(function(){
-                jwplayer().play(true);
-            });
-                jwplayer().seek(<%= @episode_update.time %>)
+        $(document).on('page:load', function(){
+            <% if @episode_update.present? && params[:resume] != 'false' && user_signed_in? %>
+                jwplayer().onSeek(function(){
+                    jwplayer().play(true);
+                });
+                    jwplayer().seek(<%= @episode_update.time %>)
 
-        <% else %>
-            jwplayer().play()
-        <% end %>
-        <% unless @episode.last_episode? %>
-            jwplayer().onComplete(function(){
-                $.ajax({
-                    url: '/mark_episode_complete?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>'
-                }).complete(function(){
-                    window.location = '<%= watch_episode_path(show_slug: @show.slug, episode_number: @episode.next_episode, resume: false) %>'
+            <% else %>
+                jwplayer().play()
+            <% end %>
+            <% unless @episode.last_episode? %>
+                jwplayer().onComplete(function(){
+                    $.ajax({
+                        url: '/mark_episode_complete?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>'
+                    }).complete(function(){
+                        window.location = '<%= watch_episode_path(show_slug: @show.slug, episode_number: @episode.next_episode, resume: false) %>'
+                    })
                 })
+            <% else %>
+                jwplayer().onComplete(function(){
+                    $.ajax({
+                        url: '/mark_show_complete?show_id=<%= @show.id %>'
+                    }).complete(function(){
+                        window.location = '<%= browse_episodes_path(show_slug: @show.slug) %>'
+                    })
+                })
+            <% end %>
+            jwplayer().onTime(function(){
+                if (Math.round(jwplayer().getPosition() * 10) % 50 == 0){
+                    $.ajax({
+                        url: '/update_show_time?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>&time='+jwplayer().getPosition()
+                    })
+                }
             })
-        <% else %>
-            jwplayer().onComplete(function(){
-                $.ajax({
-                    url: '/mark_show_complete?show_id=<%= @show.id %>'
-                }).complete(function(){
-                    window.location = '<%= browse_episodes_path(show_slug: @show.slug) %>'
-                })
-            })
-        <% end %>
-        jwplayer().onTime(function(){
-            if (Math.round(jwplayer().getPosition() * 10) % 50 == 0){
-                $.ajax({
-                    url: '/update_show_time?show_id=<%= @show.id %>&episode_id=<%= @episode.id %>&episode_number=<%= @episode.episode_number %>&time='+jwplayer().getPosition()
-                })
-            }
         })
     </script>
 <% elsif user_signed_in? && current_user.web_premium? == false && @show.free == false %>
     <%= render('videos/partials/no_plan_modal') %>
     <script>
-        $('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
-        $('#modal-no-plan').on('hidden.bs.modal', function () {
-            window.location = '/'
+        $(document).on('page:load', function(){
+            $('#modal-no-plan').modal({show: true, keyboard: false, backdrop: 'static'})
+            $('#modal-no-plan').on('hidden.bs.modal', function () {
+                window.location = '/'
+            })
         })
     </script>
 
@@ -132,9 +137,11 @@ else {
 <% else %>
     <%= render('videos/partials/sign_in_modal_show') %>
     <script>
-        $('#modal-login').modal({show: true, keyboard: false, backdrop: 'static'})
-        $('#modal-login').on('hidden.bs.modal', function () {
-            window.location = '/'
+        $(document).on('page:load', function(){
+            $('#modal-login').modal({show: true, keyboard: false, backdrop: 'static'})
+            $('#modal-login').on('hidden.bs.modal', function () {
+                window.location = '/'
+            })
         })
     </script>
 <% end %>
