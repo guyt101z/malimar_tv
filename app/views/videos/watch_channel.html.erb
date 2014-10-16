@@ -60,6 +60,7 @@ var vid_loaded = false
 
 $(function (){
     if(!vid_loaded){
+    	alert('loading with $(function())')
 		var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
 		if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
@@ -119,6 +120,7 @@ $(function (){
 
 $(document).on('page:load', function(){
     if(!vid_loaded){
+    	alert('page:load')
 		var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
 		if( userAgent.match( /Android/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPad/i ) || userAgent.match( /iPod/i ) ){
