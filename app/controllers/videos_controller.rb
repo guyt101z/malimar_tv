@@ -870,13 +870,17 @@ class VideosController < ApplicationController
 		@grid = Grid.find(params[:id])
 	end
 
+	def gen_half
+		generate_random_half(20)
+	end
+
 	private
 
 	def generate_token(stream_name)
 		require 'digest/md5'
 		private_token = Setting.where(name: 'WMS Token').first.data
 
-		random_half = generate_random_half(Random.new.rand(10..30))
+		random_half = generate_random_half(Random.new.rand(20))
 		token_creation_time = (Time.now.to_i + 60)*1000
 		token_string = "#{stream_name}-#{token_creation_time}-#{random_half}-#{private_token}"
 		encode = Digest::MD5.hexdigest(token_string)
@@ -889,7 +893,7 @@ class VideosController < ApplicationController
 		random_gen = Random.new
 		random = ''
 
-		for i in 0...chars
+		for i in 0..chars
 			random_1 = random_gen.rand(0..1)
 			random_2 = random_gen.rand(0..2)
 			if random_1 == 0
