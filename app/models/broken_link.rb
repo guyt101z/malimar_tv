@@ -17,4 +17,26 @@ class BrokenLink < ActiveRecord::Base
         end
     end
 
+    def video
+        if video_type == 'Show'
+            return Show.where(id: video_id).first
+        elsif video_type == 'Channel'
+            return Channel.where(id: video_id).first
+        elsif video_type == 'Movie'
+            return Movie.where(id: video_id).first
+        else
+            return nil
+        end
+    end
+
+    def episode
+        if video_type == 'Show'
+            unless video.nil?
+                return Episode.where(show_id: video.id, episode_number: episode_number).first
+            end
+        else
+            return nil
+        end
+    end
+
 end

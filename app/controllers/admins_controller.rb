@@ -3674,35 +3674,10 @@ class AdminsController < ApplicationController
 	end
 
 	def broken_links
-		@show_ids = Show.all.pluck(:id).uniq
-		@movie_ids = Movie.all.pluck(:id).uniq
-		@channel_ids = Channel.all.pluck(:id).uniq
-		@bl_links = BrokenLink.all.pluck(:id).uniq
-		bls = BrokenLink.all
-
-		@bls = {channel: Hash.new, movie: Hash.new, show: Hash.new}
-
-		bls.each do |bl|
-			if bl.video_type == 'Channel'
-				if @bls[:channel].has_key?(bl.video_id)
-					@bls[:channel][bl.video_id] += 1
-				else
-					@bls[:channel][bl.video_id] = 1
-				end
-			elsif bl.video_type == 'Movie'
-				if @bls[:movie].has_key?(bl.video_id)
-					@bls[:movie][bl.video_id] += 1
-				else
-					@bls[:movie][bl.video_id] = 1
-				end
-			elsif bl.video_type == 'Show'
-				if @bls[:show].has_key?(bl.episode_number)
-					@bls[:show][bl.episode_number] += 1
-				else
-					@bls[:show][bl.episode_number] = 1
-				end
-			end
-		end
+		@bls = Hash.new
+		@bls[:movies] = BrokenLink.where(video_type: 'Movie').uniq_by(:video_id)
+		@bls[:shows] = BrokenLink.where(video_type: 'Show').uniq_by(:video_id, :episode_number)
+		@bls[:channels] = BrokenLink.where(video_type: 'Channel').uniq_by(:video_id)
 	end
 
 	def mark_broken_as_resolved
