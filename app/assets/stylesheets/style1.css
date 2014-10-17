@@ -1,5 +1,5 @@
 .box-pricing{text-align: center;}
-.bg-price{background:url(/assets/bg-price.png) no-repeat;width:104px;height:104px;font-family: 'proxima_nova_rgbold';color:#fff;font-size:32px;text-align: center;line-height:24px;padding-top:34px;display:inline-block;}
+.bg-price{background:url(/images/bg-price.png) no-repeat;width:104px;height:104px;font-family: 'proxima_nova_rgbold';color:#fff;font-size:32px;text-align: center;line-height:24px;padding-top:34px;display:inline-block;}
 .bg-price sup{font-size: 18px;}
 .bg-price .month{font-size: 14px;font-family: 'proxima_nova_light';}
 .pricing-header{font-weight: 300;font-size: 22px;padding:4px 0;}
@@ -15,7 +15,7 @@
 .table-noborder tbody > tr > td{border:0;padding:0;}
 .vam{vertical-align:middle!important;}
 .input-group-addon{background-color:#fff;}
-.visa, .mastercard, .american-express, .discover{width:53px;height:32px;display:inline-block;background:url(/assets/credit-card.jpg) no-repeat;
+.visa, .mastercard, .american-express, .discover{width:53px;height:32px;display:inline-block;background:url(/images/credit-card.jpg) no-repeat;
 vertical-align:middle;}
 .visa{background-position:0 0;}
 .mastercard{background-position:-60px 0;}
