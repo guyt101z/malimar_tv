@@ -3676,7 +3676,7 @@ class AdminsController < ApplicationController
 	def broken_links
 		@bls = Hash.new
 		@bls[:movies] = BrokenLink.where(video_type: 'Movie').uniq(:video_id)
-		@bls[:shows] = BrokenLink.where(video_type: 'Show').uniq(:video_id, :episode_number)
+		@bls[:shows] = BrokenLink.where(video_type: 'Show').uniq(:video_id).uniq(:episode_number)
 		@bls[:channels] = BrokenLink.where(video_type: 'Channel').uniq(:video_id)
 	end
 
