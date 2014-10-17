@@ -6,6 +6,7 @@
         <% @bls[:movies].each do |bl| %>
             <% movie = bl.video %>
             <% unless movie.nil? %>
+                <% count = BrokenLink.where(video_id: movie.id, video_type: 'Movie').count %>
                 <div class='row' id='movie_<%= i %>'>
                     <div class='col-md-6 col-sm-8'>
                         <div class='panel panel-default'>
@@ -39,6 +40,7 @@
         <% @bls[:channels].each do |bl| %>
             <% channel = bl.video %>
             <% unless channel.nil? %>
+                <% count = BrokenLink.where(video_id: channel.id, video_type: 'Channel').count %>
                 <div class='row' id='channel_<%= i %>'>
                     <div class='col-md-6 col-sm-8'>
                         <div class='panel panel-default'>
@@ -72,6 +74,7 @@
             <% episode = bl.episode %>
             <% unless episode.nil? %>
                 <% show = bl.video %>
+                <% count = BrokenLink.where(video_id: show.id, episode_number: episode.episode_number, video_type: 'Show').count %>
                 <% unless show.nil? %>
                     <div class='row' id='show_<%= i %>'>
                         <div class='col-md-6 col-sm-8'>
