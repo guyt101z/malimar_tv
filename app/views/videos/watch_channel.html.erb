@@ -74,8 +74,8 @@ ready = function() {
 	else {
 	    jwplayer("video_wrapper").setup({
 			sources: [
-				{file: "<%= @channel.hls_stream %>?token=<%= @token %>"},
-				{file: "<%= @channel.rtmp_stream %>?token=<%= @token %>"}
+				{file: "<%= @channel.rtmp_stream %>"},
+				{file: "<%= @channel.hls_stream %>?token=<%= @token %>"}
 			],
 			image: "<%= @channel.image_url %>",
 			title:"<%= @channel.name %>",
