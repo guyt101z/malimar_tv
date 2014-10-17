@@ -42,7 +42,7 @@
         }
         
     })
-    $(document).on('page:load', function(){
+    $(document).ready(function(){
         if(!registration_loaded){
             var chart = Morris.Line({
                 element: 'reports',

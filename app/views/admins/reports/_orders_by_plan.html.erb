@@ -21,7 +21,7 @@ $(document).ready(function(){
     }
     
 })
-$(document).on('page:load', function(){
+$(document).ready(function(){
     if(!plans_loaded){
         var chart2 = Morris.Bar({
             element: 'reports_2',

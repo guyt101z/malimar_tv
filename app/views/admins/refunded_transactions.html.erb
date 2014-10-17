@@ -103,7 +103,7 @@
     </div>
 </div>
 <script>
-$(document).on('page:load', function(){
+$(document).ready(function(){
     $('#tx_table').dataTable();
     $('#tx_table_filter').html('<label>Filter Results:<input type="search" class="form-control input-sm" aria-controls="tx_table"></label>')
     $('#refunded_tx').addClass('active')

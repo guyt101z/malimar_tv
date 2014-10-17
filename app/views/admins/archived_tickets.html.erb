@@ -102,7 +102,7 @@
 <%= render('support/partials/support_modal_admin') %>
 
 <script type="text/javascript">
-$(document).on('page:load', function(){
+$(document).ready(function(){
     function viewTicket(id) {
         window.location = '/admins/support/ticket/'+id
     }

@@ -106,7 +106,7 @@
 </div>
 <% end %>
 <script>
-$(document).on('page:load', function(){
+$(document).ready(function(){
     $('#payment_type').change(function(){
         if ($('#payment_type').val() == 'Credit Card'){
             $('#credit_form').show()
