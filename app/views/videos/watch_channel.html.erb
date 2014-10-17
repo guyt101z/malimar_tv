@@ -74,7 +74,7 @@ ready = function() {
 	else {
 	    jwplayer("video_wrapper").setup({
 			sources: [
-				{file: "<%= @channel.rtmp_stream %>"},
+				{file: "<%= @channel.rtmp_stream %>?token=<%= @token %>"},
 				{file: "<%= @channel.hls_stream %>?token=<%= @token %>"}
 			],
 			image: "<%= @channel.image_url %>",
@@ -115,5 +115,7 @@ ready = function() {
 	centerIcon();
 };
 
-$(document).ready(ready);
+$(document).ready(function(){
+	
+});
 </script>
