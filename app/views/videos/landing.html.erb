@@ -31,21 +31,24 @@
         <% end %>
         <% i = 0 %>
         <% @grids.each do |grid| %>
-            <% unless browser.mobile? && i > 2 %>
-                <div class="panel panel-custom">
-                    <div class="panel-heading">
-                        <div class="icon-left"><span class="glyphicon glyphicon-heart"></span></div>
-                        <h3><%= link_to grid.name, full_grid_path(category_id: grid.id) %></h3>
-                        <%= link_to raw('<span class="glyphicon glyphicon-th-large"></span> See All'), full_grid_path(category_id: grid.id), class: 'pull-right' %>
-                    </div>
-                    <div class="panel-body scroller" id='grid_<%= grid.id %>'>
-                        <div class='grid_loading text-center'>
-                            <i class='fa fa-spin fa-spinner'></i>
-                            <script>
-                            </script>
-                        </div>
+            <div class="panel panel-custom">
+                <div class="panel-heading">
+                    <div class="icon-left"><span class="glyphicon glyphicon-heart"></span></div>
+                    <h3><%= link_to grid.name, full_grid_path(category_id: grid.id) %></h3>
+                    <%= link_to raw('<span class="glyphicon glyphicon-th-large"></span> See All'), full_grid_path(category_id: grid.id), class: 'pull-right' %>
+                </div>
+                <div class="panel-body scroller" id='grid_<%= grid.id %>'>
+                    <div class='grid_loading text-center'>
+                        <i class='fa fa-spin fa-spinner'></i>
+                        <script>
+                        </script>
                     </div>
                 </div>
+            </div>
+
+            <% if browser.teblet? && i > 2 %>
+                <% break %>
+            <% else %>
                 <% i += 1 %>
             <% end %>
         <% end %>
@@ -134,12 +137,15 @@ $(document).ready(function(){
 
     <% i = 0 %>
     <% @grids.each do |grid| %>
-        <% unless browser.mobile? && i > 2 %>
-            ajaxManager.addReq({
-                type: 'GET',
-                url: '/grid_view',
-                data: {id: <%= grid.id %>}
-            })
+        ajaxManager.addReq({
+            type: 'GET',
+            url: '/grid_view',
+            data: {id: <%= grid.id %>}
+        })
+
+        <% if browser.tablet? && i > 2 %>
+            <% break %>
+        <% else %>
             <% i += 1 %>
         <% end %>
     <% end %>
