@@ -27,7 +27,7 @@
 <body>
 	<% if admin_signed_in? %><%= render 'admins/nav/navbar' %><% end %>
 
-	<% unless request.original_url.end_with?('admins/sign_in', 'admins/password/new', 'admins/password', 'admins/password/edit') %>
+	<% unless request.original_url.end_with?('admins/sign_in', 'admins/password/new', 'admins/password', 'admins/password/edit') || request.original_url.include?('admins/password/edit') %>
 		<div class='main'>
 			<div class='container-fluid'>
 				<% if admin_signed_in? %><%= render 'admins/nav/sidenav' %><% end %>
@@ -51,9 +51,8 @@
 	        </div>
 		</div>
 	<% else %>
-		<div class='container-fluid'>
-			<%= yield %>
-		</div>
+		<script>$('body').addClass('bg')</script>
+		<%= render 'layouts/admin_login/admin_panel' %>
 	<% end %>
 	<script>
         var num = 0;
@@ -156,9 +155,8 @@
 			</div>
 		</div>
 	<% else %>
-		<div class='container-fluid'>
-			<%= yield %>
-		</div>
+		<script>$('body').addClass('bg')</script>
+		<%= render 'layouts/admin_login/sales_panel' %>
 	<% end %>
 	<script>
 		<% flash.each do |name, msg| -%>

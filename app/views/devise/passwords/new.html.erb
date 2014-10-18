@@ -33,35 +33,28 @@
     </div>
 </div>
 <% else %>
-    <div class="container">
-        <div class='col-md-6 col-sm-8 col-xs-10 col-centered'>
-            <div class='panel panel-default'>
-                <div class='panel-heading'>
-                    <% if resource.is_a? SalesRepresentative %>
-                        <h3 class='panel-title'>Sales Representative Password Recovery</h3>
-                    <% else %>
-                        <h3 class='panel-title'>Administrator Password Recovery</h3>
-                    <% end %>
-                </div>
-                <div class='panel-body'>
-                    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-                        <div class='form-group'>
-                            <%= f.email_field :email, autofocus: true, class: 'form-control', placeholder: 'Email Address' %>
-                            <div class='text-danger'><%= devise_error_messages! %></div>
-                        </div>
-
-                        <div class='form-group'>
-                            <%= f.submit "Send Reset Instructions", class: 'btn btn-primary form-control' %>
-                        </div>
-                        <% if resource.is_a? SalesRepresentative %>
-                            <%= link_to 'Sign in', '/sales_representatives/sign_in' %>
-                        <% else %>
-                            <%= link_to 'Sign in', '/admins/sign_in' %>
-                        <% end %>
-                    <% end %>
+    <div class="login-left" style="margin: auto; float: none; width: 100%; min-height: 0">
+        <div class="text-center">
+            <h3>Reset Your Password</h3>
+            <p>Reset instructions will be sent to your email address</p>
+        </div>
+        <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+            <div class='form-group'>
+                <div class="input-group">
+                    <div class="input-group-addon"><span class="icon-circle-user"></span></div>
+                    <%= f.email_field :email, autofocus: true, placeholder: 'Email Address', class: 'form-control' %>
                 </div>
             </div>
-        </div>
+            <div class="form-group">
+                <% if resource.is_a? Admin %>
+                    <p><a href="/admins/sign_in" class="blue">Sign In</a></p>
+                <% elsif resource.is_a? SalesRepresentative %>
+                    <p><a href="/admins/sign_in" class="blue">Sign In</a></p>
+                <% end %>
+            </div>
+            <div class="text-center">
+                <%= f.submit "Reset", class: ' btn btn-lblue mw-170' %>
+            </div>
+        <% end %>
     </div>
-</div>
 <% end %>
