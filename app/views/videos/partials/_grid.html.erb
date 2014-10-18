@@ -72,7 +72,7 @@
             <a href="<%= item.watch_url %>">
                 <div class="channel-img">
                     <div class="hover-play"><%= image_tag 'hover-play.png' %></div>
-                    <%= image_tag item.image_url(:sd), class: "grayscale" %>
+                    <img data-lazy='<%= item.image_url(:sd) %>' class='grayscale'/>
                 </div>
                 <h4><%= item.name %></h4>
             </a>
@@ -84,7 +84,7 @@
                     <% if item.content_quality == 'HD' %><div class="ribbon"><%= image_tag "ribbon-hd.png" %></div><% end %>
                     <div class="channel-img">
                         <div class="hover-play"><%= image_tag 'hover-play.png' %></div>
-                        <%= image_tag item.image_url(:sd), class: "grayscale" %>
+                        <img data-lazy='<%= item.image_url(:sd) %>' class='grayscale'/>
                     </div>
                     <h4><%= item.name %></h4>
                 </a>

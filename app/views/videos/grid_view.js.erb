@@ -2,6 +2,7 @@ $('#grid_<%= @grid.id %>').html('<%= escape_javascript(render("videos/partials/g
 
 
 $("#grid_<%= @grid.id %>").slick({
+    lazyLoad: 'ondemand',
     infinite: true,
     slidesToShow: 8,
     slidesToScroll: 6,
