@@ -42,6 +42,7 @@ GEM
     bcrypt (3.1.7)
     bootstrap-sass (3.1.1.1)
       sass (~> 3.2)
+    browser (0.7.0)
     builder (3.2.2)
     capistrano (3.2.1)
       i18n
@@ -309,6 +310,7 @@ PLATFORMS
 DEPENDENCIES
   activemerchant
   bootstrap-sass
+  browser
   capistrano-bundler
   capistrano-rails
   carrierwave

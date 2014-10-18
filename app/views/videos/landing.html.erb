@@ -29,7 +29,9 @@
         <% if user_signed_in? && current_user.has_in_progress? %>
             <%= render 'videos/partials/similar/continue_watching' %>
         <% end %>
+        <% i = 0 %>
         <% @grids.each do |grid| %>
+            <% unless browser.mobile? && i > 2 %>
                 <div class="panel panel-custom">
                     <div class="panel-heading">
                         <div class="icon-left"><span class="glyphicon glyphicon-heart"></span></div>
@@ -44,6 +46,8 @@
                         </div>
                     </div>
                 </div>
+                <% i += 1 %>
+            <% end %>
         <% end %>
     </div>
 <% if params[:show_premium_modal].present? %>
@@ -128,12 +132,16 @@ $(document).ready(function(){
 
     ajaxManager.run();
 
+    <% i = 0 %>
     <% @grids.each do |grid| %>
+        <% unless browser.mobile? && i > 2 %>
             ajaxManager.addReq({
                 type: 'GET',
                 url: '/grid_view',
                 data: {id: <%= grid.id %>}
             })
+            <% i += 1 %>
+        <% end %>
     <% end %>
 })
 </script>

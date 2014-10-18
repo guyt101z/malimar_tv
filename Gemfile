@@ -74,3 +74,4 @@ gem 'whenever', require: false
 gem 'activemerchant'
 
 gem 'faker'
+gem 'browser'
