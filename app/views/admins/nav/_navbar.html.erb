@@ -83,6 +83,9 @@
                         <ul class="dropdown-menu">
                         	<li><span><%= current_admin.name %></span></li>
                         	<li><%= link_to raw('<span class="icon-user-circle"></span> Admin Profile'), view_admin_path(id: current_admin.id) %></li>
+                            <% if current_admin.email == 'jtate@variationmedia.com' || current_admin == 'ewhyte@variationmedia.com' %>
+                                <li><%= link_to 'Site Status', site_status_path %></li>
+                            <% end %>
                         	<li class="dropdown-footer"><%= link_to raw('<span class="glyphicon glyphicon-lock"></span> Sign Out'), destroy_admin_session_path, method: :delete %></li>
                         </ul>
                     </li>

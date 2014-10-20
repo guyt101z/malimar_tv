@@ -3,7 +3,15 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   	protect_from_forgery
 
-  	before_filter :update_last_seen, :timezone
+  	before_filter :update_last_seen, :timezone,:active_site
+
+    def active_site
+      if @site = YAML.load(Setting.where(name: 'site_active').first.data)[:active] == true || params[:action] == 'part' || current_admin.email == 'jtate@variationmedia.com' || current_admin == 'ewhyte@variationmedia.com'
+        # Nothing
+      else
+        redirect_to inactive_path
+      end
+    end
 
 
   	def update_last_seen

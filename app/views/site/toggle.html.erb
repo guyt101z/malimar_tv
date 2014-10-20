@@ -1,0 +1,29 @@
+<% content_for :top_level, 'Site Status' %>
+<% content_for :low_levels, YAML.dump([]) %>
+<div class='container'>
+	<div class="row">
+		<div class="col-md-4 col-sm-6">
+			<%= form_tag update_site_status_path do %>
+			<div class='panel panel-default'>
+				<div class="panel-heading">
+					<h3 class="panel-title">Site Status
+				</div>
+				<div class="panel-body">
+					<p><% if @site %> <span class='text-success'>ACTIVE <% else %> <span class='text-danger'>INACTIVE <% end %></span></p>
+
+					<div class="form-group">
+						<%= select_tag :site, options_for_select([['On',true],['Off',false]], @site), class: 'form-control' %>
+					</div>
+				</div>
+				<div class="panel-footer text-right">
+					<%= submit_tag 'Update', class: 'btn btn-primary' %>
+				</div>
+			</div>
+			<% end %>
+		</div>
+	</div>
+	
+	
+
+	
+</div>

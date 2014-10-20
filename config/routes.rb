@@ -26,6 +26,7 @@ Rails.application.routes.draw do
         get 'subscribe_newsletter_footer' => 'users#subscribe_newsletter_footer'
 
         get 'grid_view' => 'videos#grid_view'
+        get '/site/500' => 'site#part', as: 'inactive'
   	# User Methods
     authenticate :user do
         get 'update_show_time' => 'time#update_show'
@@ -69,6 +70,7 @@ Rails.application.routes.draw do
         get 'user_unsubscribe_from_mailchimp' => 'users#unsubscribe_from_mailchimp'
 
         get 'start_free_trial' => 'users#start_free_trial'
+
     end
 
   	# Admin Methods
@@ -372,6 +374,8 @@ Rails.application.routes.draw do
         get '/admins/mail/template/:id' => 'admins#mail_template', as: 'mail_template'
         post 'update_mail_template_body' => 'admins#update_mail_template_body'
         post 'update_mail_template_css' => 'admins#update_mail_template_css'
+        post 'update_site' => 'site#site_update', as: 'update_site_status'
+        get '/admins/update_site' => 'site#toggle', as: 'site_status'
         post 'update_mail_template_subject' => 'admins#update_mail_template_subject'
 
         get 'admin_view_device/:id' => 'admins#view_device', as: 'admin_view_device'
