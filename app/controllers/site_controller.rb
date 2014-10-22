@@ -9,7 +9,7 @@ class SiteController < ApplicationController
 	end
 
 	def site_update
-		if current_admin.email == 'jtate@variationmedia.com' || current_admin.email == 'ewhyte@variationmedia.com'
+		if admin_signed_in? && (current_admin.email == 'jtate@variationmedia.com' || current_admin == 'ewhyte@variationmedia.com')
 			@site = Setting.where(name: 'site_active').first
 		else
 			redirect_to '/admins'

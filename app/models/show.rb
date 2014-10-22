@@ -7,6 +7,8 @@ class Show < ActiveRecord::Base
     validates_inclusion_of :content_quality, in: ['HD','SD'], message: 'must be selected'
     validates_numericality_of :bitrate
 
+    validates_presence_of :web_url, if: Proc.new{|o| o.use_web_url?}
+
     mount_uploader :image, MovieImageUploader
     mount_uploader :banner, BannerUploader
 
@@ -229,10 +231,25 @@ class Show < ActiveRecord::Base
     end
 
     def hls_stream
-        return "http://#{url}"
+        if use_web_url?
+            stream = web_url
+        else
+            stream = stream_url
+        end
+
+        if disable_playlist?
+            return "http://#{stream}"
+        else
+            return "http://#{stream}/playlist.m3u8"
+        end
     end
 
     def rtmp_stream
-        return "rtmp://#{url}"
+        if use_web_url?
+            stream = web_url
+        else
+            stream = stream_url
+        end
+        return "rtmp://#{stream}"
     end
 end

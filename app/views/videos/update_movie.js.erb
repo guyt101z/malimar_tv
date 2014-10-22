@@ -8,6 +8,7 @@ $('#synopsis-error').remove()
 $('#length-error').remove()
 $('#release_date-error').remove()
 $('#front_page-error').remove()
+$('#web_url-error').remove()
 <% if @movie.errors.any? %>
     <% if @movie.errors[:name].present? %>
         $('#name').after('<div class="text-danger" id="name-error">Name <%= @movie.errors[:name].join(", ") %>.</div>')
@@ -38,6 +39,9 @@ $('#front_page-error').remove()
     <% end %>
     <% if @movie.errors[:hd].present? %>
         $('#front_page').after('<div class="text-danger" id="front_page-error"><%= @movie.errors[:hd].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:web_url].present? %>
+        $('#web_url').after('<div class="text-danger" id="web_url-error">Web URL <%= @movie.errors[:web_url].join(", ") %>.</div>')
     <% end %>
     $('#details-title').html('Channel Details - <span class="text-danger">Not Updated</span>')
 <% else %>

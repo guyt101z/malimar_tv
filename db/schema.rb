@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140930220443) do
+ActiveRecord::Schema.define(version: 20141020182305) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -144,7 +144,7 @@ ActiveRecord::Schema.define(version: 20140930220443) do
     t.string   "bitrate"
     t.text     "synopsis"
     t.string   "stream_name"
-    t.string   "rtmp_url"
+    t.string   "web_url"
     t.boolean  "front_page"
     t.string   "banner"
     t.boolean  "adult"
@@ -154,6 +154,7 @@ ActiveRecord::Schema.define(version: 20140930220443) do
     t.integer  "edited_by"
     t.string   "rating"
     t.boolean  "disable_playlist"
+    t.boolean  "use_web_url"
   end
 
   create_table "client_migration_items", force: true do |t|
@@ -348,7 +349,7 @@ ActiveRecord::Schema.define(version: 20140930220443) do
     t.string   "bitrate"
     t.text     "synopsis"
     t.string   "stream_name"
-    t.string   "rtmp_url"
+    t.string   "web_url"
     t.date     "release_date"
     t.integer  "length"
     t.boolean  "front_page"
@@ -360,6 +361,7 @@ ActiveRecord::Schema.define(version: 20140930220443) do
     t.integer  "edited_by"
     t.string   "rating"
     t.boolean  "disable_playlist"
+    t.boolean  "use_web_url"
   end
 
   create_table "note_files", force: true do |t|
@@ -472,8 +474,9 @@ ActiveRecord::Schema.define(version: 20140930220443) do
     t.boolean  "add_ep_num"
     t.boolean  "disable_playlist"
     t.string   "hls_url"
-    t.string   "rtmp_url"
+    t.string   "web_url"
     t.string   "url"
+    t.boolean  "use_web_url"
   end
 
   create_table "support_attachments", force: true do |t|

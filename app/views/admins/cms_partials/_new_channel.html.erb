@@ -23,6 +23,18 @@
                         <label>Stream Name</label>
                         <%= text_field_tag :new_stream_name, '', class: 'form-control' %>
                     </div>
+                </div>
+                <div class='row'>
+                    <div class='col-md-8 form-group'>
+                        <label class='unedited'>Web Stream Base URL</label>
+                        <%= text_field_tag :new_web_url, '', class: 'form-control edit_channel' %>
+                    </div>
+                    <div class='col-md-4 form-group'>
+                        <label class='unedited'>Use Web URL?</label>
+                        <%= select_tag :new_use_web_url, options_for_select([['No',false],['Yes',true]]), class: 'form-control edit_channel' %>
+                    </div>
+                </div>
+                <div class='row'>
                     <div class='col-sm-4 form-group'>
                         <label class='unedited'>Disable playlist?</label>
                             <%= select_tag :new_disable_playlist, options_for_select([['No',false],['Yes',true]]), class: 'form-control edit_channel' %>
@@ -31,6 +43,8 @@
                         <label>Adult Content</label>
                         <%= select_tag :new_adult, options_for_select([['No',false],['Yes',true]]), class: 'form-control' %>
                     </div>
+                </div>
+                <div class='row'>
                     <div class='col-md-12 form-group'>
                         <%
                             grid_options = Array.new

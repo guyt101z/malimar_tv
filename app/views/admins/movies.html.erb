@@ -77,6 +77,7 @@
         $('.channel_list_item').removeClass('active')
         $('#movie_'+id).addClass('active')
         $('#movie_search_'+id).addClass('active')
+        $('#details_wrapper').addClass('blur')
         $.ajax({
             url: '/view_movie?id='+id
         })

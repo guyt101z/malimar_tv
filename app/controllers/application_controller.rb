@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   	before_filter :update_last_seen, :timezone,:active_site
 
     def active_site
-      if @site = YAML.load(Setting.where(name: 'site_active').first.data)[:active] == true || params[:action] == 'part' || current_admin.email == 'jtate@variationmedia.com' || current_admin == 'ewhyte@variationmedia.com'
+      if @site = YAML.load(Setting.where(name: 'site_active').first.data)[:active] == true || params[:controller] == 'devise/sessions' || params[:action] == 'part' || admin_signed_in?
         # Nothing
       else
         redirect_to inactive_path

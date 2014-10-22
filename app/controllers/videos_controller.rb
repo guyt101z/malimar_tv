@@ -41,6 +41,18 @@ class VideosController < ApplicationController
 			@channel.stream_name = params[:new_stream_name]
 			@channel.adult = params[:new_adult]
 			@channel.rating = params[:new_rating]
+
+			if params[:new_web_url].present? && params[:new_web_url].start_with?('http://')
+				params[:new_web_url].gsub!('http://','')
+			end
+			if params[:new_web_url].present? && params[:new_web_url].start_with?('rtmp://')
+				params[:new_web_url].gsub!('rtmp://','')
+			end
+			if params[:new_web_url].present? && params[:new_web_url].end_with?('/playlist.m3u8')
+				params[:new_web_url].gsub!('/playlist.m3u8','')
+			end
+			@channel.web_url = params[:new_web_url]
+			@channel.use_web_url = params[:new_use_web_url]
 			@channel.added_by = current_admin.id
 			if @channel.save
 				if params[:new_grids].present?
@@ -94,6 +106,18 @@ class VideosController < ApplicationController
 			@channel.front_page = params[:front_page]
 			@channel.adult = params[:adult]
 			@channel.rating = params[:rating]
+
+			if params[:web_url].present? && params[:web_url].start_with?('http://')
+				params[:web_url].gsub!('http://','')
+			end
+			if params[:web_url].present? && params[:web_url].start_with?('rtmp://')
+				params[:web_url].gsub!('rtmp://','')
+			end
+			if params[:web_url].present? && params[:web_url].end_with?('/playlist.m3u8')
+				params[:web_url].gsub!('/playlist.m3u8','')
+			end
+			@channel.web_url = params[:web_url]
+			@channel.use_web_url = params[:use_web_url]
 			@channel.edited_by = current_admin.id
 			if @channel.save
 				GridItem.where(video_type: 'Channel', video_id: @channel.id).destroy_all
@@ -214,6 +238,18 @@ class VideosController < ApplicationController
 			@movie.adult = params[:new_adult]
 			@movie.grid_id = params[:new_grid_id]
 			@movie.rating = params[:new_rating]
+
+			if params[:new_web_url].present? && params[:new_web_url].start_with?('http://')
+				params[:new_web_url].gsub!('http://','')
+			end
+			if params[:new_web_url].present? && params[:new_web_url].start_with?('rtmp://')
+				params[:new_web_url].gsub!('rtmp://','')
+			end
+			if params[:new_web_url].present? && params[:new_web_url].end_with?('/playlist.m3u8')
+				params[:new_web_url].gsub!('/playlist.m3u8','')
+			end
+			@movie.web_url = params[:new_web_url]
+			@movie.use_web_url = params[:new_use_web_url]
 			@movie.added_by = current_admin.id
 			if @movie.save
 				if params[:new_grids].present?
@@ -266,6 +302,18 @@ class VideosController < ApplicationController
 			@movie.adult = params[:adult]
 			@movie.grid_id = params[:grid_id]
 			@movie.rating = params[:rating]
+
+			if params[:web_url].present? && params[:web_url].start_with?('http://')
+				params[:web_url].gsub!('http://','')
+			end
+			if params[:web_url].present? && params[:web_url].start_with?('rtmp://')
+				params[:web_url].gsub!('rtmp://','')
+			end
+			if params[:web_url].present? && params[:web_url].end_with?('/playlist.m3u8')
+				params[:web_url].gsub!('/playlist.m3u8','')
+			end
+			@movie.web_url = params[:web_url]
+			@movie.use_web_url = params[:use_web_url]
 			@movie.edited_by = current_admin.id
 			if @movie.save
 				GridItem.where(video_type: 'Movie', video_id: @movie.id).destroy_all
@@ -386,6 +434,18 @@ class VideosController < ApplicationController
 				params[:new_url].gsub!('/playlist.m3u8','')
 			end
 			@show.url = params[:new_url]
+
+			if params[:new_web_url].present? && params[:new_web_url].start_with?('http://')
+				params[:new_web_url].gsub!('http://','')
+			end
+			if params[:new_web_url].present? && params[:new_web_url].start_with?('rtmp://')
+				params[:new_web_url].gsub!('rtmp://','')
+			end
+			if params[:new_web_url].present? && params[:new_web_url].end_with?('/playlist.m3u8')
+				params[:new_web_url].gsub!('/playlist.m3u8','')
+			end
+			@show.web_url = params[:new_web_url]
+			@show.use_web_url = params[:new_use_web_url]
 			@show.added_by = current_admin.id
 			if @show.save
 				if params[:new_grids].present?
@@ -439,6 +499,18 @@ class VideosController < ApplicationController
 				params[:url].gsub!('/playlist.m3u8','')
 			end
 			@show.url = params[:url]
+
+			if params[:web_url].present? && params[:web_url].start_with?('http://')
+				params[:web_url].gsub!('http://','')
+			end
+			if params[:web_url].present? && params[:web_url].start_with?('rtmp://')
+				params[:web_url].gsub!('rtmp://','')
+			end
+			if params[:web_url].present? && params[:web_url].end_with?('/playlist.m3u8')
+				params[:web_url].gsub!('/playlist.m3u8','')
+			end
+			@show.web_url = params[:web_url]
+			@show.use_web_url = params[:use_web_url]
 			@show.edited_by = current_admin.id
 			if @show.save
 				GridItem.where(video_type: 'Show', video_id: @show.id).destroy_all

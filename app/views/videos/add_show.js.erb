@@ -3,6 +3,7 @@ $('#new_free-error').remove()
 $('#new_content_type-error').remove()
 $('#new_content_quality-error').remove()
 $('#new_url-error').remove()
+$('#new_web_url-error').remove()
 $('#new_bitrate-error').remove()
 <% if @show.errors.any? %>
     <% if @show.errors[:name].present? %>
@@ -22,6 +23,9 @@ $('#new_bitrate-error').remove()
     <% end %>
     <% if @show.errors[:url].present? %>
         $('#new_url').after('<div class="text-danger" id="new_url-error">Stream URL <%= @show.errors[:url].join(", ") %>.</div>')
+    <% end %>
+    <% if @show.errors[:web_url].present? %>
+        $('#new_web_url').after('<div class="text-danger" id="new_web_url-error">Web URL <%= @show.errors[:web_url].join(", ") %>.</div>')
     <% end %>
 <% else %>
     $('#new_show_modal').modal('hide')

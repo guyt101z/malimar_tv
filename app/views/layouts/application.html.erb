@@ -1,7 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Malimar TV</title>
+	<% if params[:controller] == 'videos' %>
+		<% if params[:action] == 'watch_episode' %>
+			<title>Malimar TV Network | <%= @show.name %> | <%= @episode.episode_number %></title>
+		<% elsif params[:action] == 'browse_episodes' %>
+			<title>Malimar TV Network | <%= @show.name %></title>
+		<% elsif params[:action] == 'watch_movie' %>
+			<title>Malimar TV Network | <%= @movie.name %></title>
+		<% elsif params[:action] == 'watch_channel' %>
+			<title>Malimar TV Network | <%= @channel.name %></title>
+		<% elsif params[:action] == 'full_grid' %>
+			<title>Malimar TV Network | <%= @grid.name %></title>
+		<% else %>
+			<title>Malimar TV Network</title>
+		<% end %>
+	<% else %>
+		<title>Malimar TV Network</title>
+	<% end %>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=edge,chrome=1">
+    <meta name="title" content="Malimar TV Network | Thai TV, Lao TV, Khmer TV, and Hmong TV">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="shortcut icon" href="https://malimar.tv/uploads/favicon.ico">
 	<link href='//fonts.googleapis.com/css?family=Open+Sans:600,400,300,700' rel='stylesheet' type='text/css'>
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">

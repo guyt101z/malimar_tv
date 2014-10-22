@@ -7,6 +7,7 @@ $('#new_bitrate-error').remove()
 $('#new_synopsis-error').remove()
 $('#new_release_date-error').remove()
 $('#new_length-error').remove()
+$('#new_web_url-error').remove()
 <% if @movie.errors.any? %>
     <% if @movie.errors[:name].present? %>
         $('#new_name').after('<div class="text-danger" id="new_name-error">Name <%= @movie.errors[:name].join(", ") %>.</div>')
@@ -31,6 +32,9 @@ $('#new_length-error').remove()
     <% end %>
     <% if @movie.errors[:length].present? %>
         $('#new_length').after('<div class="text-danger" id="new_length-error">Length <%= @movie.errors[:length].join(", ") %>.</div>')
+    <% end %>
+    <% if @movie.errors[:web_url].present? %>
+        $('#new_web_url').after('<div class="text-danger" id="new_web_url-error">Web URL <%= @movie.errors[:web_url].join(", ") %>.</div>')
     <% end %>
 <% else %>
     $('#new_movie_modal').modal('hide')
