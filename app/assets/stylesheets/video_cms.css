@@ -365,3 +365,11 @@
     text-align: center;
     padding: 0 1px;
 }
+
+.movie_wrapper .form-control.weight_input {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 50%;
+    z-index: 10;
+}

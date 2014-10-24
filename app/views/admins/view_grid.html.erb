@@ -57,7 +57,7 @@
                                 <div class='col-sm-6'>
                                     <div class='form-group'>
                                         <label>Content Sort</label>
-                                        <%= select_tag :sort, options_for_select(['Alphabetical','New Arrivals/Episodes','Random'], @grid.sort), class: 'form-control' %>
+                                        <%= select_tag :sort, options_for_select(['Alphabetical','New Arrivals/Episodes','Random', 'Custom'], @grid.sort), class: 'form-control' %>
                                     </div>
                                 </div>
                                 <div class='col-sm-6'>
@@ -99,7 +99,9 @@
                 </div>
             </div>
             <% end %>
+            <div id='admin_grid_items'>
             <%= render 'admins/cms_partials/view_grid_details' %>
+            </div>
             <%= form_tag admin_update_grid_image_path, style: 'display:none', remote: true do %>
                 <%= file_field_tag :image, style: 'display:none' %>
                 <%= hidden_field_tag :id, @grid.id %>

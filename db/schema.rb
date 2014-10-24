@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141020182305) do
+ActiveRecord::Schema.define(version: 20141024013915) do
 
   create_table "active_pages", force: true do |t|
     t.string   "action"
@@ -124,6 +124,7 @@ ActiveRecord::Schema.define(version: 20141020182305) do
     t.boolean  "free"
     t.boolean  "front_page"
     t.string   "sort"
+    t.integer  "weight"
   end
 
   create_table "channels", force: true do |t|
@@ -257,6 +258,7 @@ ActiveRecord::Schema.define(version: 20141020182305) do
     t.integer  "grid_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "weight"
   end
 
   create_table "grids", force: true do |t|

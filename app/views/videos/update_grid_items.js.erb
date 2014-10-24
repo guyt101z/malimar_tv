@@ -1,0 +1,3 @@
+addNotification('success', 'Grid items have been updated', 'Success', 'check-circle')
+
+$('#admin_grid_items').html('<%= escape_javascript(render("admins/cms_partials/view_grid_details")).html_safe %>')

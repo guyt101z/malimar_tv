@@ -261,7 +261,7 @@ Rails.application.routes.draw do
         get 'delete_grid' => 'admins#delete_grid'
 
         post 'add_grid' => 'videos#add_grid'
-        post 'update_grid' => 'videos#update_grid'
+        post 'update_grid_items' => 'videos#update_grid_items'
 
         get 'refresh_grid_view' => 'videos#refresh_grid'
 

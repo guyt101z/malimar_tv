@@ -3,9 +3,22 @@
 @child_grids = Grid.where(grid_id: @parent_grid.id).order(weight: :asc)
 if @parent_grid.class_type == 'Show'
     grid_items = Array.new
-    @parent_grid.grid_items.each do |item|
-        unless item.video.nil?
-            grid_items.push(item.video)
+    if @parent_grid.sort == "Custom"
+        @parent_grid.grid_items.where.not(weight: 0).order(weight: :asc).each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+        @parent_grid.grid_items.where(weight: [0,nil]).each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+    else
+        @parent_grid.grid_items.each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
         end
     end
     items = []
@@ -14,6 +27,9 @@ if @parent_grid.class_type == 'Show'
             items = grid_items.sort_by{|a| a.name}
         elsif @parent_grid.sort == 'Random'
             items = grid_items.shuffle!
+        elsif @parent_grid.sort == 'Custom'
+            %>Test<%
+            items = grid_items
         else
             sort_hash = Hash.new
             grid_items.each do |item|
@@ -30,9 +46,22 @@ if @parent_grid.class_type == 'Show'
     end
 elsif @parent_grid.class_type == 'Channel'
     grid_items = Array.new
-    @parent_grid.grid_items.each do |item|
-        unless item.video.nil?
-            grid_items.push(item.video)
+    if @parent_grid.sort == "Custom"
+        @parent_grid.grid_items.where.not(weight: 0).order(weight: :asc).each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+        @parent_grid.grid_items.where(weight: [0,nil]).each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+    else
+        @parent_grid.grid_items.each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
         end
     end
     items = []
@@ -41,15 +70,30 @@ elsif @parent_grid.class_type == 'Channel'
             items = grid_items.sort_by{|a| a.name}
         elsif @parent_grid.sort == 'Random'
             items = grid_items.shuffle!
+        elsif @parent_grid.sort == 'Custom'
+            items = grid_items
         elsif @parent_grid.sort == 'New Arrivals/Episodes'
             items = (grid_items.sort_by{|a| a.created_at}).reverse
         end
     end
 elsif @parent_grid.class_type == 'Movie'
     grid_items = Array.new
-    @parent_grid.grid_items.each do |item|
-        unless item.video.nil?
-            grid_items.push(item.video)
+    if @parent_grid.sort == "Custom"
+        @parent_grid.grid_items.where.not(weight: 0).order(weight: :asc).each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+        @parent_grid.grid_items.where(weight: [0,nil]).each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+    else
+        @parent_grid.grid_items.each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
         end
     end
     items = []
@@ -58,17 +102,23 @@ elsif @parent_grid.class_type == 'Movie'
             items = grid_items.sort_by{|a| a.name}
         elsif @parent_grid.sort == 'Random'
             items = grid_items.shuffle!
+        elsif @parent_grid.sort == 'Custom'
+            items = grid_items
         elsif @parent_grid.sort == 'New Arrivals/Episodes'
             items = (grid_items.sort_by{|a| a.created_at}).reverse
         end
     end
 end
 %>
+
+
+<%= form_tag update_grid_items_path, remote: true do %>
+<%= hidden_field_tag :id, @parent_grid.id %>
 <div class='panel panel-default'>
     <div class='panel-heading' style='position:relative'>
         <h3 class='panel-title'>Content on this grid</h3>
         <div class='upload_image_heading'>
-
+            <%= submit_tag 'Update Grid Order', class: 'btn btn-primary btn-sm', data: {disable_with: 'Updating...'} %>
         </div>
     </div>
     <div class='panel-body'>
@@ -76,6 +126,7 @@ end
         <% @child_grids.each do |grid| %>
             <div class=' col-lg-2 col-sm-3 col-xs-6'>
                 <div class='movie_wrapper'>
+                    <% if @parent_grid.sort == "Custom" %><%= text_field_tag "n_a", 'Grid', class: 'form-control weight_input', disabled: 'disabled' %><% end %>
                     <div class='image_wrapper'>
                         <%= image_tag grid.image_url %>
                     </div>
@@ -86,23 +137,44 @@ end
             </div>
         <% end %>
         <% items.each do |item| %>
-            <div class=' col-lg-2 col-sm-3 col-xs-6'>
-                <div class='movie_wrapper'>
-                    <div class='image_wrapper'>
-                        <%= image_tag item.image_url %>
-                    </div>
-                    <div class='title_wrapper'>
-                        <% if item.is_a? Channel %>
-                            <%= link_to item.name, live_channels_path(id: item.id) %>
-                        <% elsif item.is_a? Show %>
-                            <%= link_to item.name, tv_shows_path(id: item.id) %>
-                        <% elsif item.is_a? Movie %>
-                            <%= link_to item.name, movies_path(id: item.id) %>
-                        <% end %>
+            <% g_item = GridItem.where(video_id: item.id, video_type: @parent_grid.class_type, grid_id: @parent_grid.id).first %>
+            <% unless g_item.nil? %>
+                <% if g_item.weight.nil? %>
+                    <% g_item.weight = 0 %>
+                    <% g_item.save %>
+                <% end %>
+                <div class=' col-lg-2 col-sm-3 col-xs-6'>
+                    <div class='movie_wrapper'>
+                        <% if @parent_grid.sort == "Custom" %><%= number_field_tag "#{g_item.id}", g_item.weight, class: 'form-control weight_input' %><% end %>
+                        <div class='image_wrapper'>
+                            <%= image_tag item.image_url %>
+                        </div>
+                        <div class='title_wrapper'>
+                            <% if item.is_a? Channel %>
+                                <%= link_to item.name, live_channels_path(id: item.id) %>
+                            <% elsif item.is_a? Show %>
+                                <%= link_to item.name, tv_shows_path(id: item.id) %>
+                            <% elsif item.is_a? Movie %>
+                                <%= link_to item.name, movies_path(id: item.id) %>
+                            <% end %>
+                        </div>
                     </div>
                 </div>
-            </div>
+            <% end %>
         <% end %>
         </div>
     </div>
 </div>
+<% end %>
+<%= @test %>
+<script type="text/javascript">
+    $('.weight_input').change(function(){
+        if (Number($(this).val()) < 0){
+            $(this).val(0)
+        }
+    })
+
+    $('.weight_input').focus(function(){
+        $(this).blur()
+    })
+</script>

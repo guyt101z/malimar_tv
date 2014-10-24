@@ -3,9 +3,22 @@
 @child_grids = Grid.where(grid_id: @parent_grid.id).order(weight: :asc)
 if @parent_grid.class_type == 'Show'
     grid_items = Array.new
-    @parent_grid.grid_items.each do |item|
-        unless item.video.nil?
-            grid_items.push(item.video)
+    if @parent_grid.sort == "Custom"
+        @parent_grid.grid_items.where.not(weight: 0).order(weight: :asc).each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+        @parent_grid.grid_items.where(weight: [0,nil]).each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+    else
+        @parent_grid.grid_items.each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
         end
     end
     items = []
@@ -14,6 +27,8 @@ if @parent_grid.class_type == 'Show'
             items = grid_items.sort_by{|a| a.name}
         elsif @parent_grid.sort == 'Random'
             items = grid_items.shuffle!
+        elsif @parent_grid.sort == 'Custom'
+            items = grid_items
         else
             sort_hash = Hash.new
             grid_items.each do |item|
@@ -30,9 +45,22 @@ if @parent_grid.class_type == 'Show'
     end
 elsif @parent_grid.class_type == 'Channel'
     grid_items = Array.new
-    @parent_grid.grid_items.each do |item|
-        unless item.video.nil?
-            grid_items.push(item.video)
+    if @parent_grid.sort == "Custom"
+        @parent_grid.grid_items.where.not(weight: 0).order(weight: :asc).each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+        @parent_grid.grid_items.where(weight: [0,nil]).each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+    else
+        @parent_grid.grid_items.each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
         end
     end
     items = []
@@ -41,15 +69,30 @@ elsif @parent_grid.class_type == 'Channel'
             items = grid_items.sort_by{|a| a.name}
         elsif @parent_grid.sort == 'Random'
             items = grid_items.shuffle!
+        elsif @parent_grid.sort == "Custom"
+            items = grid_items
         elsif @parent_grid.sort == 'New Arrivals/Episodes'
             items = (grid_items.sort_by{|a| a.created_at}).reverse
         end
     end
 elsif @parent_grid.class_type == 'Movie'
     grid_items = Array.new
-    @parent_grid.grid_items.each do |item|
-        unless item.video.nil?
-            grid_items.push(item.video)
+    if @parent_grid.sort == "Custom"
+        @parent_grid.grid_items.where.not(weight: 0).order(weight: :asc).each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+        @parent_grid.grid_items.where(weight: [0,nil]).each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
+        end
+    else
+        @parent_grid.grid_items.each do |item|
+            unless item.video.nil?
+                grid_items.push(item.video)
+            end
         end
     end
     items = []
@@ -58,13 +101,14 @@ elsif @parent_grid.class_type == 'Movie'
             items = grid_items.sort_by{|a| a.name}
         elsif @parent_grid.sort == 'Random'
             items = grid_items.shuffle!
+        elsif @parent_grid.sort == 'Custom'
+            items = grid_items
         elsif @parent_grid.sort == 'New Arrivals/Episodes'
             items = (grid_items.sort_by{|a| a.created_at}).reverse
         end
     end
 end
 %>
-
 
 
 <div class='col-xs-12' id='grid_<%= @parent_grid.id %>'>

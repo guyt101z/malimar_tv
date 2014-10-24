@@ -57,8 +57,10 @@ class VideosController < ApplicationController
 			if @channel.save
 				if params[:new_grids].present?
 					params[:new_grids].each do |g|
-						grid_item = GridItem.new(video_type: 'Channel', grid_id: g.to_i, video_id: @channel.id)
-						grid_item.save
+						if GridItem.where(video_type: 'Channel', grid_id: g.to_i, video_id: @channel.id).first.nil?
+							grid_item = GridItem.new(video_type: 'Channel', grid_id: g.to_i, video_id: @channel.id)
+							grid_item.save
+						end
 					end
 				end
 
@@ -120,13 +122,12 @@ class VideosController < ApplicationController
 			@channel.use_web_url = params[:use_web_url]
 			@channel.edited_by = current_admin.id
 			if @channel.save
-				GridItem.where(video_type: 'Channel', video_id: @channel.id).destroy_all
-
-
 				if params[:grids].present?
 					params[:grids].each do |g|
-						grid_item = GridItem.new(video_type: 'Channel', grid_id: g.to_i, video_id: @channel.id)
-						grid_item.save
+						if GridItem.where(video_type: 'Channel', grid_id: g.to_i, video_id: @channel.id).first.nil?
+							grid_item = GridItem.new(video_type: 'Channel', grid_id: g.to_i, video_id: @channel.id)
+							grid_item.save
+						end
 					end
 				end
 				Channel.reindex
@@ -254,8 +255,10 @@ class VideosController < ApplicationController
 			if @movie.save
 				if params[:new_grids].present?
 					params[:new_grids].each do |g|
-						grid_item = GridItem.new(video_type: 'Movie', grid_id: g.to_i, video_id: @movie.id)
-						grid_item.save
+						if GridItem.where(video_type: 'Movie', grid_id: g.to_i, video_id: @movie.id).first.nil?
+							grid_item = GridItem.new(video_type: 'Movie', grid_id: g.to_i, video_id: @movie.id)
+							grid_item.save
+						end
 					end
 				end
 				Movie.reindex
@@ -316,12 +319,12 @@ class VideosController < ApplicationController
 			@movie.use_web_url = params[:use_web_url]
 			@movie.edited_by = current_admin.id
 			if @movie.save
-				GridItem.where(video_type: 'Movie', video_id: @movie.id).destroy_all
-
 				if params[:grids].present?
 					params[:grids].each do |g|
-						grid_item = GridItem.new(video_type: 'Movie', grid_id: g.to_i, video_id: @movie.id)
-						grid_item.save
+						if GridItem.where(video_type: 'Movie', grid_id: g.to_i, video_id: @movie.id).first.nil?
+							grid_item = GridItem.new(video_type: 'Movie', grid_id: g.to_i, video_id: @movie.id)
+							grid_item.save
+						end
 					end
 				end
 				Movie.reindex
@@ -450,8 +453,10 @@ class VideosController < ApplicationController
 			if @show.save
 				if params[:new_grids].present?
 					params[:new_grids].each do |g|
-						grid_item = GridItem.new(video_type: 'Show', grid_id: g.to_i, video_id: @show.id)
-						grid_item.save
+						if GridItem.where(video_type: 'Show', grid_id: g.to_i, video_id: @show.id).first.nil?
+							grid_item = GridItem.new(video_type: 'Show', grid_id: g.to_i, video_id: @show.id)
+							grid_item.save
+						end
 					end
 				end
 				Show.reindex
@@ -513,12 +518,12 @@ class VideosController < ApplicationController
 			@show.use_web_url = params[:use_web_url]
 			@show.edited_by = current_admin.id
 			if @show.save
-				GridItem.where(video_type: 'Show', video_id: @show.id).destroy_all
-
 				if params[:grids].present?
 					params[:grids].each do |g|
-						grid_item = GridItem.new(video_type: 'Show', grid_id: g.to_i, video_id: @show.id)
-						grid_item.save
+						if GridItem.where(video_type: 'Show', grid_id: g.to_i, video_id: @show.id).first.nil?
+							grid_item = GridItem.new(video_type: 'Show', grid_id: g.to_i, video_id: @show.id)
+							grid_item.save
+						end
 					end
 				end
 				Show.reindex
@@ -709,7 +714,7 @@ class VideosController < ApplicationController
 	#######################################################################################
 
 	def add_grid
-		@category = Category.new
+		@category = Grid.new
 		@category.name = params[:new_name]
 		@category.content_type = params[:new_content_type]
 		@category.content_quality = params[:new_content_quality]
@@ -721,24 +726,18 @@ class VideosController < ApplicationController
 		@category.sort = params[:new_sort]
 		@category.save
 	end
-	def update_grid
-		@category = Category.find(params[:id])
-		@category.name = params[:name]
-		@category.content_type = params[:content_type]
-		@category.content_quality = params[:content_quality]
-		@category.item_type = params[:item_type]
-		@category.rank = params[:rank]
-		@category.free = params[:free]
-		@category.genre = params[:genre]
-		@category.front_page = params[:front_page]
-		@category.sort = params[:sort]
-		@category.save
+
+	def update_grid_items
+		@grid = Grid.find(params[:id])
+
+		@grid.grid_items.each do |i|
+			i.weight = params["#{i.id.to_s}"]
+			i.save
+		end
 	end
+
 	def view_grid
-		@category = Category.find(params[:id])
-	end
-	def delete_grid
-		Category.find(params[:id]).destroy
+		@category = Grid.find(params[:id])
 	end
 
 	# Watch Methods
