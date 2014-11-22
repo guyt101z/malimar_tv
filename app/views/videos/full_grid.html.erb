@@ -8,7 +8,7 @@
 <div class="content">
     <div class="container">
         <% @child_grids = Grid.where(grid_id: @grid.id) %>
-        <% @parent_grid = grid %>
+        <% @parent_grid = @grid %>
 
         <% @child_grids.each do |grid| %>
             <%
