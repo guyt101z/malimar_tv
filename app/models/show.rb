@@ -230,11 +230,21 @@ class Show < ActiveRecord::Base
         end
     end
 
+    def episode_hls_stream
+        if use_web_url?
+            stream = web_url
+        else
+            stream = url
+        end
+
+        return "http://#{stream}"
+    end
+
     def hls_stream
         if use_web_url?
             stream = web_url
         else
-            stream = stream_url
+            stream = url
         end
 
         if disable_playlist?

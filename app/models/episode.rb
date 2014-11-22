@@ -76,16 +76,16 @@ class Episode < ActiveRecord::Base
         end
 
         if show.disable_playlist?
-            if show.hls_stream.end_with?('/')
-                return "#{show.hls_stream}#{filename}"
+            if show.episode_hls_stream.end_with?('/')
+                return "#{show.episode_hls_stream}#{filename}"
             else
-                return "#{show.hls_stream}/#{filename}"
+                return "#{show.episode_hls_stream}/#{filename}"
             end
         else
-            if show.hls_stream.end_with?('/')
-                return "#{show.hls_stream}#{filename}/playlist.m3u8"
+            if show.episode_hls_stream.end_with?('/')
+                return "#{show.episode_hls_stream}#{filename}/playlist.m3u8"
             else
-                return "#{show.hls_stream}/#{filename}/playlist.m3u8"
+                return "#{show.episode_hls_stream}/#{filename}/playlist.m3u8"
             end
         end
     end
