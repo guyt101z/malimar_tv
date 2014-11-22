@@ -9,31 +9,27 @@ class ApiController < ApplicationController
                 if request.headers['token'].present?
                     device = Device.where(user_id: user.id, serial: request.headers['token'], type: request.headers['devicetype']).first
                     if device.nil?
-                        if user.max_devices?
-                            render json: {code: 208, success: false, message: 'New device could not be created: user has reached maximum'}
-                        else
-                            unless request.headers['devicetype'] == 'Roku'
-                                device = Device.new
-                                device.user_id = user.id
-                                device.type = request.headers['devicetype']
+                        unless request.headers['devicetype'] == 'Roku'
+                            device = Device.new
+                            device.user_id = user.id
+                            device.type = request.headers['devicetype']
+                            device.serial = SecureRandom.hex(10)
+
+                            i = 0
+                            until device.save || i > 50
                                 device.serial = SecureRandom.hex(10)
-
-                                i = 0
-                                until device.save || i > 50
-                                    device.serial = SecureRandom.hex(10)
-                                    i += 1
-                                end
-
-                                if i > 100
-                                    render json: {code: 211, success: false, message: 'Timeout'}
-                                else
-                                    device.expiry = Date.today + 90.days
-                                    device.save
-                                    render json: {code: 103, success: true, message: 'New device and new token', token: device.serial}
-                                end
-                            else
-                                render json: {code: 210, success: false, message: 'Roku has not been registered'}
+                                i += 1
                             end
+
+                            if i > 100
+                                render json: {code: 211, success: false, message: 'Timeout'}
+                            else
+                                device.expiry = Date.today + 90.days
+                                device.save
+                                render json: {code: 103, success: true, message: 'New device and new token', token: device.serial}
+                            end
+                        else
+                            render json: {code: 210, success: false, message: 'Roku has not been registered'}
                         end
                     else
                         if device.expired?
@@ -58,27 +54,23 @@ class ApiController < ApplicationController
                     end
                 else
                     if request.headers['devicetype'].present? && request.headers['devicetype'] != 'Roku'
-                        unless user.max_devices?
-                            device = Device.new
-                            device.user_id = user.id
-                            device.type = request.headers['devicetype']
+                        device = Device.new
+                        device.user_id = user.id
+                        device.type = request.headers['devicetype']
+                        device.serial = SecureRandom.hex(10)
+
+                        i = 0
+                        until device.save || i > 50
                             device.serial = SecureRandom.hex(10)
+                            i += 1
+                        end
 
-                            i = 0
-                            until device.save || i > 50
-                                device.serial = SecureRandom.hex(10)
-                                i += 1
-                            end
-
-                            if i > 100
-                                render json: {code: 211, success: false, message: 'Timeout'}
-                            else
-                                device.expiry = Date.today + 90.days
-                                device.save
-                                render json: {code: 103, success: true, message: 'New device and new token', token: device.serial}
-                            end
+                        if i > 100
+                            render json: {code: 211, success: false, message: 'Timeout'}
                         else
-                            render json: {code: 208, success: false, message: 'New device could not be created: user has reached maximum'}
+                            device.expiry = Date.today + 90.days
+                            device.save
+                            render json: {code: 103, success: true, message: 'New device and new token', token: device.serial}
                         end
                     elsif request.headers['devicetype'] == 'Roku'
                         render json: {code: 210, success: false, message: 'Roku must be registered on Malimar.tv'}
