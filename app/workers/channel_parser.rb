@@ -102,7 +102,7 @@ class ChannelParser
             else
                 migration_item.status = 'Error'
                 migration_item.completed = true
-                migration_item.error = 'Channel could not be saved: Duplicate Entry'
+                migration_item.error = 'Channel could not be saved: Duplicate Entry (' + item['title'] + ')'
                 migration_item.save
             end
         rescue => e
