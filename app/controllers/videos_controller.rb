@@ -887,13 +887,13 @@ class VideosController < ApplicationController
 		activation_status = Setting.where(name: 'Active Registration').first.data
 
 		if @grid.free == false && (activation_status == 'false' || activation_status == false)
-			redirect_to root_url(show_premium_modal: true)
+			redirect_to root_url(show_premium_modal: true) and return
 		end
 
 		if @grid.adult?
 			unless (user_signed_in? && current_user.adult?) || admin_signed_in? 
 				flash[:error] = 'You are not permitted to watch adult content'
-				redirect_to '/'
+				redirect_to root_url and return
 			end
 		end
 	end
