@@ -1,28 +1,14 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This application was built for a client for their video streaming service. It includes a 
+CMS for their content, a billing system, a basic CRM/User management tool, and migration
+tool from their old MS Access database.
 
-Things you may want to cover:
+=== Technology
+* Rails 4.1
+* MySQL
+* AWS Load balancer
+* Redis/Resque
+* ActiveMerchant with PayPal
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+==== This repo is for demo purposes only.
