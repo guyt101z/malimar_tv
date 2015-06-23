@@ -10,8 +10,8 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = 'accounts@malimar.tv'
-  config.secret_key = '06afb7e9831f3ef8411c319f040ecaa26c47aecd1cae7a10155077e35cb53884d9ef72a951f1df8c95e9b311571f3e648a35340aea4dd638b78cd181e2db784e'
+  config.mailer_sender = ENV["MAILER_SENDER"]
+  config.secret_key = ENV["SECRET_KEY"]
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
 

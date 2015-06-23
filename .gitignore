@@ -20,4 +20,8 @@
 /serials/*
 /test/*
 /config/database.yml
+/config/database-e.yml
+/config/database-w.yml
 /public/malimar_images/*
+/test
+/xml

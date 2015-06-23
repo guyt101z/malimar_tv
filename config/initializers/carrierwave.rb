@@ -10,10 +10,10 @@ CarrierWave.configure do |config|
 
         # Configuration for Amazon S3
         :provider              => 'AWS',
-        :aws_access_key_id     => 'AKIAJ6DTQSQMIFVO72WA',
-        :aws_secret_access_key => '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',
+        :aws_access_key_id     => ENV["AWS_KEY"],
+        :aws_secret_access_key => ENV["AWS_SECRET_KEY"],
         :region                => 'us-west-1'
     }
 
-    config.fog_directory    = 'aseaniptv2'              # Generate http:// urls. Defaults to :authenticated_read (https://)
+    config.fog_directory    = ENV["FOG_DIR"]              # Generate http:// urls. Defaults to :authenticated_read (https://)
 end

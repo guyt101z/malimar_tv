@@ -12,13 +12,13 @@ plans = [Plan.create(price: 12, months: 1, name: '1 Month', features: YAML.dump(
 		 Plan.create(price: 60, months: 6, name: '6 Month', features: YAML.dump(['Feature 1', 'Feature 2'])),
 		 Plan.create(price: 99, months: 12, name: '12 Month', features: YAML.dump(['Feature 1', 'Feature 2']))]
 
-paypal_setting = Setting.create(name: 'Paypal Credentials', data: YAML.dump({login: 'jtate_api1.variationmedia.com', password: '1400603735', signature: 'AFcWxV21C7fd0v3bYYYRCpSSRl31AeXKxTP5ntM4YPwc-sPQTHNXfXts'}))
+paypal_setting = Setting.create(name: 'Paypal Credentials', data: YAML.dump({login: ENV["PAYPAL_EMAIL"], password: ENV["PAYPAL_PASSWORD"], signature: , password: ENV["PAYPAL_SIG"]}))
 wowza_token = Setting.create(name: 'WMS Token', data: 'sfV45RvdHJR.658sSSferyhD6HYmlxRt.95Tyg6VGpoz56.dHTeribAdrG654')
 withdrawal_limits = Setting.create(name: 'Withdrawal Limits', data: {max: 100, min: 10})
 
-admin = Admin.create(first_name: 'Josh', last_name: 'Tate', password: 'buh12345', email: 'jtate@variationmedia.com', role_id: 0)
-admin = Admin.create(first_name: 'Elliot', last_name: 'Whyte', password: 'password123', email: 'ewhyte@variationmedia.com', role_id: 0)
-admin = Admin.create(first_name: 'Mubarak', last_name: 'Malimar', password: 'password123', email: 'mubarak@malimar.tv', role_id: 0)
+admin = Admin.create(first_name: 'Josh', last_name: 'Tate', password: 'buh12345', email: ENV["JOSH_EMAIL"], role_id: 0)
+admin = Admin.create(first_name: 'Elliot', last_name: 'Whyte', password: 'password123', email: ENV["ELLIOT_EMAIL"], role_id: 0)
+admin = Admin.create(first_name: 'Mubarak', last_name: 'Malimar', password: 'password123', email:  ENV["MALIMAR_EMAIL"], role_id: 0)
 
 invoice_logo = InvoiceLogo.create(image: nil)
 
@@ -30,7 +30,7 @@ referral_bonus = Setting.create(name: 'Referral Bonus', data: YAML.dump(method: 
 free_trial_length = Setting.create(name: 'Roku Free Trial Length', data: 30)
 free_trial_length = Setting.create(name: 'Web Free Trial Length', data: 30)
 payment_methods = Setting.create(name: 'Payout Methods', data: YAML.dump(['Cheque','Bank Transfer','Paypal','Wire Transfer']))
-payment_methods = Setting.create(name: 'Languages', data: YAML.dump("English\r\nLao\r\nThai\r\nKhmer\r\nKhmer"))
+payment_methods = Setting.create(name: 'Languages', data: YAML.dump("English\r\nLao\r\nThai\r\nKhmer"))
 
 registration = Setting.create(name: 'Active Registration', data: 'true')
 
@@ -52,9 +52,9 @@ mail_templates = [
 ]
 
 mail_settings = [
-	Setting.create(name: 'MailChimp Credentials', data: YAML.dump({api_key: '0fec58ea225e6267d09236252209fedc-us3', list_id: 'malimar'})),
+	Setting.create(name: 'MailChimp Credentials', data: YAML.dump({api_key: ENV["INIT_MAILCHIMP_API"], list_id: 'malimar'})),
 	Setting.create(name: 'Default Send Address', data: 'donotreply@malimar.tv'),
-	Setting.create(name: 'SMTP Credentials', data: YAML.dump({address: 'smtp.mandrillapp.com', port: 587, user_name: 'jtate@variationmedia.com', password: 'eoJXAS4dpN86YIuS6LL48w', domain: 'malimar.tv'})),
+	Setting.create(name: 'SMTP Credentials', data: YAML.dump({address: 'smtp.mandrillapp.com', port: 587, user_name: ENV["MANDRILL_EMAIL"], password: ENV["MANDRILL_PASSWORD"], domain: 'malimar.tv'})),
 
 	Setting.create(name: 'Mail Header Markup', data: ''),
 	Setting.create(name: 'Mail Footer Markup', data: ''),

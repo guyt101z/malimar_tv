@@ -1,3 +1,3 @@
 MandrillMailer.configure do |config|
-    config.api_key = 'eoJXAS4dpN86YIuS6LL48w'
+    config.api_key = ENV["MANDRILL_KEY"]
 end
